@@ -1,12 +1,13 @@
-// Server di Voxelia 7.4.1: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Server di Voxelia 7.6: serve il gioco e fa da ponte WebSocket tra i giocatori.
 // Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
 // rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
-// e i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md).
+// i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
+// e i MONDI PUBBLICATI con Voxelia Studio (browser dei mondi, recensioni, commenti): cartella mondi/ (o MONDI_DIR).
 // Nessuna dipendenza: basta Node.js 16+.   Avvio:  node server.js   (porta 3000, o PORT=xxxx)
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
 const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
-const VER = '7.4.1';
+const VER = '7.6';
 const PORT = process.env.PORT || 3000;
 const DATA = process.env.DATA_FILE || path.join(__dirname, 'voxelia-data.json');
 // il gioco può chiamarsi voxelia.html oppure voxelia_v6.3.html ecc.: si usa il file voxelia*.html più recente
@@ -19,7 +20,7 @@ const AR_COST = [40, 25, 35, 25, 120, 150, 90, 90];
 const DUNGEONS = ['tana', 'cripta', 'piramide', 'cristallo', 'fucina', 'abisso', 'cittadella'];
 
 /* ---------- dati persistenti ---------- */
-const CFG_DEF = { maxp: 20, lock: 0, pvp: 1, trade: 1, chat: 1, motd: '', xpm: 1, gm: 1 };
+const CFG_DEF = { maxp: 20, lock: 0, pvp: 1, trade: 1, chat: 1, motd: '', xpm: 1, gm: 1, mondi: 1 };
 let DB = { ar: {}, runs: {}, cfg: Object.assign({}, CFG_DEF), bans: [], mutes: [], plug: {}, plugOff: [] };
 try {
   const j = JSON.parse(fs.readFileSync(DATA, 'utf8'));
@@ -125,6 +126,7 @@ const srv = http.createServer((req, res) => {
   }
   if (u.startsWith('/admin/')) return adminApi(req, res, u);
   if (u.startsWith('/plugins/')) return plugRoute(req, res, u);
+  if (u === '/api/mondi' || u.startsWith('/api/mondi/')) return mondiApi(req, res, u);
   res.writeHead(404); res.end('Non trovato');
 });
 
@@ -150,12 +152,270 @@ function adminApi(req, res, u) {
   if (!authed(req)) return json(res, 401, { err: 'Accesso richiesto' });
   if (u === '/admin/logout' && req.method === 'POST') { SESS.delete(cookie(req, 'vxadm')); return json(res, 200, { ok: 1 }, { 'Set-Cookie': 'vxadm=; Path=/; Max-Age=0' }); }
   if (u === '/admin/api/state') return json(res, 200, state());
+  if (u === '/admin/api/mondi') return json(res, 200, mdAdminState());
   if (u === '/admin/api/backup') {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Content-Disposition': 'attachment; filename="voxelia-backup-' + new Date().toISOString().slice(0, 10) + '.json"' });
     return res.end(JSON.stringify(DB, null, 1));
   }
   if (u === '/admin/api/act' && req.method === 'POST') return body(req, j => { let r; try { r = adminAct(j, req); } catch (e) { r = { err: 'Errore: ' + e.message }; } json(res, r.err ? 400 : 200, r); });
   json(res, 404, { err: 'Non trovato' });
+}
+
+/* ---------- MONDI PUBBLICATI (7.6): il browser dei mondi di Voxelia Studio ----------
+   I mondi creati con l'editor si pubblicano sul server: chiunque giochi su questo server li trova nel browser del gioco,
+   li gioca, li recensisce con le stelle e li commenta. Tutto sta nella cartella mondi/ accanto a server.js
+   (o in MONDI_DIR): indice.json con schede, recensioni e commenti, file/ con i mondi, media/ con immagini e video.
+   Nessun account: ogni browser ha una chiave segreta casuale (la manda nell'intestazione x-voxelia-key);
+   il server ne conserva solo un'impronta. Il nome da autore si "prenota" con la propria chiave. */
+const MD_DIR = process.env.MONDI_DIR ? path.resolve(process.env.MONDI_DIR) : path.join(__dirname, 'mondi');
+const MD_FILE = path.join(MD_DIR, 'file'), MD_MEDIA = path.join(MD_DIR, 'media'), MD_IDX = path.join(MD_DIR, 'indice.json');
+const MD_TAGS = ['Avventura', 'Storia', 'Dungeon', 'Esplorazione', 'Rompicapo', 'Combattimento', 'Arena', 'Mistero', 'Horror', 'Divertente', 'Rilassante', 'Breve', 'Lungo', 'Per tutti'];
+const MD_LIM = { world: 4 << 20, img: 3 << 20, vid: 12 << 20, imgs: 8, perUser: 40, userBytes: 250 << 20, comments: 600, ev: 4000 };
+let MD = { w: {}, u: {}, names: {}, media: {}, rep: [] };
+try { fs.mkdirSync(MD_FILE, { recursive: true }); fs.mkdirSync(MD_MEDIA, { recursive: true }); } catch (e) { console.error('Cartella dei mondi non creata:', e.message); }
+try { const j = JSON.parse(fs.readFileSync(MD_IDX, 'utf8')); if (j && typeof j === 'object') for (const k of ['w', 'u', 'names', 'media']) if (j[k] && typeof j[k] === 'object') MD[k] = j[k]; if (Array.isArray(j.rep)) MD.rep = j.rep; } catch (e) {}
+let mdDirty = false;
+const mdTouch = () => { mdDirty = true; };
+function mdFlush(sync) {
+  if (!mdDirty) return; mdDirty = false; const s = JSON.stringify(MD);
+  if (sync) { try { fs.writeFileSync(MD_IDX, s); } catch (e) { console.error('Salvataggio dei mondi fallito:', e.message); } return; }
+  fs.writeFile(MD_IDX + '.tmp', s, e => { if (!e) fs.rename(MD_IDX + '.tmp', MD_IDX, () => {}); else console.error('Salvataggio dei mondi fallito:', e.message); });
+}
+setInterval(mdFlush, 3000);
+process.on('exit', () => mdFlush(true));   // l'arresto (Ctrl+C) passa da process.exit: si salva l'indice se è cambiato
+
+const mdUid = req => { const k = String(req.headers['x-voxelia-key'] || ''); return /^[0-9a-f]{32,64}$/.test(k) ? crypto.createHash('sha256').update('vx:' + k).digest('hex').slice(0, 20) : ''; };
+const mdName = uid => (MD.u[uid] && MD.u[uid].n) || 'Anonimo';
+const mdNew = p => p + crypto.randomBytes(6).toString('hex');
+// testo libero (descrizioni, recensioni, commenti): restano gli a capo e anche < e >, perché il gioco li mostra sempre come testo
+const mdTxt = (v, n) => (typeof v === 'string' ? v : '').replace(/\r\n?/g, '\n').replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, '').replace(/\n{3,}/g, '\n\n').trim().slice(0, n);
+const mdBanned = (req, uid) => { const ip = ipOf(req), u = MD.u[uid]; return (u && u.blk) || DB.bans.some(b => (b.ip && b.ip === ip) || (u && b.k && b.k === key(u.n))); };
+// limiti di frequenza in memoria: chiave → istanti recenti
+const MD_RL = new Map();
+function mdRate(k, n, ms) { const now = Date.now(), L = (MD_RL.get(k) || []).filter(t => now - t < ms); if (L.length >= n) { MD_RL.set(k, L); return false; } L.push(now); MD_RL.set(k, L); return true; }
+// visite e partite contate una volta per persona in un certo intervallo
+const MD_SEEN = new Map();
+function mdOnce(k, ms) { const now = Date.now(), t = MD_SEEN.get(k); if (t && now - t < ms) return false; MD_SEEN.set(k, now); return true; }
+setInterval(() => { const now = Date.now(); for (const [k, t] of MD_SEEN) if (now - t > 864e5) MD_SEEN.delete(k); for (const [k, L] of MD_RL) if (!L.length || now - L[L.length - 1] > 864e5) MD_RL.delete(k); }, 3600e3);
+
+/* ---- tendenza: ogni azione recente vale dei punti che si dimezzano ogni 24 ore ---- */
+const MD_EVW = { v: .25, p: 1, d: 2, r: 2, c: .6, f: 1.5 };
+function mdEvent(w, k, x) { const now = Date.now(); (w.ev || (w.ev = [])).push([now, k, x || 0]); while (w.ev.length && (now - w.ev[0][0] > 72 * 3600e3 || w.ev.length > MD_LIM.ev)) w.ev.shift(); mdTouch(); }
+function mdHot(w) { const now = Date.now(); let s = 0, p = 0, r = 0; for (const [t, k, x] of w.ev || []) { const age = now - t; if (age > 72 * 3600e3) continue; s += (MD_EVW[k] || 0) * (k === 'r' ? Math.max(.25, 1 + (x - 3) * .5) : 1) * Math.pow(.5, age / 864e5); if (age < 48 * 3600e3) { if (k === 'p') p++; else if (k === 'r') r++; } } return { s, p, r }; }
+const MD_FEAT_MIN = 6;
+function mdRating(w) { const R = Object.values(w.r || {}); const n = R.length, dist = [0, 0, 0, 0, 0]; let sum = 0; for (const q of R) { sum += q.s; dist[q.s - 1]++; } return { avg: n ? Math.round(sum / n * 10) / 10 : 0, n, dist }; }
+const mdUrl = id => { const m = MD.media[id]; return m ? '/api/mondi/media/' + id + '.' + m.ext : null; };
+function mdCard(w) {
+  const h = mdHot(w), img = (w.media || []).filter(id => MD.media[id] && MD.media[id].k === 'img'), vid = (w.media || []).find(id => MD.media[id] && MD.media[id].k === 'vid');
+  const cov = w.cover && MD.media[w.cover] && MD.media[w.cover].k === 'img' ? w.cover : img[0];
+  return { id: w.id, n: w.n, a: mdName(w.uid), au: w.uid, tags: w.tags || [], cover: cov ? mdUrl(cov) : null, vid: vid ? mdUrl(vid) : null, nimg: img.length,
+    st: { v: w.st.v | 0, p: w.st.p | 0, pu: Object.keys(w.pl || {}).length, d: Object.keys(w.dn || {}).length, f: (w.fav || []).length, c: (w.c || []).length },
+    r: mdRating(w), t0: w.t0, t1: w.t1, maps: w.maps | 0, npcs: w.npcs | 0, quests: w.quests | 0, remix: w.remix ? 1 : 0, pin: w.pin ? 1 : 0, hot: Math.round(h.s * 10) / 10, hp: h.p, hr: h.r };
+}
+const mdList = () => Object.values(MD.w).filter(w => !w.hide);
+function mdSort(L, ord) {
+  const C = L.map(mdCard);
+  if (ord === 'nuovi') C.sort((a, b) => b.t0 - a.t0);
+  else if (ord === 'aggiornati') C.sort((a, b) => b.t1 - a.t1);
+  else if (ord === 'top') C.sort((a, b) => (b.r.n ? (b.r.avg * b.r.n + 3 * 2) / (b.r.n + 2) : 0) - (a.r.n ? (a.r.avg * a.r.n + 3 * 2) / (a.r.n + 2) : 0) || b.r.n - a.r.n);   // media "prudente": poche recensioni contano meno
+  else if (ord === 'giocati') C.sort((a, b) => b.st.p - a.st.p || b.st.pu - a.st.pu);
+  else if (ord === 'preferiti') C.sort((a, b) => b.st.f - a.st.f);
+  else C.sort((a, b) => b.hot - a.hot || b.t0 - a.t0);
+  return C;
+}
+function mdFeatured() {
+  const C = mdSort(mdList(), 'trend'), F = C.filter(c => c.pin).concat(C.filter(c => !c.pin && c.hot >= MD_FEAT_MIN && (c.hp + c.hr) >= 3));
+  return F.slice(0, 6).map(c => Object.assign(c, { why: c.pin ? 'Scelto dal server' : '🔥 ' + [c.hp ? c.hp + (c.hp === 1 ? ' partita' : ' partite') : '', c.hr ? c.hr + (c.hr === 1 ? ' recensione' : ' recensioni') : ''].filter(Boolean).join(' e ') + ' nelle ultime 48 ore' }));
+}
+function mdDetail(w, uid) {
+  const c = mdCard(w);
+  c.d = w.d || ''; c.media = (w.media || []).filter(id => MD.media[id]).map(id => ({ id, k: MD.media[id].k, url: mdUrl(id) }));
+  c.rev = Object.entries(w.r || {}).map(([u, q]) => ({ u, n: mdName(u), s: q.s, tx: q.tx || '', t: q.t, au: u === w.uid ? 1 : 0 })).sort((a, b) => b.t - a.t).slice(0, 80);
+  c.com = (w.c || []).slice(-150).reverse().map(q => ({ id: q.id, u: q.u, n: mdName(q.u), tx: q.tx, t: q.t, re: q.re || '', au: q.u === w.uid ? 1 : 0 }));
+  c.me = { uid: uid || '', own: uid && uid === w.uid ? 1 : 0, rev: uid && w.r && w.r[uid] ? { s: w.r[uid].s, tx: w.r[uid].tx || '' } : null, fav: uid && (w.fav || []).includes(uid) ? 1 : 0, done: uid && w.dn && w.dn[uid] ? 1 : 0 };
+  c.wid = c.me.own ? w.wid : undefined; c.ver = w.ver | 0;
+  return c;
+}
+function mdDelMedia(id) { const m = MD.media[id]; if (!m) return; try { fs.unlinkSync(path.join(MD_MEDIA, id + '.' + m.ext)); } catch (e) {} delete MD.media[id]; mdTouch(); }
+function mdDelWorld(id) { const w = MD.w[id]; if (!w) return; for (const m of w.media || []) mdDelMedia(m); try { fs.unlinkSync(path.join(MD_FILE, id + '.json')); } catch (e) {} delete MD.w[id]; MD.rep = MD.rep.filter(r => r.w !== id); mdTouch(); }
+// media caricati ma mai usati in una scheda: si cancellano dopo un giorno
+setInterval(() => { const now = Date.now(); for (const [id, m] of Object.entries(MD.media)) if (!m.w && now - m.t > 864e5) mdDelMedia(id); }, 3600e3);
+const mdUserBytes = uid => Object.values(MD.media).filter(m => m.uid === uid).reduce((a, m) => a + (m.size || 0), 0);
+// formato vero del file, dai primi byte (non ci si fida del nome né del tipo dichiarato)
+function mdSniff(b) {
+  if (b.length < 16) return null;
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return { k: 'img', ext: 'jpg', ct: 'image/jpeg' };
+  if (b.slice(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return { k: 'img', ext: 'png', ct: 'image/png' };
+  if (b.toString('latin1', 0, 4) === 'RIFF' && b.toString('latin1', 8, 12) === 'WEBP') return { k: 'img', ext: 'webp', ct: 'image/webp' };
+  if (b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3) return { k: 'vid', ext: 'webm', ct: 'video/webm' };
+  if (b.toString('latin1', 4, 8) === 'ftyp') return { k: 'vid', ext: 'mp4', ct: 'video/mp4' };
+  return null;
+}
+const MD_CT = { jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', webm: 'video/webm', mp4: 'video/mp4' };
+function bodyRaw(req, lim, cb) { const parts = []; let n = 0, over = false; req.on('data', x => { if (over) return; n += x.length; if (n > lim) { over = true; cb(null, 'troppo grande'); req.resume(); return; } parts.push(x); }); req.on('end', () => { if (!over) cb(Buffer.concat(parts)); }); req.on('error', () => { if (!over) { over = true; cb(null, 'errore'); } }); }
+function bodyBig(req, lim, cb) { bodyRaw(req, lim, (b, e) => { if (!b) return cb(null, e); let j = null; try { j = JSON.parse(b.toString('utf8')); } catch (x) {} cb(j && typeof j === 'object' ? j : null, j ? '' : 'dati non validi'); }); }
+// conteggi di un mondo pubblicato (per la scheda)
+function mdCount(o) { const n = k => (o && o[k] && typeof o[k] === 'object') ? Object.keys(o[k]).length : 0; return { maps: n('maps'), npcs: n('npcs'), quests: n('quests') }; }
+function mdServeMedia(req, res, file) {
+  const m = /^([a-z0-9]{6,20})\.(jpg|png|webp|webm|mp4)$/.exec(file), rec = m && MD.media[m[1]];
+  if (!rec || rec.ext !== m[2]) { res.writeHead(404); return res.end(); }
+  const p = path.join(MD_MEDIA, file); let st; try { st = fs.statSync(p); } catch (e) { res.writeHead(404); return res.end(); }
+  const H = { 'Content-Type': MD_CT[rec.ext], 'X-Content-Type-Options': 'nosniff', 'Cache-Control': 'public, max-age=604800, immutable', 'Accept-Ranges': 'bytes', 'Content-Security-Policy': "default-src 'none'" };
+  const r = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+  if (r) { let a = r[1] === '' ? st.size - (+r[2] || 0) : +r[1], b = r[1] !== '' && r[2] !== '' ? +r[2] : st.size - 1; a = Math.max(0, a); b = Math.min(st.size - 1, b);
+    if (a > b) { res.writeHead(416, { 'Content-Range': 'bytes */' + st.size }); return res.end(); }
+    res.writeHead(206, Object.assign(H, { 'Content-Range': 'bytes ' + a + '-' + b + '/' + st.size, 'Content-Length': b - a + 1 })); return fs.createReadStream(p, { start: a, end: b }).pipe(res); }
+  res.writeHead(200, Object.assign(H, { 'Content-Length': st.size })); fs.createReadStream(p).pipe(res);
+}
+const mdTags = t => (Array.isArray(t) ? t : []).filter(x => MD_TAGS.includes(x)).filter((x, i, a) => a.indexOf(x) === i).slice(0, 4);
+function mondiApi(req, res, u) {
+  const P = req.method === 'POST', uid = mdUid(req), ip = ipOf(req), q = {};
+  try { for (const [k, v] of new URL(req.url, 'http://x').searchParams) q[k] = v; } catch (e) {}
+  if (P && req.headers['x-voxelia'] !== '1') return json(res, 403, { err: 'Richiesta non valida' });
+  const seg = u.slice('/api/mondi'.length).split('/').filter(Boolean);
+  if (!P && seg[0] === 'media' && seg[1]) return mdServeMedia(req, res, seg[1]);
+  const open = CFG.mondi !== 0;
+  // chi vuole scrivere deve avere una chiave, un nome da autore e non essere bandito
+  const need = (name) => { if (!uid) return 'Manca la chiave del browser: ricarica il gioco'; if (mdBanned(req, uid)) return 'Non puoi pubblicare né scrivere su questo server'; if (name && !(MD.u[uid] && MD.u[uid].n)) return 'NOME'; return ''; };
+  const fail = (e, c) => json(res, e === 'NOME' ? 428 : c || 400, { err: e === 'NOME' ? 'Scegli prima il tuo nome da autore' : e, nome: e === 'NOME' ? 1 : undefined });
+
+  if (!P && !seg.length || (!P && seg[0] === 'home')) {
+    const L = mdList(), t = {}; for (const w of L) for (const g of w.tags || []) t[g] = (t[g] || 0) + 1;
+    const feat = mdFeatured(), fid = new Set(feat.map(c => c.id));
+    return json(res, 200, { open, n: L.length, feat, trend: mdSort(L, 'trend').filter(c => c.hot > .5 && !fid.has(c.id)).slice(0, 12), nuovi: mdSort(L, 'nuovi').slice(0, 12), top: mdSort(L, 'top').filter(c => c.r.n).slice(0, 12), giocati: mdSort(L, 'giocati').filter(c => c.st.p).slice(0, 12),
+      tags: MD_TAGS.map(g => [g, t[g] || 0]), me: uid && MD.u[uid] ? { n: MD.u[uid].n } : null });
+  }
+  if (!P && seg[0] === 'lista') {
+    let L = mdList(); const s = str(q.q, 60).toLowerCase();
+    if (q.autore) L = L.filter(w => w.uid === q.autore);
+    if (q.tag && MD_TAGS.includes(q.tag)) L = L.filter(w => (w.tags || []).includes(q.tag));
+    if (q.pref === '1') L = L.filter(w => uid && (w.fav || []).includes(uid));
+    if (s) L = L.filter(w => (w.n + ' ' + mdName(w.uid) + ' ' + (w.d || '') + ' ' + (w.tags || []).join(' ')).toLowerCase().includes(s));
+    const C = mdSort(L, q.ord), pg = int(q.pag, 0, 1000);
+    return json(res, 200, { n: C.length, L: C.slice(pg * 24, pg * 24 + 24), more: C.length > pg * 24 + 24 });
+  }
+  if (!P && seg[0] === 'tags') return json(res, 200, { tags: MD_TAGS });
+  if (seg[0] === 'io') {
+    if (!P) {
+      const mine = uid ? Object.values(MD.w).filter(w => w.uid === uid) : [];
+      return json(res, 200, { n: uid && MD.u[uid] ? MD.u[uid].n : '', uid, open, mine: mdSort(mine, 'nuovi').map(c => Object.assign(c, { wid: MD.w[c.id].wid, hide: MD.w[c.id].hide ? 1 : 0 })),
+        favs: uid ? mdSort(mdList().filter(w => (w.fav || []).includes(uid)), 'nuovi') : [] });
+    }
+    return body(req, j => {
+      const e = need(0); if (e) return fail(e, 403);
+      const n = str(j.n, 20).replace(/\s+/g, ' '); if (n.length < 2) return fail('Il nome deve avere almeno 2 lettere');
+      if (!/^[\p{L}\p{N} _.'\-]+$/u.test(n)) return fail('Nel nome usa solo lettere, numeri, spazi e . _ \' -');
+      const k = key(n), o = MD.names[k]; if (o && o !== uid) return fail('Questo nome è già usato da un altro autore: scegline un altro', 409);
+      if (!mdRate('nome:' + uid, 10, 3600e3)) return fail('Hai cambiato nome troppe volte: riprova più tardi', 429);
+      const u0 = MD.u[uid]; if (u0 && u0.n && key(u0.n) !== k && MD.names[key(u0.n)] === uid) delete MD.names[key(u0.n)];
+      MD.u[uid] = Object.assign(u0 || { t: Date.now() }, { n }); MD.names[k] = uid; mdTouch(); json(res, 200, { ok: 1, n });
+    });
+  }
+  if (!P && seg[0] === 'autore' && seg[1]) { const a = str(seg[1], 24), L = Object.values(MD.w).filter(w => w.uid === a && !w.hide); const C = mdSort(L, 'nuovi'); let p = 0, rs = 0, rn = 0; for (const c of C) { p += c.st.p; rs += c.r.avg * c.r.n; rn += c.r.n; }
+    return json(res, 200, { n: MD.u[a] ? MD.u[a].n : 'Anonimo', since: MD.u[a] ? MD.u[a].t : 0, L: C, plays: p, avg: rn ? Math.round(rs / rn * 10) / 10 : 0, nrev: rn }); }
+  if (!P && seg[0] === 'mio') { const wid = str(q.wid, 40), w = uid && Object.values(MD.w).find(x => x.uid === uid && x.wid === wid); return json(res, 200, { pub: w ? mdDetail(w, uid) : null, n: uid && MD.u[uid] ? MD.u[uid].n : '', open, tags: MD_TAGS }); }
+
+  // caricamento di un'immagine o di un video (corpo binario)
+  if (P && seg[0] === 'media') {
+    const e = need(0); if (e) return fail(e, 403); if (!open) return fail('Le pubblicazioni sono chiuse su questo server', 403);
+    if (!mdRate('media:' + uid, 60, 3600e3) || !mdRate('mediaip:' + ip, 120, 3600e3)) return fail('Troppi caricamenti: riprova tra un po\'', 429);
+    return bodyRaw(req, MD_LIM.vid, (b, err) => {
+      if (!b) return fail(err === 'troppo grande' ? 'File troppo grande (massimo 3 MB per le immagini, 12 MB per il video)' : 'Caricamento non riuscito', 413);
+      const f = mdSniff(b); if (!f) return fail('Formato non valido: servono immagini JPEG, PNG o WebP, video WebM o MP4');
+      if (f.k === 'img' && b.length > MD_LIM.img) return fail('Immagine troppo grande (massimo 3 MB)', 413);
+      if (mdUserBytes(uid) + b.length > MD_LIM.userBytes) return fail('Hai finito lo spazio per immagini e video su questo server: togli qualcosa dai mondi pubblicati', 413);
+      const id = mdNew('m'); try { fs.writeFileSync(path.join(MD_MEDIA, id + '.' + f.ext), b); } catch (x) { return fail('Salvataggio non riuscito sul server', 500); }
+      MD.media[id] = { uid, k: f.k, ext: f.ext, size: b.length, t: Date.now(), w: null }; mdTouch();
+      json(res, 200, { id, k: f.k, url: mdUrl(id) });
+    });
+  }
+  // pubblica o aggiorna (con o senza il mondo: "solo la scheda" cambia titolo, descrizione e anteprime)
+  if (P && seg[0] === 'pubblica') {
+    const e = need(1); if (e) return fail(e, 403); if (!open) return fail('Le pubblicazioni sono chiuse su questo server', 403);
+    if (!mdRate('pub:' + uid, 20, 3600e3)) return fail('Troppe pubblicazioni in poco tempo: riprova più tardi', 429);
+    return bodyBig(req, MD_LIM.world + 200000, (j, err) => {
+      if (!j) return fail(err === 'troppo grande' ? 'Il mondo è troppo grande per essere pubblicato (massimo 4 MB)' : 'Dati non validi', 413);
+      let w = j.id ? MD.w[str(j.id, 30)] : null;
+      if (j.id && (!w || w.uid !== uid)) return fail('Questo mondo pubblicato non è tuo', 403);
+      const nm = str(j.n, 60); if (nm.length < 2) return fail('Dai un titolo al mondo');
+      const wo = j.mondo; if (!w && (!wo || typeof wo !== 'object')) return fail('Manca il mondo da pubblicare');
+      if (wo && (typeof wo !== 'object' || !wo.maps || typeof wo.maps !== 'object' || !Object.keys(wo.maps).length)) return fail('Il mondo non ha mappe');
+      if (!w && Object.values(MD.w).filter(x => x.uid === uid).length >= MD_LIM.perUser) return fail('Hai già pubblicato troppi mondi su questo server: ritirane qualcuno', 403);
+      const media = (Array.isArray(j.media) ? j.media : []).map(x => str(x, 30)).filter((id, i, a) => MD.media[id] && MD.media[id].uid === uid && (!MD.media[id].w || (w && MD.media[id].w === w.id)) && a.indexOf(id) === i);
+      const imgs = media.filter(id => MD.media[id].k === 'img').slice(0, MD_LIM.imgs), vid = media.filter(id => MD.media[id].k === 'vid').slice(0, 1), keep = media.filter(id => imgs.includes(id) || vid.includes(id));
+      const now = Date.now(), isNew = !w;
+      if (!w) { w = { id: mdNew('w'), uid, wid: str(j.wid, 40), t0: now, t1: now, ver: 0, st: { v: 0, p: 0 }, r: {}, c: [], fav: [], pl: {}, dn: {}, ev: [], media: [] }; }
+      if (wo) { const s = JSON.stringify(wo); if (s.length > MD_LIM.world) return fail('Il mondo è troppo grande per essere pubblicato (massimo 4 MB)', 413);
+        try { fs.writeFileSync(path.join(MD_FILE, w.id + '.json'), s); } catch (x) { return fail('Salvataggio non riuscito sul server', 500); }
+        Object.assign(w, mdCount(wo), { size: s.length, ver: (w.ver | 0) + 1 }); w.t1 = now; }
+      for (const id of w.media || []) if (!keep.includes(id)) mdDelMedia(id);
+      for (const id of keep) MD.media[id].w = w.id;
+      Object.assign(w, { n: nm, d: mdTxt(j.d, 1500), tags: mdTags(j.tags), remix: j.remix ? 1 : 0, media: keep, cover: keep.includes(j.cover) && MD.media[j.cover].k === 'img' ? j.cover : (imgs[0] || null) });
+      if (!wo) w.t1 = Math.max(w.t1, now - 1);
+      MD.w[w.id] = w; mdTouch();
+      log('mondi', mdName(uid) + (isNew ? ' ha pubblicato «' : ' ha aggiornato «') + w.n + '»');
+      json(res, 200, { ok: 1, id: w.id, nuovo: isNew ? 1 : 0, ver: w.ver });
+    });
+  }
+  // un mondo pubblicato
+  if (seg[0] === 'w' && seg[1]) {
+    const w = MD.w[str(seg[1], 30)]; if (!w || (w.hide && w.uid !== uid)) return json(res, 404, { err: 'Mondo non trovato: forse è stato ritirato' });
+    const act = seg[2] || '';
+    if (!P && !act) return json(res, 200, mdDetail(w, uid));
+    if (!P && act === 'mondo') { const p = path.join(MD_FILE, w.id + '.json'); if (!fs.existsSync(p)) return json(res, 404, { err: 'File del mondo mancante' }); res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); return fs.createReadStream(p).pipe(res); }
+    if (!P) return json(res, 404, { err: 'Non trovato' });
+    const who = uid || ('ip:' + ip);
+    if (act === 'vista') { if (uid !== w.uid && mdOnce('v:' + w.id + ':' + who, 6 * 3600e3)) { w.st.v = (w.st.v | 0) + 1; mdEvent(w, 'v'); } return json(res, 200, { ok: 1, v: w.st.v }); }
+    if (act === 'gioca') { if (uid !== w.uid && mdOnce('p:' + w.id + ':' + who, 30 * 60e3)) { w.st.p = (w.st.p | 0) + 1; if (uid && Object.keys(w.pl || {}).length < 50000) (w.pl || (w.pl = {}))[uid] = 1; mdEvent(w, 'p'); } return json(res, 200, { ok: 1 }); }
+    if (act === 'finito') { if (uid && uid !== w.uid && !(w.dn || (w.dn = {}))[uid]) { w.dn[uid] = 1; mdEvent(w, 'd'); } return json(res, 200, { ok: 1 }); }
+    return body(req, j => {
+      const e = need(act === 'preferito' || act === 'segnala' ? 0 : 1); if (e) return fail(e, 403);
+      const own = w.uid === uid;
+      if (act === 'preferito') { const F = w.fav || (w.fav = []), i = F.indexOf(uid); if (i >= 0) F.splice(i, 1); else { F.push(uid); mdEvent(w, 'f'); } mdTouch(); return json(res, 200, { ok: 1, fav: i < 0 ? 1 : 0, n: F.length }); }
+      if (act === 'recensione') {
+        if (!open) return fail('Recensioni e commenti sono chiusi su questo server', 403);
+        const s = int(j.s, 0, 5); if (own && s) return fail('Non puoi recensire un tuo mondo');
+        if (!mdRate('rev:' + uid, 30, 3600e3)) return fail('Troppe recensioni in poco tempo', 429);
+        if (!s) { delete w.r[uid]; mdTouch(); return json(res, 200, { ok: 1, r: mdRating(w) }); }
+        const had = !!w.r[uid]; w.r[uid] = { s, tx: mdTxt(j.tx, 800), t: Date.now() }; if (!had) mdEvent(w, 'r', s); mdTouch();
+        return json(res, 200, { ok: 1, r: mdRating(w) });
+      }
+      if (act === 'commento') {
+        if (!open) return fail('Recensioni e commenti sono chiusi su questo server', 403);
+        const tx = mdTxt(j.tx, 600); if (!tx) return fail('Scrivi qualcosa');
+        if (!mdRate('com:' + uid, 6, 60e3) || !mdRate('comh:' + uid, 80, 3600e3)) return fail('Stai scrivendo troppo in fretta: aspetta un momento', 429);
+        const c = { id: mdNew('c'), u: uid, tx, t: Date.now(), re: str(j.re, 20) }; (w.c || (w.c = [])).push(c); if (w.c.length > MD_LIM.comments) w.c.shift(); mdEvent(w, 'c'); return json(res, 200, { ok: 1, id: c.id });
+      }
+      if (act === 'elimina-commento') { const i = (w.c || []).findIndex(c => c.id === j.id); if (i < 0) return fail('Commento non trovato', 404); if (w.c[i].u !== uid && !own) return fail('Non puoi eliminare questo commento', 403); w.c.splice(i, 1); mdTouch(); return json(res, 200, { ok: 1 }); }
+      if (act === 'segnala') { if (!mdRate('rep:' + who, 10, 3600e3)) return fail('Troppe segnalazioni', 429); const why = mdTxt(j.why, 300); MD.rep.push({ t: Date.now(), w: w.id, u: uid, n: mdName(uid), why, c: str(j.c, 20) }); if (MD.rep.length > 500) MD.rep.shift(); mdTouch(); log('mondi', 'Segnalazione su «' + w.n + '»' + (why ? ': ' + why : '')); return json(res, 200, { ok: 1 }); }
+      if (act === 'ritira') { if (!own) return fail('Questo mondo non è tuo', 403); log('mondi', mdName(uid) + ' ha ritirato «' + w.n + '»'); mdDelWorld(w.id); return json(res, 200, { ok: 1 }); }
+      if (act === 'nascondi') { if (!own) return fail('Questo mondo non è tuo', 403); w.hide = j.on ? 1 : 0; mdTouch(); return json(res, 200, { ok: 1, hide: w.hide }); }
+      fail('Azione sconosciuta', 404);
+    });
+  }
+  json(res, 404, { err: 'Non trovato' });
+}
+// per il pannello admin
+function mdAdminState() {
+  let bytes = 0; for (const m of Object.values(MD.media)) bytes += m.size || 0; for (const w of Object.values(MD.w)) bytes += w.size || 0;
+  const com = []; for (const w of Object.values(MD.w)) for (const c of (w.c || []).slice(-40)) com.push({ w: w.id, wn: w.n, id: c.id, n: mdName(c.u), tx: c.tx, t: c.t });
+  const rev = []; for (const w of Object.values(MD.w)) for (const [u, r] of Object.entries(w.r || {})) if (r.tx) rev.push({ w: w.id, wn: w.n, u, n: mdName(u), s: r.s, tx: r.tx, t: r.t });
+  return { open: CFG.mondi !== 0, dir: MD_DIR, bytes, list: mdSort(Object.values(MD.w), 'nuovi').map(c => Object.assign(c, { hide: MD.w[c.id].hide ? 1 : 0, size: MD.w[c.id].size | 0, blk: MD.u[c.au] && MD.u[c.au].blk ? 1 : 0, reps: MD.rep.filter(r => r.w === c.id).length })),
+    reps: MD.rep.slice(-100).reverse().map((r, i) => Object.assign({ i: MD.rep.length - 1 - i, wn: MD.w[r.w] ? MD.w[r.w].n : '?' }, r)), com: com.sort((a, b) => b.t - a.t).slice(0, 120), rev: rev.sort((a, b) => b.t - a.t).slice(0, 80) };
+}
+function mdAdminAct(j) {
+  const w = MD.w[str(j.id, 30)];
+  switch (j.a) {
+    case 'mdel': if (!w) return { err: 'Mondo non trovato' }; log('admin', 'Mondo «' + w.n + '» di ' + mdName(w.uid) + ' eliminato'); mdDelWorld(w.id); return { ok: 'Mondo eliminato' };
+    case 'mpin': if (!w) return { err: 'Mondo non trovato' }; w.pin = w.pin ? 0 : 1; mdTouch(); log('admin', '«' + w.n + '» ' + (w.pin ? 'messo' : 'tolto') + ' in evidenza'); return { ok: w.pin ? 'Ora è in evidenza nella prima pagina' : 'Non è più in evidenza' };
+    case 'mhide': if (!w) return { err: 'Mondo non trovato' }; w.hide = w.hide ? 0 : 1; mdTouch(); log('admin', '«' + w.n + '» ' + (w.hide ? 'nascosto' : 'di nuovo visibile')); return { ok: w.hide ? 'Mondo nascosto dal browser' : 'Mondo di nuovo visibile' };
+    case 'mcom': { if (!w) return { err: 'Mondo non trovato' }; const i = (w.c || []).findIndex(c => c.id === j.cid); if (i < 0) return { err: 'Commento non trovato' }; w.c.splice(i, 1); mdTouch(); log('admin', 'Commento eliminato in «' + w.n + '»'); return { ok: 'Commento eliminato' }; }
+    case 'mrev': if (!w || !w.r || !w.r[j.u]) return { err: 'Recensione non trovata' }; delete w.r[j.u]; mdTouch(); log('admin', 'Recensione eliminata in «' + w.n + '»'); return { ok: 'Recensione eliminata' };
+    case 'mrep': { const i = int(j.i, 0, 1e6); if (!MD.rep[i]) return { err: 'Segnalazione non trovata' }; MD.rep.splice(i, 1); mdTouch(); return { ok: 'Segnalazione archiviata' }; }
+    case 'mblk': { const u = MD.u[str(j.u, 24)]; if (!u) return { err: 'Autore non trovato' }; u.blk = u.blk ? 0 : 1; mdTouch(); log('admin', 'Autore ' + u.n + (u.blk ? ' bloccato' : ' sbloccato') + ' nei mondi'); return { ok: u.blk ? u.n + ' non può più pubblicare, recensire né commentare' : u.n + ' è stato sbloccato' }; }
+    case 'mopen': CFG.mondi = j.on ? 1 : 0; touch(); log('admin', 'Pubblicazioni dei mondi ' + (CFG.mondi ? 'aperte' : 'chiuse')); return { ok: CFG.mondi ? 'Pubblicazioni, recensioni e commenti aperti' : 'Pubblicazioni, recensioni e commenti chiusi' };
+  }
+  return null;
 }
 
 /* ---------- WebSocket minimale ---------- */
@@ -411,6 +671,7 @@ function state() {
   };
 }
 function adminAct(j, req) {
+  const mr = mdAdminAct(j); if (mr) return mr;
   const a = j.a, v = j.id ? clients.get(j.id) : null, who = v ? v.name : '';
   const need = () => { if (!v || v.gone) throw new Error('giocatore non più connesso'); };
   switch (a) {
@@ -889,6 +1150,7 @@ setInterval(() => {
     console.log('Pannello admin:    http://localhost:' + PORT + '/admin');
     console.log('Dati salvati in:   ' + DATA);
     console.log('Plugin:            ' + plugSummary());
+    console.log('Mondi pubblicati:  ' + Object.keys(MD.w).length + '  (' + MD_DIR + ')');
     emit('start');
   });
 })();

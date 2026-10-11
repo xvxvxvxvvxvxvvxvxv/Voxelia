@@ -35,7 +35,22 @@ function touchBuild(){if($('tc'))return;const el=document.createElement('div');e
   z.addEventListener('pointerup',end);z.addEventListener('pointercancel',end);
   // chat: si apre dal menu e si richiude dopo l'invio
   $('ch').addEventListener('blur',()=>{if(TCH.on)setTimeout(()=>{if(document.activeElement!==$('ch'))touchChat(0)},150)})}
-const touchR=()=>Math.round(52*(SET.tsz||100)/100);
+// grandezza automatica: telefoni piccoli, telefoni, telefoni grandi e pieghevoli, tablet piccoli e grandi, in verticale o in orizzontale.
+// Si guarda il lato corto della finestra (in pixel CSS): sui tablet i pulsanti crescono, ma meno dello schermo, perché il pollice è sempre lo stesso.
+function touchDevice(){const W=innerWidth,H=innerHeight,S=Math.min(W,H),L=Math.max(W,H),land=W>H;
+  let k,f;if(S<360){k='small';f=Math.max(.78,S/400)}else if(S<480){k='phone';f=Math.min(1.1,S/400)}else if(S<600){k='big';f=1.12}else if(S<900){k='tablet';f=1.15+(S-600)/1300}else{k='tabletxl';f=Math.min(1.45,1.38+(S-900)/2000)}
+  // telefono in orizzontale: lo schermo è basso, i pulsanti si stringono un po' (di più sotto i 360 pixel di altezza)
+  if(land&&H<500)f*=H<360?.78:.86;
+  // schermi molto allungati (21:9 e pieghevoli chiusi) in verticale: un filo più piccoli per lasciare spazio al gioco
+  if(!land&&L/S>2.25)f*=.94;
+  // mai sotto i 40 pixel per i pulsanti piccoli: sotto quella misura il dito sbaglia
+  f=Math.max(f,.72);
+  return{k,f:Math.round(f*100)/100,land,S,L}}
+const TDEVN={small:'telefono piccolo',phone:'telefono',big:'telefono grande o pieghevole',tablet:'tablet',tabletxl:'tablet grande'};
+function touchSize(){const d=touchDevice();TCH.dev=d;const auto=SET.tauto!==0?d.f:1,v=auto*(SET.tsz||100)/100;document.documentElement.style.setProperty('--tsz',v.toFixed(3));
+  const b=document.body.classList;for(const k in TDEVN)b.toggle('td-'+k,TCH.on&&d.k===k);b.toggle('tland',TCH.on&&d.land);b.toggle('ttab',TCH.on&&(d.k==='tablet'||d.k==='tabletxl'))}
+addEventListener('resize',()=>{if(TCH.on){touchSize();if(typeof hudApply==='function')hudApply()}});
+addEventListener('orientationchange',()=>setTimeout(()=>{if(TCH.on){touchSize();hudApply()}},250));
 // il joystick può essere ingrandito o rimpicciolito dall'editor dell'HUD (scale sulla zona): le misure sullo schermo
 // vanno riportate alla scala della zona, altrimenti la levetta non sta sotto il dito
 function touchGeo(){const z=$('tjz'),b=$('tjb'),r=z.getBoundingClientRect(),sc=(z.offsetWidth?r.width/z.offsetWidth:1)||1,R=(b.offsetWidth||104)/2;return{r,sc,R,Rv:R*sc}}
@@ -86,9 +101,9 @@ setInterval(touchTick,100);
 HUDE.push(['tjz','Joystick'],['t-area','Colpo'],['t-lunge','Affondo'],['t-dodge','Schiva'],['t-pot','Pozione'],['t-use','Pulsante «usa»'],['tsk','Abilità'],['t-menu','Menu']);
 const _hudApply80=hudApply;hudApply=function(){document.body.classList.toggle('tchwd',!(SET[HK()]&&SET[HK()].chw));_hudApply80()};
 function touchApply(){const on=touchWanted()?1:0;TCH.on=on;document.body.classList.toggle('touch',!!on);document.body.classList.toggle('tlh',!!(on&&SET.tlh));
-  document.documentElement.style.setProperty('--tsz',(SET.tsz||100)/100);if(on)touchBuild();else{touchMenu(0);touchChat(0)}TCH.vis=-1;
+  touchSize();if(on)touchBuild();else{touchMenu(0);touchChat(0)}TCH.vis=-1;
   if(typeof wheelApply==='function')wheelApply()}
-const _applySet79=applySet;applySet=function(k){_applySet79(k);if(!k||/^t(ch|sz|lh|vib)$/.test(k))touchApply()};
+const _applySet79=applySet;applySet=function(k){_applySet79(k);if(!k||/^t(ch|sz|lh|vib|auto)$/.test(k))touchApply()};
 const _wheelApply79=wheelApply;wheelApply=function(){_wheelApply79();if(TCH.on){const r=$('ruota'),b=$('bar');if(r)r.style.display='none';if(b)b.style.display='none'}};
 matchMedia('(pointer:coarse)').addEventListener?.('change',()=>touchApply());
 hudApply();touchApply();
@@ -100,7 +115,7 @@ hudApply();touchApply();
 body.touch #ruota,body.touch #bar{display:none!important}
 #tc{--s:var(--tsz,1);position:fixed;inset:0;pointer-events:none;z-index:6;font:12px Georgia,serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #tc button{pointer-events:auto;touch-action:none;-webkit-tap-highlight-color:transparent;margin:0}
-#tjz{position:absolute;left:0;bottom:0;width:calc(48vw);max-width:330px;height:calc(170px * var(--s) + env(safe-area-inset-bottom,0px));pointer-events:auto;touch-action:none}
+#tjz{position:absolute;left:0;bottom:0;width:calc(48vw);max-width:calc(330px * var(--s));height:calc(170px * var(--s) + env(safe-area-inset-bottom,0px));pointer-events:auto;touch-action:none}
 #tjb{box-sizing:border-box;position:absolute;left:calc(24px * var(--s));top:calc(100% - 136px * var(--s) - env(safe-area-inset-bottom,0px));width:calc(104px * var(--s));height:calc(104px * var(--s));border-radius:50%;
   background:radial-gradient(circle,#1b2030aa 55%,#1b203066);border:2px solid #f5b94299;box-shadow:0 4px 0 #0007,inset 0 0 18px #0008;opacity:.75;transition:opacity .2s}
 #tjz.on #tjb{opacity:1;transition:none}
@@ -129,7 +144,7 @@ body.touch #tsk:not(:empty)~.tuse{right:calc(78px * var(--s) + env(safe-area-ins
   background:linear-gradient(180deg,#86603b,#5e3f25 60%,#4a301b);border:2px solid #f5b942;color:#ffd27a;box-shadow:0 4px 0 #2e1d10,0 6px 14px #0007}
 .tmenu img{width:calc(28px * var(--s));height:calc(28px * var(--s));image-rendering:pixelated}.tmenu b{font-size:calc(10px * var(--s));font-weight:normal}
 #tmn{position:fixed;inset:0;background:#05070fa6;pointer-events:auto;display:flex;align-items:flex-end;justify-content:center;padding-bottom:calc(84px * var(--s) + env(safe-area-inset-bottom,0px));z-index:7}#tmn[hidden]{display:none}
-.tmb{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(340px,92vw);padding:12px;background:var(--pn);border:2px solid var(--ac);border-radius:6px;box-shadow:0 0 0 3px #4a301b,0 8px 0 3px #2e1d10,0 18px 40px #000b;animation:tmn .2s ease-out}
+.tmb{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(8px * var(--s));width:min(calc(340px * var(--s)),92vw);padding:12px;background:var(--pn);border:2px solid var(--ac);border-radius:6px;box-shadow:0 0 0 3px #4a301b,0 8px 0 3px #2e1d10,0 18px 40px #000b;animation:tmn .2s ease-out}
 .tmb button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;margin:0;border-radius:4px;color:#fff;box-shadow:0 3px 0 #0009}.tmb img{width:32px;height:32px;image-rendering:pixelated}.tmb b{font-weight:normal;font-size:13px}
 @keyframes tmn{from{transform:translateY(30px);opacity:0}}
 body.touch #ch{display:none}body.touch.tchat #ch{display:block}
@@ -141,9 +156,14 @@ body.touch.tlh #t-area{right:auto;left:calc(20px * var(--s) + env(safe-area-inse
 body.touch.tlh #t-dodge{right:auto;left:calc(106px * var(--s) + env(safe-area-inset-left,0px))}body.touch.tlh #t-pot{right:auto;left:calc(44px * var(--s) + env(safe-area-inset-left,0px))}
 body.touch.tlh #tsk,body.touch.tlh .tuse{right:auto;left:calc(14px + env(safe-area-inset-left,0px))}body.touch.tlh #tsk{align-items:flex-start}body.touch.tlh #tsk:not(:empty)~.tuse{right:auto;left:calc(78px * var(--s))}
 body.touch.tlh.tchwd #chw{left:auto!important;right:calc(10px + env(safe-area-inset-right,0px))!important}
-@media (orientation:landscape) and (max-height:500px){#tc{--s:calc(var(--tsz,1) * .82)}body.touch.tchwd #chw{bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:calc(150px * var(--tsz,1))!important;width:min(34vw,260px)!important}
+@media (orientation:landscape) and (max-height:500px){body.touch.tchwd #chw{bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:calc(150px * var(--tsz,1))!important;width:min(34vw,260px)!important}
   body.touch #cl{max-height:64px}#tjz{height:calc(150px * var(--s))}}
 body.touch kbd{display:none}
+body.tland #tsk{flex-direction:row-reverse;bottom:calc(22px * var(--s) + env(safe-area-inset-bottom,0px));right:calc(182px * var(--s) + env(safe-area-inset-right,0px));align-items:flex-end}body.tland.tlh #tsk{right:auto;left:calc(182px * var(--s) + env(safe-area-inset-left,0px));flex-direction:row}
+body.tland #tsk:not(:empty)~.tuse{right:calc(14px + env(safe-area-inset-right,0px))}body.tland.tlh #tsk:not(:empty)~.tuse{left:calc(14px + env(safe-area-inset-left,0px));right:auto}
+.tmb button{padding:calc(10px * var(--s)) 4px}.tmb img{width:calc(32px * var(--s));height:calc(32px * var(--s))}.tmb b{font-size:calc(13px * var(--s))}
+body.ttab.tchwd #chw{width:min(44vw,380px)!important}body.ttab #cl{max-height:140px;font-size:13px}
+body.td-small #cl{max-height:60px}body.td-small .tuse{max-width:70vw}
 body.hudedit.touch #tc,body.hudedit.touch.tcoff #tc{display:block}body.hudedit #t-use[hidden]{display:flex}body.hudedit #tsk:empty{width:calc(48px * var(--s));height:calc(48px * var(--s));border:2px dashed #c8a8ff;border-radius:50%}
 body.hudedit #tsk:empty::after{content:'Abilità';display:flex;height:100%;align-items:center;justify-content:center;font-size:9px;color:#e0d0ff}
 body.hudedit #tjb{opacity:1}body.hudedit #cl{display:block;min-height:40px;background:#0007}body.hudedit #cl:empty::before{content:'Chat';color:#aab;font-style:italic}body.hudedit #t-use b:empty::after{content:'Parla · Apri · Raccogli'}

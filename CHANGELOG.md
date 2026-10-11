@@ -5,6 +5,24 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.9.3 — Comandi touch adattati a ogni dispositivo (11 ottobre 2026)
+
+- Joystick e pulsanti **si adattano da soli** al dispositivo e si riadattano quando giri lo schermo o cambi la grandezza della finestra:
+  - **telefoni piccoli** (come l'iPhone SE): pulsanti più compatti;
+  - **telefoni** normali e grandi: grandezza piena;
+  - **pieghevoli aperti e tablet piccoli** (come l'iPad mini): pulsanti più grandi;
+  - **tablet** e **tablet grandi** (come l'iPad Pro): pulsanti ancora più grandi, ma meno di quanto cresce lo schermo, perché il pollice resta lo stesso.
+- **Telefono in orizzontale:** pulsanti un po' più piccoli, perché lo schermo è basso, e le abilità vanno in fila accanto ai pulsanti invece che in colonna, così non finiscono sopra la minimappa. Sugli schermi molto allungati i comandi sono un filo più piccoli.
+- I pulsanti piccoli non scendono mai sotto i 40 pixel, così restano comodi da toccare.
+- Sui tablet anche la chat è più larga e mostra più messaggi, e il menu a griglia è più grande.
+- **Impostazioni → Comandi**:
+  - nuova opzione **Adatta da solo i comandi al dispositivo**, attiva di base;
+  - la scritta **Rilevato** dice che dispositivo il gioco ha riconosciuto e che grandezza ha scelto;
+  - la **Grandezza dei pulsanti** si aggiunge a quella automatica, per farli un po' più grandi o più piccoli.
+- Le posizioni scelte con l'editor dell'HUD restano valide anche quando cambia la grandezza.
+
+---
+
 ## 7.9.2 — Joystick allineato al dito (11 ottobre 2026)
 
 - **Corretto:** se il joystick veniva ingrandito o rimpicciolito con l'editor dell'HUD, la levetta non stava più sotto il dito. La base compariva spostata, tanto più quanto più era ingrandita, e la levetta si muoveva meno del dito. Ora base e levetta seguono il dito esattamente a qualsiasi grandezza, in verticale e in orizzontale.

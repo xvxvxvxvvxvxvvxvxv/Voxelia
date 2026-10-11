@@ -12,11 +12,11 @@ function touchDir(){if(!TCH.on||!TCH.vis||TCH.jid==null||TCH.mag<.18)return null
 const _keyDir79=keyDir;keyDir=function(){return touchDir()||_keyDir79()};
 
 function touchBuild(){if($('tc'))return;const el=document.createElement('div');el.id='tc';el.className='noico';
-  const B=(id,ic,lab,cls='')=>`<button id="${id}" class="tb ${cls}" aria-label="${lab}"><img src="${ICON(ic,3).u}" alt=""><b>${lab}</b><i class="tcd"></i></button>`;
+  const B=(id,ic,lab,cls='')=>`<button id="${id}" class="tb ${cls}" aria-label="${lab}"><img src="${ICON(ic,3).u}" alt=""><b>${lab}</b><i class="tcd"></i>${id==='t-pot'?'<span id="t-potn"></span>':''}</button>`;
   el.innerHTML=`<div id="tjz"><div id="tjb"><div id="tjk"></div></div></div>
-  <div id="tact">${B('t-area','esplosione','Colpo','big')}${B('t-lunge','pugnale','Affondo')}${B('t-dodge','vortice','Schiva')}${B('t-pot','pozione','Pozione')}<span id="t-potn"></span></div>
+  ${B('t-area','esplosione','Colpo','big')}${B('t-lunge','pugnale','Affondo')}${B('t-dodge','vortice','Schiva')}${B('t-pot','pozione','Pozione')}
   <div id="tsk"></div>
-  <button id="t-use" class="tuse" hidden><img alt=""><b></b></button>
+  <button id="t-use" class="tuse" hidden><img src="${icoU('mano')}" alt=""><b></b></button>
   <button id="t-menu" class="tmenu" aria-label="Menu"><img src="${ICON('zaino',3).u}" alt=""><b>Menu</b></button>
   <div id="tmn" hidden><div class="tmb"></div></div>`;
   document.body.appendChild(el);
@@ -79,13 +79,16 @@ setInterval(touchTick,100);
 // tocco sulla minimappa: apre la mappa grande
 (function(){const m=$('mm');if(m)m.addEventListener('click',()=>{if(TCH.on&&started)openMap()})})();
 
+// i comandi touch si spostano e si ridimensionano con l'editor dell'HUD, uno per uno
+HUDE.push(['tjz','Joystick'],['t-area','Colpo'],['t-lunge','Affondo'],['t-dodge','Schiva'],['t-pot','Pozione'],['t-use','Pulsante «usa»'],['tsk','Abilità'],['t-menu','Menu']);
+const _hudApply80=hudApply;hudApply=function(){document.body.classList.toggle('tchwd',!(SET[HK()]&&SET[HK()].chw));_hudApply80()};
 function touchApply(){const on=touchWanted()?1:0;TCH.on=on;document.body.classList.toggle('touch',!!on);document.body.classList.toggle('tlh',!!(on&&SET.tlh));
   document.documentElement.style.setProperty('--tsz',(SET.tsz||100)/100);if(on)touchBuild();else{touchMenu(0);touchChat(0)}TCH.vis=-1;
   if(typeof wheelApply==='function')wheelApply()}
 const _applySet79=applySet;applySet=function(k){_applySet79(k);if(!k||/^t(ch|sz|lh|vib)$/.test(k))touchApply()};
 const _wheelApply79=wheelApply;wheelApply=function(){_wheelApply79();if(TCH.on){const r=$('ruota'),b=$('bar');if(r)r.style.display='none';if(b)b.style.display='none'}};
 matchMedia('(pointer:coarse)').addEventListener?.('change',()=>touchApply());
-touchApply();
+hudApply();touchApply();
 // l'ultima tappa del giro della città spiega i comandi touch invece dei tasti
 (function(){const s=TOURS&&TOURS.find(x=>x.ti==='Pronto a partire');if(s){const k=s.tx;Object.defineProperty(s,'tx',{get:()=>TCH.on?'Menu: zaino, missioni, diario, mappa, chat e opzioni. Il joystick in basso a sinistra ti muove, i pulsanti a destra combattono. Il primo passo è il castello del Re. Buona avventura!':k})}})();
 
@@ -100,19 +103,18 @@ body.touch #ruota,body.touch #bar{display:none!important}
 #tjz.on #tjb{opacity:1;transition:none}
 #tjk{position:absolute;left:50%;top:50%;width:calc(46px * var(--s));height:calc(46px * var(--s));margin:calc(-23px * var(--s));border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe3a0,#f5b942 55%,#b8801a);border:2px solid #fff3c4;box-shadow:0 3px 0 #6a4a16,0 4px 10px #0008}
 .tb{position:absolute;width:calc(56px * var(--s));height:calc(56px * var(--s));border-radius:50%;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
-  background:radial-gradient(circle at 50% 35%,#3b4770,#1b2030);border:2px solid #f5b942bb;color:#fff;box-shadow:0 4px 0 #0009,0 6px 14px #0006;overflow:hidden}
+  background:radial-gradient(circle at 50% 35%,#3b4770,#1b2030);border:2px solid #f5b942bb;color:#fff;box-shadow:0 4px 0 #0009,0 6px 14px #0006}
 .tb img{width:calc(26px * var(--s));height:calc(26px * var(--s));image-rendering:pixelated;position:relative;z-index:1}.tb b{font-size:calc(9.5px * var(--s));font-weight:normal;line-height:1;margin-top:1px;position:relative;z-index:1;text-shadow:0 1px 2px #000}
 .tb.big{width:calc(84px * var(--s));height:calc(84px * var(--s));background:radial-gradient(circle at 50% 35%,#b8402c,#6a1c14);border-color:#ffd27a}.tb.big img{width:calc(38px * var(--s));height:calc(38px * var(--s))}.tb.big b{font-size:calc(11px * var(--s))}
-.tb.pr{transform:translateY(3px) scale(.96);box-shadow:0 1px 0 #0009}
-.tb::before{content:'';position:absolute;inset:0;background:conic-gradient(#000a var(--cd,0%),transparent 0);z-index:2;pointer-events:none}
+.tb.pr{filter:brightness(1.35);box-shadow:0 1px 0 #0009,inset 0 3px 6px #0008}
+.tb::before{content:'';position:absolute;inset:0;border-radius:inherit;background:conic-gradient(#000a var(--cd,0%),transparent 0);z-index:2;pointer-events:none}
 .tb .tcd{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:bold calc(17px * var(--s)) Georgia,serif;font-style:normal;color:#fff;text-shadow:0 2px 3px #000;z-index:3;pointer-events:none}
 .tb.cool img{opacity:.55}.tb.dis{filter:grayscale(1) brightness(.7)}
-#tact{position:absolute;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));width:calc(170px * var(--s));height:calc(170px * var(--s))}
-#t-area{right:calc(6px * var(--s));bottom:calc(6px * var(--s))}
-#t-lunge{right:calc(100px * var(--s));bottom:calc(4px * var(--s))}
-#t-dodge{right:calc(92px * var(--s));bottom:calc(68px * var(--s))}
-#t-pot{right:calc(30px * var(--s));bottom:calc(100px * var(--s))}
-#t-potn{position:absolute;right:calc(24px * var(--s));bottom:calc(144px * var(--s));min-width:18px;padding:0 5px;border-radius:9px;background:#e8484f;color:#fff;font:bold 11px Georgia,serif;text-align:center;line-height:18px;box-shadow:0 2px 0 #0008;z-index:4}
+#t-area{right:calc(20px * var(--s) + env(safe-area-inset-right,0px));bottom:calc(24px * var(--s) + env(safe-area-inset-bottom,0px))}
+#t-lunge{right:calc(114px * var(--s) + env(safe-area-inset-right,0px));bottom:calc(22px * var(--s) + env(safe-area-inset-bottom,0px))}
+#t-dodge{right:calc(106px * var(--s) + env(safe-area-inset-right,0px));bottom:calc(86px * var(--s) + env(safe-area-inset-bottom,0px))}
+#t-pot{right:calc(44px * var(--s) + env(safe-area-inset-right,0px));bottom:calc(118px * var(--s) + env(safe-area-inset-bottom,0px))}
+#t-potn{position:absolute;right:-6px;top:-6px;min-width:18px;padding:0 5px;border-radius:9px;background:#e8484f;color:#fff;font:bold 11px Georgia,serif;font-style:normal;text-align:center;line-height:18px;box-shadow:0 2px 0 #0008;z-index:4}
 #tsk{position:absolute;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(200px * var(--s) + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 #tsk .tb{position:relative;width:calc(48px * var(--s));height:calc(48px * var(--s));background:radial-gradient(circle at 50% 35%,#5a3a8a,#24163c);border-color:#c8a8ff}
 .tuse{position:absolute;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(196px * var(--s) + env(safe-area-inset-bottom,0px));max-width:min(62vw,300px);display:flex;align-items:center;gap:6px;padding:6px 14px 6px 8px;border-radius:24px;
@@ -128,16 +130,20 @@ body.touch #tsk:not(:empty)~.tuse{right:calc(78px * var(--s) + env(safe-area-ins
 .tmb button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;margin:0;border-radius:4px;color:#fff;box-shadow:0 3px 0 #0009}.tmb img{width:32px;height:32px;image-rendering:pixelated}.tmb b{font-weight:normal;font-size:13px}
 @keyframes tmn{from{transform:translateY(30px);opacity:0}}
 body.touch #ch{display:none}body.touch.tchat #ch{display:block}
-body.touch #chw{left:calc(10px + env(safe-area-inset-left,0px))!important;top:auto!important;right:auto!important;bottom:calc(178px * var(--tsz,1) + env(safe-area-inset-bottom,0px))!important;width:min(62vw,280px)!important;transform:none!important}
+body.touch.tchwd #chw{left:calc(10px + env(safe-area-inset-left,0px))!important;top:auto!important;right:auto!important;bottom:calc(178px * var(--tsz,1) + env(safe-area-inset-bottom,0px))!important;width:min(62vw,280px)!important;transform:none!important}
 body.touch #cl{max-height:84px;font-size:11px}
-body.touch.tchat #chw{bottom:calc(50vh)!important;z-index:8}
+body.touch.tchwd.tchat #chw{bottom:calc(50vh)!important;z-index:8}
 body.touch.tlh #tjz{left:auto;right:0}body.touch.tlh #tjb{left:auto;right:calc(24px * var(--s))}
-body.touch.tlh #tact{right:auto;left:calc(14px + env(safe-area-inset-left,0px));transform:scaleX(-1)}body.touch.tlh #tact .tb,body.touch.tlh #t-potn{transform:scaleX(-1)}body.touch.tlh #tact .tb.pr{transform:scaleX(-1) translateY(3px) scale(.96)}
+body.touch.tlh #t-area{right:auto;left:calc(20px * var(--s) + env(safe-area-inset-left,0px))}body.touch.tlh #t-lunge{right:auto;left:calc(114px * var(--s) + env(safe-area-inset-left,0px))}
+body.touch.tlh #t-dodge{right:auto;left:calc(106px * var(--s) + env(safe-area-inset-left,0px))}body.touch.tlh #t-pot{right:auto;left:calc(44px * var(--s) + env(safe-area-inset-left,0px))}
 body.touch.tlh #tsk,body.touch.tlh .tuse{right:auto;left:calc(14px + env(safe-area-inset-left,0px))}body.touch.tlh #tsk{align-items:flex-start}body.touch.tlh #tsk:not(:empty)~.tuse{right:auto;left:calc(78px * var(--s))}
-body.touch.tlh #chw{left:auto!important;right:calc(10px + env(safe-area-inset-right,0px))!important}
-@media (orientation:landscape) and (max-height:500px){#tc{--s:calc(var(--tsz,1) * .82)}body.touch #chw{bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:calc(150px * var(--tsz,1))!important;width:min(34vw,260px)!important}
+body.touch.tlh.tchwd #chw{left:auto!important;right:calc(10px + env(safe-area-inset-right,0px))!important}
+@media (orientation:landscape) and (max-height:500px){#tc{--s:calc(var(--tsz,1) * .82)}body.touch.tchwd #chw{bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:calc(150px * var(--tsz,1))!important;width:min(34vw,260px)!important}
   body.touch #cl{max-height:64px}#tjz{height:calc(150px * var(--s))}}
 body.touch kbd{display:none}
+body.hudedit.touch #tc,body.hudedit.touch.tcoff #tc{display:block}body.hudedit #t-use[hidden]{display:flex}body.hudedit #tsk:empty{width:calc(48px * var(--s));height:calc(48px * var(--s));border:2px dashed #c8a8ff;border-radius:50%}
+body.hudedit #tsk:empty::after{content:'Abilità';display:flex;height:100%;align-items:center;justify-content:center;font-size:9px;color:#e0d0ff}
+body.hudedit #tjb{opacity:1}body.hudedit #cl{display:block;min-height:40px;background:#0007}body.hudedit #cl:empty::before{content:'Chat';color:#aab;font-style:italic}body.hudedit #t-use b:empty::after{content:'Parla · Apri · Raccogli'}
 @media (orientation:portrait),(max-width:560px){.tmenu{left:calc(10px + env(safe-area-inset-left,0px));bottom:auto;top:calc(108px + env(safe-area-inset-top,0px));transform:none;width:calc(48px * var(--s));height:calc(48px * var(--s));border-radius:10px}.tmenu img{width:calc(24px * var(--s));height:calc(24px * var(--s))}
   #tmn{align-items:flex-start;padding:calc(164px + env(safe-area-inset-top,0px)) 0 0}body.touch.tlh .tmenu{left:auto;right:calc(10px + env(safe-area-inset-right,0px))}}
 body.touch #devfab{bottom:auto;right:auto;top:calc(108px + env(safe-area-inset-top,0px));left:calc(70px * var(--tsz,1))}

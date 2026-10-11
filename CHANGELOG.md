@@ -5,6 +5,20 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.9.1 — Comandi touch personalizzabili (11 ottobre 2026)
+
+- Joystick e pulsanti touch si **spostano e si ridimensionano** con l'editor dell'HUD (Impostazioni → Interfaccia → Personalizza l'HUD, oppure Impostazioni → Comandi → **Personalizza i comandi**). Ogni pulsante è indipendente: joystick, Colpo, Affondo, Schiva, Pozione, il pulsante verde «usa», le abilità e il Menu.
+- Sul telefono l'editor dell'HUD è più comodo:
+  - Si tocca un elemento per sceglierlo, che si illumina di azzurro, e lo si trascina dove si vuole.
+  - Una sola barra in alto contiene nome e grandezza dell'elemento scelto, con i pulsanti **−**, **+** e **↺ Al suo posto**.
+  - La barra si sposta in basso con **⇅** e si fa trasparente mentre trascini.
+- Con il telefono **in verticale** e **in orizzontale** si possono avere due disposizioni diverse: ognuna si ricorda la sua.
+- Anche la **chat** si può spostare sul telefono, e nell'editor si vede anche quando è vuota.
+- Il pulsante «usa» e le abilità si vedono nell'editor anche quando non sono attivi, così si possono sistemare in anticipo.
+- Su computer ogni elemento dell'HUD ha anche il pulsante **↺** per rimetterlo al suo posto, oltre al doppio clic.
+
+---
+
 ## 7.9 — Comandi per telefoni e tablet (11 ottobre 2026)
 
 Sui telefoni e sui tablet Voxelia si gioca con **joystick e pulsanti sullo schermo**, come un gioco per cellulare. Su computer non cambia niente.

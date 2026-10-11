@@ -1,0 +1,12 @@
+.git
+releases
+src
+build.sh
+CHANGELOG.md
+Dockerfile
+.dockerignore
+voxelia-data.json
+mondi
+plugins
+node_modules
+*.log

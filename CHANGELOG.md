@@ -5,6 +5,14 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.9.2 — Joystick allineato al dito (11 ottobre 2026)
+
+- **Corretto:** se il joystick veniva ingrandito o rimpicciolito con l'editor dell'HUD, la levetta non stava più sotto il dito. La base compariva spostata, tanto più quanto più era ingrandita, e la levetta si muoveva meno del dito. Ora base e levetta seguono il dito esattamente a qualsiasi grandezza, in verticale e in orizzontale.
+- **Corretto:** quando alzavi il dito, la base del joystick non tornava al suo posto ma restava nell'angolo in alto della zona.
+- Il raggio del joystick ora corrisponde a quello che si vede, anche con il telefono in orizzontale, dove i pulsanti sono un po' più piccoli.
+
+---
+
 ## 7.9.1 — Comandi touch personalizzabili (11 ottobre 2026)
 
 - Joystick e pulsanti touch si **spostano e si ridimensionano** con l'editor dell'HUD (Impostazioni → Interfaccia → Personalizza l'HUD, oppure Impostazioni → Comandi → **Personalizza i comandi**). Ogni pulsante è indipendente: joystick, Colpo, Affondo, Schiva, Pozione, il pulsante verde «usa», le abilità e il Menu.

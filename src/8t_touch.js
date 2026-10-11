@@ -29,18 +29,21 @@ function touchBuild(){if($('tc'))return;const el=document.createElement('div');e
   $('tmn').addEventListener('pointerdown',e=>{if(e.target.id==='tmn')touchMenu(0)});
   // joystick: si tocca un punto qualsiasi della zona in basso a sinistra e il joystick parte da lì
   const z=$('tjz');z.addEventListener('pointerdown',e=>{if(TCH.jid!=null)return;e.preventDefault();e.stopPropagation();auInit();z.setPointerCapture(e.pointerId);TCH.jid=e.pointerId;
-    const r=z.getBoundingClientRect(),R=touchR();TCH.ox=clamp(e.clientX,r.left+R,r.right-R);TCH.oy=clamp(e.clientY,r.top+R,r.bottom-R);TCH.jx=TCH.jy=TCH.mag=0;P.path=[];P.tg=null;touchStick(e);z.classList.add('on')});
+    const{r,Rv}=touchGeo(),cl2=(v,a,b)=>a>b?(a+b)/2:clamp(v,a,b);TCH.ox=cl2(e.clientX,r.left+Rv,r.right-Rv);TCH.oy=cl2(e.clientY,r.top+Rv,r.bottom-Rv);TCH.jx=TCH.jy=TCH.mag=0;P.path=[];P.tg=null;touchStick(e);z.classList.add('on')});
   z.addEventListener('pointermove',e=>{if(e.pointerId===TCH.jid)touchStick(e)});
   const end=e=>{if(e.pointerId!==TCH.jid)return;TCH.jid=null;TCH.jx=TCH.jy=TCH.mag=0;z.classList.remove('on');touchStick(null)};
   z.addEventListener('pointerup',end);z.addEventListener('pointercancel',end);
   // chat: si apre dal menu e si richiude dopo l'invio
   $('ch').addEventListener('blur',()=>{if(TCH.on)setTimeout(()=>{if(document.activeElement!==$('ch'))touchChat(0)},150)})}
 const touchR=()=>Math.round(52*(SET.tsz||100)/100);
-function touchStick(e){const b=$('tjb'),k=$('tjk'),z=$('tjz');if(!b)return;const R=touchR();
-  if(!e){b.style.transform='';k.style.transform='';return}
-  let dx=e.clientX-TCH.ox,dy=e.clientY-TCH.oy;const d=Math.hypot(dx,dy);if(d>R){dx*=R/d;dy*=R/d}
-  TCH.jx=dx/R;TCH.jy=dy/R;TCH.mag=Math.min(1,d/R);const r=z.getBoundingClientRect();
-  b.style.transform=`translate(${TCH.ox-r.left-R}px,${TCH.oy-r.top-R}px)`;b.style.left=b.style.top='0';k.style.transform=`translate(${dx}px,${dy}px)`}
+// il joystick può essere ingrandito o rimpicciolito dall'editor dell'HUD (scale sulla zona): le misure sullo schermo
+// vanno riportate alla scala della zona, altrimenti la levetta non sta sotto il dito
+function touchGeo(){const z=$('tjz'),b=$('tjb'),r=z.getBoundingClientRect(),sc=(z.offsetWidth?r.width/z.offsetWidth:1)||1,R=(b.offsetWidth||104)/2;return{r,sc,R,Rv:R*sc}}
+function touchStick(e){const b=$('tjb'),k=$('tjk');if(!b)return;
+  if(!e){b.style.transform=b.style.left=b.style.top='';k.style.transform='';return}
+  const{r,sc,R,Rv}=touchGeo();let dx=e.clientX-TCH.ox,dy=e.clientY-TCH.oy;const d=Math.hypot(dx,dy);if(d>Rv){dx*=Rv/d;dy*=Rv/d}
+  TCH.jx=dx/Rv;TCH.jy=dy/Rv;TCH.mag=Math.min(1,d/Rv);
+  b.style.left=b.style.top='0';b.style.transform=`translate(${(TCH.ox-r.left)/sc-R}px,${(TCH.oy-r.top)/sc-R}px)`;k.style.transform=`translate(${dx/sc}px,${dy/sc}px)`}
 
 // menu a griglia (le stesse voci della ruota, più la chat e l'aspetto dell'eroe)
 const TMENU=[['zaino','Zaino',()=>tog('inv')],['pergamena','Missioni',()=>tog('q')],['libro','Diario',()=>tog('dia')],['mappa','Mappa',()=>openMap()],
@@ -98,10 +101,10 @@ body.touch #ruota,body.touch #bar{display:none!important}
 #tc{--s:var(--tsz,1);position:fixed;inset:0;pointer-events:none;z-index:6;font:12px Georgia,serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #tc button{pointer-events:auto;touch-action:none;-webkit-tap-highlight-color:transparent;margin:0}
 #tjz{position:absolute;left:0;bottom:0;width:calc(48vw);max-width:330px;height:calc(170px * var(--s) + env(safe-area-inset-bottom,0px));pointer-events:auto;touch-action:none}
-#tjb{position:absolute;left:calc(24px * var(--s));top:calc(100% - 136px * var(--s) - env(safe-area-inset-bottom,0px));width:calc(104px * var(--s));height:calc(104px * var(--s));border-radius:50%;
+#tjb{box-sizing:border-box;position:absolute;left:calc(24px * var(--s));top:calc(100% - 136px * var(--s) - env(safe-area-inset-bottom,0px));width:calc(104px * var(--s));height:calc(104px * var(--s));border-radius:50%;
   background:radial-gradient(circle,#1b2030aa 55%,#1b203066);border:2px solid #f5b94299;box-shadow:0 4px 0 #0007,inset 0 0 18px #0008;opacity:.75;transition:opacity .2s}
 #tjz.on #tjb{opacity:1;transition:none}
-#tjk{position:absolute;left:50%;top:50%;width:calc(46px * var(--s));height:calc(46px * var(--s));margin:calc(-23px * var(--s));border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe3a0,#f5b942 55%,#b8801a);border:2px solid #fff3c4;box-shadow:0 3px 0 #6a4a16,0 4px 10px #0008}
+#tjk{box-sizing:border-box;position:absolute;left:50%;top:50%;width:calc(46px * var(--s));height:calc(46px * var(--s));margin:calc(-23px * var(--s));border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe3a0,#f5b942 55%,#b8801a);border:2px solid #fff3c4;box-shadow:0 3px 0 #6a4a16,0 4px 10px #0008}
 .tb{position:absolute;width:calc(56px * var(--s));height:calc(56px * var(--s));border-radius:50%;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
   background:radial-gradient(circle at 50% 35%,#3b4770,#1b2030);border:2px solid #f5b942bb;color:#fff;box-shadow:0 4px 0 #0009,0 6px 14px #0006}
 .tb img{width:calc(26px * var(--s));height:calc(26px * var(--s));image-rendering:pixelated;position:relative;z-index:1}.tb b{font-size:calc(9.5px * var(--s));font-weight:normal;line-height:1;margin-top:1px;position:relative;z-index:1;text-shadow:0 1px 2px #000}

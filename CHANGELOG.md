@@ -5,6 +5,61 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.9 — Comandi per telefoni e tablet (11 ottobre 2026)
+
+Sui telefoni e sui tablet Voxelia si gioca con **joystick e pulsanti sullo schermo**, come un gioco per cellulare. Su computer non cambia niente.
+
+### Muoversi
+- **Joystick** in basso a sinistra: si tocca un punto qualsiasi di quella zona e il joystick parte da lì. L'eroe va nella direzione del dito, anche in diagonale, e si ferma quando lo alzi.
+- Si può ancora **toccare un punto della mappa** per andarci, toccare un nemico per attaccarlo e un personaggio per parlarci.
+- **Due dita** sulla mappa per lo zoom. Un tocco sulla **minimappa** apre la mappa grande.
+
+### Combattere
+- A destra c'è il grande pulsante rosso **Colpo**, con intorno **Affondo**, **Schiva** e **Pozione** (con il numero di pozioni rimaste). Durante la ricarica il pulsante si scurisce come un orologio e mostra i secondi che mancano.
+- Le **abilità** imparate dal Maestro Dino compaiono sopra, una per pulsante, ognuna con la sua ricarica.
+- Pesca, scavo, duelli e battaglia navale continuano a usare i loro pulsanti grandi, già fatti per il tocco.
+- Un pulsante verde compare quando hai vicino qualcosa da usare e dice cosa fa: **Parla · Capitano Marcus**, **Apri**, **Raccogli**, **Entra**, **Leggi**, **Pesca**, **Dormi**...
+
+### Menu e chat
+- Il pulsante **Menu** sostituisce la ruota delle azioni e apre una griglia con zaino, missioni, diario, mappa, aspetto dell'eroe, classifica, giocatori, chat e opzioni.
+- La **chat** resta nascosta finché non la apri dal menu e si richiude da sola dopo l'invio. I messaggi si vedono comunque sopra il joystick.
+- I comandi si fanno da parte da soli quando apri una finestra, parli con qualcuno o parte una scena, e durante il giro della città e le battaglie sul campo.
+- I testi di benvenuto e del giro della città spiegano i comandi touch invece dei tasti.
+
+### Impostazioni → Comandi
+- **Joystick e pulsanti sullo schermo**: automatici (solo su telefoni e tablet), sempre (anche su computer con lo schermo touch) oppure mai.
+- **Grandezza dei pulsanti**: dal 70% al 140%.
+- **Mancini**: joystick a destra e pulsanti a sinistra.
+- **Vibrazione** quando premi un pulsante, sui telefoni che la supportano.
+- Funziona sia in verticale sia in orizzontale e tiene conto dei bordi arrotondati e della tacca dello schermo.
+
+---
+
+## 7.8.2 — Messaggi del server più lunghi (10 ottobre 2026)
+
+- I messaggi del server e dei plugin nella chat **non vengono più tagliati**. Prima ogni riga si fermava a 200 caratteri e si vedevano al massimo 12 righe. Ora le righe lunghe vanno a capo da sole, su una virgola o uno spazio, e un messaggio può arrivare a 60 righe. Se un messaggio è ancora più lungo, l'ultima riga dice quante righe mancano.
+- **/plugin** elenca un plugin per riga, in ordine alfabetico, con versione e descrizione, e dice quanti sono.
+- Anche **api.say** dei plugin manda i testi lunghi su più righe invece di tagliarli. **api.announce** arriva fino a 300 caratteri, prima erano 160.
+- I nomi dei plugin possono essere lunghi fino a 60 caratteri (prima 40) e le descrizioni fino a 300 (prima 200).
+
+---
+
+## 7.8.1 — Portale dopo il boss, risposte nei dialoghi e un'icona sola per ogni cosa (10 ottobre 2026)
+
+### Il portale dopo il boss
+- Sconfitto il boss di un dungeon, il **portale per tornare in città** non compare più sotto i piedi dell'eroe, sopra il bottino. Si apre a qualche passo di distanza, in un punto libero e raggiungibile, lontano dagli oggetti lasciati dal boss, dal forziere e dal Frammento della Corona: un clic sbagliato mentre raccogli non ti porta più fuori.
+- Se entri nel portale lasciando a terra il **Frammento**, degli **oggetti** o il **forziere ricco** ancora chiuso, il gioco ti chiede prima se vuoi davvero uscire (**Resta e raccogli** o **Esci comunque**).
+
+### Le risposte nei dialoghi
+- Quando fai una domanda a un personaggio (il Re Aldric, Malakar, il Moreau...), la **risposta la dice lui, nella battuta in alto** accanto al ritratto, con sopra la domanda che hai fatto. Prima finiva in fondo alla finestra e bisognava scorrere per leggerla.
+- A ogni nuova battuta la finestra torna in cima, e riaprendo il dialogo il personaggio ti saluta di nuovo invece di ripetere l'ultima risposta.
+
+### Un'icona sola per ogni cosa
+- La **moneta d'oro** è la stessa dell'HUD ovunque: ricompense delle missioni, prezzi nei negozi, casinò, forziere, oro che vola sopra l'eroe, editor, Mondi della community.
+- Lo stesso vale per tutte le cose che avevano due icone diverse: ora si usa sempre quella dell'HUD per cuore, esperienza e gemme, pozioni (anche quelle verdi e viola), spada, spade incrociate, scudo, mirino, trofeo, zaino, gruppo, esplosione, portale, pugnale, ingranaggio, pergamena, libro, stella, forza, pietra, corona, sole, luna, spunta, forziere, gioca, teschio, nota, schermo, fulmine, ciak, gamepad, mappa e freccia del cursore. Le icone doppie sono state tolte dal gioco.
+
+---
+
 ## 7.8 — Icone voxel ovunque e Mondi della community in stile Voxelia (10 ottobre 2026)
 
 ### Icone voxel in tutto il gioco

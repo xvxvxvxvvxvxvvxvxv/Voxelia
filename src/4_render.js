@@ -1511,9 +1511,9 @@ const MQ=[['Cosa è successo ad Aldoria Vecchia?','Nessuno lo sa. Nessuno! Quell
   ['Dove sono finiti gli abitanti?','I pochi rimasti sono tornati qui, nel centro della città. Tutti gli altri... scomparsi. Niente cadaveri, niente sangue. Solo rovine.'],
   ['Perché il cancello è sbarrato?','Per ordine del Re. Oltre il cancello c\'è solo il Borgo delle Ceneri, la periferia bruciata, piena di sciacalli e spettri. Aldoria Vecchia, quella vera, sta più in là. Nessuno ci entra da allora.'],
   ['Si può arrivare ad Aldoria Vecchia in un altro modo?','Forse. Dietro la vecchia casa vicino al porto, tra le casse, il muro è marcio. Se qualcuno avesse la forza di scavare... Ma sarà durissima, te lo dico.']];
-function moreauHTML(){let h='<h4>❓ Chiedi al Moreau</h4>'+MQ.map((q,i)=>`<button onclick="MQA=${i};pn('npc')">${q[0]}</button>`).join('');
+function moreauHTML(){let h='<h4>❓ Chiedi al Moreau</h4>'+MQ.map((q,i)=>`<button onclick="MQA=${i};pn('npc')"${MQA===i?' class="on"':''}>${q[0]}</button>`).join('');
   if(P.vcult)h+=`<button onclick="MQA=9;pn('npc')">Ho trovato una porta di pietra sotto le rovine</button>`;
-  if(MQA>=0){const a=MQA===9?'Una porta di pietra? «La verità sarà nei tuoi occhi»... Allora qualcuno sapeva. Qualcuno ha sempre saputo. Non dirlo al Re. Non dirlo a nessuno.':MQ[MQA][1];h+=`<div class="qb"><i>«${esc(a)}»</i></div>`}return h}
+  if(MQA>=0){const a=MQA===9?'Una porta di pietra? «La verità sarà nei tuoi occhi»... Allora qualcuno sapeva. Qualcuno ha sempre saputo. Non dirlo al Re. Non dirlo a nessuno.':MQ[MQA][1];h+=`<div class="qb dlga" data-q="${esc(MQA===9?'Ho trovato una porta di pietra sotto le rovine':MQ[MQA][0])}"><i>«${esc(a)}»</i></div>`}return h}
 /* ---- il passaggio nel muro: lo scavo ---- */
 const HOLEL=e=>{const s=e.side==='e'?1:-1,x0=s<0?-.34:.3,L=[];if(e.dug){L.push([x0,-.38,0,.04,.76,20,'#050505'],[x0-.02*s,-.44,0,.07,.07,22,'#7a5a3a'],[x0-.02*s,.37,0,.07,.07,22,'#7a5a3a'],[x0-.02*s,-.44,20,.07,.88,3,'#7a5a3a'],[s<0?-.2:.05,-.3,0,.3,.6,4,'#7b7f89'],[s<0?-.05:.1,.1,0,.2,.25,6,'#8a8e98'])}
   else{const p=Math.min(1,(P.vdp||0)/100);L.push([x0,-.3,2,.03,.04,24,'#2a2a2e'],[x0,-.1,6,.03,.03,16,'#2a2a2e'],[x0,.12,0,.03,.04,20,'#2a2a2e'],[x0,.25,10,.03,.03,12,'#2a2a2e'],[s<0?-.25:.05,-.25,0,.25,.5,3,'#7b7f89']);if(p>0)L.push([x0,-.3*p,0,.035,.6*p,18*p,'#050505'])}return L};
@@ -1698,7 +1698,7 @@ function draw(){const z=ZZ,out=!!SKY[Zk];GLOW.length=0;NLS.length=0;
   if(out)nightDraw();
   if(SET.ultra&&!z.dg)grade(out&&NK<.5);
   sfxDraw();vfDraw();tourDraw();partDraw();ffDraw();
-  if(SET.wasd&&IT&&!PM){g.setTransform(DPR,0,0,DPR,0,0);const[X,Y]=scr(IT.px,IT.py,IT.k==='npc'?26:IT.k==='po'?22:12);keycap(X+26*S,Y,'R')}}
+  if(SET.wasd&&IT&&!PM&&!(typeof TCH!=='undefined'&&TCH.on)){g.setTransform(DPR,0,0,DPR,0,0);const[X,Y]=scr(IT.px,IT.py,IT.k==='npc'?26:IT.k==='po'?22:12);keycap(X+26*S,Y,'R')}}
 let MINIF=0;
 function mini(){if(!SET.mini||!MC)return;if(SET.fast!==0&&(++MINIF&1))return;const s=130/N;mm.clearRect(0,0,130,130);mm.drawImage(MC,0,0);
   for(const e of ents){if(e.k==='tc'||e.k==='cho'||e.k==='resx'||e.k==='ship'||e.k==='dead'||e.k==='figura')continue;mm.fillStyle=e.k==='tr'?'#5a9aff':e.k==='en'?(e.boss?'#ff00ff':'#ff4444'):e.k==='po'?'#44eeff':e.k==='ch'?'#ffaa33':e.k==='npc'?(e.qm?'#ffd84a':'#eeee99'):e.k==='shard'||e.k==='lore'?'#ffffff':'#dddddd';const r=e.boss||e.k==='po'?4:3;mm.fillRect(e.px*s-r/2,e.py*s-r/2,r,r)}

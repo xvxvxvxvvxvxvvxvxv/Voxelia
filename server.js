@@ -1,4 +1,4 @@
-// Server di Voxelia 7.8: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Server di Voxelia 7.9: serve il gioco e fa da ponte WebSocket tra i giocatori.
 // Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
 // rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
 // i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
@@ -7,7 +7,7 @@
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
 const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
-const VER = '7.8';
+const VER = '7.9';
 const PORT = process.env.PORT || 3000;
 const DATA = process.env.DATA_FILE || path.join(__dirname, 'voxelia-data.json');
 // il gioco può chiamarsi voxelia.html oppure voxelia_v6.3.html ecc.: si usa il file voxelia*.html più recente
@@ -810,7 +810,24 @@ function pview(c, pl) {
   });
 }
 // messaggio privato nel registro chat del giocatore (anche su più righe)
-function tell(c, s, who) { for (const line of String(s == null ? '' : s).split('\n').slice(0, 12)) { const t = str(line, 200); if (t) send(c, { t: 'chat', n: who || 'Server', s: t, z: '', adm: 1 }); } }
+// messaggi lunghi del server e dei plugin: niente più tagli, le righe troppo lunghe vanno a capo (su una virgola o uno spazio)
+const MSG_LINE = 400, MSG_LINES = 60;
+function wrapMsg(s, max = MSG_LINE) {
+  const out = [];
+  for (const raw of String(s == null ? '' : s).split('\n')) {
+    let l = raw.replace(/[\u0000-\u001f<>]/g, '').trim();
+    while (l.length > max) {
+      let cut = l.lastIndexOf(', ', max); if (cut >= max * 0.5) cut += 1; else { cut = l.lastIndexOf(' ', max); if (cut < max * 0.5) cut = max; }
+      out.push(l.slice(0, cut).trim()); l = l.slice(cut).trim();
+    }
+    if (l) out.push(l);
+  }
+  return out;
+}
+function tell(c, s, who) {
+  const L = wrapMsg(s), shown = L.length > MSG_LINES ? L.slice(0, MSG_LINES - 1).concat('… e altre ' + (L.length - MSG_LINES + 1) + ' righe') : L;
+  for (const t of shown) send(c, { t: 'chat', n: who || 'Server', s: t, z: '', adm: 1 });
+}
 const findClient = q => { if (!q) return null; if (typeof q === 'object' && q.id) q = q.id; const s = String(q); return clients.get(s) || players().find(c => key(c.name) === key(s)) || null; };
 
 function makeApi(pl) {
@@ -844,8 +861,8 @@ function makeApi(pl) {
     player(q) { const c = findClient(q); return c && c.name && !c.gone ? pview(c, pl) : null; },
     rooms() { const r = {}; for (const c of players()) (r[c.code] || (r[c.code] = [])).push(c.name); return r; },
     tell(p, s) { const c = findClient(p); if (c) tell(c, s, pl.name); },
-    announce(s, room) { const t = str(s, 160); if (!t) return 0; let n = 0; for (const c of players()) if (room == null || c.code === room) { send(c, { t: 'ann', s: t, adm: 1 }); n++; } chatPush(room == null ? '*' : room, '🧩 ' + pl.name, t, '', 1); return n; },
-    say(room, s) { const t = str(s, 120); if (!t || !room) return; for (const c of players()) if (c.code === room) send(c, { t: 'chat', n: pl.name, s: t, z: '', adm: 1 }); chatPush(room, pl.name, t, '', 1); },
+    announce(s, room) { const t = str(s, 300); if (!t) return 0; let n = 0; for (const c of players()) if (room == null || c.code === room) { send(c, { t: 'ann', s: t, adm: 1 }); n++; } chatPush(room == null ? '*' : room, '🧩 ' + pl.name, t, '', 1); return n; },
+    say(room, s) { if (!room) return; for (const t of wrapMsg(s).slice(0, 20)) { for (const c of players()) if (c.code === room) send(c, { t: 'chat', n: pl.name, s: t, z: '', adm: 1 }); chatPush(room, pl.name, t, '', 1); } },
     broadcast(ev, d, room) { for (const c of players()) if (room == null || c.code === room) send(c, { t: 'x', pl: pl.id, e: str(ev, 40), d }); },
     server: {
       get cfg() { return Object.assign({}, CFG); },
@@ -888,7 +905,7 @@ function loadPlugins() {
       const mod = require(f.entry), M = typeof mod === 'function' ? { setup: mod } : (mod && typeof mod === 'object' ? (mod.default && typeof mod.default === 'object' ? mod.default : mod) : {});
       if (typeof M.setup !== 'function' && typeof M.init === 'function') M.setup = M.init;
       if (typeof M.setup !== 'function') throw new Error('il modulo deve esportare una funzione oppure { setup(api) { … } }');
-      pl.name = str(M.name, 40) || f.id; pl.version = str(M.version, 16); pl.description = str(M.description, 200); pl.author = str(M.author, 60);
+      pl.name = str(M.name, 60) || f.id; pl.version = str(M.version, 16); pl.description = str(M.description, 300); pl.author = str(M.author, 60);
       // configurazione: valori predefiniti del plugin + file modificabile (creato se manca)
       const def = M.defaults && typeof M.defaults === 'object' ? M.defaults : null; let fileCfg = null;
       try { fileCfg = JSON.parse(fs.readFileSync(f.cfgFile, 'utf8')); } catch (e) { if (fs.existsSync(f.cfgFile)) plugLog(pl, 'config non valida (' + path.basename(f.cfgFile) + '): uso i valori predefiniti'); }
@@ -952,7 +969,7 @@ function runCommand(c, s) {
     const L = [...CMDS.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([n, d]) => '/' + n + (d.desc ? ' — ' + d.desc : ''));
     tell(c, L.length ? 'Comandi del server:\n' + L.join('\n') + '\n/plugin — i plugin attivi' : 'Questo server non ha comandi in più. /plugin mostra i plugin attivi.', 'Server'); return;
   }
-  if (k === 'plugin' || k === 'plugins') { const a = live(); tell(c, a.length ? 'Plugin attivi: ' + a.map(p => p.name + (p.version ? ' ' + p.version : '')).join(', ') : 'Nessun plugin attivo su questo server.', 'Server'); return; }
+  if (k === 'plugin' || k === 'plugins') { const a = live(); tell(c, a.length ? 'Plugin attivi (' + a.length + '):\n' + a.slice().sort((x, y) => x.name.localeCompare(y.name, 'it', { numeric: true })).map(p => '• ' + p.name + (p.version ? ' ' + p.version : '') + (p.description ? ' — ' + p.description : '')).join('\n') : 'Nessun plugin attivo su questo server.', 'Server'); return; }
   const cmd = CMDS.get(k);
   if (!cmd || !cmd.pl.ok || cmd.pl.off) { tell(c, 'Comando sconosciuto: /' + str(k, 24) + '. Scrivi /aiuto per la lista.', 'Server'); return; }
   // i comandi dei plugin rispettano la chat spenta e i giocatori silenziati, come i messaggi normali (/aiuto e /plugin restano sempre disponibili)

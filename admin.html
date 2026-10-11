@@ -1,0 +1,294 @@
+<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Voxelia · Pannello Admin</title><meta name="robots" content="noindex">
+<style>
+:root{--bg:#10131a;--pn:rgba(18,23,38,.9);--pn2:rgba(35,43,68,.85);--ln:#f5b94240;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--ac2:#8a3b12;--rd:#e5534b;--gr:#4cc46a;--bl:#4aa3ff;--or:#ff9a5a;--pu:#b866ff}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font:14px Georgia,'Times New Roman',serif}
+canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+#veil{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 30%,rgba(10,13,26,.35),rgba(10,13,26,.88));transition:background .6s}body.in #veil{background:linear-gradient(rgba(10,13,26,.72),rgba(10,13,26,.86))}
+.screen{position:relative;z-index:1}
+h1,h2,h3,h4{font-weight:normal;margin:0}
+.logo{color:var(--ac);letter-spacing:5px;text-shadow:3px 3px 0 var(--ac2)}
+button,.btn{font:inherit;background:#2a3350;color:#fff;border:1px solid #f5b94288;padding:7px 12px;border-radius:3px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block;transition:background .12s,transform .12s}
+button:hover,.btn:hover{background:#3b4770}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+button:active{transform:translateY(1px)}button:disabled{opacity:.45;cursor:default}
+button.gold{background:#5a4320;border-color:var(--ac)}button.gold:hover{background:#735828}
+button.red{background:#5a2228;border-color:var(--rd)}button.red:hover{background:#74303a}
+button.sm{padding:3px 9px;font-size:12.5px}
+input,select,textarea{font:inherit;background:#0b0e18cc;color:var(--fg);border:1px solid #f5b94266;padding:7px 9px;border-radius:3px;min-width:0}
+input[type=number]{width:90px}
+label{color:var(--mu)}
+.mu{color:var(--mu);font-size:12.5px}.up{color:var(--gr)}.dn{color:var(--rd)}
+/* --- login --- */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
+.lcard{width:min(400px,100%);background:var(--pn);border:1px solid var(--ln);padding:28px 26px;text-align:center;backdrop-filter:blur(4px);box-shadow:0 20px 60px #0009}
+.lcard h1{font-size:46px}.lcard h2{color:var(--fg);font-size:17px;margin:4px 0 20px;letter-spacing:1px;font-style:italic}
+.lcard input{width:100%;margin:6px 0 10px;padding:10px}.lcard button{width:100%;padding:10px}
+.err{color:var(--rd);min-height:20px;margin-top:8px;font-size:13px}
+@keyframes drop{from{transform:translateY(-40px);opacity:0}to{transform:none;opacity:1}}
+.lcard h1{animation:drop .8s cubic-bezier(.2,1.4,.4,1) both}
+/* --- app --- */
+#app{display:grid;grid-template-columns:210px 1fr;grid-template-rows:auto 1fr;min-height:100vh}
+header{grid-column:1/3;display:flex;align-items:center;gap:14px;padding:10px 18px;background:rgba(10,13,24,.92);border-bottom:1px solid var(--ln);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+header .logo{font-size:24px}header .sub{color:var(--mu);font-style:italic}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;align-items:center}
+.chip{background:var(--pn2);border:1px solid #ffffff1a;border-radius:20px;padding:4px 11px;font-size:12.5px;white-space:nowrap}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gr);margin-right:6px;box-shadow:0 0 8px var(--gr)}.dot.off{background:var(--rd);box-shadow:0 0 8px var(--rd)}
+nav{padding:14px 10px;background:rgba(12,15,28,.78);border-right:1px solid var(--ln);display:flex;flex-direction:column;gap:3px}
+nav button{text-align:left;background:transparent;border:1px solid transparent;padding:9px 12px;color:var(--fg);display:flex;align-items:center;gap:10px}
+nav button:hover{background:#ffffff0d}nav button.on{background:#5a432088;border-color:#f5b94266;color:var(--ac)}
+nav .ic{width:20px;text-align:center}nav .n{margin-left:auto;font-size:11.5px;background:#ffffff14;border-radius:10px;padding:1px 7px;color:var(--mu)}
+main{padding:18px;min-width:0}
+.card{background:var(--pn);border:1px solid var(--ln);padding:16px 18px;margin-bottom:16px;backdrop-filter:blur(3px)}
+.card>h3{color:var(--ac);font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:8px}.card>h3 .r{margin-left:auto}
+.pagehead{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap}.pagehead h2{font-size:24px;color:var(--fg)}.pagehead .r{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.grid{display:grid;gap:12px}.g4{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.tile{background:var(--pn2);border:1px solid #ffffff14;border-left:3px solid var(--ac);padding:12px 14px}
+.tile .v{font-size:26px;color:var(--fg);margin-top:2px}.tile .l{color:var(--mu);font-size:12.5px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}.row>input[type=text],.row>input:not([type]),.row>.grow{flex:1;min-width:140px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}th,td{padding:7px 8px;border-bottom:1px solid #ffffff12;text-align:left;vertical-align:middle}
+th{color:var(--mu);font-weight:normal;font-size:12.5px;white-space:nowrap}tr:hover td{background:#ffffff06}
+.hp{width:80px;height:9px;background:#0008;border:1px solid #fff3;position:relative}.hp i{display:block;height:100%;background:#d33}
+.tag{font-size:11.5px;padding:2px 8px;border-radius:10px;background:#ffffff14;white-space:nowrap}
+.tag.join{background:#4cc46a26;color:#8fe0a3}.tag.leave{background:#9aa4b826}.tag.kick,.tag.ban{background:#e5534b30;color:#ff9c96}.tag.admin{background:#f5b94230;color:var(--ac)}.tag.arena{background:#b866ff30;color:#d9a8ff}.tag.trade{background:#4aa3ff30;color:#9fd0ff}.tag.dungeon{background:#ff9a5a30;color:#ffc29a}.tag.item{background:#4cc46a1f;color:#b8f0c4}.tag.sys{background:#ffffff1a}.tag.plugin{background:#3ad0c030;color:#9ff0e6}
+.plug h4{margin:0 0 4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.plug .st{font-size:12px;padding:1px 8px;border-radius:10px}.plug .st.on{background:#4cc46a26;color:#8fe0a3}.plug .st.off{background:#9aa4b826;color:var(--mu)}.plug .st.bad{background:#e5534b30;color:#ff9c96}.plug code{font-size:12px}.plug .err{color:#ff9c96;font-size:13px;margin:6px 0;word-break:break-word}
+.loglist,.chatlist{max-height:520px;overflow-y:auto}
+.ll{display:flex;gap:10px;padding:5px 2px;border-bottom:1px solid #ffffff0d;align-items:baseline}.ll .t{color:var(--mu);font-size:12px;white-space:nowrap;font-family:monospace}
+.cm b{color:#7ec8ff}.cm.adm b,.cm.adm{color:var(--or)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #ffffff0d}.sw:last-child{border:0}
+.sw .d{color:var(--mu);font-size:12.5px;margin-top:2px}
+.tg{position:relative;width:44px;height:24px;flex-shrink:0}.tg input{opacity:0;width:100%;height:100%;margin:0;position:absolute;cursor:pointer;z-index:1}
+.tg span{position:absolute;inset:0;background:#3a3f50;border-radius:12px;transition:.15s;border:1px solid #fff2}.tg span:after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#ccd;transition:.15s}
+.tg input:checked+span{background:#5a4320;border-color:var(--ac)}.tg input:checked+span:after{left:23px;background:var(--ac)}.tg input:focus-visible+span{outline:2px solid var(--ac)}
+.pc{display:inline-flex;align-items:flex-end;gap:1px;vertical-align:baseline}.pc i{display:inline-block;width:2px;border-radius:1px}
+.empty{color:var(--mu);font-style:italic;padding:10px 0}
+.room{background:var(--pn2);border:1px solid #ffffff14;padding:12px 14px}.room h4{font-size:18px;color:var(--ac);margin-bottom:6px}
+.dgg{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 12px;margin:10px 0}.dgg label{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--fg)}.dgg input{width:64px}
+.danger{border-color:#e5534b66}.danger>h3{color:#ff8a82}
+/* --- modale e notifiche --- */
+#modal{position:fixed;inset:0;z-index:20;background:#05070ecc;display:none;align-items:center;justify-content:center;padding:16px}
+#modal .box{width:min(620px,100%);max-height:90vh;overflow:auto;background:#161b2c;border:2px solid var(--ac);padding:18px 20px;box-shadow:0 20px 60px #000}
+#modal h3{color:var(--ac);font-size:20px;margin-bottom:10px}#modal h4{color:var(--fg);margin:14px 0 6px;font-size:15px}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 14px}.kv>div{border-bottom:1px solid #ffffff10;padding:3px 0}.kv>div>span:first-child{color:var(--mu);font-size:12px;display:block}
+#toasts{position:fixed;right:16px;top:16px;z-index:30;display:flex;flex-direction:column;gap:8px;max-width:min(380px,calc(100vw - 32px))}
+.toast{background:#1b2030;border:1px solid var(--ac);border-left:4px solid var(--gr);padding:10px 14px;box-shadow:0 8px 24px #0008;animation:tin .25s both}.toast.bad{border-left-color:var(--rd)}
+@keyframes tin{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:820px){#app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}nav{align-items:center;align-self:start;position:sticky;top:0}header{grid-column:1}nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--ln);padding:8px}nav button{flex-shrink:0}nav .n{display:none}main{padding:12px}.chips{margin-left:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<canvas id="bg"></canvas><div id="veil"></div>
+<div id="login" class="screen" hidden><form class="lcard" id="lf"><h1 class="logo">VOXELIA</h1><h2>Pannello Admin</h2>
+<label for="pw" style="display:block;text-align:left">Password scelta all'avvio del server</label><input id="pw" type="password" autocomplete="current-password" autofocus>
+<button class="gold" type="submit">Entra</button><div class="err" id="lerr"></div></form></div>
+<div id="app" class="screen" hidden>
+<header><span class="logo">VOXELIA</span><span class="sub">Pannello Admin</span>
+<div class="chips"><span class="chip" id="c-on"><span class="dot"></span>Online</span><span class="chip" id="c-pl">👥 0</span><span class="chip" id="c-up">⏱ —</span><span class="chip" id="c-ev" hidden></span><button class="sm" onclick="logout()">Esci</button></div></header>
+<nav id="nav"></nav><main id="main"></main></div>
+<div id="modal" role="dialog" aria-modal="true"><div class="box" id="mbox"></div></div><div id="toasts" aria-live="polite"></div>
+<script>
+'use strict';
+const $=i=>document.getElementById(i);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let S=null,tab='home',timer=null,mopen=null,logF='',chatF='',plQ='',lbQ='';
+
+/* ---------- sfondo: lo stesso paesaggio voxel del menu del gioco ---------- */
+const cv=$('bg'),g=cv.getContext('2d'),cc={};let W,H,mt=0,lastT=0;
+const PX=(x,y)=>(x-y)*32,PY=(x,y,z)=>(x+y)*16-z,hh=(x,y)=>{let n=Math.sin(x*127.1+y*311.7)*43758.5;return n-Math.floor(n)};
+function sh(c,f){const k=c+(f*50|0);if(cc[k])return cc[k];const n=parseInt(c.slice(1),16),m=v=>Math.min(255,v*f|0);return cc[k]=`rgb(${m(n>>16)},${m(n>>8&255)},${m(n&255)})`}
+function poly(p,c){g.fillStyle=g.strokeStyle=c;g.beginPath();g.moveTo(p[0],p[1]);for(let i=2;i<p.length;i+=2)g.lineTo(p[i],p[i+1]);g.closePath();g.fill();g.stroke()}
+function box(x,y,z,w,d,h,c,f=1){const T=z+h,ax=PX(x,y),ay=PY(x,y,T),bx=PX(x+w,y),by=PY(x+w,y,T),cx=PX(x+w,y+d),cy=PY(x+w,y+d,T),dx=PX(x,y+d),dy=PY(x,y+d,T);
+  poly([dx,dy,cx,cy,cx,cy+h,dx,dy+h],sh(c,.78*f));poly([bx,by,cx,cy,cx,cy+h,bx,by+h],sh(c,.58*f));poly([ax,ay,bx,by,cx,cy,dx,dy],sh(c,f))}
+function mtile(x,y){const a=((x%24)+24)%24,b=((y%24)+24)%24,h=hh(a,b);
+  if(Math.abs(b-12-4*Math.sin(a/24*6.283))<1.4){box(x,y,-9,1,1,6,'#3b86d6',.9+Math.sin(mt*2+x+y)*.08);return}
+  box(x,y,-6,1,1,6,(x+y)&1?'#4f8a3c':'#478034',.92+h*.16);
+  if(h>.9){box(x+.35,y+.35,0,.3,.3,14,'#6b4a2b');box(x+.05,y+.05,12,.9,.9,12,'#2f6b2a',.85+h*.3);box(x+.25,y+.25,24,.5,.5,8,'#2f6b2a',1.1)}
+  else if(h>.86)box(x+.1,y+.1,0,.8,.8,6+h*8,'#8d8f99');else if(h>.84&&a%6===0){box(x+.1,y+.1,0,.8,.8,20,'#d8c8a8');box(x+.06,y+.06,20,.88,.88,6,'#a8402f')}}
+function rs(){W=innerWidth;H=innerHeight;cv.width=W;cv.height=H}
+function bg(n){const still=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!still)requestAnimationFrame(bg);if(n-lastT<33&&!still)return;mt+=Math.min(.05,(n-lastT)/1000||0);lastT=n;
+  g.setTransform(1,0,0,1,0,0);const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#1d2b5a');gr.addColorStop(.55,'#e0875a');gr.addColorStop(1,'#f5c27a');g.fillStyle=gr;g.fillRect(0,0,W,H);
+  const sc=1,Rw=W/2/sc+80,oy=H*.55,cx=mt*.8,cy=-mt*.8,camx=PX(cx,cy);g.setTransform(sc,0,0,sc,W/2-camx*sc,oy);g.lineWidth=1;
+  const d0=Math.floor(-(oy/sc+90)/16),d1=Math.ceil(((H-oy)/sc+60)/16);for(let d=d0;d<=d1;d++){const a=Math.floor((camx-Rw)/64+d/2),b=Math.ceil((camx+Rw)/64+d/2);for(let x=a;x<=b;x++)mtile(x,d-x)}}
+onresize=rs;rs();requestAnimationFrame(bg);
+
+/* ---------- comunicazione con il server ---------- */
+async function api(p,o){const r=await fetch(p,Object.assign({credentials:'same-origin',headers:{'Content-Type':'application/json','X-Voxelia':'1'}},o||{}));let j={};try{j=await r.json()}catch(e){}
+  if(r.status===401&&p!=='/admin/login'){showLogin();throw new Error('auth')}return{ok:r.ok,j}}
+async function act(o){try{const{ok,j}=await api('/admin/api/act',{method:'POST',body:JSON.stringify(o)});toast(j.ok||j.err||'Fatto',!ok);await poll(1);return ok}catch(e){if(e.message!=='auth')toast('Server non raggiungibile',1);return false}}
+async function poll(force){try{const{ok,j}=await api('/admin/api/state');if(!ok)return;S=j;setOn(1);header();liveRender(force)}catch(e){if(e.message!=='auth')setOn(0)}}
+function setOn(v){$('c-on').innerHTML=`<span class="dot${v?'':' off'}"></span>${v?'Online':'Non raggiungibile'}`}
+function toast(s,bad){const d=document.createElement('div');d.className='toast'+(bad?' bad':'');d.textContent=s;$('toasts').appendChild(d);setTimeout(()=>d.remove(),4200)}
+function showLogin(){document.body.classList.remove('in');clearInterval(timer);timer=null;$('app').hidden=true;$('login').hidden=false;setTimeout(()=>$('pw').focus(),50)}
+async function showApp(){document.body.classList.add('in');$('login').hidden=true;$('app').hidden=false;await poll();go(tab);if(!timer)timer=setInterval(poll,2000)}
+$('lf').onsubmit=async e=>{e.preventDefault();$('lerr').textContent='';const{ok,j}=await api('/admin/login',{method:'POST',body:JSON.stringify({pw:$('pw').value})}).catch(()=>({ok:false,j:{err:'Server non raggiungibile'}}));
+  if(ok){$('pw').value='';showApp()}else $('lerr').textContent=j.err||'Accesso negato'};
+async function logout(){await api('/admin/logout',{method:'POST'}).catch(()=>{});showLogin()}
+
+/* ---------- utilità di formattazione ---------- */
+const DFN=['Facile','Normale','Difficile','Incubo'],DFC=['#8fe0a3','#e8ecf4','#ffc29a','#ff6a6a'];
+const ZN={town:'Aldoria',cas_galleria:'Castello · Galleria',cas_armeria:'Castello · Armeria',cas_prigioni:'Castello · Prigioni',cas_passaggio:'Castello · Passaggio segreto',cas_cripta:'Castello · Cripta dei Re',cas_consiglio:'Castello · Consiglio',cas_archivio:'Castello · Archivio',cas_cucine:'Castello · Cucine',cas_appartamenti:'Castello · Appartamenti',lib_archivio:'Biblioteca · Archivio',tav_camere:'Taverna · Camere',tav_cantina:'Taverna · Cantina',tem_cripta:'Tempio · Cripta',mun_piano:'Municipio · Piano superiore',bar_dorm:'Caserma · Dormitorio',casino_vip:'Casinò · Sala privata',oss_cupola:'Osservatorio · Cupola',occhio:'La stanza dell\'Occhio',cella:'Prigioni · una cella',vecchia:'Aldoria Vecchia',culto:'Stanza del culto',sogno:'Mondo dei sogni',stiva:'Stiva della Vedova Nera',dim_hub:'Dimension · Cabina',dim_west:'Dimension · Far West',dim_vit:'Dimension · Londra',dim_riv:'Dimension · Parigi',dim_war:'Dimension · Fronte',in_motel:'Motel',in_motel2:'Motel · primo piano',in_stanza1:'Motel · stanza 1',in_stanza2:'Motel · stanza 2',in_stanza3:'Motel · stanza 3',in_stanza4:'Motel · stanza 4',in_stanza5:'Motel · stanza 5',in_stanza6:'Motel · stanza 6',mare:'Battaglia navale',arrembaggio:'Arrembaggio',nord:'Quartiere Nobile',campi:'Campi e Mestieri',rovine:'Borgo delle Ceneri',porto:'Porto di Aldoria',in_palazzo:'Palazzo del Conte',in_banca:'Banca di Aldoria',in_fattoria:'Casa della Fattoria',in_segheria:'Segheria',in_cappella:'Cappella in rovina',in_locanda:'Locanda del Gabbiano',in_capitaneria:'Capitaneria di Porto',in_villa1:'Villa Aurora',in_villa2:'Villa Smeraldo',in_villa3:'Villa Iris',in_villa4:'Villa Rossa',in_villa5:'Villa Ponente',in_villa6:'Villa Grigia',in_teatro:'Teatro dell\'Opera',in_mulino:'Mulino',in_fienile:'Fienile',in_casa_p1:'Casa di Teresa',in_casa_p2:'Casa di Nonno Marino',in_casa_p3:'Bottega del Retaio',in_casa_p4:'Casa degli Sposi',in_magazzino1:'Magazzino del Porto',in_magazzino2:'Deposito delle Merci',in_pescheria:'Pescheria',in_cantiere:'Cantiere Navale',in_faro:'Faro di Aldoria',in_galeone:'La Rondine',forest:'Foresta di Elmwood',desert:'Deserto di Khem',peaks:'Picchi Gelidi',arena:'Colosseo',in_castle:'Castello',in_library:'Biblioteca Arcana',in_tavern:'Taverna',in_smith:'Fucina di Borin',in_alch:'Bottega dell\'Erborista',in_temple:'Tempio della Luce',in_house1:'Casa di Rosa',in_house2:'Casa abbandonata',in_house3:'Casa di Gerald',in_casino:'Casinò Fortuna d\'Oro',in_panetteria:'Panetteria di Gemma',in_sartoria:'Sartoria di Ottavia',in_caserma:'Caserma della Guardia',in_scuderia:'Scuderia di Aldoria',in_osservatorio:'Osservatorio',in_municipio:'Municipio di Aldoria'};
+const DGN={tana:'Tana dei Goblin',cripta:'Cripta Dimenticata',piramide:'Piramide di Khem',cristallo:'Caverne di Cristallo',fucina:'Fucina Infernale',abisso:'Abisso Sommerso',cittadella:'Cittadella del Vuoto'};
+const zone=z=>{if(!z)return'—';if(ZN[z])return ZN[z];const[a,f]=z.split('@');return DGN[a]?DGN[a]+' · piano '+(+f||1):z};
+const dur=ms=>{const s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return d?`${d}g ${h}h`:h?`${h}h ${m}m`:m?`${m}m ${s%60}s`:`${s}s`};
+const tm=t=>new Date(t).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const mb=b=>(b/1048576).toFixed(0)+' MB';
+function ping(ms){if(!(ms>=0))return'<span class="mu">…</span>';const c=ms<80?'#4c4':ms<150?'#cc4':ms<300?'#f90':'#e44',n=ms<80?4:ms<150?3:ms<300?2:1;
+  return`<span class="pc" title="Ping ${ms|0} ms">${[4,7,10,13].map((h,i)=>`<i style="height:${h}px;background:${i<n?c:'#7778'}"></i>`).join('')}</span> <b style="color:${c}">${ms|0}</b> <span class="mu">ms</span>`}
+const sw=(id,on,label,desc,fn)=>`<div class="sw"><div><div>${label}</div>${desc?`<div class="d">${desc}</div>`:''}</div><label class="tg"><input type="checkbox" id="${id}" ${on?'checked':''} onchange="${fn}" aria-label="${esc(label)}"><span></span></label></div>`;
+const LOGK={plugin:'Plugin',join:'Ingresso',leave:'Uscita',kick:'Espulsione',ban:'Ban',admin:'Admin',arena:'Arena',trade:'Scambio',item:'Oggetti a terra',dungeon:'Dungeon',sys:'Sistema'};
+
+/* ---------- intestazione e navigazione ---------- */
+const TABS=[['home','🏠','Panoramica'],['pl','👥','Giocatori'],['rooms','🏰','Stanze'],['chat','💬','Chat'],['lb','🏆','Classifica'],['bans','⛔','Ban e silenzi'],['cfg','⚙','Impostazioni'],['log','📜','Registro'],['plug','🧩','Plugin'],['srv','🖥','Server']];
+function header(){if(!S)return;const i=S.info;$('c-pl').textContent=`👥 ${i.players} / ${S.cfg.maxp}`;$('c-up').textContent='⏱ '+dur(i.up);
+  const ev=[];if(S.cfg.lock)ev.push('🔒 Manutenzione');if(S.cfg.xpm>1)ev.push('✨ XP ×'+S.cfg.xpm);if(S.cfg.gm>1)ev.push('💰 Oro ×'+S.cfg.gm);$('c-ev').hidden=!ev.length;$('c-ev').textContent=ev.join(' · ');
+  const n={pl:i.players,rooms:S.rooms.length,lb:S.lb.length,bans:S.bans.length+S.mutes.length,plug:S.plugins?S.plugins.list.filter(p=>p.ok&&!p.off).length:0};for(const k in n){const e=$('nn_'+k);if(e)e.textContent=n[k]}}
+function nav(){$('nav').innerHTML=TABS.map(([k,ic,l])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')" ${tab===k?'aria-current="page"':''}><span class="ic">${ic}</span>${l}${['pl','rooms','lb','bans','plug'].includes(k)?`<span class="n" id="nn_${k}"></span>`:''}</button>`).join('')}
+function go(k){tab=k;nav();header();$('main').innerHTML=(VIEWS[k]||VIEWS.home)();if(k==='lb')lbTable();liveRender(1);scrollTo(0,0)}
+function liveRender(){if(!S)return;const f=LIVE[tab];if(f)f();if(mopen)mopen();const ck=S.info&&S.info.clock,d=document.getElementById('ck-day');if(ck&&d){d.textContent=ck.day;document.getElementById('ck-time').textContent=ck.time}}
+
+/* ---------- pagine ---------- */
+const VIEWS={
+home:()=>`<div class="pagehead"><h2>Panoramica</h2><span class="mu">si aggiorna ogni 2 secondi</span></div>
+  <div class="grid g4" id="tiles"></div>
+  <div class="grid g2" style="margin-top:16px">
+  <div class="card"><h3>📢 Annuncio a tutti</h3><div class="row"><input id="annAll" maxlength="160" placeholder="Es. Il server si riavvia tra 5 minuti"><button class="gold" onclick="ann('annAll','')">Invia</button></div><p class="mu">Compare a tutti i giocatori in alto e nel registro della chat.</p></div>
+  <div class="card"><h3>⚡ Controlli rapidi</h3><div id="quick"></div></div></div>
+  <div class="grid g2"><div class="card"><h3>🔗 Indirizzi</h3><div id="addr"></div></div><div class="card"><h3>📜 Attività recente <button class="sm r" onclick="go('log')">Tutto il registro</button></h3><div id="recent"></div></div></div>`,
+pl:()=>`<div class="pagehead"><h2>Giocatori online</h2><div class="r"><input id="plq" placeholder="🔍 Cerca nome, stanza o IP" value="${esc(plQ)}" oninput="plQ=this.value;LIVE.pl()"></div></div><div class="card"><div class="tw" id="pllist"></div></div>`,
+rooms:()=>roomsView(),
+chat:()=>`<div class="pagehead"><h2>Chat</h2><div class="r"><select id="chf" onchange="chatF=this.value;LIVE.chat()" aria-label="Filtra per stanza"></select><button class="sm red" onclick="confirmBox('Svuotare la cronologia della chat?','Cancella i messaggi salvati nel pannello. I giocatori non perdono nulla.','Svuota',1).then(y=>y&&act({a:'clearchat'}))">Svuota</button></div></div>
+  <div class="card"><div class="chatlist" id="chlist"></div></div>
+  <div class="card"><h3>✍ Scrivi come Admin</h3><div class="row"><select id="chcode" aria-label="Stanza"></select><input id="chtxt" maxlength="120" placeholder="Messaggio" onkeydown="if(event.key==='Enter')say()"><button class="gold" onclick="say()">Invia</button></div>
+  <label style="display:flex;gap:6px;align-items:center;margin-top:6px"><input type="checkbox" id="chann"> Invia come annuncio (in evidenza al centro dello schermo)</label></div>`,
+lb:()=>lbView(),
+bans:()=>`<div class="pagehead"><h2>Ban e silenzi</h2></div>
+  <div class="card"><h3>⛔ Bandisci per nome</h3><div class="row"><input id="bn" maxlength="14" placeholder="Nome del giocatore"><input id="bs" maxlength="100" placeholder="Motivo (facoltativo)"><button class="red" onclick="banName()">Bandisci</button></div><p class="mu">Per bandire anche l'indirizzo IP usa "Gestisci" nella pagina Giocatori, mentre il giocatore è online.</p></div>
+  <div class="card"><h3>Giocatori banditi</h3><div class="tw" id="banlist"></div></div><div class="card"><h3>🔇 Giocatori silenziati</h3><div id="mutelist"></div></div>`,
+cfg:()=>cfgView(),
+log:()=>`<div class="pagehead"><h2>Registro eventi</h2><div class="r"><select onchange="logF=this.value;LIVE.log()" aria-label="Filtra per tipo"><option value="">Tutti gli eventi</option>${Object.entries(LOGK).map(([k,v])=>`<option value="${k}" ${logF===k?'selected':''}>${v}</option>`).join('')}</select></div></div><div class="card"><div class="loglist" id="loglist"></div></div>`,
+plug:()=>`<div class="pagehead"><h2>Plugin</h2><div class="r"><button class="gold" onclick="act({a:'plugreload'}).then(()=>go('plug'))">↻ Ricarica i plugin</button></div></div>
+  <div class="card"><p>I plugin sono file <code>.js</code> (o cartelle con <code>index.js</code>) nella cartella <code id="plugdir"></code>. Il server li carica all'avvio. Dopo averne aggiunto, tolto o modificato uno premi <b>Ricarica</b>: non serve riavviare. Le istruzioni sono in <code>LEGGIMI.md</code>, nella stessa cartella.</p>
+  <p class="mu">I nomi che iniziano con <code>_</code> restano spenti. Il codice che un plugin aggiunge al gioco arriva ai giocatori quando ricaricano la pagina. Installa solo plugin di cui ti fidi: girano sul server con tutti i permessi.</p></div>
+  <div id="pluglist"></div>`,
+srv:()=>`<div class="pagehead"><h2>Server</h2></div><div class="grid g2"><div class="card"><h3>🖥 Informazioni</h3><div class="kv" id="srvinfo"></div></div>
+  <div class="card"><h3>💾 Dati</h3><p class="mu" id="saveinfo"></p><div class="row"><button class="gold" onclick="act({a:'save'})">Salva adesso</button><a class="btn" href="/admin/api/backup">⬇ Scarica backup</a><button onclick="act({a:'gclear'})">📦 Togli gli oggetti a terra</button></div><p class="mu">Gli oggetti gettati a terra dai giocatori spariscono da soli dopo 10 minuti. Il backup contiene classifica, cicli dei dungeon, impostazioni e ban. Per ripristinarlo, a server spento, rinominalo in voxelia-data.json e mettilo nella cartella del server.</p></div></div>
+  <div class="card"><h3>🔑 Cambia password del pannello</h3><div class="row"><input type="password" id="pw0" placeholder="Password attuale" autocomplete="current-password"><input type="password" id="pw1" placeholder="Nuova (almeno 6 caratteri)" autocomplete="new-password"><input type="password" id="pw2" placeholder="Ripeti la nuova" autocomplete="new-password"><button class="gold" onclick="chpw()">Cambia</button></div><p class="mu">Vale fino al prossimo riavvio: all'avvio il server chiede di nuovo la password.</p></div>
+  <div class="card danger"><h3>⚠ Zona pericolosa</h3>
+  <div class="sw"><div><div>Disconnetti tutti i giocatori</div><div class="d">Possono rientrare subito, a meno che il server sia in manutenzione.</div></div><button class="red" onclick="kickAll()">Disconnetti tutti</button></div>
+  <div class="sw"><div><div>Arresta il server</div><div class="d">Salva i dati, disconnette tutti e chiude il programma. Per riavviarlo serve di nuovo <code>node server.js</code>.</div></div><button class="red" onclick="shutdown()">Arresta</button></div></div>`
+};
+const LIVE={
+home(){const i=S.info,pings=S.players.map(p=>p.ping).filter(p=>p>=0),avg=pings.length?Math.round(pings.reduce((a,b)=>a+b,0)/pings.length):-1;
+  const T=[['👥 Giocatori online',i.players+' <span class="mu">/ '+S.cfg.maxp+'</span>'],['📈 Picco',i.peak],['🏰 Stanze attive',S.rooms.filter(r=>r.players.length).length],['⏱ Online da',dur(i.up)],['📶 Ping medio',avg>=0?ping(avg):'<span class="mu">—</span>'],['🔌 Connessioni totali',i.total],['📦 Oggetti a terra',i.ground|0],['🕒 Ora del mondo',i.clock?i.clock.time+' <span class="mu">giorno '+i.clock.day+'</span>':'—'],['🧠 Memoria',mb(i.rss)],['⚙ Carico CPU',i.load.toFixed(2)+' <span class="mu">/ '+i.cpus+' core</span>']];
+  $('tiles').innerHTML=T.map(([l,v])=>`<div class="tile"><div class="l">${l}</div><div class="v">${v}</div></div>`).join('');
+  const q=$('quick');if(q&&!q.contains(document.activeElement))q.innerHTML=sw('q-lock',S.cfg.lock,'🔒 Modalità manutenzione','Nessun nuovo giocatore può entrare. Chi è già dentro resta.',"cfgSet({lock:this.checked})")+sw('q-pvp',S.cfg.pvp,'⚔ PvP nell\'arena','',"cfgSet({pvp:this.checked})")+sw('q-tr',S.cfg.trade,'🤝 Scambi tra giocatori','',"cfgSet({trade:this.checked})")+sw('q-ch',S.cfg.chat,'💬 Chat','',"cfgSet({chat:this.checked})")+`<div class="row" style="margin-top:10px"><button onclick="act({a:'save'})">💾 Salva ora</button><a class="btn" href="/admin/api/backup">⬇ Backup</a></div>`;
+  const o=location.origin;$('addr').innerHTML=`<div class="sw"><div><div>Gioco (questo indirizzo)</div><div class="d"><a style="color:var(--ac)" href="${esc(o)}/" target="_blank" rel="noopener">${esc(o)}/</a></div></div><button class="sm" onclick="copy('${esc(o)}/')">Copia</button></div>`+i.lan.map(ip=>`<div class="sw"><div><div>Stessa rete wifi</div><div class="d">http://${esc(ip)}:${esc(i.port)}/</div></div><button class="sm" onclick="copy('http://${esc(ip)}:${esc(i.port)}/')">Copia</button></div>`).join('')+`<p class="mu">Per gli amici su altre reti condividi l'indirizzo https del tunnel (cloudflared o ngrok). Il pannello admin è sullo stesso indirizzo, con /admin alla fine.</p>`;
+  $('recent').innerHTML=logRows(S.log.slice(-9).reverse())},
+pl(){const q=plQ.toLowerCase(),L=S.players.filter(p=>!q||(p.n+' '+p.code+' '+p.ip).toLowerCase().includes(q));
+  $('pllist').innerHTML=L.length?`<table><tr><th>Eroe</th><th>Stanza</th><th>Posizione</th><th>Lv</th><th>Vita</th><th>Difficoltà</th><th>Oro</th><th>Ping</th><th>IP</th><th>Connesso da</th><th></th></tr>${L.map(p=>`<tr><td><b>${esc(p.n)}</b>${p.muted?' <span title="Silenziato">🔇</span>':''}</td><td>${p.code?esc(p.code):'<span class="mu">—</span>'}</td><td>${esc(zone(p.z))} <span class="mu">(${p.x|0}, ${p.y|0})</span></td><td>${p.lv}</td>
+    <td><div class="hp" title="${p.hp}/${p.mx}"><i style="width:${p.mx?Math.min(100,p.hp/p.mx*100):0}%"></i></div></td><td style="color:${DFC[p.df]||'#aaa'}">${DFN[p.df]||'—'}</td><td>${p.g}</td><td>${ping(p.ping)}</td><td class="mu">${esc(p.ip)}</td><td class="mu">${dur(Date.now()-p.at)}</td><td><button class="sm gold" onclick="manage('${esc(p.id)}')">Gestisci</button></td></tr>`).join('')}</table>`
+    :`<p class="empty">${S.players.length?'Nessun giocatore corrisponde alla ricerca.':'Nessun giocatore online in questo momento.'}</p>`},
+chat(){const codes=[...new Set(S.players.map(p=>p.code).filter(Boolean).concat(S.chat.map(c=>c.code).filter(c=>c&&c!=='*')))].sort();
+  const f=$('chf');if(f&&document.activeElement!==f)f.innerHTML=`<option value="">Tutte le stanze</option>`+codes.map(c=>`<option ${chatF===c?'selected':''}>${esc(c)}</option>`).join('');
+  const cs=$('chcode');if(cs&&document.activeElement!==cs){const v=cs.value;cs.innerHTML=codes.length?codes.map(c=>`<option ${v===c?'selected':''}>${esc(c)}</option>`).join(''):'<option value="">Nessuna stanza</option>'}
+  const L=S.chat.filter(c=>!chatF||c.code===chatF||c.code==='*'),box=$('chlist'),end=box.scrollTop+box.clientHeight>=box.scrollHeight-10;
+  box.innerHTML=L.length?L.map(c=>`<div class="ll cm${c.adm?' adm':''}"><span class="t">${tm(c.t)}</span><span class="tag">${c.code==='*'?'tutti':esc(c.code)}</span><span><b>${esc(c.n)}</b>${c.z?` <span class="mu">(${esc(zone(c.z))})</span>`:''}: ${esc(c.s)}</span></div>`).join(''):'<p class="empty">Nessun messaggio dall\'avvio del server.</p>';if(end)box.scrollTop=box.scrollHeight},
+bans(){$('banlist').innerHTML=S.bans.length?`<table><tr><th>Nome</th><th>IP</th><th>Motivo</th><th>Data</th><th></th></tr>${S.bans.map(b=>`<tr><td><b>${esc(b.n)}</b></td><td class="mu">${esc(b.ip||'—')}</td><td>${esc(b.s||'—')}</td><td class="mu">${new Date(b.t).toLocaleString('it-IT')}</td><td><button class="sm" data-n="${esc(b.n)}" onclick="act({a:'unban',n:this.dataset.n})">Togli ban</button></td></tr>`).join('')}</table>`:'<p class="empty">Nessun giocatore bandito.</p>';
+  $('mutelist').innerHTML=S.mutes.length?S.mutes.map(m=>`<div class="sw"><span>${esc(m)}</span><button class="sm" data-n="${esc(m)}" onclick="act({a:'mute',n:this.dataset.n})">Togli silenzio</button></div>`).join(''):'<p class="empty">Nessun giocatore silenziato.</p>'},
+plug(){const P=S.plugins||{dir:'',list:[]},d=$('plugdir');if(d)d.textContent=P.dir;const box=$('pluglist');if(!box||box.contains(document.activeElement))return;
+  const h=P.list.length?`<div class="grid g2">${P.list.map(p=>{const st=p.off?'<span class="st off">Spento</span>':p.ok?'<span class="st on">Attivo</span>':'<span class="st bad">Errore</span>';
+    return`<div class="card plug"><h4>🧩 ${esc(p.name)} ${p.version?`<span class="mu" style="font-size:13px">v${esc(p.version)}</span>`:''} ${st}</h4>${p.description?`<div>${esc(p.description)}</div>`:''}
+    <div class="mu" style="font-size:13px;margin-top:4px"><code>${esc(p.file)}</code>${p.author?' · di '+esc(p.author):''}${p.off&&p.offWhy?' · '+esc(p.offWhy):''}</div>
+    ${p.err?`<div class="err">⚠ ${esc(p.err)}</div>`:p.errors?`<div class="err">⚠ ${p.errors} ${p.errors===1?'errore':'errori'} dall'avvio. Ultimo: ${esc(p.lastErr)}</div>`:''}
+    ${p.cmds.length?`<div style="margin-top:6px">${p.cmds.map(c=>`<span class="tag" style="margin:2px" title="${esc(c.d)}">/${esc(c.k)}</span>`).join('')}</div>`:''}
+    ${p.routes.length?`<div style="margin-top:6px;font-size:13px">${p.routes.map(r=>r.p.includes('*')||r.m==='POST'?`<code>${esc(r.m==='*'?'':r.m+' ')}${esc(r.p)}</code>`:`<a style="color:var(--ac)" href="${esc(r.p)}" target="_blank" rel="noopener">${esc(r.p)}</a>`).join(' · ')}</div>`:''}
+    ${p.events.length||p.client?`<div class="mu" style="font-size:12.5px;margin-top:6px">${p.events.length?'Eventi: '+esc(p.events.join(', ')):''}${p.client?(p.events.length?' · ':'')+'aggiunge codice al gioco':''}</div>`:''}
+    ${p.offWhy==='nome con _'?'':`<div class="row" style="margin-top:8px"><button class="sm${p.off?' gold':''}" data-id="${esc(p.id)}" onclick="act({a:'plugtoggle',id:this.dataset.id}).then(()=>go('plug'))">${p.off?'Accendi':'Spegni'}</button></div>`}</div>`}).join('')}</div>`
+    :'<div class="card"><p class="empty">Nessun plugin nella cartella. Rinomina <code>_esempio.js</code> in <code>esempio.js</code> e premi Ricarica per provarne uno.</p></div>';if(box._h!==h){box.innerHTML=h;box._h=h}},
+log(){$('loglist').innerHTML=logRows(S.log.filter(l=>!logF||l.k===logF).slice().reverse())},
+srv(){const i=S.info;$('srvinfo').innerHTML=[['Versione Voxelia',i.ver],['Porta',i.port],['Node.js',i.node],['Sistema',i.os],['Online da',dur(i.up)],['Memoria usata',mb(i.rss)+' (heap '+mb(i.heap)+')'],['Carico CPU (1 min)',i.load.toFixed(2)+' su '+i.cpus+' core'],['Messaggi ricevuti',i.msgs.toLocaleString('it-IT')],['Connessioni totali',i.total],['Scambi in corso',i.trades],['Oggetti a terra',i.ground],['Sessioni admin attive',i.sessions],['File dati',i.data]].map(([k,v])=>`<div><span>${k}</span>${esc(v)}</div>`).join('');
+  $('saveinfo').textContent=i.saved?'Ultimo salvataggio: '+new Date(i.saved).toLocaleTimeString('it-IT')+'. Il server salva da solo ogni 3 secondi quando qualcosa cambia.':'Il server salva da solo ogni 3 secondi quando qualcosa cambia.'}
+};
+const logRows=L=>L.length?L.map(l=>`<div class="ll"><span class="t">${tm(l.t)}</span><span class="tag ${esc(l.k)}">${LOGK[l.k]||esc(l.k)}</span><span>${esc(l.s)}</span></div>`).join(''):'<p class="empty">Nessun evento.</p>';
+
+/* ---------- stanze e dungeon ---------- */
+function roomsView(){const R=S.rooms;let h=`<div class="pagehead"><h2>Stanze</h2><div class="r"><button class="sm" onclick="poll().then(()=>go('rooms'))">↻ Aggiorna</button></div></div>`;
+  if(!R.length)return h+'<div class="card"><p class="empty">Nessuna stanza: comparirà quando qualcuno entra con un codice stanza.</p></div>';
+  h+='<div class="grid g2">';for(const r of R){const id=esc(r.code);
+    h+=`<div class="room"><h4>🏰 ${id||'<i>senza codice</i>'} <span class="mu" style="font-size:13px">· ${r.players.length} online</span></h4><div>${r.players.length?r.players.map(n=>`<span class="tag" style="margin:2px">${esc(n)}</span>`).join(''):'<span class="mu">Nessuno online</span>'}</div>`;
+    if(r.code){h+=`<div class="dgg">${S.dungeons.map(d=>`<label>${DGN[d]}<span><input type="number" min="1" max="100" value="${(r.runs[d]||0)+1}" id="rn_${id}_${d}" aria-label="Ciclo di ${DGN[d]}"></span></label>`).join('')}</div>
+      <div class="row"><button class="sm gold" onclick="saveRuns('${id}')">Salva cicli</button><button class="sm red" onclick="confirmBox('Riportare tutti i dungeon al ciclo 1?','Stanza ${id}: le mappe e la difficoltà dei dungeon tornano a quelle iniziali.','Azzera',1).then(y=>y&&act({a:'runsreset',code:'${id}'}).then(()=>go('rooms')))">Azzera dungeon</button></div>
+      <div class="row"><input id="rm_${id}" maxlength="160" placeholder="Annuncio a questa stanza"><button class="sm" onclick="ann('rm_${id}','${id}')">Invia</button></div>`}
+    h+='</div>'}return h+'</div><p class="mu">Il numero è il ciclo del dungeon: più è alto, più nemici e bottino sono forti (+3 livelli per ciclo). Chi è già dentro il dungeon vede il cambiamento quando esce e rientra.</p>'}
+async function saveRuns(code){let n=0;for(const d of S.dungeons){const el=$('rn_'+code+'_'+d),v=Math.max(1,Math.min(100,+el.value||1))-1,cur=(S.rooms.find(r=>r.code===code).runs[d]||0);if(v!==cur){await act({a:'runs',code,d,v});n++}}if(!n)toast('Nessun ciclo modificato');go('rooms')}
+
+/* ---------- classifica ---------- */
+let LBL=[];
+function lbView(){return`<div class="pagehead"><h2>Classifica dell'arena</h2><div class="r"><input placeholder="🔍 Cerca" value="${esc(lbQ)}" oninput="lbQ=this.value;lbTable()" aria-label="Cerca in classifica"><button class="sm" onclick="poll().then(()=>go('lb'))">↻ Aggiorna</button><button class="sm red" onclick="lbReset()">Azzera tutto</button></div></div>
+  <div class="card"><div class="tw" id="lbt"></div><p class="mu">"Punti totali" ordina la classifica; "Da spendere" sono i punti che il giocatore può usare nel negozio del Maestro Kael. Le modifiche arrivano subito al giocatore se è online.</p></div>`}
+function lbTable(){const q=lbQ.toLowerCase();LBL=S.lb.filter(r=>!q||r.n.toLowerCase().includes(q));
+  $('lbt').innerHTML=LBL.length?`<table><tr><th>#</th><th>Eroe</th><th>Vittorie</th><th>Sconfitte</th><th>Punti totali</th><th>Da spendere</th><th></th></tr>${LBL.map((r,i)=>`<tr><td>${['🥇','🥈','🥉'][S.lb.indexOf(r)]||S.lb.indexOf(r)+1}</td><td><b>${esc(r.n)}</b></td>${['w','l','pts','ap'].map(f=>`<td><input type="number" min="0" id="lb_${f}_${i}" value="${r[f]}" aria-label="${f} di ${esc(r.n)}"></td>`).join('')}<td style="white-space:nowrap"><button class="sm gold" onclick="lbSave(${i})">Salva</button> <button class="sm red" onclick="lbDel(${i})">Rimuovi</button></td></tr>`).join('')}</table>`:`<p class="empty">${S.lb.length?'Nessun risultato.':'La classifica è vuota.'}</p>`}
+function lbSave(i){const r=LBL[i];if(!r)return;const v=f=>+$('lb_'+f+'_'+i).value||0;act({a:'lbset',n:r.n,w:v('w'),l:v('l'),pts:v('pts'),ap:v('ap')}).then(()=>lbTable())}
+function lbDel(i){const r=LBL[i];if(!r)return;confirmBox('Rimuovere '+r.n+' dalla classifica?','Vittorie, sconfitte e punti arena di questo eroe verranno cancellati.','Rimuovi',1).then(y=>y&&act({a:'lbdel',n:r.n}).then(()=>go('lb')))}
+function lbReset(){confirmBox('Azzerare tutta la classifica?','Cancella vittorie, sconfitte e punti arena di TUTTI i giocatori. Non si può annullare (salvo un backup).','Azzera tutto',1,'AZZERA').then(y=>y&&act({a:'lbreset'}).then(()=>go('lb')))}
+
+/* ---------- impostazioni ---------- */
+function cfgView(){const c=S.cfg,mul=(id,v)=>`<select id="${id}">${[[1,'Normale ×1'],[1.5,'×1,5'],[2,'Doppio ×2'],[3,'Triplo ×3']].map(([x,l])=>`<option value="${x}" ${+v===x?'selected':''}>${l}</option>`).join('')}</select>`;
+  const ck=S.info.clock||{day:1,time:'--:--'};
+  return`<div class="pagehead"><h2>Impostazioni del server</h2></div><div class="grid g2">
+  <div class="card"><h3>🕒 Ora del mondo</h3><p>Giorno <b id="ck-day">${ck.day}</b>, ore <b id="ck-time">${ck.time}</b></p><p class="mu">Un giorno di gioco dura 24 minuti ed è uguale per tutte le stanze. I prezzi dei mercanti cambiano a mezzanotte. L'ora va solo avanti: scegliendo un'ora già passata si arriva a quell'ora del giorno dopo.</p>
+   <div class="row"><button onclick="act({a:'time',h:6})">🌅 Alba (6:00)</button><button onclick="act({a:'time',h:12})">☀ Mezzogiorno</button><button onclick="act({a:'time',h:19})">🌇 Tramonto (19:00)</button><button onclick="act({a:'time',h:0})">🌙 Mezzanotte</button><button onclick="act({a:'time',next:1})">⏭ Giorno dopo</button></div></div>
+  <div class="card"><h3>🚪 Accesso</h3><div class="sw"><div><div>Giocatori massimi</div><div class="d">Oltre questo numero chi prova a entrare riceve "server pieno".</div></div><input type="number" id="cf-maxp" min="1" max="500" value="${c.maxp}"></div>
+   ${sw('cf-lock',c.lock,'🔒 Modalità manutenzione','Blocca i nuovi ingressi. Utile prima di aggiornare o spegnere il server.','')}
+   <div style="padding-top:8px"><div>Messaggio di benvenuto</div><div class="d mu">Lo vede ogni giocatore appena entra. Lascia vuoto per non mostrarlo.</div><input id="cf-motd" maxlength="160" value="${esc(c.motd)}" placeholder="Es. Benvenuti! Stasera evento doppia esperienza" style="width:100%;margin-top:6px"></div></div>
+  <div class="card"><h3>🎮 Regole di gioco</h3>${sw('cf-pvp',c.pvp,'⚔ PvP nell\'arena','Se spento, nella fossa del Colosseo nessuno può colpire.','')}${sw('cf-trade',c.trade,'🤝 Scambi tra giocatori','','')}${sw('cf-chat',c.chat,'💬 Chat','Se spenta, nessuno può scrivere (tranne l\'admin).','')}</div>
+  <div class="card"><h3>✨ Eventi</h3><p class="mu">Moltiplicano esperienza e oro ottenuti sconfiggendo nemici e aprendo forzieri. I giocatori vedono l'evento in alto a sinistra.</p>
+   <div class="sw"><div>Esperienza</div>${mul('cf-xpm',c.xpm)}</div><div class="sw"><div>Oro</div>${mul('cf-gm',c.gm)}</div></div></div>
+  <div class="row"><button class="gold" onclick="saveCfg()">💾 Salva impostazioni</button><button onclick="go('cfg')">Annulla modifiche</button></div>`}
+function saveCfg(){act({a:'cfg',c:{maxp:+$('cf-maxp').value,lock:$('cf-lock').checked,pvp:$('cf-pvp').checked,trade:$('cf-trade').checked,chat:$('cf-chat').checked,motd:$('cf-motd').value,xpm:+$('cf-xpm').value,gm:+$('cf-gm').value}}).then(()=>go('cfg'))}
+function cfgSet(c){act({a:'cfg',c})}
+
+/* ---------- azioni ---------- */
+function ann(id,code){const s=$(id).value.trim();if(!s)return toast('Scrivi prima il messaggio',1);act({a:'ann',s,code}).then(ok=>{if(ok)$(id).value=''})}
+function say(){const code=$('chcode').value,s=$('chtxt').value.trim();if(!code)return toast('Nessuna stanza attiva',1);if(!s)return;act($('chann').checked?{a:'ann',s,code}:{a:'say',s,code}).then(ok=>{if(ok)$('chtxt').value=''})}
+function banName(){const n=$('bn').value.trim();if(!n)return toast('Scrivi il nome',1);confirmBox('Bandire '+n+'?','Non potrà più entrare con questo nome finché non togli il ban.','Bandisci',1).then(y=>y&&act({a:'ban',n,s:$('bs').value}).then(ok=>{if(ok){$('bn').value='';$('bs').value=''}}))}
+function chpw(){const a=$('pw1').value;if(a!==$('pw2').value)return toast('Le nuove password non coincidono',1);act({a:'pw',old:$('pw0').value,pw:a}).then(ok=>{if(ok)['pw0','pw1','pw2'].forEach(i=>$(i).value='')})}
+function kickAll(){confirmBox('Disconnettere tutti i giocatori?','Tutti tornano al menu del gioco. Puoi aggiungere un motivo:','Disconnetti tutti',1,null,true).then(r=>r&&act({a:'kickall',s:typeof r==='string'?r:''}))}
+function shutdown(){confirmBox('Arrestare il server?','I dati vengono salvati e tutti i giocatori disconnessi. Il pannello smetterà di rispondere finché non riavvii node server.js.','Arresta il server',1,'ARRESTA').then(y=>{if(y)act({a:'shutdown'}).then(()=>setTimeout(()=>setOn(0),1500))})}
+function copy(s){navigator.clipboard&&navigator.clipboard.writeText(s).then(()=>toast('Copiato: '+s),()=>toast('Copia non riuscita',1))}
+
+/* ---------- gestione di un giocatore ---------- */
+function manage(id){mopen=()=>{const p=S.players.find(x=>x.id===id),b=$('mbox');const ae=document.activeElement;if(!(b.contains(ae)&&/INPUT|SELECT/.test(ae.tagName))||!p){const foc=ae&&ae.dataset&&ae.dataset.k;b.innerHTML=manageHTML(p,id);if(foc){const e=b.querySelector('[data-k="'+foc+'"]');e&&e.focus()}}};mopen();$('modal').style.display='flex';const f=$('mbox').querySelector('button');f&&f.focus()}
+function manageHTML(p,id){if(!p)return`<h3>Giocatore disconnesso</h3><p class="mu">Non è più online.</p><div class="row"><button onclick="closeM()">Chiudi</button></div>`;
+  const a=p.ar,n=esc(p.n);
+  return`<h3>👤 ${n} <span class="mu" style="font-size:14px">· Livello ${p.lv}</span></h3><div class="kv">
+  <div><span>Stanza</span>${esc(p.code||'—')}</div><div><span>Posizione</span>${esc(zone(p.z))} (${p.x|0}, ${p.y|0})</div><div><span>Vita</span>${p.hp} / ${p.mx}</div><div><span>Difficoltà</span><b style="color:${DFC[p.df]||'#aaa'}">${DFN[p.df]||'—'}</b></div>
+  <div><span>Oro</span>${p.g}</div><div><span>Ping</span>${ping(p.ping)}</div><div><span>IP</span>${esc(p.ip)}</div><div><span>Connesso da</span>${dur(Date.now()-p.at)}</div>
+  <div><span>Arena</span>${a?a.w+' V · '+a.l+' S · '+a.pts+' punti':'—'}</div><div><span>Chat</span>${p.muted?'🔇 Silenziato':'Può scrivere'}</div></div>
+  <h4>🎁 Regali</h4>
+  <div class="row"><input type="number" id="g-gold" value="500" min="1" aria-label="Oro"><button class="sm" onclick="give('${id}','gold','g-gold')">💰 Dai oro</button><input type="number" id="g-xp" value="200" min="1" aria-label="Esperienza"><button class="sm" onclick="give('${id}','xp','g-xp')">⭐ Dai XP</button></div>
+  <div class="row"><input type="number" id="g-pot" value="5" min="1" max="99" aria-label="Pozioni"><button class="sm" onclick="give('${id}','pot','g-pot')">🧪 Dai pozioni</button><input type="number" id="g-lv" value="1" min="1" max="50" aria-label="Livelli"><button class="sm" onclick="give('${id}','lv','g-lv')">⬆ Dai livelli</button></div>
+  <div class="row"><select id="g-r" aria-label="Rarità"><option value="0">Comune</option><option value="1">Raro</option><option value="2">Epico</option><option value="3" selected>Leggendario</option></select><button class="sm" onclick="act({a:'give',id:'${id}',k:'item',r:+$('g-r').value})">⚔ Dai oggetto casuale</button></div>
+  <h4>✚ Aiuto</h4><div class="row"><button class="sm" onclick="act({a:'give',id:'${id}',k:'heal'})">✚ Cura completa</button><button class="sm" onclick="act({a:'give',id:'${id}',k:'tp'})">🏠 Teletrasporta ad Aldoria</button></div>
+  <h4>🛡 Moderazione</h4><div class="row"><button class="sm" onclick="act({a:'mute',id:'${id}'})">${p.muted?'🔊 Togli silenzio':'🔇 Silenzia in chat'}</button></div>
+  <div class="row"><input id="m-s" maxlength="100" placeholder="Motivo (facoltativo, lo vede il giocatore)"></div>
+  <div class="row"><button class="sm red" onclick="kickP('${id}')">Espelli</button><button class="sm red" onclick="banP('${id}',false)">Bandisci nome</button><button class="sm red" onclick="banP('${id}',true)">Bandisci nome e IP</button></div>
+  <div class="row" style="justify-content:flex-end;margin-top:14px"><button onclick="closeM()">Chiudi</button></div>`}
+function give(id,k,inp){act({a:'give',id,k,n:+$(inp).value})}
+function kickP(id){const p=S.players.find(x=>x.id===id),why=$('m-s').value;if(!p)return;confirmBox('Espellere '+p.n+'?','Torna al menu del gioco. Potrà rientrare subito.','Espelli',1).then(y=>y&&act({a:'kick',id,s:why}).then(closeM))}
+function banP(id,ip){const p=S.players.find(x=>x.id===id),why=$('m-s').value;if(!p)return;confirmBox('Bandire '+p.n+(ip?' e il suo IP':'')+'?',ip?'Blocca il nome e l\'indirizzo '+p.ip+'. Attenzione: chi gioca dalla stessa rete (stessa casa) avrà lo stesso IP.':'Non potrà più entrare con questo nome finché non togli il ban.','Bandisci',1).then(y=>y&&act({a:'ban',id,ip,s:why}).then(closeM))}
+function closeM(){mopen=null;$('modal').style.display='none'}
+$('modal').onclick=e=>{if(e.target.id==='modal')closeM()};
+onkeydown=e=>{if(e.key==='Escape'&&$('modal').style.display==='flex'){if(window.cfRes)window.cfRes(false);closeM()}};
+
+/* ---------- finestra di conferma ---------- */
+function confirmBox(t,d,ok,danger,typed,withText){return new Promise(res=>{window.cfRes=v=>{window.cfRes=null;mopen=null;$('modal').style.display='none';res(v)};mopen=null;
+  $('mbox').innerHTML=`<h3>${esc(t)}</h3><p>${esc(d)}</p>${typed?`<p class="mu">Per confermare scrivi <b>${typed}</b>:</p><input id="cf-t" style="width:100%" autocomplete="off">`:''}${withText?`<input id="cf-x" maxlength="100" style="width:100%" placeholder="Motivo (facoltativo)">`:''}
+  <div class="row" style="justify-content:flex-end;margin-top:16px"><button onclick="cfRes(false)">Annulla</button><button class="${danger?'red':'gold'}" id="cf-ok">${esc(ok)}</button></div>`;
+  $('modal').style.display='flex';const okb=$('cf-ok');
+  okb.onclick=()=>{if(typed&&$('cf-t').value.trim().toUpperCase()!==typed){toast('Scrivi '+typed+' per confermare',1);return}window.cfRes(withText?($('cf-x').value.trim()||true):true)};
+  ($('cf-t')||$('cf-x')||okb).focus()})}
+
+/* ---------- avvio: se la sessione è ancora valida entra subito ---------- */
+api('/admin/api/state').then(r=>{if(r.ok){S=r.j;showApp()}}).catch(()=>{});
+</script></body></html>

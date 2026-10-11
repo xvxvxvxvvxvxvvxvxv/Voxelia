@@ -1,0 +1,894 @@
+// Server di Voxelia 7.4.1: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
+// rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
+// e i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md).
+// Nessuna dipendenza: basta Node.js 16+.   Avvio:  node server.js   (porta 3000, o PORT=xxxx)
+// All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
+// I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
+const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
+const VER = '7.4.1';
+const PORT = process.env.PORT || 3000;
+const DATA = process.env.DATA_FILE || path.join(__dirname, 'voxelia-data.json');
+// il gioco può chiamarsi voxelia.html oppure voxelia_v6.3.html ecc.: si usa il file voxelia*.html più recente
+const gameFile = () => { try { const f = fs.readdirSync(__dirname).filter(n => /^voxelia.*\.html$/i.test(n)).map(n => [n, fs.statSync(path.join(__dirname, n)).mtimeMs]).sort((a, b) => b[1] - a[1]); return f.length ? f[0][0] : 'voxelia.html'; } catch (e) { return 'voxelia.html'; } };
+const page = () => { const h = fs.readFileSync(path.join(__dirname, gameFile()), 'utf8').replace('<!--WS-->', '<script>window.GAME_WS=1</script>'), i = h.lastIndexOf('</body>'), sc = plugScripts(); return i < 0 || !sc ? h : h.slice(0, i) + sc + h.slice(i); };
+const adminPage = () => fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf8');
+
+// Costi del negozio dell'arena (devono coincidere con la tabella AR nel gioco)
+const AR_COST = [40, 25, 35, 25, 120, 150, 90, 90];
+const DUNGEONS = ['tana', 'cripta', 'piramide', 'cristallo', 'fucina', 'abisso', 'cittadella'];
+
+/* ---------- dati persistenti ---------- */
+const CFG_DEF = { maxp: 20, lock: 0, pvp: 1, trade: 1, chat: 1, motd: '', xpm: 1, gm: 1 };
+let DB = { ar: {}, runs: {}, cfg: Object.assign({}, CFG_DEF), bans: [], mutes: [], plug: {}, plugOff: [] };
+try {
+  const j = JSON.parse(fs.readFileSync(DATA, 'utf8'));
+  if (j && typeof j === 'object') DB = { ar: j.ar || {}, runs: j.runs || {}, cfg: Object.assign({}, CFG_DEF, j.cfg || {}), bans: Array.isArray(j.bans) ? j.bans : [], mutes: Array.isArray(j.mutes) ? j.mutes : [], clock: j.clock,
+    plug: j.plug && typeof j.plug === 'object' ? j.plug : {}, plugOff: Array.isArray(j.plugOff) ? j.plugOff : [] };
+} catch (e) {}
+const CFG = DB.cfg;
+// orologio del mondo: minuti di gioco = base + secondi reali passati da t0 (un giorno di gioco dura 24 minuti; si parte dal giorno 1 alle 8:00)
+if (!DB.clock || !isFinite(+DB.clock.base) || !isFinite(+DB.clock.t0)) DB.clock = { base: 480, t0: Date.now() };
+const gameMin = () => DB.clock.base + (Date.now() - DB.clock.t0) / 1000;
+const clockTxt = () => { const m = Math.floor(gameMin()), d = Math.floor(m / 1440) + 1, h = Math.floor((m % 1440) / 60), mi = m % 60; return { day: d, time: String(h).padStart(2, '0') + ':' + String(mi).padStart(2, '0'), min: m }; };
+let dirty = false, lastSave = 0;
+const touch = () => { dirty = true; };
+function flush(sync) {
+  if (!dirty) return; dirty = false;
+  const s = JSON.stringify(DB);
+  if (sync) { try { fs.writeFileSync(DATA, s); lastSave = Date.now(); } catch (e) { console.error('Salvataggio fallito:', e.message); } return; }
+  fs.writeFile(DATA + '.tmp', s, e => { if (!e) fs.rename(DATA + '.tmp', DATA, () => { lastSave = Date.now(); }); else console.error('Salvataggio fallito:', e.message); });
+}
+setInterval(flush, 3000);
+for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { try { unloadPlugins(); } catch (e) {} dirty = true; flush(true); process.exit(0); });
+
+const str = (v, n) => (typeof v === 'string' ? v : '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, n);
+const int = (v, a, b) => Math.max(a, Math.min(b, Math.round(+v || 0)));
+const key = n => String(n || '').toLowerCase();
+function stats(name) { const k = key(name); return DB.ar[k] || (DB.ar[k] = { n: name, w: 0, l: 0, pts: 0, ap: 0 }); }
+const pub = s => ({ w: s.w, l: s.l, pts: s.pts, ap: s.ap });
+
+/* ---------- registro eventi e cronologia chat (in memoria) ---------- */
+const LOG = [], CHAT = []; let logId = 0, chatId = 0;
+const ST = { start: Date.now(), total: 0, peak: 0, msgs: 0 };
+function log(k, s) { LOG.push({ id: ++logId, t: Date.now(), k, s }); if (LOG.length > 400) LOG.shift(); if (k === 'admin' || k === 'ban' || k === 'kick') console.log('[' + k + '] ' + s); }
+function chatPush(code, n, s, z, adm) { CHAT.push({ id: ++chatId, t: Date.now(), code, n, s, z, adm: adm ? 1 : 0 }); if (CHAT.length > 300) CHAT.shift(); }
+
+/* ---------- password del pannello admin ---------- */
+let ADM = null;
+function setPw(pw) { const salt = crypto.randomBytes(16); ADM = { salt, hash: crypto.scryptSync(pw, salt, 32) }; }
+function checkPw(pw) { if (!ADM || typeof pw !== 'string' || pw.length > 200) return false; const h = crypto.scryptSync(pw, ADM.salt, 32); return crypto.timingSafeEqual(h, ADM.hash); }
+const SESS = new Map(), FAILS = new Map();
+// Legge una riga dal terminale mostrando * al posto dei caratteri (i caratteri in più restano per la riga dopo)
+let pend = '';
+function askHidden(q) {
+  return new Promise(res => {
+    const si = process.stdin; process.stdout.write(q); let s = '';
+    const done = rest => { si.removeListener('data', on); si.setRawMode(false); si.pause(); pend = rest; process.stdout.write('\n'); res(s); };
+    const on = ch => {
+      for (let i = 0; i < ch.length; i++) {
+        const c = ch[i];
+        if (c === '\r' || c === '\n') { let k = i + 1; if (c === '\r' && ch[k] === '\n') k++; return done(ch.slice(k)); }
+        if (c === '\u0003') { process.stdout.write('\n'); process.exit(0); }
+        if (c === '\u007f' || c === '\b') { if (s.length) { s = s.slice(0, -1); process.stdout.write('\b \b'); } continue; }
+        if (c >= ' ') { s += c; process.stdout.write('*'); }
+      }
+    };
+    si.setRawMode(true); si.setEncoding('utf8'); si.on('data', on); si.resume();
+    if (pend) { const p = pend; pend = ''; on(p); }
+  });
+}
+async function choosePassword() {
+  if (process.env.ADMIN_PASSWORD) { console.log('Password del pannello admin letta da ADMIN_PASSWORD.'); return process.env.ADMIN_PASSWORD; }
+  if (!process.stdin.isTTY) {
+    const p = crypto.randomBytes(9).toString('base64').replace(/[+/=]/g, 'x');
+    console.log('Nessun terminale interattivo: password del pannello admin generata a caso → ' + p);
+    console.log('(per sceglierla tu, avvia con la variabile ADMIN_PASSWORD)');
+    return p;
+  }
+  console.log('');
+  const t = '   VOXELIA ' + VER + '  ·  Pannello Admin';
+  console.log('  ╔' + '═'.repeat(46) + '╗');
+  console.log('  ║' + t.padEnd(46) + '║');
+  console.log('  ╚' + '═'.repeat(46) + '╝');
+  console.log('  Scegli la password per il pannello admin.');
+  console.log('  Ti servirà per entrare su http://localhost:' + PORT + '/admin');
+  console.log('');
+  for (;;) {
+    const a = await askHidden('  Password (almeno 6 caratteri): ');
+    if (a.length < 6) { console.log('  Troppo corta, riprova.\n'); continue; }
+    const b = await askHidden('  Ripeti la password: ');
+    if (a !== b) { console.log('  Le password non coincidono, riprova.\n'); continue; }
+    console.log('  Password impostata.\n');
+    return a;
+  }
+}
+
+/* ---------- HTTP: gioco e pannello admin ---------- */
+const ipOf = req => String(req.headers['cf-connecting-ip'] || (req.headers['x-forwarded-for'] || '').split(',')[0] || req.socket.remoteAddress || '').trim().replace(/^::ffff:/, '');
+const cookie = (req, k) => { const m = (req.headers.cookie || '').match(new RegExp('(?:^|;\\s*)' + k + '=([^;]+)')); return m ? m[1] : ''; };
+function authed(req) { const t = cookie(req, 'vxadm'), e = t && SESS.get(t); if (!e) return false; if (e < Date.now()) { SESS.delete(t); return false; } return true; }
+const json = (res, code, o, h) => { res.writeHead(code, Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, h || {})); res.end(JSON.stringify(o)); };
+function body(req, cb) { let d = ''; req.on('data', x => { d += x; if (d.length > 20000) req.destroy(); }); req.on('end', () => { let j = {}; try { j = JSON.parse(d || '{}'); } catch (e) {} cb(j && typeof j === 'object' ? j : {}); }); }
+
+const srv = http.createServer((req, res) => {
+  const u = req.url.split('?')[0];
+  if (u === '/' || u === '/index.html') {
+    try { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(page()); }
+    catch (e) { res.writeHead(500); res.end('file del gioco (voxelia*.html) non trovato: mettilo nella stessa cartella di server.js'); }
+    return;
+  }
+  if (u === '/admin' || u === '/admin/') {
+    try { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Frame-Options': 'DENY' }); res.end(adminPage()); }
+    catch (e) { res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('admin.html non trovato: mettilo nella stessa cartella di server.js'); }
+    return;
+  }
+  if (u.startsWith('/admin/')) return adminApi(req, res, u);
+  if (u.startsWith('/plugins/')) return plugRoute(req, res, u);
+  res.writeHead(404); res.end('Non trovato');
+});
+
+function adminApi(req, res, u) {
+  const ip = ipOf(req);
+  if (req.method === 'POST' && req.headers['x-voxelia'] !== '1') return json(res, 403, { err: 'Richiesta non valida' });
+  if (u === '/admin/login' && req.method === 'POST') {
+    const f = FAILS.get(ip) || { n: 0, until: 0 };
+    if (f.until > Date.now()) return json(res, 429, { err: 'Troppi tentativi: riprova tra ' + Math.ceil((f.until - Date.now()) / 1000) + ' secondi' });
+    return body(req, j => {
+      if (!checkPw(j.pw)) {
+        f.n++; if (f.n >= 5) { f.until = Date.now() + 60000 * Math.min(10, f.n - 4); }
+        FAILS.set(ip, f); log('admin', 'Accesso al pannello fallito da ' + ip);
+        return json(res, 401, { err: 'Password errata' });
+      }
+      FAILS.delete(ip);
+      const t = crypto.randomBytes(24).toString('hex'); SESS.set(t, Date.now() + 12 * 3600e3);
+      log('admin', 'Accesso al pannello da ' + ip);
+      const sec = (req.headers['x-forwarded-proto'] || '').includes('https') ? '; Secure' : '';
+      json(res, 200, { ok: 1 }, { 'Set-Cookie': 'vxadm=' + t + '; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200' + sec });
+    });
+  }
+  if (!authed(req)) return json(res, 401, { err: 'Accesso richiesto' });
+  if (u === '/admin/logout' && req.method === 'POST') { SESS.delete(cookie(req, 'vxadm')); return json(res, 200, { ok: 1 }, { 'Set-Cookie': 'vxadm=; Path=/; Max-Age=0' }); }
+  if (u === '/admin/api/state') return json(res, 200, state());
+  if (u === '/admin/api/backup') {
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Content-Disposition': 'attachment; filename="voxelia-backup-' + new Date().toISOString().slice(0, 10) + '.json"' });
+    return res.end(JSON.stringify(DB, null, 1));
+  }
+  if (u === '/admin/api/act' && req.method === 'POST') return body(req, j => { let r; try { r = adminAct(j, req); } catch (e) { r = { err: 'Errore: ' + e.message }; } json(res, r.err ? 400 : 200, r); });
+  json(res, 404, { err: 'Non trovato' });
+}
+
+/* ---------- WebSocket minimale ---------- */
+const clients = new Map(); let nid = 1;
+const frame = s => { const b = Buffer.from(s), l = b.length; let h;
+  if (l < 126) h = Buffer.from([0x81, l]);
+  else if (l < 65536) { h = Buffer.alloc(4); h[0] = 0x81; h[1] = 126; h.writeUInt16BE(l, 2); }
+  else { h = Buffer.alloc(10); h[0] = 0x81; h[1] = 127; h.writeBigUInt64BE(BigInt(l), 2); }
+  return Buffer.concat([h, b]); };
+const send = (c, o) => { try { c.sock.write(frame(JSON.stringify(o))); } catch (e) {} };
+const players = () => [...clients.values()].filter(c => c.name && !c.gone);
+function kick(c, s) { if (c.gone) return; c.gone = 1; send(c, { t: 'kick', s }); setTimeout(() => { try { c.sock.end(); } catch (e) {} }, 300); }
+
+function parse(c) {
+  for (;;) {
+    const b = c.buf; if (b.length < 2) return;
+    const op = b[0] & 15; let l = b[1] & 127, o = 2;
+    if (l === 126) { if (b.length < 4) return; l = b.readUInt16BE(2); o = 4; }
+    else if (l === 127) { if (b.length < 10) return; l = Number(b.readBigUInt64BE(2)); o = 10; }
+    const m = (b[1] & 128) ? 4 : 0;
+    if (l > 65536) { c.sock.destroy(); return; }
+    if (b.length < o + m + l) return;
+    const d = Buffer.from(b.subarray(o + m, o + m + l));
+    if (m) { const k = b.subarray(o, o + 4); for (let i = 0; i < d.length; i++) d[i] ^= k[i & 3]; }
+    c.buf = b.subarray(o + m + l);
+    if (op === 8) { c.sock.end(); return; }
+    if (op === 9) { c.sock.write(Buffer.from([0x8A, 0])); continue; }
+    if (op === 1) { ST.msgs++; let j; try { j = JSON.parse(d.toString()); } catch (e) { continue; } if (j && typeof j === 'object' && !Array.isArray(j) && !c.gone) try { if (plugMsg(c, j) !== false) onMsg(c, j); } catch (e) { console.error(e); } }
+  }
+}
+
+const inArena = c => typeof c.p.rm === 'string' && c.p.rm.endsWith('-arena');
+const cool = {}; // coppie vincitore>sconfitto premiate di recente (anti-farm)
+const pubCfg = () => ({ pvp: CFG.pvp, trade: CFG.trade, chat: CFG.chat, xpm: CFG.xpm, gm: CFG.gm });
+function applyCfg(c) {
+  if (!c || typeof c !== 'object') return;
+  if ('maxp' in c) CFG.maxp = int(c.maxp, 1, 500);
+  for (const k of ['lock', 'pvp', 'trade', 'chat']) if (k in c) CFG[k] = c[k] ? 1 : 0;
+  if ('motd' in c) CFG.motd = str(c.motd, 160);
+  if ('xpm' in c) CFG.xpm = Math.max(.5, Math.min(5, +c.xpm || 1));
+  if ('gm' in c) CFG.gm = Math.max(.5, Math.min(5, +c.gm || 1));
+  touch(); for (const p of players()) send(p, { t: 'cfg', c: pubCfg() });
+}
+const banOf = c => DB.bans.find(b => (b.k && b.k === key(c.name)) || (b.ip && b.ip === c.ip));
+
+function onMsg(c, j) {
+  switch (j.t) {
+    case 'hello': {
+      c.code = str(j.code, 16).toLowerCase().replace(/[^a-z0-9]/g, '');
+      c.name = str(j.name, 14) || 'Eroe';
+      const b = banOf(c);
+      if (b) { log('ban', 'Rifiutato ' + c.name + ' (' + c.ip + '): bandito'); kick(c, 'Sei stato bandito da questo server' + (b.s ? ': ' + b.s : '.')); return; }
+      if (CFG.lock) { kick(c, 'Il server è in manutenzione: per ora non si accettano nuovi giocatori. Riprova più tardi.'); return; }
+      if (players().length > CFG.maxp) { kick(c, 'Il server è pieno (' + CFG.maxp + ' giocatori). Riprova più tardi.'); return; }
+      send(c, { t: 'id', id: c.id, ar: pub(stats(c.name)), runs: DB.runs[c.code] || {}, gm: gameMin() });
+      send(c, { t: 'cfg', c: pubCfg() });
+      if (CFG.motd) send(c, { t: 'ann', s: CFG.motd, adm: 1 });
+      if (!c.joined) {
+        c.joined = 1; log('join', c.name + ' è entrato' + (c.code ? ' nella stanza ' + c.code : '') + ' (' + c.ip + ')');
+        if (c.code) for (const v of clients.values()) if (v !== c && v.code === c.code) send(v, { t: 'join', n: c.name, j: 1 });
+        emit('join', c);
+      }
+      const n = players().length; if (n > ST.peak) ST.peak = n;
+      break;
+    }
+    case 'p': if (j.d && typeof j.d === 'object' && !Array.isArray(j.d)) { const oz = c.p.zk; c.p = j.d; if (c.joined && typeof j.d.zk === 'string' && j.d.zk !== oz) emit('zone', c, str(j.d.zk, 24), str(oz, 24)); } break;
+    // ---- ping: il server manda 'pi' con l'ora, il client risponde 'po'; il tempo di andata e ritorno è il ping ----
+    case 'po': { const r = Date.now() - (+j.s || 0); if (r >= 0 && r < 60000) c.ping = c.ping == null ? r : Math.round(c.ping * 0.6 + r * 0.4); break; }
+    // ---- lista dei giocatori della stanza, in qualunque zona siano ----
+    case 'who': {
+      if (!c.code) return;
+      const list = [];
+      for (const v of players()) if (v.code === c.code) list.push({ id: v.id, n: v.name, lv: v.p.lv | 0, z: str(v.p.zk, 24), x: +v.p.x || 0, y: +v.p.y || 0, hp: v.p.hp | 0, mx: v.p.mx | 0, ping: v.ping == null ? -1 : v.ping, me: v === c ? 1 : 0 });
+      list.sort((a, b) => b.me - a.me || a.n.localeCompare(b.n));
+      send(c, { t: 'who', list });
+      break;
+    }
+
+    // ---- arena PvP: l'attaccante manda il colpo, la vittima applica le sue difese ----
+    case 'hit': {
+      if (!CFG.pvp) { if (!c.pvpWarn || Date.now() - c.pvpWarn > 5000) { c.pvpWarn = Date.now(); send(c, { t: 'err', s: 'Il PvP è disattivato dall\'admin' }); } return; }
+      const v = clients.get(j.to);
+      if (!v || v === c || !inArena(c) || v.p.rm !== c.p.rm) return;
+      const d = Math.max(1, Math.min(99999, Math.round(+j.d || 0)));
+      v.lastHit = { by: c.id, at: Date.now() };
+      send(v, { t: 'hit', from: c.id, d, cr: !!j.cr, n: c.name });
+      break;
+    }
+    case 'ko': { // la vittima dichiara la propria sconfitta: vale solo se l'ultimo colpo è recente e dell'avversario indicato
+      const k = clients.get(j.by);
+      if (!k || !c.lastHit || c.lastHit.by !== j.by || Date.now() - c.lastHit.at > 6000 || k.p.rm !== c.p.rm) return;
+      c.lastHit = null;
+      const pair = key(k.name) + '>' + key(c.name), now = Date.now();
+      if (key(k.name) === key(c.name) || cool[pair] > now) {
+        send(k, { t: 'ann', s: 'Vittoria non conteggiata: hai già battuto ' + c.name + ' meno di 30 secondi fa.' });
+        return;
+      }
+      cool[pair] = now + 30000;
+      const ks = stats(k.name), vs = stats(c.name);
+      const pts = Math.min(30, 10 + Math.max(0, ((c.p.lv | 0) - (k.p.lv | 0)) * 2));
+      ks.w++; ks.pts += pts; ks.ap += pts; vs.l++; touch();
+      log('arena', k.name + ' ha sconfitto ' + c.name + ' (+' + pts + ' punti)'); emit('arena', k, c, pts);
+      send(k, { t: 'ar', ar: pub(ks), gain: pts, vs: c.name });
+      send(c, { t: 'ar', ar: pub(vs), lost: k.name });
+      for (const v of clients.values()) if (v.p.rm === c.p.rm) send(v, { t: 'ann', s: '⚔ ' + k.name + ' ha sconfitto ' + c.name + '! (+' + pts + ' punti arena)' });
+      break;
+    }
+    case 'buy': {
+      const i = j.k | 0; if (i < 0 || i >= AR_COST.length || !c.name) return;
+      const s = stats(c.name);
+      if (s.ap < AR_COST[i]) { send(c, { t: 'err', s: 'Punti arena insufficienti' }); return; }
+      s.ap -= AR_COST[i]; touch();
+      send(c, { t: 'bought', k: i, ar: pub(s) });
+      break;
+    }
+    // ---- profilo: A chiede, il server inoltra a B, B risponde; i risultati dell'arena li aggiunge il server ----
+    case 'prof': {
+      const v = clients.get(j.to); if (!v || v === c || !c.code || v.code !== c.code) return;
+      send(v, { t: 'profq', from: c.id });
+      break;
+    }
+    case 'profr': {
+      const v = clients.get(j.to); if (!v || v === c || v.code !== c.code || !j.d || typeof j.d !== 'object' || Array.isArray(j.d)) return;
+      const k = DB.ar[key(c.name)];
+      send(v, { t: 'prof', from: c.id, d: j.d, ar: k ? pub(k) : { w: 0, l: 0, pts: 0 } });
+      break;
+    }
+    case 'lb': {
+      const list = Object.values(DB.ar).filter(s => s.w || s.l).sort((a, b) => b.pts - a.pts || b.w - a.w).slice(0, 50)
+        .map(s => ({ n: s.n, w: s.w, l: s.l, pts: s.pts }));
+      send(c, { t: 'lb', list });
+      break;
+    }
+    // ---- dungeon: quando un boss cade, il dungeon passa al ciclo successivo per tutta la stanza ----
+    case 'dgdone': {
+      if (!c.code) return;
+      const d = str(j.d, 20); if (!DUNGEONS.includes(d)) return;
+      const r = DB.runs[c.code] || (DB.runs[c.code] = {});
+      if ((r[d] || 0) !== (j.run | 0)) return;
+      r[d] = (r[d] || 0) + 1; touch();
+      log('dungeon', c.name + ' ha completato ' + d + ' nella stanza ' + c.code + ' (ora ciclo ' + (r[d] + 1) + ')'); emit('dungeon', c, d, r[d] + 1);
+      for (const v of clients.values()) if (v.code === c.code) send(v, { t: 'runs', runs: r });
+      break;
+    }
+    case 'tr': trade(c, j); break;
+    // ---- oggetti gettati a terra: visibili a chi è nella stessa stanza e zona, il primo che li raccoglie li prende ----
+    case 'gget': { if (!okRm(c, j.rm)) return; const G = GROUND.get(j.rm); send(c, { t: 'glist', rm: j.rm, list: G ? [...G.values()] : [] }); break; }
+    case 'drop': {
+      if (!okRm(c, j.rm)) return;
+      const it = cleanItem(j.it), x = +j.x, y = +j.y, now = Date.now();
+      if (!it || !isFinite(x) || !isFinite(y)) { send(c, { t: 'gerr', u: str(j.it && j.it.u, 12), s: 'Questo oggetto non si può gettare a terra' }); return; }
+      if (now - (c.ld || 0) < 300) { send(c, { t: 'gerr', u: it.u, s: 'Piano: aspetta un attimo prima di gettare un altro oggetto' }); return; }
+      c.ld = now;
+      let G = GROUND.get(j.rm); if (!G) GROUND.set(j.rm, G = new Map());
+      if (G.size >= 60) { const old = G.keys().next().value; G.delete(old); rmSend(j.rm, { t: 'gdel', rm: j.rm, id: old }); }
+      const g = { gid: 'g' + (gidN++), it, x: Math.round(x * 100) / 100, y: Math.round(y * 100) / 100, by: c.name, t: Date.now() };
+      G.set(g.gid, g); rmSend(j.rm, { t: 'gadd', rm: j.rm, g }, c);
+      log('item', c.name + ' ha gettato a terra ' + it.n + ' (' + j.rm.slice(c.code.length + 1) + ')'); emit('drop', c, Object.assign({}, it));
+      break;
+    }
+    case 'gtake': {
+      if (!okRm(c, j.rm)) return; const G = GROUND.get(j.rm), g = G && G.get(String(j.id));
+      if (!g) { send(c, { t: 'gdel', rm: j.rm, id: String(j.id) }); send(c, { t: 'err', s: 'Qualcuno l\'ha già raccolto' }); return; }
+      if (!c.p || c.p.rm !== j.rm || Math.hypot((+c.p.x || 0) - g.x, (+c.p.y || 0) - g.y) > 3) { send(c, { t: 'err', s: 'Sei troppo lontano per raccoglierlo' }); return; }
+      G.delete(g.gid); if (!G.size) GROUND.delete(j.rm);
+      send(c, { t: 'ggot', it: g.it, by: g.by }); rmSend(j.rm, { t: 'gdel', rm: j.rm, id: g.gid }, c);
+      log('item', c.name + ' ha raccolto ' + g.it.n + (g.by !== c.name ? ' (lasciato da ' + g.by + ')' : '')); emit('pickup', c, Object.assign({}, g.it), g.by);
+      break;
+    }
+    // ---- chat: arriva a tutta la stanza (stesso codice), in qualunque zona si trovino ----
+    case 'chat': {
+      let s = str(j.s, 60); const now = Date.now(); if (!s || !c.code || now - (c.lc || 0) < 400) return; c.lc = now;
+      if (s[0] === '/') { runCommand(c, s); return; }
+      if (!CFG.chat) { send(c, { t: 'err', s: 'La chat è disattivata dall\'admin' }); return; }
+      if (DB.mutes.includes(key(c.name))) { send(c, { t: 'err', s: 'Sei stato silenziato dall\'admin: gli altri non vedono i tuoi messaggi' }); return; }
+      const z = str(j.z, 24);
+      const ps = plugChat(c, s, z); if (ps === false) return; s = ps;
+      chatPush(c.code, c.name, s, z);
+      for (const v of clients.values()) if (v !== c && v.code === c.code) send(v, { t: 'chat', n: c.name, s, z });
+      break;
+    }
+  }
+}
+
+/* ---------- oggetti a terra: per stanza+zona (la chiave "rm" che il gioco usa anche per la presenza) ---------- */
+const GROUND = new Map(); let gidN = 1;
+const okRm = (c, rm) => typeof rm === 'string' && rm.length <= 60 && !!c.code && rm.startsWith(c.code + '-');
+function rmSend(rm, o, also) { for (const v of clients.values()) if (!v.gone && (v.p.rm === rm || v === also)) send(v, o); }
+const groundCount = () => { let n = 0; for (const G of GROUND.values()) n += G.size; return n; };
+// dopo 10 minuti gli oggetti a terra spariscono
+setInterval(() => { const lim = Date.now() - 10 * 60e3; for (const [rm, G] of GROUND) { for (const [id, g] of G) if (g.t < lim) { G.delete(id); rmSend(rm, { t: 'gdel', rm, id }); } if (!G.size) GROUND.delete(rm); } }, 15000);
+
+/* ---------- scambi: il server tiene le due offerte, lo scambio parte solo quando entrambi confermano ---------- */
+const trades = new Map();
+function cleanItem(o) {
+  if (!o || typeof o !== 'object' || o.ar) return null;
+  if (typeof o.s !== 'string' || !['w', 'h', 'c', 's'].includes(o.s)) return null;
+  const n = (v, a, b) => Math.max(a, Math.min(b, Math.round(+v || 0)));
+  return { u: str(o.u, 12) || crypto.randomBytes(4).toString('hex'), s: o.s, r: n(o.r, 0, 3), v: n(o.v, 1, 99999), n: str(o.n, 40) || 'Oggetto', p: n(o.p, 0, 999999), hp: n(o.hp, 0, 9999), cr: n(o.cr, 0, 50), up: n(o.up, 0, 5) };
+}
+function trSync(S) { for (const p of [S.a, S.b]) { const o = p === S.a ? S.b : S.a; send(p, { t: 'tr', a: 'st', n: o.name, you: S.o[p.id], them: S.o[o.id] }); } }
+function trEnd(S, m) { trades.delete(S.a.id); trades.delete(S.b.id); if (m) for (const p of [S.a, S.b]) send(p, { t: 'tr', a: 'end', s: m }); }
+function trade(c, j) {
+  if (j.a === 'req') {
+    if (!CFG.trade) { send(c, { t: 'tr', a: 'end', s: 'Gli scambi sono disattivati dall\'admin' }); return; }
+    const v = clients.get(j.to);
+    if (!v || v === c || trades.has(c.id) || trades.has(v.id) || v.p.rm !== c.p.rm) { send(c, { t: 'tr', a: 'end', s: v && v.p.rm !== c.p.rm ? 'Per scambiare dovete essere nella stessa zona' : 'Giocatore non disponibile per uno scambio' }); return; }
+    v.treq = c.id; send(v, { t: 'tr', a: 'req', from: c.id, n: c.name }); send(c, { t: 'tr', a: 'sent', n: v.name });
+  } else if (j.a === 'no') {
+    const v = clients.get(j.to); if (c.treq === j.to) c.treq = null;
+    if (v) send(v, { t: 'tr', a: 'end', s: c.name + ' ha rifiutato lo scambio' });
+  } else if (j.a === 'acc') {
+    const v = clients.get(j.to);
+    if (!v || c.treq !== v.id || trades.has(c.id) || trades.has(v.id)) { send(c, { t: 'tr', a: 'end', s: 'La richiesta di scambio è scaduta' }); return; }
+    c.treq = null;
+    const S = { a: v, b: c, o: { [v.id]: { it: [], g: 0, ok: false }, [c.id]: { it: [], g: 0, ok: false } } };
+    trades.set(v.id, S); trades.set(c.id, S); trSync(S);
+  } else {
+    const S = trades.get(c.id); if (!S) return;
+    const me = S.o[c.id], oth = S.a === c ? S.b : S.a;
+    if (j.a === 'off') {
+      me.it = (Array.isArray(j.it) ? j.it : []).slice(0, 12).map(cleanItem).filter(Boolean);
+      me.g = Math.max(0, Math.min(1e7, j.g | 0));
+      for (const k in S.o) S.o[k].ok = false; trSync(S);
+    } else if (j.a === 'ok') {
+      me.ok = true;
+      if (S.o[oth.id].ok) {
+        send(c, { t: 'tr', a: 'done', give: me, get: S.o[oth.id], n: oth.name }); send(oth, { t: 'tr', a: 'done', give: S.o[oth.id], get: me, n: c.name });
+        log('trade', c.name + ' e ' + oth.name + ' hanno scambiato ' + me.it.length + '+' + S.o[oth.id].it.length + ' oggetti e ' + me.g + '/' + S.o[oth.id].g + ' oro');
+        emit('trade', c, oth, { give: me.it.map(i => Object.assign({}, i)), gold: me.g }, { give: S.o[oth.id].it.map(i => Object.assign({}, i)), gold: S.o[oth.id].g });
+        trEnd(S);
+      } else trSync(S);
+    } else if (j.a === 'x') trEnd(S, c.name + ' ha annullato lo scambio');
+  }
+}
+
+/* ---------- pannello admin: stato e comandi ---------- */
+function lanIps() { const r = []; for (const l of Object.values(os.networkInterfaces()).flat()) if (l && l.family === 'IPv4' && !l.internal) r.push(l.address); return r; }
+function state() {
+  const pl = players().map(c => ({ id: c.id, n: c.name, code: c.code, z: str(c.p.zk, 24), x: +c.p.x || 0, y: +c.p.y || 0, lv: c.p.lv | 0, hp: c.p.hp | 0, mx: c.p.mx | 0, df: c.p.df == null ? -1 : c.p.df | 0, g: c.p.g | 0, ping: c.ping == null ? -1 : c.ping, ip: c.ip, at: c.at, muted: DB.mutes.includes(key(c.name)) ? 1 : 0, ar: DB.ar[key(c.name)] ? pub(DB.ar[key(c.name)]) : null }));
+  const rooms = {};
+  for (const p of pl) { const r = rooms[p.code] || (rooms[p.code] = { code: p.code, players: [] }); r.players.push(p.n); }
+  for (const code in DB.runs) if (!rooms[code]) rooms[code] = { code, players: [] };
+  for (const r of Object.values(rooms)) r.runs = DB.runs[r.code] || {};
+  const mem = process.memoryUsage();
+  return {
+    info: { ver: VER, up: Date.now() - ST.start, port: PORT, node: process.version, os: os.type() + ' ' + os.release(), rss: mem.rss, heap: mem.heapUsed, load: os.loadavg()[0], cpus: os.cpus().length,
+      players: pl.length, clock: clockTxt(), peak: ST.peak, total: ST.total, msgs: ST.msgs, ground: groundCount(), data: DATA, saved: lastSave, lan: lanIps(), sessions: SESS.size, trades: trades.size / 2 },
+    players: pl, rooms: Object.values(rooms).sort((a, b) => b.players.length - a.players.length || a.code.localeCompare(b.code)),
+    cfg: CFG, bans: DB.bans, mutes: DB.mutes,
+    lb: Object.entries(DB.ar).map(([k, s]) => ({ k, n: s.n, w: s.w, l: s.l, pts: s.pts, ap: s.ap })).sort((a, b) => b.pts - a.pts || b.w - a.w),
+    chat: CHAT.slice(-150), log: LOG.slice(-250), dungeons: DUNGEONS, plugins: plugState()
+  };
+}
+function adminAct(j, req) {
+  const a = j.a, v = j.id ? clients.get(j.id) : null, who = v ? v.name : '';
+  const need = () => { if (!v || v.gone) throw new Error('giocatore non più connesso'); };
+  switch (a) {
+    case 'kick': need(); kick(v, 'Sei stato espulso dal server' + (str(j.s, 100) ? ': ' + str(j.s, 100) : '.')); log('kick', who + ' espulso' + (j.s ? ' (' + str(j.s, 100) + ')' : '')); return { ok: 'Hai espulso ' + who };
+    case 'ban': {
+      const n = v ? v.name : str(j.n, 14); if (!n) return { err: 'Scrivi il nome del giocatore' };
+      if (DB.bans.some(b => b.k === key(n))) return { err: n + ' è già bandito' };
+      const b = { n, k: key(n), ip: j.ip && v ? v.ip : '', s: str(j.s, 100), t: Date.now() }; DB.bans.push(b); touch();
+      for (const c of players()) if (banOf(c)) kick(c, 'Sei stato bandito da questo server' + (b.s ? ': ' + b.s : '.'));
+      log('ban', n + ' bandito' + (b.ip ? ' (anche IP ' + b.ip + ')' : '') + (b.s ? ': ' + b.s : '')); return { ok: n + ' è stato bandito' };
+    }
+    case 'unban': { const i = DB.bans.findIndex(b => b.k === key(j.n)); if (i < 0) return { err: 'Ban non trovato' }; const b = DB.bans.splice(i, 1)[0]; touch(); log('ban', b.n + ' sbandito'); return { ok: b.n + ' può tornare a giocare' }; }
+    case 'mute': {
+      const k = key(v ? v.name : j.n); if (!k) return { err: 'Nessun giocatore' };
+      const i = DB.mutes.indexOf(k), on = i < 0; if (on) DB.mutes.push(k); else DB.mutes.splice(i, 1); touch();
+      for (const c of players()) if (key(c.name) === k) send(c, { t: 'ann', s: on ? 'Sei stato silenziato dall\'admin.' : 'L\'admin ti ha tolto il silenzio.', adm: 1 });
+      log('admin', (v ? v.name : j.n) + (on ? ' silenziato' : ' non più silenziato')); return { ok: (v ? v.name : j.n) + (on ? ' silenziato' : ' può di nuovo scrivere') };
+    }
+    case 'give': {
+      need(); const k = j.k, n = int(j.n, 1, k === 'lv' ? 50 : k === 'pot' ? 99 : 1e6), r = int(j.r, 0, 3);
+      if (!['gold', 'xp', 'pot', 'lv', 'item', 'heal', 'tp'].includes(k)) return { err: 'Azione sconosciuta' };
+      send(v, { t: 'adm', a: k, n, r });
+      const desc = { gold: n + ' oro', xp: n + ' XP', pot: n + (n === 1 ? ' pozione' : ' pozioni'), lv: n + (n === 1 ? ' livello' : ' livelli'), item: 'un oggetto ' + ['comune', 'raro', 'epico', 'leggendario'][r], heal: 'cura completa', tp: 'teletrasporto ad Aldoria' }[k];
+      log('admin', 'A ' + who + ': ' + desc); return { ok: who + ': ' + desc };
+    }
+    case 'ann': {
+      const s = str(j.s, 160); if (!s) return { err: 'Scrivi il messaggio' }; const code = str(j.code, 16);
+      let n = 0; for (const c of players()) if (!code || c.code === code) { send(c, { t: 'ann', s: '📢 ' + s, adm: 1 }); n++; }
+      chatPush(code || '*', '📢 Annuncio', s, '', 1); log('admin', 'Annuncio' + (code ? ' alla stanza ' + code : ' a tutti') + ': ' + s); return { ok: 'Annuncio inviato a ' + n + ' giocatori' };
+    }
+    case 'say': {
+      const s = str(j.s, 120), code = str(j.code, 16); if (!s || !code) return { err: 'Scegli la stanza e scrivi il messaggio' };
+      for (const c of players()) if (c.code === code) send(c, { t: 'chat', n: 'Admin', s, z: '', adm: 1 });
+      chatPush(code, 'Admin', s, '', 1); return { ok: 'Messaggio inviato' };
+    }
+    case 'clearchat': CHAT.length = 0; return { ok: 'Cronologia della chat svuotata' };
+    case 'gclear': { const n = groundCount(); for (const [rm, G] of GROUND) for (const id of G.keys()) rmSend(rm, { t: 'gdel', rm, id }); GROUND.clear(); log('admin', 'Rimossi ' + n + ' oggetti a terra'); return { ok: 'Rimossi ' + n + ' oggetti a terra' }; }
+    case 'lbset': {
+      const r = DB.ar[key(j.n)]; if (!r) return { err: 'Giocatore non trovato in classifica' };
+      r.w = int(j.w, 0, 1e6); r.l = int(j.l, 0, 1e6); r.pts = int(j.pts, 0, 1e7); r.ap = int(j.ap, 0, 1e7); touch();
+      for (const c of players()) if (key(c.name) === key(j.n)) send(c, { t: 'ar', ar: pub(r) });
+      log('admin', 'Classifica modificata: ' + r.n + ' → ' + r.w + 'V ' + r.l + 'S ' + r.pts + ' punti, ' + r.ap + ' da spendere'); return { ok: 'Dati di ' + r.n + ' salvati' };
+    }
+    case 'lbdel': {
+      const k = key(j.n), r = DB.ar[k]; if (!r) return { err: 'Non trovato' }; delete DB.ar[k]; touch();
+      for (const c of players()) if (key(c.name) === k) send(c, { t: 'ar', ar: pub(stats(c.name)) });
+      log('admin', 'Rimosso dalla classifica: ' + r.n); return { ok: r.n + ' rimosso dalla classifica' };
+    }
+    case 'lbreset': DB.ar = {}; touch(); for (const c of players()) send(c, { t: 'ar', ar: pub(stats(c.name)) }); log('admin', 'Classifica azzerata'); return { ok: 'Classifica azzerata' };
+    case 'runs': {
+      const code = str(j.code, 16), d = str(j.d, 20); if (!code || !DUNGEONS.includes(d)) return { err: 'Stanza o dungeon non valido' };
+      const r = DB.runs[code] || (DB.runs[code] = {}); r[d] = int(j.v, 0, 99); touch();
+      for (const c of players()) if (c.code === code) send(c, { t: 'runs', runs: r });
+      log('admin', 'Stanza ' + code + ': ' + d + ' portato al ciclo ' + (r[d] + 1)); return { ok: d + ' ora è al ciclo ' + (r[d] + 1) };
+    }
+    case 'runsreset': {
+      const code = str(j.code, 16); delete DB.runs[code]; touch();
+      for (const c of players()) if (c.code === code) send(c, { t: 'runs', runs: {} });
+      log('admin', 'Stanza ' + code + ': dungeon riportati al ciclo 1'); return { ok: 'Dungeon della stanza ' + code + ' azzerati' };
+    }
+    case 'time': {
+      // sposta l'ora del mondo: h = ora del giorno (0-23,99); next = passa al giorno dopo alla stessa ora
+      const m = gameMin(), day = Math.floor(m / 1440);
+      let nm = j.next ? m + 1440 : day * 1440 + Math.max(0, Math.min(23.99, +j.h || 0)) * 60;
+      if (!j.next && nm < m - 1) nm += 1440; // l'ora scelta è già passata oggi: si va avanti fino a quell'ora di domani
+      DB.clock = { base: nm, t0: Date.now() }; touch();
+      const ct = clockTxt();
+      for (const p of players()) send(p, { t: 'time', gm: gameMin(), s: 'L\'admin ha cambiato l\'ora: giorno ' + ct.day + ', ore ' + ct.time });
+      log('admin', 'Ora del mondo: giorno ' + ct.day + ', ore ' + ct.time); return { ok: 'Ora del mondo: giorno ' + ct.day + ', ore ' + ct.time };
+    }
+    case 'cfg': { const c = j.c || {}; applyCfg(c); log('admin', 'Impostazioni aggiornate: ' + Object.keys(c).join(', ')); return { ok: 'Impostazioni salvate' }; }
+    case 'plugreload': { const r = reloadPlugins(); log('admin', 'Plugin ricaricati: ' + r.ok + ' attivi' + (r.err ? ', ' + r.err + ' con errori' : '')); return { ok: 'Plugin ricaricati: ' + r.ok + ' attivi' + (r.err ? ', ' + r.err + ' con errori' : '') }; }
+    case 'plugtoggle': {
+      const id = str(j.id, 64), i = DB.plugOff.indexOf(id), on = i >= 0; if (!PLUGS.some(p => p.id === id)) return { err: 'Plugin non trovato' };
+      if (on) DB.plugOff.splice(i, 1); else DB.plugOff.push(id); touch(); reloadPlugins();
+      log('admin', 'Plugin ' + id + (on ? ' attivato' : ' disattivato')); return { ok: 'Plugin ' + id + (on ? ' attivato' : ' disattivato') };
+    }
+    case 'save': dirty = true; flush(true); log('admin', 'Salvataggio manuale'); return { ok: 'Dati salvati in ' + path.basename(DATA) };
+    case 'pw': {
+      if (!checkPw(j.old)) return { err: 'La password attuale non è corretta' };
+      if (typeof j.pw !== 'string' || j.pw.length < 6) return { err: 'La nuova password deve avere almeno 6 caratteri' };
+      setPw(j.pw); const me = cookie(req, 'vxadm'); for (const t of [...SESS.keys()]) if (t !== me) SESS.delete(t);
+      log('admin', 'Password del pannello cambiata'); return { ok: 'Password cambiata: le altre sessioni sono state chiuse' };
+    }
+    case 'kickall': { const s = str(j.s, 100); let n = 0; for (const c of players()) { kick(c, 'Il server ha disconnesso tutti i giocatori' + (s ? ': ' + s : '.')); n++; } log('kick', 'Espulsi tutti i giocatori (' + n + ')'); return { ok: 'Disconnessi ' + n + ' giocatori' }; }
+    case 'shutdown': {
+      for (const c of players()) kick(c, 'Il server è stato arrestato dall\'admin.');
+      log('admin', 'Server arrestato dal pannello'); try { unloadPlugins(); } catch (e) {} dirty = true; flush(true);
+      setTimeout(() => process.exit(0), 800); return { ok: 'Server in arresto…' };
+    }
+  }
+  return { err: 'Comando sconosciuto' };
+}
+
+/* ---------- PLUGIN: moduli aggiuntivi caricati dalla cartella plugins/ ----------
+   Un plugin è un file .js (plugins/nome.js) oppure una cartella con index.js (plugins/nome/index.js).
+   I nomi che iniziano con "_" restano spenti; quelli che iniziano con "." vengono ignorati.
+   Ogni plugin riceve un oggetto "api" tutto suo; gli errori dei plugin finiscono nel registro e non fermano il server.
+   Istruzioni complete e un esempio: plugins/LEGGIMI.md e plugins/_esempio.js (creati alla prima partenza). */
+const PLUG_DIR = process.env.PLUGINS_DIR ? path.resolve(process.env.PLUGINS_DIR) : path.join(__dirname, 'plugins');
+const PLUGS = [];            // tutti i plugin trovati, anche spenti o con errori
+const CMDS = new Map();      // comando di chat → { pl, desc, fn }
+const PLUG_EVENTS = ['start', 'stop', 'join', 'leave', 'zone', 'chat', 'message', 'arena', 'dungeon', 'drop', 'pickup', 'trade'];
+const GIVE_KINDS = ['gold', 'xp', 'pot', 'lv', 'item', 'heal', 'tp'];
+const plugLog = (pl, s) => { LOG.push({ id: ++logId, t: Date.now(), k: 'plugin', s: '[' + pl.name + '] ' + s }); if (LOG.length > 400) LOG.shift(); console.log('[plugin ' + pl.id + '] ' + s); };
+function plugFail(pl, where, e) {
+  pl.errors = (pl.errors || 0) + 1; pl.lastErr = where + ': ' + (e && e.message || String(e));
+  plugLog(pl, 'errore in ' + where + ': ' + (e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : String(e)));
+}
+function safe(pl, where, fn, args) { try { return fn.apply(null, args || []); } catch (e) { plugFail(pl, where, e); return undefined; } }
+const live = () => PLUGS.filter(p => p.ok && !p.off);
+
+// Crea la cartella plugins/ con le istruzioni e un esempio spento, se non esiste
+function plugInit() {
+  if (fs.existsSync(PLUG_DIR)) return false;
+  fs.mkdirSync(PLUG_DIR, { recursive: true });
+  try { fs.writeFileSync(path.join(PLUG_DIR, 'LEGGIMI.md'), PLUG_README); } catch (e) {}
+  try { fs.writeFileSync(path.join(PLUG_DIR, '_esempio.js'), PLUG_EXAMPLE); } catch (e) {}
+  return true;
+}
+
+// Vista di un giocatore per i plugin: dati in sola lettura e azioni
+function pview(c, pl) {
+  if (!c) return null;
+  const p = c.p || {}, who = pl ? pl.name : 'Server';
+  return Object.freeze({
+    id: c.id, name: c.name, room: c.code, zone: str(p.zk, 24), x: +p.x || 0, y: +p.y || 0, lv: p.lv | 0, hp: p.hp | 0, maxHp: p.mx | 0, gold: p.g | 0,
+    difficulty: p.df == null ? -1 : p.df | 0, ping: c.ping == null ? -1 : c.ping, ip: c.ip, since: c.at,
+    get online() { return !c.gone && clients.has(c.id); },
+    tell: s => tell(c, s, who),
+    send: (e, d) => send(c, { t: 'x', pl: pl ? pl.id : '', e: str(e, 40), d }),
+    give: (k, n, r) => { if (!GIVE_KINDS.includes(k)) throw new Error('tipo di regalo sconosciuto: ' + k); send(c, { t: 'adm', a: k, n: int(n, 1, k === 'lv' ? 50 : k === 'pot' ? 99 : 1e6), r: int(r, 0, 3), by: who }); },
+    heal: () => send(c, { t: 'adm', a: 'heal', n: 1, r: 0, by: who }),
+    toTown: () => send(c, { t: 'adm', a: 'tp', n: 1, r: 0, by: who }),
+    kick: s => { kick(c, 'Sei stato disconnesso' + (str(s, 100) ? ': ' + str(s, 100) : '.')); log('kick', c.name + ' espulso dal plugin ' + who + (s ? ' (' + str(s, 100) + ')' : '')); }
+  });
+}
+// messaggio privato nel registro chat del giocatore (anche su più righe)
+function tell(c, s, who) { for (const line of String(s == null ? '' : s).split('\n').slice(0, 12)) { const t = str(line, 200); if (t) send(c, { t: 'chat', n: who || 'Server', s: t, z: '', adm: 1 }); } }
+const findClient = q => { if (!q) return null; if (typeof q === 'object' && q.id) q = q.id; const s = String(q); return clients.get(s) || players().find(c => key(c.name) === key(s)) || null; };
+
+function makeApi(pl) {
+  const A = {
+    id: pl.id, name: pl.name, dir: pl.dir, gameVersion: VER, port: PORT,
+    config: pl.config,
+    saveConfig() { try { fs.writeFileSync(pl.cfgFile, JSON.stringify(pl.config, null, 2)); } catch (e) { plugFail(pl, 'saveConfig', e); } },
+    // dati che restano tra un riavvio e l'altro (salvati in voxelia-data.json)
+    get store() { return DB.plug[pl.id] || (DB.plug[pl.id] = {}); },
+    save() { touch(); },
+    log(...a) { plugLog(pl, a.map(x => typeof x === 'string' ? x : JSON.stringify(x)).join(' ')); },
+    on(ev, fn) { if (!PLUG_EVENTS.includes(ev)) throw new Error('evento sconosciuto: ' + ev + ' (validi: ' + PLUG_EVENTS.join(', ') + ')'); if (typeof fn === 'function') (pl.H[ev] || (pl.H[ev] = [])).push(fn); return A; },
+    command(name, desc, fn) {
+      if (typeof desc === 'function') { fn = desc; desc = ''; }
+      const k = String(name || '').toLowerCase().replace(/^\//, '').replace(/[^a-z0-9_àèéìòù-]/g, '').slice(0, 24);
+      if (!k || typeof fn !== 'function') throw new Error('comando non valido: ' + name);
+      if (CMDS.has(k) || ['aiuto', 'help', 'comandi', 'plugin', 'plugins'].includes(k)) { plugLog(pl, 'il comando /' + k + ' esiste già: ignorato'); return A; }
+      CMDS.set(k, { pl, desc: str(desc, 120), fn }); pl.cmds.push(k); return A;
+    },
+    onClient(ev, fn) { if (typeof fn === 'function') (pl.H['c:' + ev] || (pl.H['c:' + ev] = [])).push(fn); return A; },
+    client(code) { if (typeof code === 'function') code = '(' + code.toString() + ')();'; if (typeof code === 'string' && code.trim()) pl.client.push(code); return A; },
+    route(method, p, fn, o) {
+      if (typeof p === 'function') { o = fn; fn = p; p = method; method = '*'; }
+      const r = { m: String(method || '*').toUpperCase(), p: '/' + String(p || '').replace(/^\/+/, ''), fn, admin: !!(o && o.admin) };
+      if (typeof fn !== 'function') throw new Error('route senza funzione'); pl.routes.push(r); return A;
+    },
+    every(ms, fn) { const t = setInterval(() => { if (pl.ok && !pl.off) safe(pl, 'every', fn); }, Math.max(250, +ms || 1000)); pl.timers.add(t); return t; },
+    after(ms, fn) { const t = setTimeout(() => { pl.timers.delete(t); if (pl.ok && !pl.off) safe(pl, 'after', fn); }, Math.max(0, +ms || 0)); pl.timers.add(t); return t; },
+    cancel(t) { clearInterval(t); clearTimeout(t); pl.timers.delete(t); },
+    players(room) { return players().filter(c => room == null || c.code === room).map(c => pview(c, pl)); },
+    player(q) { const c = findClient(q); return c && c.name && !c.gone ? pview(c, pl) : null; },
+    rooms() { const r = {}; for (const c of players()) (r[c.code] || (r[c.code] = [])).push(c.name); return r; },
+    tell(p, s) { const c = findClient(p); if (c) tell(c, s, pl.name); },
+    announce(s, room) { const t = str(s, 160); if (!t) return 0; let n = 0; for (const c of players()) if (room == null || c.code === room) { send(c, { t: 'ann', s: t, adm: 1 }); n++; } chatPush(room == null ? '*' : room, '🧩 ' + pl.name, t, '', 1); return n; },
+    say(room, s) { const t = str(s, 120); if (!t || !room) return; for (const c of players()) if (c.code === room) send(c, { t: 'chat', n: pl.name, s: t, z: '', adm: 1 }); chatPush(room, pl.name, t, '', 1); },
+    broadcast(ev, d, room) { for (const c of players()) if (room == null || c.code === room) send(c, { t: 'x', pl: pl.id, e: str(ev, 40), d }); },
+    server: {
+      get cfg() { return Object.assign({}, CFG); },
+      setCfg(c) { applyCfg(c); log('admin', 'Impostazioni cambiate dal plugin ' + pl.name + ': ' + Object.keys(c || {}).join(', ')); },
+      clock: () => clockTxt(),
+      leaderboard: () => Object.values(DB.ar).map(s => Object.assign({}, s)).sort((a, b) => b.pts - a.pts || b.w - a.w),
+      runs: room => Object.assign({}, DB.runs[room] || {})
+    }
+  };
+  return A;
+}
+
+// Elenca i plugin nella cartella: file .js e cartelle con index.js (o "main" del package.json)
+function plugScan() {
+  let names = []; try { names = fs.readdirSync(PLUG_DIR, { withFileTypes: true }); } catch (e) { return []; }
+  const out = [];
+  for (const d of names) {
+    if (d.name[0] === '.') continue;
+    let entry = null, dir = PLUG_DIR, cfgFile, id;
+    if (d.isFile() && d.name.endsWith('.js')) { id = d.name.slice(0, -3); entry = path.join(PLUG_DIR, d.name); cfgFile = path.join(PLUG_DIR, id + '.config.json'); }
+    else if (d.isDirectory()) {
+      dir = path.join(PLUG_DIR, d.name); id = d.name; let main = 'index.js';
+      try { const pk = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8')); if (pk && typeof pk.main === 'string') main = pk.main; } catch (e) {}
+      entry = path.join(dir, main); if (!fs.existsSync(entry)) continue; cfgFile = path.join(dir, 'config.json');
+    } else continue;
+    out.push({ id, entry, dir, cfgFile, folder: d.isDirectory() });
+  }
+  return out.sort((a, b) => a.id.localeCompare(b.id));
+}
+
+function loadPlugins() {
+  const made = plugInit(); if (made) { log('sys', 'Creata la cartella dei plugin: ' + PLUG_DIR); console.log('Creata la cartella dei plugin (istruzioni in LEGGIMI.md): ' + PLUG_DIR); }
+  for (const f of plugScan()) {
+    const pl = { id: f.id, name: f.id, version: '', description: '', author: '', file: path.relative(__dirname, f.entry) || f.entry, dir: f.dir, cfgFile: f.cfgFile,
+      ok: false, off: false, err: '', errors: 0, H: {}, cmds: [], routes: [], timers: new Set(), client: [], stop: null, config: {} };
+    PLUGS.push(pl);
+    if (f.id[0] === '_') { pl.off = true; pl.offWhy = 'nome con _'; continue; }
+    if (DB.plugOff.includes(f.id)) { pl.off = true; pl.offWhy = 'spento dal pannello'; continue; }
+    try {
+      const mod = require(f.entry), M = typeof mod === 'function' ? { setup: mod } : (mod && typeof mod === 'object' ? (mod.default && typeof mod.default === 'object' ? mod.default : mod) : {});
+      if (typeof M.setup !== 'function' && typeof M.init === 'function') M.setup = M.init;
+      if (typeof M.setup !== 'function') throw new Error('il modulo deve esportare una funzione oppure { setup(api) { … } }');
+      pl.name = str(M.name, 40) || f.id; pl.version = str(M.version, 16); pl.description = str(M.description, 200); pl.author = str(M.author, 60);
+      // configurazione: valori predefiniti del plugin + file modificabile (creato se manca)
+      const def = M.defaults && typeof M.defaults === 'object' ? M.defaults : null; let fileCfg = null;
+      try { fileCfg = JSON.parse(fs.readFileSync(f.cfgFile, 'utf8')); } catch (e) { if (fs.existsSync(f.cfgFile)) plugLog(pl, 'config non valida (' + path.basename(f.cfgFile) + '): uso i valori predefiniti'); }
+      pl.config = Object.assign({}, def || {}, fileCfg && typeof fileCfg === 'object' ? fileCfg : {});
+      if (def && !fs.existsSync(f.cfgFile)) try { fs.writeFileSync(f.cfgFile, JSON.stringify(pl.config, null, 2)); } catch (e) {}
+      if (typeof M.stop === 'function') pl.stop = M.stop;
+      if (f.folder) { const cj = path.join(f.dir, 'client.js'); if (fs.existsSync(cj)) pl.client.push(fs.readFileSync(cj, 'utf8')); }
+      pl.api = makeApi(pl); pl.ok = true;
+      M.setup(pl.api);
+      plugLog(pl, 'caricato' + (pl.version ? ' (v' + pl.version + ')' : '') + (pl.cmds.length ? ' · comandi: /' + pl.cmds.join(' /') : ''));
+    } catch (e) { pl.ok = false; pl.err = e && e.message || String(e); plugFail(pl, 'caricamento', e); dropPlugin(pl); }
+  }
+  return { ok: live().length, err: PLUGS.filter(p => !p.ok && !p.off).length };
+}
+// toglie tutto quello che un plugin ha registrato
+function dropPlugin(pl) {
+  for (const t of pl.timers) { clearInterval(t); clearTimeout(t); } pl.timers.clear();
+  for (const k of pl.cmds) if (CMDS.get(k) && CMDS.get(k).pl === pl) CMDS.delete(k);
+  pl.cmds = []; pl.routes = []; pl.H = {}; pl.client = [];
+}
+function unloadPlugins() {
+  for (const pl of live()) { for (const fn of pl.H.stop || []) safe(pl, 'stop', fn); if (pl.stop) safe(pl, 'stop', pl.stop, [pl.api]); }
+  for (const pl of PLUGS) { dropPlugin(pl); pl.ok = false; }
+  PLUGS.length = 0; CMDS.clear();
+  for (const k of Object.keys(require.cache)) if (k.startsWith(PLUG_DIR + path.sep)) delete require.cache[k];
+}
+function reloadPlugins() { unloadPlugins(); const r = loadPlugins(); for (const pl of live()) for (const fn of pl.H.start || []) safe(pl, 'start', fn); return r; }
+const plugSummary = () => { const a = live(), e = PLUGS.filter(p => !p.ok && !p.off), o = PLUGS.filter(p => p.off); return (a.length ? a.map(p => p.name).join(', ') : 'nessuno attivo') + (e.length ? ' · con errori: ' + e.map(p => p.id).join(', ') : '') + (o.length ? ' · spenti: ' + o.length : '') + '  (' + PLUG_DIR + ')'; };
+const plugState = () => ({ dir: PLUG_DIR, list: PLUGS.map(p => ({ id: p.id, name: p.name, version: p.version, description: p.description, author: p.author, file: p.file, ok: p.ok, off: p.off, offWhy: p.offWhy || '', err: p.err, errors: p.errors, lastErr: p.lastErr || '', cmds: p.cmds.map(k => ({ k, d: (CMDS.get(k) || {}).desc || '' })), routes: p.routes.map(r => ({ m: r.m, p: '/plugins/' + p.id + r.p, admin: r.admin })), client: p.client.length, events: Object.keys(p.H).filter(k => !k.startsWith('c:')) })) });
+
+// chiama i gestori di un evento: (evento, client, …altri argomenti); i giocatori arrivano come viste
+function emit(ev, ...a) {
+  const res = [];
+  for (const pl of live()) for (const fn of pl.H[ev] || []) res.push(safe(pl, ev, fn, a.map(x => x && x.sock ? pview(x, pl) : x)));
+  return res;
+}
+// ogni messaggio dal gioco passa prima dai plugin: se uno risponde false, il server non lo gestisce
+function plugMsg(c, j) {
+  if (j.t === 'x') {
+    const now = Date.now(); if (now - (c.xt || 0) > 1000) { c.xt = now; c.xn = 0; } if (++c.xn > 30) return false;
+    const pl = live().find(p => p.id === j.pl); if (!pl || !c.name) return false;
+    for (const fn of pl.H['c:' + str(j.e, 40)] || []) safe(pl, 'onClient ' + j.e, fn, [pview(c, pl), j.d]);
+    return false;
+  }
+  if (!c.name || j.t === 'p' || j.t === 'po') return true; // presenza e ping: troppo frequenti, si usa l'evento "zone"
+  for (const pl of live()) for (const fn of pl.H.message || []) if (safe(pl, 'message', fn, [pview(c, pl), Object.assign({}, j)]) === false) return false;
+  return true;
+}
+// chat: un plugin può bloccare il messaggio (false) o cambiarne il testo (stringa)
+function plugChat(c, s, z) {
+  for (const pl of live()) for (const fn of pl.H.chat || []) {
+    const r = safe(pl, 'chat', fn, [pview(c, pl), s, z]);
+    if (r === false) return false; if (typeof r === 'string') s = str(r, 60) || s;
+  }
+  return s;
+}
+// comandi di chat: "/nome argomenti". /aiuto e /plugin ci sono sempre
+function runCommand(c, s) {
+  const parts = s.slice(1).trim().split(/\s+/), k = (parts.shift() || '').toLowerCase(), rest = s.slice(1).trim().slice(k.length).trim();
+  if (k === 'aiuto' || k === 'help' || k === 'comandi') {
+    const L = [...CMDS.entries()].sort((a, b) => a[0].localeCompare(b[0])).map(([n, d]) => '/' + n + (d.desc ? ' — ' + d.desc : ''));
+    tell(c, L.length ? 'Comandi del server:\n' + L.join('\n') + '\n/plugin — i plugin attivi' : 'Questo server non ha comandi in più. /plugin mostra i plugin attivi.', 'Server'); return;
+  }
+  if (k === 'plugin' || k === 'plugins') { const a = live(); tell(c, a.length ? 'Plugin attivi: ' + a.map(p => p.name + (p.version ? ' ' + p.version : '')).join(', ') : 'Nessun plugin attivo su questo server.', 'Server'); return; }
+  const cmd = CMDS.get(k);
+  if (!cmd || !cmd.pl.ok || cmd.pl.off) { tell(c, 'Comando sconosciuto: /' + str(k, 24) + '. Scrivi /aiuto per la lista.', 'Server'); return; }
+  // i comandi dei plugin rispettano la chat spenta e i giocatori silenziati, come i messaggi normali (/aiuto e /plugin restano sempre disponibili)
+  if (!CFG.chat) { send(c, { t: 'err', s: 'La chat è disattivata dall\'admin: i comandi dei plugin non sono disponibili' }); return; }
+  if (DB.mutes.includes(key(c.name))) { send(c, { t: 'err', s: 'Sei stato silenziato dall\'admin: non puoi usare i comandi dei plugin' }); return; }
+  log('plugin', c.name + ' ha usato /' + k + (rest ? ' ' + rest : ''));
+  const oops = () => tell(c, 'Il comando /' + k + ' non ha funzionato: errore nel plugin ' + cmd.pl.name + '.', 'Server');
+  let r, bad = false; try { r = cmd.fn(pview(c, cmd.pl), parts, rest); } catch (e) { bad = true; plugFail(cmd.pl, '/' + k, e); oops(); }
+  if (bad) return;
+  if (r && typeof r.then === 'function') r.then(v => { if (typeof v === 'string') tell(c, v, cmd.pl.name); }, e => { plugFail(cmd.pl, '/' + k, e); oops(); });
+  else if (typeof r === 'string') tell(c, r, cmd.pl.name);
+}
+// pagine e API web dei plugin: /plugins/<id>/<percorso>
+function plugRoute(req, res, u) {
+  const m = u.match(/^\/plugins\/([^/]+)(\/.*)?$/), pl = m && live().find(p => p.id === decodeURIComponent(m[1]));
+  if (!pl) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('Plugin non trovato'); return; }
+  const sub = m[2] || '/', r = pl.routes.find(x => x.p === sub && (x.m === '*' || x.m === req.method)) || pl.routes.find(x => x.p.endsWith('/*') && sub.startsWith(x.p.slice(0, -1)) && (x.m === '*' || x.m === req.method));
+  if (!r) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('Pagina non trovata'); return; }
+  if (r.admin && !authed(req)) { json(res, 401, { err: 'Serve l\'accesso al pannello admin' }); return; }
+  if (req.method === 'POST' && req.headers['x-voxelia'] !== '1' && r.admin) { json(res, 403, { err: 'Richiesta non valida' }); return; }
+  const q = {}; try { for (const [k, v] of new URL(req.url, 'http://x').searchParams) q[k] = v; } catch (e) {}
+  const x = { query: q, path: sub, ip: ipOf(req),
+    json: (code, o) => { if (typeof code === 'object') { o = code; code = 200; } json(res, code, o); },
+    send: (code, body, type) => { if (typeof code !== 'number') { type = body; body = code; code = 200; } res.writeHead(code, { 'Content-Type': (type || 'text/html') + '; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(String(body == null ? '' : body)); },
+    body: cb => body(req, cb) };
+  try { const p = r.fn(req, res, x); if (p && typeof p.catch === 'function') p.catch(e => { plugFail(pl, 'route ' + sub, e); if (!res.headersSent) json(res, 500, { err: 'Errore del plugin' }); }); }
+  catch (e) { plugFail(pl, 'route ' + sub, e); if (!res.headersSent) json(res, 500, { err: 'Errore del plugin' }); }
+}
+// script dei plugin aggiunti alla pagina del gioco (dopo il gioco, quindi vedono tutte le sue variabili)
+function plugScripts() {
+  let h = '';
+  for (const pl of live()) for (const code of pl.client)
+    h += '<script data-plugin="' + pl.id.replace(/[^\w-]/g, '') + '">try{' + code.replace(/<\/(script)/gi, '<\\/$1') + '\n}catch(e){console.error("[plugin ' + pl.id.replace(/[^\w-]/g, '') + ']",e)}</script>';
+  return h;
+}
+
+const PLUG_README = `# Plugin di Voxelia
+
+Metti qui i plugin del server. Vengono caricati all'avvio di \`node server.js\`, oppure subito con
+**Plugin → Ricarica** nel pannello admin.
+
+- Un plugin è un file \`nome.js\` oppure una cartella \`nome/\` con dentro \`index.js\`.
+- I nomi che iniziano con \`_\` restano spenti: rinomina \`_esempio.js\` in \`esempio.js\` per provarlo.
+- Dal pannello admin (pagina Plugin) puoi spegnere e riaccendere ogni plugin, e vedere errori, comandi e pagine.
+- Un plugin che va in errore viene segnato nel registro e non ferma il server.
+- **Attenzione:** un plugin è codice che gira sul tuo server con tutti i permessi. Installa solo plugin di cui ti fidi.
+
+## Forma di un plugin
+
+\`\`\`js
+module.exports = {
+  name: 'Benvenuto', version: '1.0', author: 'Io', description: 'Saluta chi entra',
+  defaults: { testo: 'Benvenuto su questo server!' },   // facoltativo: diventa nome.config.json, modificabile
+  setup(api) {
+    api.on('join', p => p.tell(api.config.testo));
+    api.command('dado', 'tira un dado da 6', (p, args) => p.name + ' tira un dado: ' + (1 + Math.floor(Math.random() * 6)));
+  },
+  stop(api) { }                                         // facoltativo: quando il plugin viene spento o ricaricato
+};
+\`\`\`
+
+Va bene anche \`module.exports = api => { … }\`.
+
+## L'oggetto api
+
+| Funzione | A cosa serve |
+|---|---|
+| \`api.on(evento, fn)\` | Reagisce a un evento del server (vedi sotto). |
+| \`api.command(nome, descrizione, fn(p, args, testo))\` | Aggiunge il comando di chat \`/nome\`. Se \`fn\` restituisce una stringa, la riceve chi ha scritto. \`/aiuto\` li elenca tutti. I nomi \`aiuto\`, \`help\`, \`comandi\`, \`plugin\` e \`plugins\` sono riservati. Con la chat spenta o per un giocatore silenziato i comandi dei plugin non funzionano. |
+| \`api.players(stanza?)\`, \`api.player(nomeOId)\` | I giocatori online (tutti o di una stanza), o uno solo. |
+| \`api.rooms()\` | Le stanze con i nomi dei giocatori. |
+| \`api.tell(p, testo)\` | Messaggio privato nel registro della chat. |
+| \`api.say(stanza, testo)\` | Messaggio in chat a una stanza, a nome del plugin. |
+| \`api.announce(testo, stanza?)\` | Annuncio in evidenza a tutti o a una stanza. |
+| \`api.every(ms, fn)\`, \`api.after(ms, fn)\`, \`api.cancel(t)\` | Timer, fermati da soli quando il plugin si spegne. |
+| \`api.store\`, \`api.save()\` | Un oggetto tuo che resta tra un riavvio e l'altro (dentro voxelia-data.json). Chiama \`api.save()\` dopo averlo cambiato. |
+| \`api.config\`, \`api.saveConfig()\` | La configurazione: \`defaults\` più il file \`nome.config.json\` (o \`config.json\` nella cartella del plugin). |
+| \`api.log(...)\` | Scrive nel terminale e nel registro del pannello admin. |
+| \`api.route(metodo, percorso, fn(req, res, x), { admin })\` | Una pagina o API web su \`/plugins/<id>/<percorso>\`. \`x.json(obj)\`, \`x.send(html)\`, \`x.query\`, \`x.body(cb)\`. Con \`{ admin: true }\` serve l'accesso al pannello. Un percorso che finisce con \`/*\` vale per tutto quello che segue. |
+| \`api.client(codice)\` | Codice JavaScript aggiunto alla pagina del gioco. In una cartella-plugin basta un file \`client.js\`. |
+| \`api.onClient(evento, fn(p, dati))\`, \`api.broadcast(evento, dati, stanza?)\` | Messaggi tra il codice nel gioco e il plugin sul server. |
+| \`api.server.cfg\`, \`api.server.setCfg({...})\` | Leggere e cambiare le impostazioni del server (pvp, trade, chat, xpm, gm, motd, maxp, lock). |
+| \`api.server.clock()\`, \`api.server.leaderboard()\`, \`api.server.runs(stanza)\` | Ora del mondo, classifica dell'arena, cicli dei dungeon di una stanza. |
+| \`api.id\`, \`api.name\`, \`api.dir\`, \`api.gameVersion\`, \`api.port\` | Informazioni. |
+
+## Eventi
+
+| Evento | Argomenti | Note |
+|---|---|---|
+| \`start\` | | Il server è in ascolto (anche dopo Ricarica). |
+| \`stop\` | | Il plugin viene spento, ricaricato, o il server si ferma. |
+| \`join\` / \`leave\` | \`p\` | Un giocatore entra o esce. |
+| \`zone\` | \`p, zonaNuova, zonaVecchia\` | Cambia zona (\`town\`, \`forest\`, \`in_tavern\`, \`cripta@2\`…). |
+| \`chat\` | \`p, testo, zona\` | Restituisci \`false\` per bloccare il messaggio, o una stringa per cambiarlo. |
+| \`message\` | \`p, messaggio\` | Ogni messaggio grezzo dal gioco (tranne presenza e ping). \`false\` lo blocca. |
+| \`arena\` | \`vincitore, sconfitto, punti\` | Una vittoria nella fossa del Colosseo. |
+| \`dungeon\` | \`p, dungeon, nuovoCiclo\` | Un boss di dungeon sconfitto. |
+| \`drop\` / \`pickup\` | \`p, oggetto\` (/ \`p, oggetto, daChi\`) | Oggetti gettati a terra e raccolti. |
+| \`trade\` | \`a, b, datoDaA, datoDaB\` | Uno scambio concluso. |
+
+## Il giocatore \`p\`
+
+Dati: \`id, name, room, zone, x, y, lv, hp, maxHp, gold, difficulty, ping, ip, since, online\`.
+Azioni: \`p.tell(testo)\`, \`p.give(tipo, quantità, rarità)\` con tipo \`gold\`, \`xp\`, \`pot\`, \`lv\`, \`item\` (rarità 0-3),
+\`heal\`, \`tp\`; \`p.heal()\`, \`p.toTown()\`, \`p.kick(motivo)\`, \`p.send(evento, dati)\` (al codice del plugin nel gioco).
+
+## Codice nel gioco
+
+Il codice aggiunto con \`api.client\` o \`client.js\` gira dopo il gioco e ne vede le variabili (\`P\` è l'eroe, \`msg()\` mostra un avviso,
+\`clog()\` scrive in chat, \`banner()\` mostra un titolo grande, \`NPCS\` e \`QT\` sono personaggi e missioni…). Per parlare con il server:
+
+\`\`\`js
+VXP.on('mioplugin', 'evento', dati => { … });   // dal server (p.send o api.broadcast)
+VXP.send('mioplugin', 'evento', dati);          // al server (api.onClient)
+\`\`\`
+
+Il codice nel gioco arriva ai giocatori quando ricaricano la pagina.
+`;
+
+const PLUG_EXAMPLE = `// Plugin di esempio: rinomina questo file in esempio.js (senza il trattino basso) e premi
+// "Ricarica" nella pagina Plugin del pannello admin, oppure riavvia il server.
+module.exports = {
+  name: 'Esempio',
+  version: '1.0',
+  description: 'Saluta chi entra, aggiunge /dado, /ora, /boss e /festa e una pagina web',
+  defaults: { benvenuto: 'Benvenuto, {nome}! Scrivi /aiuto per i comandi del server.' },
+
+  setup(api) {
+    // saluto personale a chi entra
+    api.on('join', p => p.tell(api.config.benvenuto.replace('{nome}', p.name)));
+
+    // comandi di chat
+    api.command('dado', 'tira un dado (es. /dado 20)', (p, args) => {
+      const f = Math.max(2, Math.min(1000, parseInt(args[0]) || 6));
+      api.say(p.room, p.name + ' tira un d' + f + ': ' + (1 + Math.floor(Math.random() * f)));
+    });
+    api.command('ora', "l'ora del mondo", () => { const c = api.server.clock(); return 'Giorno ' + c.day + ', ore ' + c.time; });
+    api.command('boss', 'quanti boss hai sconfitto', p => (api.store[p.name] || 0) + ' boss sconfitti da ' + p.name);
+
+    // dati che restano tra un riavvio e l'altro
+    api.on('dungeon', (p, dungeon, ciclo) => {
+      api.store[p.name] = (api.store[p.name] || 0) + 1; api.save();
+      api.announce(p.name + ' ha liberato ' + dungeon + '! Ora è al ciclo ' + ciclo, p.room);
+    });
+
+    // codice nel gioco: quando il plugin manda l'evento "festa", ogni giocatore della stanza vede un titolo grande
+    api.client('VXP.on(' + JSON.stringify(api.id) + ', "festa", d => banner("Festa!", d.testo, "stella"));');
+    api.command('festa', 'festeggia con tutta la stanza', p => { api.broadcast('festa', { testo: p.name + ' ha dato il via alla festa!' }, p.room); });
+
+    // una pagina web: http://localhost:3000/plugins/esempio/ (il nome del file senza .js)
+    api.route('GET', '/', (req, res, x) => x.send('<h1>Eroi online: ' + api.players().length + '</h1>'));
+  }
+};
+`;
+
+srv.on('upgrade', (req, sock) => {
+  if (req.url !== '/ws' || !req.headers['sec-websocket-key']) { sock.destroy(); return; }
+  const acc = crypto.createHash('sha1').update(req.headers['sec-websocket-key'] + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest('base64');
+  sock.write('HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ' + acc + '\r\n\r\n');
+  sock.setNoDelay(true);
+  const c = { id: 'p' + nid++, sock, p: {}, buf: Buffer.alloc(0), code: '', name: '', ip: ipOf(req), at: Date.now() };
+  clients.set(c.id, c); ST.total++;
+  const bye = () => {
+    if (!clients.has(c.id)) return; clients.delete(c.id);
+    if (c.joined) { log('leave', c.name + ' è uscito'); for (const v of clients.values()) if (v.code === c.code) send(v, { t: 'join', n: c.name, j: 0 }); emit('leave', c); }
+    const S = trades.get(c.id); if (S) trEnd(S, (c.name || 'Il giocatore') + ' si è disconnesso');
+  };
+  sock.on('data', d => { c.buf = Buffer.concat([c.buf, d]); parse(c); });
+  sock.on('close', bye);
+  sock.on('error', () => { bye(); sock.destroy(); });
+});
+
+// ogni 2 secondi misura il ping di tutti
+setInterval(() => { const now = Date.now(); for (const c of clients.values()) send(c, { t: 'pi', s: now, me: c.ping == null ? -1 : c.ping, gm: gameMin() }); }, 2000);
+
+// 10 volte al secondo ogni giocatore riceve lo stato di chi è nella sua stessa stanza e zona
+setInterval(() => {
+  for (const [id, c] of clients) {
+    if (!c.p.rm || c.gone) continue;
+    const o = {};
+    for (const [k, v] of clients) if (k !== id && !v.gone && v.p.rm === c.p.rm) o[k] = v.p;
+    send(c, { t: 's', p: o });
+  }
+}, 100);
+
+(async () => {
+  setPw(await choosePassword());
+  loadPlugins();
+  srv.listen(PORT, '0.0.0.0', () => {
+    log('sys', 'Server avviato sulla porta ' + PORT);
+    console.log('Voxelia ' + VER + ' in ascolto sulla porta ' + PORT);
+    console.log('Stessa rete wifi:  http://localhost:' + PORT);
+    for (const ip of lanIps()) console.log('                   http://' + ip + ':' + PORT);
+    console.log('Wifi diverse: esponi la porta ' + PORT + ' con un tunnel (cloudflared o ngrok) e condividi l\'indirizzo https.');
+    console.log('Pannello admin:    http://localhost:' + PORT + '/admin');
+    console.log('Dati salvati in:   ' + DATA);
+    console.log('Plugin:            ' + plugSummary());
+    emit('start');
+  });
+})();

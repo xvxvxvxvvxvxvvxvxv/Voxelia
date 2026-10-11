@@ -1,0 +1,18 @@
+# Voxelia 7.9.3 con Docker Compose.
+# Avvio:  ADMIN_PASSWORD='la-tua-password' docker compose up -d --build
+# Admin:  http://HOST:${VOXELIA_PORT:-3000}/admin
+services:
+  voxelia:
+    build: .
+    image: voxelia:7.9.3
+    container_name: voxelia
+    restart: unless-stopped
+    ports:
+      - "${VOXELIA_PORT:-3000}:3000"
+    environment:
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?Imposta ADMIN_PASSWORD prima di avviare}"
+    volumes:
+      - voxelia-data:/data
+
+volumes:
+  voxelia-data:

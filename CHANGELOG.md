@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.9.4 — Battaglie di Ryan: si esce di nuovo (12 ottobre 2026)
+
+- **Corretto:** alla fine di una battaglia di Ryan il pulsante **«Torna in caserma da Ryan»** non rispondeva al tocco o al click, e non si riusciva a uscire. Ora funziona sia dopo una vittoria sia dopo una sconfitta.
+- Il pannello della battaglia non si ricostruisce più a ogni istante: i pulsanti restano fermi mentre li tocchi, anche durante la battaglia.
+
+---
+
 ## 7.9.3 — Comandi touch adattati a ogni dispositivo (11 ottobre 2026)
 
 - Joystick e pulsanti **si adattano da soli** al dispositivo e si riadattano quando giri lo schermo o cambi la grandezza della finestra:

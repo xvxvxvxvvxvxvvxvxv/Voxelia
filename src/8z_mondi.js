@@ -25,7 +25,7 @@ function mbOpen(page,arg){let el=$('mb');if(!el){el=document.createElement('div'
   el.hidden=false;document.body.classList.add('mbon');MB.hist=[];tone(560,.05,'triangle');
   el.innerHTML=`<div class="mbtop"><button class="mbx" onclick="mbClose()" title="Chiudi (Esc)" aria-label="Chiudi">✕</button><b class="mblogo">🌐 <span>Mondi della community</span></b>
     <nav class="mbnav">${[['home','🏠','Home'],['lista','🧭','Esplora'],['pref','❤','Preferiti'],['io','👤','Il mio profilo']].map(([k,i,n])=>`<button data-p="${k}" onclick="mbGo('${k}')"><span>${i}</span> ${n}</button>`).join('')}</nav>
-    <form class="mbs" onsubmit="event.preventDefault();MB.q=this.q.value.trim();MB.pag=0;mbGo('lista')"><input name="q" placeholder="🔍 Cerca mondi, autori, tag..." value="${esc(MB.q)}" aria-label="Cerca"></form></div><div class="mbb" id="mbb"></div>`;
+    <form class="mbs" onsubmit="event.preventDefault();MB.q=this.q.value.trim();MB.pag=0;mbGo('lista')">🔍<input name="q" placeholder="Cerca mondi, autori, generi..." value="${esc(MB.q)}" aria-label="Cerca"></form></div><div class="mbb" id="mbb"></div>`;
   mbGo(page||'home',arg,1)}
 function mbClose(){const el=$('mb');if(el){el.hidden=true;el.innerHTML=''}document.body.classList.remove('mbon');clearInterval(MB.ft);MB.ft=0}
 const mbIsOpen=()=>{const el=$('mb');return!!(el&&!el.hidden)};
@@ -370,4 +370,71 @@ body.mcam.ig #hud,body.mcam.ig #mm,body.mcam.ig #ruota{opacity:.25}
 .dcard.edcom{border-color:#5ad0ff!important;background:linear-gradient(160deg,rgba(20,50,90,.6),rgba(40,25,70,.6))!important}.edpubt{font:bold 10px system-ui,sans-serif;background:#5ad0ff;color:#06202c;padding:1px 6px;border-radius:8px;margin-left:6px;vertical-align:middle}
 @media (max-width:820px){.mbnav button{padding:4px 9px;font-size:13px}.mbtop{gap:6px;padding:6px 10px}.mbhero,.mbw,.mbcols,.mbprof,.mpc{grid-template-columns:1fr}.mbmi{grid-template-columns:110px 1fr}.mbma{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}.mbhi h2{font-size:22px}.mblogo span{display:none}}
 @media (prefers-reduced-motion:reduce){.mbc,.mbsi button{transition:none}.mcr{animation:none}}
+`;document.head.appendChild(st)})();
+
+/* ---------- 7.8: i Mondi della community con l'aspetto del gioco ----------
+   Bacheca di legno e oro sopra il mondo che scorre dietro, schede come i pannelli del gioco (seguono il tema chiaro/scuro),
+   bordi a cubetti con l'ombra sotto, icone voxel, scritte in Georgia come il resto di Voxelia. */
+(function(){const st=document.createElement('style');st.id='mbvx';st.textContent=`
+#mb{--wd1:#7a5532;--wd2:#5a3b22;--wd3:#3a2414;--gd:#f5b942;--gd2:#c98a1a;--pf:var(--pn);--ink:var(--fg);--hd:var(--ac2,#f5b942);
+  background:radial-gradient(ellipse at 50% -20%,rgba(36,44,84,.55),rgba(8,10,20,.93) 62%);backdrop-filter:blur(3px);font:14px Georgia,serif}
+#mb .mbb{scrollbar-width:thin;scrollbar-color:#c98a1a #0000}
+#mb .mbtop{position:relative;gap:12px;padding:9px 16px 11px;background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);border-bottom:3px solid var(--wd3);box-shadow:inset 0 2px 0 #a37a4f,inset 0 -2px 0 #2e1d1055,0 5px 0 #00000066,0 12px 26px #0009}
+#mb .mbtop::before,#mb .mbtop::after{content:'';position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}#mb .mbtop::before{left:5px}#mb .mbtop::after{right:5px}
+#mb .mblogo{display:flex;align-items:center;gap:8px;font:bold 21px Georgia,serif;font-variant:small-caps;letter-spacing:1px;color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244}#mb .mblogo .vi{width:28px;height:28px;vertical-align:0}
+#mb .mbx{width:38px;height:38px;padding:0;display:flex;align-items:center;justify-content:center;background:#2a3350;border:2px solid #f5b942aa;border-radius:4px;box-shadow:0 3px 0 #0009}
+#mb button{border-radius:3px;box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,filter .15s}#mb button:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}
+#mb .mbnav{gap:6px}#mb .mbnav button{display:flex;align-items:center;gap:6px;padding:6px 12px;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;color:#fff;font:14px Georgia,serif}
+#mb .mbnav button:hover{background:#3b4770}#mb .mbnav button.on{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}
+#mb .mbs{position:relative}#mb .mbs .vi{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:20px;height:20px;pointer-events:none}
+#mb .mbs input{margin:0;padding:8px 12px 8px 36px;border-radius:3px;border:2px solid #3a2414;background:#f4ecd6;color:#2a2010;box-shadow:inset 0 2px 0 #0002,0 2px 0 #a37a4f66;font:14px Georgia,serif}#mb .mbs input::placeholder{color:#8a7a5a}
+#mb .mbs input:focus{outline:none;border-color:#f5b942;box-shadow:0 0 0 2px #f5b94266}
+#mb .mbrow h3,#mb .mbhead h2{font:bold 15px Georgia,serif;letter-spacing:1.6px;text-transform:uppercase;color:#ffd27a;text-shadow:1px 1px 0 #000}#mb .mbrow h3 .vi,#mb .mbhead h2 .vi{width:24px;height:24px;vertical-align:0}
+#mb .mbrow h3::after{content:'';order:1;flex:1;height:2px;background:linear-gradient(90deg,#f5b94299,#f5b94200)}#mb .mblink{order:2;margin-left:0;box-shadow:none!important;color:#ffd27a;font-size:13px;text-transform:none;letter-spacing:0}
+#mb .mbrl{padding:4px 4px 16px}
+#mb .mbc{background:var(--pf);color:var(--ink);border:2px solid #8a6a3a;border-radius:4px;box-shadow:0 5px 0 #2e1d10,0 10px 20px #0007;transition:transform .15s,box-shadow .15s,border-color .15s}
+#mb .mbc:hover,#mb .mbc:focus-visible{transform:translateY(-3px);border-color:#f5b942;box-shadow:0 8px 0 #2e1d10,0 0 0 2px #f5b94255,0 16px 26px #0008;outline:none}#mb .mbc:active{transform:translateY(1px);box-shadow:0 3px 0 #2e1d10}
+#mb .mbcv{border-bottom:2px solid #8a6a3a;background:#0b0e18}
+#mb .mbci b{font:bold 15px Georgia,serif;color:var(--ink)}#mb .mbci small,#mb .mbcn,#mb .mu{color:var(--mu)}#mb .mbcn .vi{width:15px;height:15px;vertical-align:-3px}
+#mb .mbcs em{color:var(--hd);text-shadow:none}
+#mb .mbtag,#mb .mbwhy{font:bold 10px Georgia,serif;letter-spacing:1px;text-transform:uppercase;border-radius:2px;border:1px solid #0005;box-shadow:0 2px 0 #0007;padding:3px 7px}
+#mb .mbtag.n{background:#4cd07a;color:#0b1a10}#mb .mbtag.v{background:#1b2030e6;color:#fff;border-color:#f5b94288}#mb .mbtag .vi{width:13px;height:13px;vertical-align:-2px}
+#mb .mst{filter:drop-shadow(1px 1px 0 #0008);letter-spacing:2px}
+#mb .mbhero{border:3px solid #c98a1a;border-radius:6px;background:var(--pf);box-shadow:0 0 0 3px #4a301b,0 8px 0 3px #2e1d10,0 22px 44px #000b;margin:4px 3px 22px}
+#mb .mbhm{border-right:3px solid #c98a1a}
+#mb .mbhi{background:var(--pf);color:var(--ink)}#mb .mbhi h2{font:bold 28px Georgia,serif;color:var(--ink)}#mb .mbhi .mbhn{color:var(--mu)}#mb .mbhs b{color:var(--hd)}
+#mb .mbwhy{position:relative;font-size:12px;padding:5px 16px 5px 10px;background:linear-gradient(180deg,#d8452c,#a8301c);color:#fff;border-radius:0;clip-path:polygon(0 0,100% 0,calc(100% - 9px) 50%,100% 100%,0 100%)}
+#mb .mbdots button{width:12px;height:12px;border-radius:2px;background:#ffffff40;box-shadow:0 2px 0 #0008}#mb .mbdots button.on{background:#f5b942}
+#mb a,#mb .mbby a{color:var(--hd)}#mb .mbinfo .mbby a{color:#ffd27a}
+#mb .mbtags button{border-radius:3px;background:#2a3350;border:1px solid #f5b94288;color:#fff}#mb .mbtags button span{color:#ffd27a}
+#mb .mbgm{border:3px solid #c98a1a;border-radius:6px;box-shadow:0 0 0 3px #4a301b,0 7px 0 3px #2e1d10,0 18px 34px #000a}
+#mb .mbgp,#mb .mbgn{border:2px solid #f5b94288;background:#1b2030cc;border-radius:4px}#mb .mbgt button{border-radius:3px;border:2px solid #4a301b}#mb .mbgt button.on{border-color:#f5b942}
+#mb .mbinfo{background:var(--pf);color:var(--ink);border:2px solid var(--ac);border-radius:4px;padding:14px 16px;box-shadow:0 5px 0 #0008,0 14px 30px #0007}#mb .mbinfo h2{color:var(--ink);font-size:25px}#mb .mbinfo .mbby{color:var(--mu)}#mb .mbinfo .mbby a{color:var(--hd)}
+#mb .mbrate,#mb .mbst{background:#00000014;border:1px solid #8a6a3a66;border-radius:3px}#mb .mbrbig b{color:var(--hd)}#mb .mbdist{color:var(--ink)}#mb .mbdist i{background:#00000026;border-radius:1px}#mb .mbdist em{background:linear-gradient(90deg,#c98a1a,#ffd27a)}
+#mb .mbst b{color:var(--ink)}#mb .mbst .vi{width:18px;height:18px;vertical-align:-3px}
+#mb .mbdesc,#mb .mbcols>section,#mb .mbcard,#mb .mbempty.big,#mb .mbmi,#mb .mbnote{background:var(--pf);color:var(--ink);border:2px solid var(--ac);border-radius:4px;box-shadow:0 5px 0 #0008,0 12px 26px #0006}
+#mb .mbcols>section{padding:10px 14px 12px}#mb .mbdesc h3,#mb .mbcols h3,#mb .mbcard h3,#mb .mbempty.big h2{font:bold 14px Georgia,serif;letter-spacing:1.4px;text-transform:uppercase;color:var(--hd);display:flex;align-items:center;gap:6px}
+#mb .mbitem{border-bottom:1px solid #8884}#mb .mbitem.au{background:#f5b94218;border-left:3px solid #c98a1a}
+#mb .mbform{background:#00000010;border:1px solid #8a6a3a66;border-radius:3px}
+#mb textarea,#mb .mbform input,#mb .mbcard input,#mb .mbhead select,#mpub input:not([type=checkbox]):not([type=range]),#mpub textarea,#mpub select,#mmod input,#mmod textarea,#mmod select{background:#00000018;color:var(--fg);border:1px solid #8a6a3aaa;border-radius:3px;font:14px Georgia,serif}
+#mb textarea:focus,#mb input:focus,#mpub input:focus,#mpub textarea:focus,#mmod input:focus,#mmod textarea:focus{outline:none;border-color:#f5b942;box-shadow:0 0 0 2px #f5b94244}
+#mb .mbsi button{box-shadow:none!important;color:#8a7a6a88;text-shadow:1px 1px 0 #0004}#mb .mbsi button.on{color:#f5b942;text-shadow:1px 1px 0 #8a3b12}
+#mb .mbauth .mbav,#mb .mbav{border-radius:4px;border:2px solid #f5b942;box-shadow:0 4px 0 #0008}
+#mb .mbmi{padding:8px}#mb .mbempty{color:#e8ecf4}#mb .mbempty.big{color:var(--ink)}#mb .mbempty code{background:#0002}
+#mb button.gold,#mpub button.gold,#mmod button.gold{background:linear-gradient(180deg,#b88a2c,#8a6420 55%,#6a4a16);border:1px solid #ffd27a;color:#fff;text-shadow:0 1px 0 #0008}#mb button.gold:hover,#mpub button.gold:hover{filter:brightness(1.12)}
+#mb .mbact button.on{background:linear-gradient(180deg,#a8303c,#7a1e2a);border-color:#ff9aa4}
+#mb .mbback{box-shadow:none!important;color:#ffd27a;font:14px Georgia,serif}
+#mb .mbload{color:#ffd27a;font:italic 16px Georgia,serif}
+#mpub{background:radial-gradient(ellipse at 50% 30%,#10142acc,#05070fe6)}
+#mpub .mpb,#mmod .mmb{background:var(--pn);color:var(--fg);border:2px solid var(--ac);border-radius:4px;box-shadow:0 0 0 3px #4a301b,0 8px 0 3px #2e1d10,0 24px 60px #000c}
+#mpub .mph2{background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f}#mpub .mph2 b{font:bold 19px Georgia,serif;font-variant:small-caps;letter-spacing:1px;color:#ffd27a;text-shadow:2px 2px 0 #8a3b12}
+#mpub .mpf{background:#00000014;border-top:2px solid #8a6a3a66}#mpub .mpl label{color:var(--fg)}#mpub .mplab{color:var(--hd,#c98a1a);color:var(--ac2,#f5b942)}#mpub .mpst{background:#00000014;border:1px solid #8a6a3a66;border-radius:3px;color:var(--fg)}
+#mpub .mpm{border:2px solid #8a6a3a;border-radius:3px}#mpub .mpm.cov{border-color:#f5b942;box-shadow:0 0 0 2px #f5b94266}#mpub .mpmsg{color:var(--ac2,#9fd0ff)}
+#mpub button,#mmod button{border-radius:3px;box-shadow:0 3px 0 #00000080}#mpub .mpup{border-radius:3px;box-shadow:0 3px 0 #00000080}
+#mmod .mmb h3{color:var(--ac2,#f5b942)}
+#mb button.ghost,#mpub button.ghost,#mmod button.ghost{color:var(--fg)!important;border-color:#8a6a3a99!important;box-shadow:0 3px 0 #0003}
+body.mbon #menu .mwrap,body.mbon #devbtn{visibility:hidden}body.mbon #edtoast{font:14px Georgia,serif;border-radius:4px;border-width:2px;box-shadow:0 4px 0 #0008,0 10px 24px #000a}
+:is(#mpub,#mb) .mbc{background:var(--pn);color:var(--fg);border:2px solid #8a6a3a;border-radius:4px;box-shadow:0 5px 0 #2e1d10,0 10px 20px #0007}#mpub .mbci b{color:var(--fg)}#mpub .mbci small,#mpub .mbcn{color:var(--mu)}#mpub .mbcv{border-bottom:2px solid #8a6a3a}
+#mpub .mpadd .mpup{flex-direction:row;gap:6px;color:#fff;font:inherit}
+@media (max-width:820px){#mb .mblogo{font-size:17px}#mb .mbtop{padding:7px 12px 9px}#mb .mbhm{border-right:0;border-bottom:3px solid #c98a1a}}
 `;document.head.appendChild(st)})();

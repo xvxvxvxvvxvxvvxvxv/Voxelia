@@ -35,7 +35,7 @@ function pn(m,arg){if(!started&&m!=='dead'&&m!=='kick')return;$('pn').classList.
   case 'casino':{h=`<h3>🎰 Casinò Fortuna d'Oro · 💰${P.g}</h3><p class="mu">Gioca con moderazione: la casa vince più spesso di quanto perde.</p><div>Puntata: ${[10,50,100,500].map(v=>`<button class="${CB===v?'on':''}" onclick="CB=${v};pn('casino')">${v}</button>`).join('')}</div>`;
     h+=`<h4>🎰 Slot machine</h4><button onclick="cplay('slot')">Gira · ${CB}💰</button><p class="mu">3 uguali: 🍒×5 🍋×8 🔔×12 ⭐×20 7️⃣×50 💎×100 · 2 uguali: puntata restituita</p>`;
     h+=`<h4>🎲 Dadi (2 dadi)</h4><button onclick="cplay('lo')">Sotto 7 ×2.2</button><button onclick="cplay('seven')">Esatto 7 ×5</button><button onclick="cplay('hi')">Sopra 7 ×2.2</button>`;
-    h+=`<h4>🎡 Roulette</h4><button onclick="cplay('red')">Rosso ×2</button><button onclick="cplay('black')">Nero ×2</button><button onclick="cplay('zero')">Zero ×36</button>`;
+    h+=`<h4>🛞 Roulette</h4><button onclick="cplay('red')">Rosso ×2</button><button onclick="cplay('black')">Nero ×2</button><button onclick="cplay('zero')">Zero ×36</button>`;
     if(BJ){const hid=!BJ.over;h+=`<h4>🃏 Blackjack · puntata ${BJ.bet}💰</h4><div>Banco: ${BJ.d.map((c,i)=>hid&&i===1?'<span class="pc">🂠</span>':bjCard(c)).join(' ')} <span class="mu">${hid?'('+bjVal([BJ.d[0]])+' + ?)':'= '+bjVal(BJ.d)}</span></div><div>Tu: ${BJ.p.map(bjCard).join(' ')} <b>= ${bjVal(BJ.p)}</b></div>`;
       if(!BJ.over)h+=`<button onclick="bjHit()">Carta</button><button onclick="bjStand()">Stai</button>${BJ.p.length===2&&P.g>=BJ.bet?'<button onclick="bjDouble()">Raddoppia</button>':''}`;
       else h+=`<div class="qb">${BJ.msg}</div><button onclick="bjDeal()">Nuova mano · ${CB}💰</button>`}
@@ -164,7 +164,7 @@ function cplay(g){if(!pay(CB))return;const b=CB;let win=0,txt='';
   if(g==='slot'){const rs=[0,1,2].map(()=>{let r=Math.random()*100;for(const q of SLS){if((r-=q[1])<0)return q}return SLS[0]});txt='🎰 '+rs.map(q=>q[0]).join(' ');
     if(rs.every(q=>q[0]===rs[0][0])){win=b*rs[0][2];txt+=` — TRIS! +${win}💰`}else if(new Set(rs.map(q=>q[0])).size===2){win=b;txt+=' — coppia: puntata restituita'}else txt+=' — nessuna vincita'}
   else if(g==='lo'||g==='hi'||g==='seven'){const a=rr(1,6),c=rr(1,6),sm=a+c;txt=`🎲 ${a} + ${c} = ${sm}`;const w=g==='lo'?sm<7:g==='hi'?sm>7:sm===7;if(w){win=Math.round(b*(g==='seven'?5:2.2));txt+=` — vinci ${win}💰`}else txt+=' — perso'}
-  else{const n=rr(0,36),col=n===0?'verde':REDS.includes(n)?'rosso':'nero';txt=`🎡 Esce ${n} (${col})`;const w=g==='zero'?n===0:g==='red'?col==='rosso':col==='nero';if(w){win=b*(g==='zero'?36:2);txt+=` — vinci ${win}💰`}else txt+=' — perso'}
+  else{const n=rr(0,36),col=n===0?'verde':REDS.includes(n)?'rosso':'nero';txt=`🛞 Esce ${n} (${col})`;const w=g==='zero'?n===0:g==='red'?col==='rosso':col==='nero';if(w){win=b*(g==='zero'?36:2);txt+=` — vinci ${win}💰`}else txt+=' — perso'}
   P.g+=win;CR=txt;if(win>=b*5)coinRain(Math.min(40,10+win/b*2|0));if(win>b)jingle([72,76,79,84],.1,'triangle');else if(win)tone(700,.1);else tone(150,.2);hud();pn('casino')}
 function bagOk(){if(P.inv.length<INV)return true;msg('Zaino pieno: libera un posto prima di comprare');tone(150,.15);return false}
 function pay(c){if(P.g<c){msg('Oro insufficiente');tone(150,.15);return false}P.g-=c;tone(1200,.06,'triangle');return true}

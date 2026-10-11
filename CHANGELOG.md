@@ -5,6 +5,26 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.8 — Icone voxel ovunque e Mondi della community in stile Voxelia (10 ottobre 2026)
+
+### Icone voxel in tutto il gioco
+- Le **icone a cubetti** di Voxelia Studio ora sono le icone di **tutto il gioco**: menu, Modalità Storia, impostazioni, dialoghi con gli abitanti, missioni, negozi, fucina, erborista, casinò, pesca, zaino, diario, mappa, pannello sviluppatore, scene della storia e Mondi della community. Non si vedono più emoji del sistema, che cambiavano aspetto da un computer all'altro.
+- **70 icone nuove** disegnate nello stesso stile: cuore e cuore vuoto, trofeo, medaglie d'oro, d'argento e di bronzo, fotocamera, registrazione, videocamera, attrezzi, barca, ancora, profilo e gruppo, esplosione, portale, sole, alba e tramonto, croce di cura, zaino, clessidra, stretta di mano, bersaglio, etichetta, bandiera a scacchi e bandiera bianca, cappello da cowboy e cilindro, corazza, catene, castello, schermo, gamepad, nebbia, nuvola e pioggia, ciliegie, limone, campana, sette e slot machine, roulette, carte, pistola, corno, borse, galassia, transenna, rovina, abete, deserto, montagna, tronco, pugnale, lucchetto aperto, tridente, arco, cavallo, boccale, quadro, festa, piccone, braccio forte, occhio sbarrato e altre.
+- Anche i **numeri che volano** sopra l'eroe (oro raccolto, colpi critici, cure) usano le icone voxel.
+- La **roulette** del casinò e la **ruota delle azioni** nelle impostazioni hanno un'icona tutta loro, non più quella del Parco giochi.
+- Le icone già fatte apposta per il gioco (quelle dell'HUD, della ruota e delle impostazioni) restano com'erano.
+
+### Mondi della community in stile Voxelia
+- Il browser dei mondi ora sembra una **bacheca del gioco**: barra di legno con il titolo dorato, schede con il bordo a cubetti e l'ombra sotto, pannelli come quelli dei dialoghi (chiari o scuri secondo il tema del gioco), nastro rosso «In evidenza», stelle dorate, pulsanti come quelli del resto di Voxelia. Dietro si vede il mondo del menu, leggermente sfocato.
+- Anche la **finestra di pubblicazione** e le finestre di conferma hanno lo stesso aspetto, con l'anteprima della scheda uguale a quella vera.
+- La ricerca ha la sua icona dentro il campo, e mentre il browser è aperto il menu dietro non si vede più in trasparenza.
+
+### Correzioni
+- **Menu**: le schede e la barra in basso non compaiono più due volte all'avvio. Il menu veniva mostrato prima che il gioco fosse pronto e poi ripartiva con la sua animazione; ora compare una volta sola, già animato. Anche la barra in basso non si ripete più dopo tre secondi.
+- **Voxelia Studio**: la barra di stato in basso occupa tutta la larghezza dello schermo, senza i due angoli vuoti sotto gli strumenti a sinistra e sotto il pannello a destra.
+
+---
+
 ## 7.7 — Mondi della community, scene della storia e modalità sviluppatore (9 ottobre 2026)
 
 Questa versione **unisce le due 7.6** uscite in parallelo: «Voxelia Studio più professionale» (qui sotto, tutta intera) e «Mondi della community» (descritta in questa pagina). Le modifiche di tutte e due sono state messe insieme riga per riga: l'editor ha i nuovi strumenti, le icone voxel e tutti gli asset del gioco **e** il pulsante **Pubblica**; anche i timbri e le decorazioni dei mondi pubblicati passano dai controlli di sicurezza.

@@ -1,4 +1,4 @@
-# Voxelia 7.9.3: server di gioco + pannello admin in un container.
+# Voxelia 7.9.3: server di gioco + pannello admin + plugin in un container.
 # Nessuna dipendenza npm: serve solo Node.js 16+.
 FROM node:20-alpine
 
@@ -6,12 +6,14 @@ ENV NODE_ENV=production \
     PORT=3000 \
     DATA_FILE=/data/voxelia-data.json \
     MONDI_DIR=/data/mondi \
-    PLUGINS_DIR=/data/plugins
+    PLUGINS_DIR=/app/plugins
 
 WORKDIR /app
 COPY server.js admin.html voxelia.html ./
+# I plugin stanno nell'immagine (cartella plugins/ del repository), non nel volume.
+COPY plugins ./plugins
 
-# I dati persistenti (classifica, dungeon, ban, mondi, plugin) stanno in /data: montarlo come volume.
+# I dati persistenti (classifica, dungeon, ban, mondi) stanno in /data: montarlo come volume.
 RUN mkdir -p /data && chown -R node:node /data /app
 USER node
 

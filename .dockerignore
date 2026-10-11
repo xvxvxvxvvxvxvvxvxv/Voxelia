@@ -7,6 +7,5 @@ Dockerfile
 .dockerignore
 voxelia-data.json
 mondi
-plugins
 node_modules
 *.log

@@ -3947,7 +3947,7 @@ const EDEM={'👆':'sel','✋':'hand','🟩':'grass','🧱':'brick','🌊':'wate
   '🧪':'potion','🔑':'key','📦':'box','🛒':'stall','🎨':'palette','💬':'speech','👑':'crown','🔒':'lock','⚠':'warn','⛔':'stop','ℹ':'info','✔':'ok','⭐':'star','✨':'star','🎲':'dice','📤':'export','📥':'import','🎓':'cap',
   '🔍':'search','🪣':'bucket','☠':'skull','💀':'skull','❄':'snow','🩸':'blood','💨':'wind','💪':'up','🪨':'rock','⏹':'stopb','⏱':'timer','⟲':'rotl','⟳':'rotr','↺':'rotl','↪':'arrowr','▲':'up','▼':'down','⚒':'anvil','⚗':'flask',
   '🎰':'dice','⚜':'crown','📖':'book','⏏':'export','▭':'rect','╱':'line','🧺':'box','🎡':'world','🗝':'key','📋':'paste','✂':'scissors','🧭':'map'};
-const EDEMR=new RegExp('('+Object.keys(EDEM).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\uFE0F?\\s?','gu');
+let EDEMR=new RegExp('('+Object.keys(EDEM).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\uFE0F?\\s?','gu');
 function edIcoTree(root){if(!root||!root.nodeType)return;if(root.nodeType===3){if(root.parentNode)edIcoTree(root.parentNode);return}if(root.nodeType!==1)return;
   const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),L=[];while(w.nextNode()){const n=w.currentNode,p=n.parentNode;if(!p||p.nodeName==='TEXTAREA'||p.nodeName==='SCRIPT'||p.nodeName==='STYLE'||(p.closest&&p.closest('.noico')))continue;EDEMR.lastIndex=0;if(EDEMR.test(n.nodeValue))L.push(n)}
   for(const n of L){const p=n.parentNode,s=n.nodeValue;EDEMR.lastIndex=0;
@@ -4158,7 +4158,7 @@ function edMapXf(k,dx,dy){const m=EM,n=m.N;edPush('trasforma mappa');const all={
 .edcth{max-width:96px;max-height:96px;image-rendering:pixelated;border:1px solid #f5b94255;border-radius:4px;background:#0006;display:block;margin:4px 0}.edtth{width:30px;height:34px;object-fit:contain;vertical-align:middle;background:#0005;border-radius:4px;margin:1px}
 .edstl{display:grid;grid-template-columns:1fr 1fr;gap:6px}.edstc{position:relative}.edstb{width:100%;flex-direction:column;align-items:center!important;padding:6px 4px!important;gap:2px!important;height:100%}
 .edstb img{width:72px;height:72px;object-fit:contain;image-rendering:pixelated;background:#0006;border-radius:4px}.edstb b{font-size:12px;text-align:center}.edstb small{color:var(--mu);font-size:10.5px}.edsx{position:absolute;top:2px;right:2px;padding:1px 4px!important;font-size:10px!important}
-#edstat{left:54px;right:318px;height:30px;line-height:30px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 6px 0 12px;background:#0a0d16f0;font-size:12px;overflow:visible}
+#edleft,#edside{bottom:30px}#edstat{left:0;right:0;z-index:2;height:30px;line-height:30px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 6px 0 12px;background:#0a0d16f0;font-size:12px;overflow:visible}
 #edstx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#c8cede}.edzc{display:inline-flex;align-items:center;gap:2px;flex-shrink:0}
 .edzc button{padding:2px 5px!important;height:24px}.edzc button .vi{width:18px;height:18px;vertical-align:0}.edzc button.on{background:linear-gradient(180deg,#3a4a76,#2a3558)!important;border-color:#7ad0ff99!important;box-shadow:none!important}
 #edzv{min-width:44px;text-align:center;cursor:pointer;color:#ffd84a;font-variant-numeric:tabular-nums}.edsep{width:1px;height:18px;background:var(--ln);margin:0 4px}
@@ -4171,7 +4171,7 @@ function edMapXf(k,dx,dy){const m=EM,n=m.N;edPush('trasforma mappa');const all={
 #mparco .vi{width:1.25em;height:1.25em}
 #edside select{max-width:100%;min-width:0}#edside .edrow select{flex:1 1 120px}#edside .edrow>span:first-child{flex-shrink:0}.edsw{height:104px!important}.edsw.tall{height:120px!important}.edsw small{max-height:2.4em;overflow:hidden}
 @media(max-width:1500px){#edtop .edwins .lb{display:none}#edtop .edwins button{padding:4px 7px}}
-@media(max-width:820px){#edside{width:auto}#edleft{width:50px;bottom:calc(40vh + 30px)}#edleft button{width:40px;height:38px}#edstat{display:flex;left:50px;right:0;bottom:40vh}#edstx{font-size:11px}.edzc button{padding:2px 3px!important}}`;document.head.appendChild(st)})();
+@media(max-width:820px){#edside{width:auto}#edleft{width:50px;bottom:calc(40vh + 30px)}#edleft button{width:40px;height:38px}#edstat{display:flex;left:0;right:0;bottom:40vh}#edside{bottom:0}#edstx{font-size:11px}.edzc button{padding:2px 3px!important}}`;document.head.appendChild(st)})();
 
 /* ================= avvio, salvataggi, menu ================= */
 function contHTML(){const s=LS.get(SAVEK,null);$('cont').innerHTML=s&&s.p?`<button class="mbtn cont" onclick="contGame()">${ico('gioca',24)}<span><b>Continua: ${esc(s.name)}</b><small>Livello ${s.p.lv|0} · ${DFS[s.df]?DFS[s.df].n:''} · frammenti ${(s.p.sh||[]).length}/6 · salvato ${esc(new Date(s.t).toLocaleString('it-IT'))}</small></span></button>`:'';menuPort();
@@ -4276,4 +4276,4 @@ function curHover(dt){if(!CURU.def||!SET.curx||MX<0){if(curK){cv.style.cursor=''
   if(h){if(h.k==='en'||(h.k==='pl'&&inPit(h.px,h.py)&&inPit(P.px,P.py)))k='atk';else if(h.k==='npc')k='talk';else k='use'}
   if(k!==curK){curK=k;if(!k){cv.style.cursor='';return}const o=CURU[k];cv.style.cursor=`url(${o.u}) ${o.x} ${o.y},auto`;cv.style.cursor=`image-set(url(${o.u}) 1x,url(${o.u2}) 2x) ${o.x} ${o.y},auto`}}
 $('ver').textContent=GAME_VER;document.title='Voxelia '+GAME_VER+' – Il Regno Perduto';
-rs();onresize=rs;applySet();iconFill();contHTML();$('menu').classList.add('intro');setTimeout(()=>$('menu').classList.remove('intro'),3200);newBadge();music('menu');requestAnimationFrame(loop);edInstall();
+rs();onresize=rs;applySet();iconFill();contHTML();$('menu').classList.add('intro','rdy');setTimeout(()=>$('menu').classList.remove('intro'),3200);newBadge();music('menu');requestAnimationFrame(loop);edInstall();

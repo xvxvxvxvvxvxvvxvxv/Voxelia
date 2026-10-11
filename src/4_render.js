@@ -795,7 +795,7 @@ function drawMenuFx(){g.setTransform(DPR,0,0,DPR,0,0);const cols=['#7aff7a','#9f
 .stk{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;margin:4px 0 10px}.stk .si{background:#0003;border:1px solid #ffffff22;border-radius:6px;padding:6px;animation:vxin .35s ease-out both}.stk .si.so{opacity:.45}
 @keyframes vxin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes vxglow{50%{text-shadow:0 0 18px rgba(255,210,120,.9),0 0 42px rgba(255,160,60,.6)}}
-#menu h1{animation:vxglow 3.2s ease-in-out infinite}#menu .mpan{animation:vxin .7s ease-out both}#menu .mpan+.mpan{animation-delay:.15s}#menu .mfoot{animation:vxin .7s .3s ease-out both}
+#menu h1{animation:vxglow 3.2s ease-in-out infinite}#menu .mpan{animation:vxin .7s ease-out both}#menu .mpan+.mpan{animation-delay:.15s}#menu .mfoot{animation:mrise .6s .3s both}
 #menu .dcard,#menu .mbtn,#menu .mfoot button{transition:transform .15s,box-shadow .15s}#menu .dcard:hover,#menu .mbtn:hover,#menu .mfoot button:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 6px 18px rgba(0,0,0,.35)}
 #pn{animation:vxin .22s ease-out}
 @media(prefers-reduced-motion:reduce){#menu h1,#menu .mpan,#menu .mfoot,.stk .si,#pn{animation:none}}`;document.head.appendChild(st)})();
@@ -1455,7 +1455,7 @@ const EN={'Il Regno Perduto':'The Lost Kingdom','— RPG punta e clicca in grafi
 '⚙ Impostazioni':'⚙ Settings','Volume generale':'Master volume','Musica di sottofondo':'Background music','Volume musica':'Music volume','Volume effetti':'Effects volume','Prova suono':'Test sound','🖥 Grafica':'🖥 Graphics','Preimpostazione':'Preset',
 'Bassa':'Low','Media':'Medium','Alta':'High','Risoluzione di rendering':'Render resolution','Particelle (foglie, neve, braci)':'Particles (leaves, snow, embers)','Ombre':'Shadows','Illuminazione dinamica nei dungeon':'Dynamic lighting in dungeons','☁ Cielo con nuvole':'☁ Cloudy sky',
 '🎬 Animazioni':'🎬 Animations','🎮 Comandi':'🎮 Controls','Personalizza l\'HUD':'Customize the HUD','Rimetti l\'HUD com\'era':'Reset the HUD','🎨 Aspetto dell\'eroe':'🎨 Hero\'s look','🎞 Fotogrammi':'🎞 Frame rate','FPS massimi':'Max FPS',
-'🌐 Lingua':'🌐 Language','Lingua del gioco':'Game language','🎡 Ruota delle azioni':'🎡 Action wheel','Usa la vecchia barra al posto della ruota':'Use the old bar instead of the wheel','Tasto per mostrare o nascondere la ruota':'Key to show or hide the wheel',
+'🌐 Lingua':'🌐 Language','Lingua del gioco':'Game language','🛞 Ruota delle azioni':'🛞 Action wheel','Usa la vecchia barra al posto della ruota':'Use the old bar instead of the wheel','Tasto per mostrare o nascondere la ruota':'Key to show or hide the wheel',
 'Chiudi':'Close','Indietro':'Back','Esci dal tavolo':'Leave the table','Accetta':'Accept','Consegna':'Turn in','Mattina':'Morning','Pomeriggio':'Afternoon','Sera':'Evening','Notte':'Night',
 '🗺 Mappa di Aldoria':'🗺 Map of Aldoria','Chiudi (M)':'Close (M)','Benvenuti ad Aldoria':'Welcome to Aldoria','Cosa trovi':'What you\'ll find','Smetti di pescare':'Stop fishing','Ritirati':'Withdraw','Muoviti':'Move'};
 const ENR=[[/^Giorno (\d+)$/,'Day $1'],[/^Il tuo schermo aggiorna a circa (\d+) Hz\.$/,'Your screen refreshes at about $1 Hz.'],[/^Compra/,'Buy'],[/^Vendi/,'Sell'],[/^Equipaggia/,'Equip'],[/^Livello (\d+)/,'Level $1'],[/^Accetta/,'Accept'],[/^Consegna/,'Turn in']];
@@ -1693,7 +1693,7 @@ function draw(){const z=ZZ,out=!!SKY[Zk];GLOW.length=0;NLS.length=0;
     else if(f.k==='warn'){const p=1-f.t/f.mx;g.fillStyle=`rgba(255,40,30,${.15+p*.25})`;g.beginPath();g.ellipse(PX(f.x,f.y),PY(f.x,f.y,0),f.r*45,f.r*22.5,0,0,6.3);g.fill();g.strokeStyle='rgba(255,80,40,.9)';g.lineWidth=2;g.beginPath();g.ellipse(PX(f.x,f.y),PY(f.x,f.y,0),f.r*45*p,f.r*22.5*p,0,0,6.3);g.stroke()}
     else if(f.k==='trail'){g.strokeStyle=`rgba(200,240,255,${Math.min(1,f.t*4)})`;g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(PX(f.x,f.y),PY(f.x,f.y,12));g.lineTo(PX(f.x2,f.y2),PY(f.x2,f.y2,12));g.stroke();g.lineCap='butt'}
     else if(f.k==='boom'){const p=1-f.t/.4;g.strokeStyle=`rgba(255,120,60,${f.t*2.5})`;g.lineWidth=8;g.beginPath();g.ellipse(PX(f.x,f.y),PY(f.x,f.y,0),f.r*45*p,f.r*22*p,0,0,6.3);g.stroke()}}
-  if(SET.dmg){g.textAlign='center';g.font='bold 15px Georgia,serif';g.lineWidth=3;g.strokeStyle='#000';for(const p of pop){g.globalAlpha=Math.min(1,p.t*2);const x=PX(p.x,p.y),y=PY(p.x,p.y,44)-(1-p.t)*28;g.strokeText(p.s,x,y);g.fillStyle=p.c;g.fillText(p.s,x,y)}g.globalAlpha=1}
+  if(SET.dmg){g.textAlign='center';g.font='bold 15px Georgia,serif';g.lineWidth=3;g.strokeStyle='#000';for(const p of pop){g.globalAlpha=Math.min(1,p.t*2);const x=PX(p.x,p.y),y=PY(p.x,p.y,44)-(1-p.t)*28;g.fillStyle=p.c;if(typeof vxText==='function')vxText(p.s,x,y,1,1);else{g.strokeText(p.s,x,y);g.fillText(p.s,x,y)}}g.globalAlpha=1}
   lights();if(SET.ultra&&z.dg)glows();
   if(out)nightDraw();
   if(SET.ultra&&!z.dg)grade(out&&NK<.5);

@@ -193,7 +193,7 @@ const SETCAT=[
   ['perf','fulmine','Prestazioni','Fotogrammi al secondo e rendering',['fpsmax','fast','fps']],
   ['anim','ciak','Animazioni','Scene e inquadrature',['cine','cinecam','film']],
   ['ui','hud','Interfaccia','HUD, ruota delle azioni, mappa, nomi e minimappa',['dmg','names','mini','rw','oldbar','hudl','mapt']],
-  ['ctrl','gamepad','Comandi','Movimento, tasti e comandi touch',['wasd','rk','tch','tsz','tlh','tvib']],
+  ['ctrl','gamepad','Comandi','Movimento, tasti e comandi touch',['wasd','rk','tch','tauto','tsz','tlh','tvib']],
   ['cur','cursore','Cursore','Stile, colore e grandezza del puntatore',['cur','curc','curs','curx']]];
 const setCats=()=>SETCAT.filter(c=>!(TOUCH&&c[0]==='cur'));
 let SETC=LS.get('voxelia_setc','gen');
@@ -226,7 +226,7 @@ ${HZ?`<p class="mu">Il tuo schermo aggiorna a circa ${HZ} Hz.</p>`:''}<p class="
     +sGrp('Mappa',`<div class="row"><label for="s_mapt">Tema della mappa (tasto M)</label><select id="s_mapt" onchange="setv('mapt',+this.value)">${['Automatico (come il gioco)','Scuro','Chiaro'].map((n,i)=>`<option value="${i}" ${(SET.mapt|0)===i?'selected':''}>${n}</option>`).join('')}</select></div>`)
     +sGrp('Sullo schermo',chk('dmg','Numeri dei danni')+chk('names','Nomi sopra i personaggi')+chk('mini','Minimappa'));
   case 'ctrl':return sGrp('Comandi touch',`<div class="row"><label for="s_tch">Joystick e pulsanti sullo schermo</label><select id="s_tch" onchange="setv('tch',+this.value);openSet()">${[['0','Automatici (solo su telefoni e tablet)'],['1','Sempre'],['2','Mai']].map(([v,n])=>`<option value="${v}" ${String(SET.tch|0)===v?'selected':''}>${n}</option>`).join('')}</select></div>`
-      +`<div class="row"><label>Sposta e ridimensiona joystick e pulsanti, uno per uno</label><button onclick="hudEdit(1)" ${started&&typeof TCH!=='undefined'&&TCH.on?'':'disabled'}>✋ Personalizza i comandi</button></div>`+rng('tsz','Grandezza dei pulsanti',70,140,5)+chk('tlh','Mancini: joystick a destra, pulsanti a sinistra')+chk('tvib','Vibrazione quando premi un pulsante')
+      +`<div class="row"><label>Sposta e ridimensiona joystick e pulsanti, uno per uno</label><button onclick="hudEdit(1)" ${started&&typeof TCH!=='undefined'&&TCH.on?'':'disabled'}>✋ Personalizza i comandi</button></div>`+chk('tauto','Adatta da solo i comandi al dispositivo (telefono, tablet, verticale o orizzontale)')+(typeof TCH!=='undefined'&&TCH.on&&TCH.dev?`<p class="mu">Rilevato: ${TDEVN[TCH.dev.k]}${TCH.dev.land?' in orizzontale':' in verticale'} · grandezza automatica ${Math.round(TCH.dev.f*100)}%</p>`:'')+rng('tsz',SET.tauto!==0?'Grandezza dei pulsanti (in più o in meno rispetto a quella automatica)':'Grandezza dei pulsanti',70,140,5)+chk('tlh','Mancini: joystick a destra, pulsanti a sinistra')+chk('tvib','Vibrazione quando premi un pulsante')
       +`<p class="mu">Trascina il dito nella parte bassa a sinistra per muoverti, tocca un nemico o un personaggio per andarci. Due dita per lo zoom, un tocco sulla minimappa apre la mappa.</p>`)
     +sGrp('Movimento',chk('wasd','Movimento con WASD e frecce (R per interagire)'))
     +sGrp('Tasti',`<div class="row"><label>Tasto per mostrare o nascondere la ruota</label><button onclick="RKW=1;this.textContent='Premi un tasto...'">${RKW?'Premi un tasto...':keyName(SET.rk)}</button></div><p class="mu">L'elenco completo dei tasti è in "Comandi", nel menu iniziale.</p>`);

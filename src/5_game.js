@@ -27,10 +27,16 @@ function kill(e){const i=ents.indexOf(e);if(i<0)return;ents.splice(i,1);if(cineO
   if(Math.random()<.12){P.pot++;flt(P,'+🧪','#88ff88')}
   P.kills++;questKill(e);if(e.boss)bossDown(e);hud()}
 function bossDown(e){jingle([60,64,67,72,76,79],.11);if(cineOK())sceneBossDown(e);else msg('Hai sconfitto '+e.n+'!');clog('','Hai sconfitto '+e.n+'!',{sys:1});if(ZZ.dg)dungeonClear(e)}
+function exitSpot(x,y){const d=bfs(Math.floor(P.px),Math.floor(P.py)),busy=(u,v)=>ents.some(e=>(e.k==='po'||e.k==='npc'||e.k==='ch'||e.k==='shard'||e.k==='dr')&&Math.abs(e.px-(u+.5))<1.7&&Math.abs(e.py-(v+.5))<1.7);let best=null,bs=-1e9;
+  for(let v=y-8;v<=y+8;v++)for(let u=x-8;u<=x+8;u++){if(u<1||v<1||u>=N-1||v>=N-1||!WK(M[v][u])||d[v*N+u]<0)continue;const r=Math.hypot(u-x,v-y),rp=Math.hypot(u+.5-P.px,v+.5-P.py);if(r<3||rp<3||busy(u,v))continue;
+    let fr=0;for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]])if(WK(M[v+b][u+a]))fr++;const sc=-Math.abs(r-4)*2+Math.min(rp,6)*.6+fr;if(sc>bs){bs=sc;best=[u,v]}}
+  return best||nearFree(x,y)}
+const dgLeft=()=>{const sh=ents.filter(e=>e.k==='shard').length,dr=ents.filter(e=>e.k==='dr').length,ch=ents.filter(e=>e.k==='ch'&&e.rich).length;return sh||dr||ch?{sh,dr,ch}:null};
 function dungeonClear(e){const id=ZZ.dg,d=DG[id],x=Math.floor(e.px),y=Math.floor(e.py);
-  ents.push(po(x,y,d.ent,{st:'exit',n:'Uscita: '+zname(d.ent)}));
   const c=nearFree(x,y);ents.push({k:'ch',px:c[0]+.5,py:c[1]+.5,rich:1});
   if(!d.fin&&!P.sh.includes(id)){const s=nearFree(x+1,y+1);ents.push({k:'shard',id,px:s[0]+.5,py:s[1]+.5,n:'Frammento della Corona'})}
+  // il portale d'uscita compare lontano dal bottino e dall'eroe, così un clic sbagliato non ti porta via prima di raccogliere
+  const ex=exitSpot(x,y);const ep=po(ex[0],ex[1],d.ent,{st:'exit',n:'Uscita: '+zname(d.ent)});ep.dgx=1;ents.push(ep);
   P.done[id]=(P.done[id]||0)+1;
   if(NET.ok)NET.send({t:'dgdone',d:id,run:ZZ.run});else P.runs[id]=ZZ.run+1;
   setTimeout(()=>msg('Dungeon completato! Al prossimo ingresso si rigenererà, più forte (ciclo '+(ZZ.run+2)+').'),2900);
@@ -93,9 +99,10 @@ function act(e){
   if(e.k==='shard7'){shard7(e);return}
   if(e.k==='po'&&e.st==='tap'&&!(P.sec&&P.sec.c2)){secretFind('c2');return}
   if(e.k==='po'&&e.lock&&!(P.unl&&P.unl[e.lock])){msg(e.lockMsg||'Il passaggio è sbarrato.');tone(150,.2);return}
-  if(e.k==='npc'){if(e.wd){e.path=[];e.wt=6}questTalk(e.nid);PA=e;pn('npc');if(!e.slp)voice(e);npcMarks();cineOn(e,1.25);return}
+  if(e.k==='npc'){if(e.wd){e.path=[];e.wt=6}questTalk(e.nid);if(typeof QAS!=='undefined')QAS={id:'',i:-1};if(typeof MQA!=='undefined')MQA=-1;PA=e;pn('npc');if(!e.slp)voice(e);npcMarks();cineOn(e,1.25);return}
   if(e.k==='ch'){if(cineOK()){e.k='cho';e.ot=t;sceneChest(e)}else ents.splice(ents.indexOf(e),1);const lv=ZZ.lv||Math.max(1,P.lv-1),n=e.rich?3:ri(1,2);for(let i=0;i<n;i++){const d={k:'dr',px:e.px+i*.5-.4,py:e.py+.5,it:item(lv+1,e.rich?1:0)};arcFrom(d,e.px,e.py,.25+i*.12);ents.push(d)}
     const gd=Math.round(ri(10,30)*(1+lv)*(e.rich?3:1)*(NET.cfg.gm||1));P.g+=gd;if(e.hc)P.hc[e.hc]=Date.now();tone(800,.1);msg('Forziere aperto! +'+gd+' oro');setTimeout(()=>goldFly(gd,e.px,e.py),250);hud();return}
+  if(e.k==='po'&&e.dgx&&!e.ok){const L=dgLeft();if(L){PA={po:e,L};pn('exitask');tone(330,.08,'triangle');return}}
   if(e.k==='po'){if(IRB)return;whoosh();const to=e.to,fr=Zk;irisGo(()=>load(to,fr));return}
   if(e.k==='dr'){if(P.inv.length>=INV){msg('Zaino pieno ('+INV+'/'+INV+'): getta, distruggi o vendi qualcosa per raccogliere '+iname(e.it));tone(150,.15);return}
     if(e.gid){if(!NET.ok){msg('Non sei collegato al server: non puoi raccoglierlo ora');return}if(e.pend&&t-e.pend<2)return;e.pend=t;NET.send({t:'gtake',id:e.gid,rm:rmKey()});return}

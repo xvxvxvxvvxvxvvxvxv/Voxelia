@@ -13,12 +13,12 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
 
 /* ================= stato globale ================= */
-const GAME_VER='7.8';
+const GAME_VER='7.9';
 let GLOW=[],IT=null;const KEYS={};
 let W=0,H=0,DPR=1,S=1,M,N,Zk,ZZ,DEC,BM,ents=[],P=null,fx=[],pop=[],PJ=[],parts=[],t=0,DF,started=0,PM=0,PA=null,camX=0,camY=0,last=0,acc=0,eid=0,inMenu=1,mt0=0,lc=null,FC=null,MC=null,fpsN=0,fpsT=0,bossT=0,saveT=0,TB=[];
 
 /* ================= impostazioni ================= */
-const SETD={lang:'it',rk:'v',rw:1,oldbar:0,mv:.8,mu:.5,sf:.7,muOn:1,q:2,rs:1,part:1,shad:1,light:1,sky:1,ultra:0,dmg:1,names:1,mini:1,fps:0,wasd:1,cur:0,curc:'oro',curs:2,curx:1,ivs:'new',ivf:'all',cine:1,cinecam:1,fpsmax:0,vsync:1,mapt:0,fast:1,hudsnap:1,film:1};
+const SETD={lang:'it',rk:'v',rw:1,oldbar:0,mv:.8,mu:.5,sf:.7,muOn:1,q:2,rs:1,part:1,shad:1,light:1,sky:1,ultra:0,dmg:1,names:1,mini:1,fps:0,wasd:1,cur:0,curc:'oro',curs:2,curx:1,ivs:'new',ivf:'all',cine:1,cinecam:1,fpsmax:0,vsync:1,mapt:0,fast:1,hudsnap:1,film:1,tch:0,tsz:100,tlh:0,tvib:1};
 const SET=Object.assign({},SETD,LS.get('voxelia_set',{}));
 // Preimpostazioni grafiche: Bassa, Media, Alta, Ultra
 const QP=[{rs:.6,part:0,shad:0,light:0,sky:0,ultra:0},{rs:.8,part:1,shad:1,light:0,sky:1,ultra:0},{rs:1,part:1,shad:1,light:1,sky:1,ultra:0},{rs:1,part:1,shad:1,light:1,sky:1,ultra:1}];

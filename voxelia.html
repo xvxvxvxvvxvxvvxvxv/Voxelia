@@ -5753,16 +5753,18 @@ function warCmd(k,a){const W=WAR;if(!W||W.over)return;
       setTimeout(()=>{if(!WAR)return;for(const e of ents.slice())if(e.tr&&e.side===1&&!e.bld&&Math.hypot(e.px-c.px,e.py-c.py)<2.4)warHit(P,e,55*(1+(P.lv||1)*.05))},1100);tone(900,.2,'triangle',.03)}
     else if(a==='rinforzi'){warSpawn(0,'fanti',W.lane,1);banner('Rinforzi!','Una squadra di fanti arriva al campo','spade')}}
   warUI(1)}
+// riscrive il pannello solo se il contenuto cambia: rifarlo a ogni tick distruggeva i pulsanti mentre venivano cliccati
+function setBH(el,h){if(el._h!==h){el._h=h;el.innerHTML=h}}
 function warUI(on){let el=$('batui');if(on===0){if(el)el.remove();document.body.classList.remove('batt');return}const W=WAR;if(!W)return;
   if(!el){el=document.createElement('div');el.id='batui';document.body.appendChild(el);el.addEventListener('pointerdown',e=>e.stopPropagation())}document.body.classList.add('batt');
   const b=W.b,hb=s=>Math.max(0,W.base[s].hp/W.base[s].mx*100);const sup=Math.floor(W.sup[0]);
-  if(W.over){const ok=W.over===1;el.innerHTML=`<div class="bt-top"><div class="bt-end ${ok?'win':'lose'}"><b>${ok?'🏆 Vittoria!':'💀 Sconfitta'}</b><span>${ok?'Il nemico è in rotta. Ryan esulta!':'I tuoi soldati si ritirano. Riprova con un\'altra strategia.'}</span><button onclick="warLeave()">Torna in caserma da Ryan</button>${ok?'':`<button onclick="warRetry()">Riprova la battaglia</button>`}</div></div>`;return}
+  if(W.over){const ok=W.over===1;setBH(el,`<div class="bt-top"><div class="bt-end ${ok?'win':'lose'}"><b>${ok?'🏆 Vittoria!':'💀 Sconfitta'}</b><span>${ok?'Il nemico è in rotta. Ryan esulta!':'I tuoi soldati si ritirano. Riprova con un\'altra strategia.'}</span><button onclick="warLeave()">Torna in caserma da Ryan</button>${ok?'':`<button onclick="warRetry()">Riprova la battaglia</button>`}</div></div>`);return}
   let h=`<div class="bt-top"><div class="bt-hp"><i style="width:${hb(0)}%"></i><span>Il tuo accampamento</span></div><b>${esc(b.n)}</b><div class="bt-hp en"><i style="width:${hb(1)}%"></i><span>${esc(b.fn)}</span></div></div>`;
   h+=`<div class="bt-bar"><div class="bt-sup">🌾 <b>${sup}</b><small>rifornimenti</small></div><div class="bt-units">`;
   UTK.forEach((k,i)=>{if(!b.pu.includes(k))return;const U=UT[k],can=sup>=U.c;h+=`<button class="bt-u ${can?'':'no'}" title="${esc(U.n+': '+U.d)}" onclick="warCmd('u','${k}')"><em>${i+1}</em><span>${U.ic}</span><b>${U.n}</b><small>${U.c} 🌾 · ×${U.sq}</small></button>`});
   h+=`</div><div class="bt-col"><div class="bt-lanes">${['Alta','Centro','Bassa'].map((n,i)=>`<button class="${W.lane===i?'on':''}" onclick="warCmd('l',${i})">${n}</button>`).join('')}</div><div class="bt-ord">${[['avanza','⚔ Avanza'],['difendi','🛡 Difendi'],['ritirata','↩ Ritirata']].map(([k,n])=>`<button class="${W.ord===k?'on':''}" onclick="warCmd('o','${k}')">${n}</button>`).join('')}</div></div>`;
   h+=`<div class="bt-ab">${b.ab.map((k,i)=>{const A=ABL[k],c=W.cd[k]||0;return`<button class="${c>0?'cd':''}" title="${esc(A.d)}" onclick="warCmd('a','${k}')"><em>${6+i}</em>${A.ic}<small>${c>0?Math.ceil(c)+'s':A.n}</small></button>`}).join('')}<button class="bt-pot" onclick="pot()" title="Pozione">🧪<small>${P.pot}</small></button><button class="bt-x" onclick="warAbandon()" title="Abbandona la battaglia">🏳</button></div></div>`;
-  if(W.boost>0)h+=`<div class="bt-boost">📯 CARICA! ${Math.ceil(W.boost)}s</div>`;el.innerHTML=h}
+  if(W.boost>0)h+=`<div class="bt-boost">📯 CARICA! ${Math.ceil(W.boost)}s</div>`;setBH(el,h)}
 function warAbandon(){if(!WAR||WAR.over)return;warEnd(0,'Hai suonato la ritirata.')}
 function warRetry(){const id=WAR&&WAR.id;if(!id)return;irisGo(()=>{load('bat_'+id,'in_caserma')})}
 addEventListener('keydown',ev=>{if(!WAR||WAR.over||!ZZ||!ZZ.war||PM)return;const tg=ev.target;if(tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'))return;const n=+ev.key;if(n>=1&&n<=5){const k=UTK[n-1];if(WAR.b.pu.includes(k)){ev.preventDefault();ev.stopImmediatePropagation();warCmd('u',k)}}

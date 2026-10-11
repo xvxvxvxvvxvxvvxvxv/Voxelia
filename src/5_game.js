@@ -34,7 +34,7 @@ function dungeonClear(e){const id=ZZ.dg,d=DG[id],x=Math.floor(e.px),y=Math.floor
   P.done[id]=(P.done[id]||0)+1;
   if(NET.ok)NET.send({t:'dgdone',d:id,run:ZZ.run});else P.runs[id]=ZZ.run+1;
   setTimeout(()=>msg('Dungeon completato! Al prossimo ingresso si rigenererà, più forte (ciclo '+(ZZ.run+2)+').'),2900);
-  if(d.fin&&P.st===3){P.st=4;setTimeout(()=>{PA={ti:'La caduta di Malakar',tx:'Il Re Lich si dissolve in una nube di voxel neri. Torna dal Re Aldric al castello.'};pn('txt')},1500)}
+  if(d.fin&&P.st===3){P.st=4;setTimeout(()=>{const show=()=>{PA={ti:'La caduta di Malakar',tx:'Il Re Lich si dissolve in una nube di voxel neri. Torna dal Re Aldric al castello.'};pn('txt')};if(typeof filmFall==='function')filmFall(show);else show()},1500)}
   save()}
 function die(){sceneDeath();if(MODE==='dim'){dimDie();return}if(DF.pm){started=0;LS.del(SAVEK);netLeave();pn('dead');return}
   P.hp=P.mx;if(DFS.indexOf(DF)>0)P.g=P.g*.9|0;irisGo(()=>load('town'));if(!cineOK())msg('Sei stato sconfitto: ti risvegli ad Aldoria.')}
@@ -101,7 +101,7 @@ function act(e){
     if(e.gid){if(!NET.ok){msg('Non sei collegato al server: non puoi raccoglierlo ora');return}if(e.pend&&t-e.pend<2)return;e.pend=t;NET.send({t:'gtake',id:e.gid,rm:rmKey()});return}
     ents.splice(ents.indexOf(e),1);if(e.lid)gndTake(e.lid);gain(e.it,e.px,e.py);return}
   if(e.k==='shard'){ents.splice(ents.indexOf(e),1);sceneShard(e);P.sh.push(e.id);jingle([72,79,84,91],.14,'triangle');PA={ti:'Frammento della Corona ('+P.sh.length+'/6)',tx:SHT[e.id]+(P.sh.length===6?'\n\nHai tutti e sei i frammenti! Riportali al Re Aldric, nel castello di Aldoria.':'')};
-    if(P.sh.length>=6&&P.st===1)P.st=2;pn('txt');save();return}
+    if(P.sh.length>=6&&P.st===1)P.st=2;pn('txt');save();if(typeof filmShard==='function')filmShard(e.id);return}
   if(e.k==='lore'){ents.splice(ents.indexOf(e),1);if(cineOK()){sparks(e.px,e.py,12,['#f4e8c8','#ffd98a'],70);flyIcon(ICON('pagina',2).u,scr(e.px,e.py,14),bagBtn(),{sz:26})}P.lore.push(e.id);jingle([64,67,71],.12,'triangle');PA={ti:LORE[e.id][0],tx:LORE[e.id][1],sub:'Pagina '+P.lore.length+'/'+Object.keys(LORE).length+' · la trovi nel Diario (K)'};pn('txt');save();return}
   if(e.k==='board'){NET.send({t:'lb'});pn('lb');return}}
 function gain(it,wx,wy){if(P.inv.length<INV){P.inv.push(it);msg('Raccolto: '+iname(it));itemFly(it,wx,wy);hud();return true}

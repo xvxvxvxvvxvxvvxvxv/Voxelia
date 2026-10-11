@@ -5,11 +5,40 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
-## 7.6 — Mondi della community (9 ottobre 2026)
+## 7.7 — Mondi della community, scene della storia e modalità sviluppatore (9 ottobre 2026)
 
+Questa versione **unisce le due 7.6** uscite in parallelo: «Voxelia Studio più professionale» (qui sotto, tutta intera) e «Mondi della community» (descritta in questa pagina). Le modifiche di tutte e due sono state messe insieme riga per riga: l'editor ha i nuovi strumenti, le icone voxel e tutti gli asset del gioco **e** il pulsante **Pubblica**; anche i timbri e le decorazioni dei mondi pubblicati passano dai controlli di sicurezza.
+
+### Il menu
+- La **Voxelia Dimension** è nascosta dal menu per ora (resta raggiungibile dal pannello sviluppatore).
+- Il racconto della Corona spezzata non sta più sotto il titolo: è all'inizio della **Modalità Storia**, sopra la scelta dell'eroe.
+- Nella Modalità Storia, accanto al **Prologo**, c'è **🎬 Scene della storia**: i filmati già visti si possono rivedere quando si vuole (quelli non ancora scoperti restano coperti).
+- Corretta l'icona del **Parco giochi** nel menu, che appariva come una macchia arancione.
+
+### Il prologo rinnovato
+- Ogni scena del prologo ha la **sua musica**, presa dalle colonne sonore del gioco: il castello, la città in festa, Aldoria Vecchia, la cittadella del Re Lich, i dungeon, la notte del sigillo.
+- I personaggi sono quelli **veri del gioco**, con le loro animazioni: Re Aldric che cammina nella sala del trono, gli abitanti di Aldoria al mercato (il banditore, il giardiniere, il pescatore, l'attore, lo stalliere), **Malakar con l'aspetto del Re Lich** e la Corona che gli si spezza sopra la testa, la sentinella, il carceriere e il re davanti al quartiere murato.
+
+### Scene della storia
+Dieci nuove **scene come in un film**, con inquadrature, telecamera che si muove, bande nere, cartelli del titolo, nomi di chi parla e musica, che raccontano la lore tra un capitolo e l'altro:
+- **Il giuramento** (quando il Re ti affida la missione): Aldric racconta di Malakar, suo fratello, cresciuto con lui nel cortile del castello e cacciato per le arti proibite.
+- **Sei ricordi dei frammenti**: ogni frammento della Corona, appena raccolto, mostra un ricordo diverso. Chi l'aveva custodito (Grugnak il Re Goblin, la Necromante Velka, la Sfinge Antica, la Regina dei Ragni, Ignis Signore della Fiamma, il Leviatano) e, nell'ordine in cui li trovi, i pezzi della verità su Malakar: la notte della tempesta, la voce sotto Aldoria Vecchia, i due fratelli sulle mura, la città in fiamme, la fuga verso il Vuoto e l'ultimo segreto.
+- **La Corona di Voxel**: il Re ricompone la Corona... e per un attimo i suoi occhi si accendono di rosso.
+- **La caduta di Malakar**: le ultime parole del Re Lich nel Vuoto, subito dopo la vittoria.
+- **Il Campione di Aldoria**: la città in festa, le campane, i coriandoli, e la fine del primo atto.
+- Le scene si saltano con **Salta ▸** e ognuna si vede una volta sola giocando. In **Impostazioni → Animazioni** c'è l'interruttore **Scene della storia** per spegnerle.
+
+### Pannello sviluppatore
+- In basso a destra nel menu c'è un piccolo pulsante **🛠**: chiede un **codice**. Con il codice giusto si attiva la **modalità sviluppatore**, che resta attiva su quel dispositivo finché non la si disattiva (in gioco si apre con il pulsante 🛠 o con **F9**).
+- **Filmati**: si possono guardare tutti, dal prologo alle scene della storia, gli arrivi nei luoghi, i finali, la caccia al tesoro, i filmati dei dungeon.
+- **Luoghi**: **tutte le zone del gioco**, anche quelle che normalmente non si possono visitare o che si aprono solo più avanti: la città e i dintorni, tutti gli interni, **ogni piano di ogni dungeon**, il mare e le battaglie navali, i luoghi della Voxelia Dimension e le zone speciali e segrete. Un clic e ci si è dentro.
+- **Strumenti**: partita di prova ad Aldoria (eroe già forte, oro e pozioni), livelli, oro, pozioni, cura, tutti i frammenti, un'arma leggendaria, ora del giorno, **invincibilità**, **velocità ×2 / ×4**, riavvio del tour della città.
+- Le partite fatte in modalità sviluppatore **non vengono salvate**: una scritta in alto lo ricorda, e i salvataggi veri restano intatti.
+
+### Mondi della community
 I mondi creati con Voxelia Studio si possono **pubblicare sul server** e trovare in un **browser dei mondi** dentro il gioco: chi gioca su quel server li gioca, dà le stelle, scrive recensioni e commenti. I mondi che ricevono tante partite e recensioni in poco tempo finiscono **in evidenza** nella prima pagina.
 
-### Il browser dei mondi
+#### Il browser dei mondi
 - Si apre dal menu principale (**🌐 Mondi della community**) e dal Parco giochi.
 - **Prima pagina**: in alto i mondi **in evidenza** (con il video di anteprima che parte da solo, e il motivo: per esempio «🔥 12 partite e 4 recensioni nelle ultime 48 ore»), poi le file **Di tendenza**, **Appena pubblicati**, **I più votati**, **I più giocati** e i generi.
 - **Esplora**: tutti i mondi, con ricerca per titolo, autore e descrizione, filtro per genere e ordine a scelta (di tendenza, i più nuovi, aggiornati di recente, i più votati, i più giocati, i più amati).
@@ -21,7 +50,7 @@ I mondi creati con Voxelia Studio si possono **pubblicare sul server** e trovare
 - **❤ Preferiti**, **🚩 Segnala** (all'admin del server) e, se l'autore lo permette, **📥 Copia nel Parco giochi** per studiare il mondo nell'editor.
 - **Gioca** scarica il mondo e lo fa partire con un salvataggio tutto suo: la volta dopo compare **Continua**. Se l'autore ha aggiornato il mondo dopo la tua ultima partita, la scheda te lo dice. Uscendo dal mondo si torna alla sua scheda, e alla fine il gioco ti invita a lasciare una recensione.
 
-### Pubblicare dall'editor
+#### Pubblicare dall'editor
 - Nuovo pulsante **🌐 Pubblica** in alto nell'editor (e 🌐 accanto a ogni mondo nel Parco giochi). La finestra mostra a destra **come apparirà la scheda** nel browser.
 - **Titolo, descrizione, generi** (fino a 4 tra Avventura, Storia, Dungeon, Esplorazione, Rompicapo, Combattimento, Arena, Mistero, Horror, Divertente, Rilassante, Breve, Lungo, Per tutti) e la scelta se permettere ad altri di copiarlo.
 - **Anteprime**: fino a 8 immagini e un video, da ordinare a piacere, con la **copertina** a scelta.
@@ -33,12 +62,42 @@ I mondi creati con Voxelia Studio si possono **pubblicare sul server** e trovare
 - Dopo la pubblicazione si può **aggiornare il mondo e l'anteprima** o **solo l'anteprima** (titolo, descrizione, generi, immagini, video) senza toccare il mondo; anche dalla scheda nel browser con **✏ Modifica l'anteprima**.
 - **👤 Il mio profilo**: il **nome da autore** (sul server è solo tuo), il **codice personale** per usare i tuoi mondi anche da un altro computer o telefono, l'elenco dei mondi pubblicati con tutte le statistiche, e i pulsanti per aprirli nell'editor, **nasconderli** o **ritirarli**.
 
-### Server e pannello admin
+#### Server e pannello admin
 - Il server salva tutto nella cartella **mondi/** accanto a server.js (o in MONDI_DIR): l'indice con schede, recensioni e commenti, i file dei mondi e le anteprime. Controlla il vero formato di immagini e video, limita i caricamenti troppo grandi o troppo frequenti e rispetta i ban.
 - Nel pannello admin c'è la nuova pagina **🌐 Mondi**: elenco dei mondi con partite, stelle e segnalazioni; **⭐ Metti in evidenza** a mano; **nascondi**, **elimina**, **blocca un autore**; segnalazioni, commenti e recensioni da controllare ed eliminare; un interruttore per chiudere pubblicazioni, recensioni e commenti.
 
-### Sicurezza
+#### Sicurezza
 - I testi dei mondi che arrivano da fuori (pubblicati o importati da file) restano sempre testo: nomi, battute e descrizioni non possono far eseguire codice a chi gioca o apre il mondo nell'editor, e identificativi, colori e decorazioni vengono controllati prima di caricare il mondo.
+
+---
+
+## 7.6 — Voxelia Studio più professionale (9 ottobre 2026)
+
+### Corretto
+- **Le decorazioni messe nell'editor non si vedevano.** Il disegno veloce introdotto nella 7.4 ricordava le caselle d'erba vuote come «niente da disegnare» e non le ricontrollava più: alberi, arredi e anche i muri dipinti su una casella vuota restavano invisibili finché non si cambiava mappa. Ora ogni casella modificata (e quelle accanto) viene ridisegnata subito.
+
+### Tutti gli asset del gioco nell'editor
+- **69 terreni nuovi** presi dai luoghi del gioco: i prati di ogni quartiere di Aldoria, Dusty Creek, Londra, Parigi, il fronte, la stiva, Aldoria Vecchia, le battaglie, le strade di ogni luogo e i pavimenti di tutti gli interni (taverna, biblioteca, ville, teatro, motel, caserma, osservatorio, castello...), più la Piramide, la Fucina Infernale e l'Abisso. Ora i terreni sono 98.
+- **30 muri nuovi**: i muri dei sette dungeon con i loro ornamenti (cristalli della Tana, nicchie della Cripta, fregi d'oro della Piramide, ghiaccio, lava, coralli dell'Abisso, rune del Vuoto), le mura di ogni luogo del gioco (anche le rovine), la torre delle mura, le gradinate del Colosseo con gli spettatori, la cancellata di ferro e la staccionata alta. I muri ora sono 49, divisi per categoria.
+- **25 arredi nuovi**: le reti stese ad asciugare del porto e la nuova categoria **Oggetti speciali** con i modelli delle stanze segrete e delle missioni: bacheca degli avvisi, lavagna dei lavori, vaso, lumino, libro che fluttua, libro, foglio, scatolina, scrigni dorati, forzieri aperti, scrigno segreto, piedistallo con gemma, reliquie, frammento di stella, Cuore della Corona, indizio luminoso, botola, i due grandi portali, la console della Cabina e la figura d'ombra.
+- **I personaggi del gioco**: nello strumento Personaggi c'è «Dal gioco»: scegli uno dei 140 abitanti di Aldoria e lo trovi nel tuo mondo con nome, aspetto e mestiere, pronto da mettere nella mappa.
+- Anche le **conchiglie** tra le risorse e le musiche **Viaggio nel tempo** e **Ritorno dal viaggio**.
+
+### Nuovi strumenti
+- **Area (R)**: trascina per selezionare un rettangolo, poi copia (Ctrl+C), taglia (Ctrl+X), incolla (Ctrl+V, anche in un'altra mappa), svuota (Canc), ruota di 90°, specchia, capovolgi, riempi col terreno scelto. Trascinando dentro la selezione la sposti. Puoi scegliere cosa prendere: terreno e muri, decorazioni, oggetti e personaggi, edifici. Ctrl+A seleziona tutta la mappa. Mentre incolli, R ruota e F specchia.
+- **Timbri (U)**: un pezzo di mappa selezionato si salva come timbro nel mondo (va anche nell'esportazione) e si stampa con un clic. Ci sono anche **15 modelli pronti**: piazza con fontana, mercato, orto recintato, campo di grano, accampamento, boschetto, laghetto, molo, cimitero, altare oscuro, stanza del tesoro, rovine, trincea, taverna, sala del trono.
+- **Ispettore della casella**: con Seleziona (V) clicca una casella senza oggetti per cambiarne il tipo (terreno, muro, acqua, vuoto), il terreno, lo stile del muro e la decorazione, e per decidere se ci si cammina sopra.
+- **Sostituisci in tutta la mappa**: dall'ispettore cambi in un colpo tutte le caselle con lo stesso terreno, muro o decorazione (per esempio tutte le querce in abeti).
+- **Pennello misto**: Maiusc+clic su più arredi e il pennello li mescola a caso. **Terreno mescolato**: un secondo terreno con la percentuale che vuoi (prato con un po' di fiori, strada con un po' di fango).
+- **Usati di recente** e **ricerca** per terreni, muri e arredi.
+- **Cronologia delle modifiche**: ogni modifica ha un nome, l'ora e lo strumento; si torna a un punto qualsiasi con un clic.
+- **Trasforma la mappa**: ruota, specchia, capovolgi o sposta tutta la mappa insieme a edifici, oggetti, zone evento, arrivo e inizio.
+- **Controlli della vista** nella barra in basso: zoom, «tutta la mappa» (tasto 0), vai all'inizio, e i livelli da mostrare o nascondere (etichette, personaggi e oggetti, zone evento). Tab nasconde i pannelli.
+- Maiusc+frecce sposta di una casella l'oggetto o l'edificio selezionato.
+
+### Aspetto
+- **Icone voxel** al posto delle emoji in tutto l'editor: 106 icone disegnate a cubetti come i blocchi del gioco, nella barra degli strumenti, nelle finestre, nei pulsanti, nel menu del Parco giochi e anche sulla mappa (porte, boss, forzieri chiusi, zone evento).
+- Interfaccia ridisegnata: pulsanti, schede, campi e finestre più ordinati, strumenti divisi in gruppi, la barra in alto sta su una riga sola e sul telefono la barra di stato con lo zoom resta sopra il pannello.
 
 ---
 

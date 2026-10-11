@@ -189,7 +189,7 @@ const SETCAT=[
   ['audio','nota','Audio','Volume, musica ed effetti',['mv','muOn','mu','sf']],
   ['gfx','schermo','Grafica','Qualità, effetti e cielo',['q','rs','part','shad','light','sky','ultra']],
   ['perf','fulmine','Prestazioni','Fotogrammi al secondo e rendering',['fpsmax','fast','fps']],
-  ['anim','ciak','Animazioni','Scene e inquadrature',['cine','cinecam']],
+  ['anim','ciak','Animazioni','Scene e inquadrature',['cine','cinecam','film']],
   ['ui','hud','Interfaccia','HUD, ruota delle azioni, mappa, nomi e minimappa',['dmg','names','mini','rw','oldbar','hudl','mapt']],
   ['ctrl','gamepad','Comandi','Movimento e tasti',['wasd','rk']],
   ['cur','cursore','Cursore','Stile, colore e grandezza del puntatore',['cur','curc','curs','curx']]];
@@ -218,7 +218,7 @@ function setBody(k){const rng=(q,l,min=0,max=1,st=.05)=>`<div class="row"><label
 ${HZ?`<p class="mu">Il tuo schermo aggiorna a circa ${HZ} Hz.</p>`:''}<p class="mu">Il gioco è sempre sincronizzato con lo schermo: un browser non può mostrare più fotogrammi di quanti lo schermo ne aggiorni, quindi un limite più alto della frequenza dello schermo non cambia niente. Un limite più basso (30 o 60) fa scaldare meno portatili e telefoni e consuma meno batteria.</p>`)
     +sGrp('Rendering',chk('fast','⚡ Rendering veloce (consigliato)')+`<p class="mu">Muri, case, alberi e arredi che non si muovono vengono disegnati una volta sola e poi copiati, invece di essere ridisegnati pezzo per pezzo a ogni fotogramma: il gioco è molto più fluido, soprattutto con lo zoom lontano e nelle zone grandi. Disattivalo solo se noti qualcosa disegnato in modo strano.</p>`)
     +sGrp('Misura',chk('fps','Contatore FPS'))+`<p class="mu">Se il gioco va a scatti, abbassa anche la risoluzione o la preimpostazione nella sezione Grafica.</p>`;
-  case 'anim':return sGrp('Scene',chk('cine','Animazioni sceniche (stendardi, transizioni, monete e oggetti che volano)')+chk('cinecam','Inquadrature: zoom e bande nere quando parli con qualcuno o arriva un boss'));
+  case 'anim':return sGrp('Scene',chk('cine','Animazioni sceniche (stendardi, transizioni, monete e oggetti che volano)')+chk('cinecam','Inquadrature: zoom e bande nere quando parli con qualcuno o arriva un boss')+chk('film','🎬 Scene della storia: filmati tra un capitolo e l\'altro (si rivedono dal menu della Modalità Storia)'));
   case 'ui':return sGrp('HUD',`<p class="mu">Sposta e ridimensiona barra della vita, minimappa, orologio, missioni, ruota delle azioni e chat.</p><div class="row"><button onclick="hudEdit(1)" ${started?'':'disabled title="Entra in partita per modificare l\'HUD"'}>Personalizza l'HUD</button><button onclick="SET.hudl={};hudApply();applySet();openSet()">Rimetti l'HUD com'era</button></div>`)
     +sGrp('Ruota delle azioni',`<div class="row"><label for="s_rw">Mostra la ruota delle azioni</label><input type="checkbox" id="s_rw" ${SET.rw?'checked':''} onchange="SET.rw=this.checked?1:0;LS.set('voxelia_set',SET);wheelApply()"></div><div class="row"><label for="s_oldbar">Usa la vecchia barra al posto della ruota</label><input type="checkbox" id="s_oldbar" ${SET.oldbar?'checked':''} onchange="SET.oldbar=this.checked?1:0;LS.set('voxelia_set',SET);wheelApply()"></div>`)
     +sGrp('Mappa',`<div class="row"><label for="s_mapt">Tema della mappa (tasto M)</label><select id="s_mapt" onchange="setv('mapt',+this.value)">${['Automatico (come il gioco)','Scuro','Chiaro'].map((n,i)=>`<option value="${i}" ${(SET.mapt|0)===i?'selected':''}>${n}</option>`).join('')}</select></div>`)
@@ -292,6 +292,7 @@ function chgHTML(){const src=typeof CHANGELOG_MD==='string'?CHANGELOG_MD:'';let 
   for(const raw of src.split('\n')){const line=raw.replace(/\s+$/,'');
     if(line.startsWith('## ')){close();if(open)h+='</div></details>';h+=`<details${first?' open':''}><summary>${mdInline(line.slice(3))}</summary><div>`;open=true;first=false;continue}
     if(!open)continue;
+    if(line.startsWith('#### ')){close();h+=`<h4 class="sub">${mdInline(line.slice(5))}</h4>`;continue}
     if(line.startsWith('### ')){close();h+=`<h4>${mdInline(line.slice(4))}</h4>`;continue}
     const m=line.match(/^(\s*)- (.*)$/);if(m){const d=Math.floor(m[1].length/2)+1;while(depth<d){h+='<ul>';depth++}while(depth>d){h+='</ul>';depth--}h+=`<li>${mdInline(m[2])}</li>`;continue}
     if(!line.trim()||line.trim()==='---'){close();continue}

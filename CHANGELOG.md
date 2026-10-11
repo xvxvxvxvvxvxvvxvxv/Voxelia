@@ -5,6 +5,109 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.6 — Mondi della community (9 ottobre 2026)
+
+I mondi creati con Voxelia Studio si possono **pubblicare sul server** e trovare in un **browser dei mondi** dentro il gioco: chi gioca su quel server li gioca, dà le stelle, scrive recensioni e commenti. I mondi che ricevono tante partite e recensioni in poco tempo finiscono **in evidenza** nella prima pagina.
+
+### Il browser dei mondi
+- Si apre dal menu principale (**🌐 Mondi della community**) e dal Parco giochi.
+- **Prima pagina**: in alto i mondi **in evidenza** (con il video di anteprima che parte da solo, e il motivo: per esempio «🔥 12 partite e 4 recensioni nelle ultime 48 ore»), poi le file **Di tendenza**, **Appena pubblicati**, **I più votati**, **I più giocati** e i generi.
+- **Esplora**: tutti i mondi, con ricerca per titolo, autore e descrizione, filtro per genere e ordine a scelta (di tendenza, i più nuovi, aggiornati di recente, i più votati, i più giocati, i più amati).
+- Ogni mondo ha la sua **copertina**; passando sopra con il mouse parte il video di anteprima.
+- **La scheda del mondo**: galleria con immagini e video, titolo, **nome dell'autore** (si clicca per vedere tutti i suoi mondi), generi, data di pubblicazione e di aggiornamento, numero di mappe, personaggi e missioni.
+- **Statistiche**: visualizzazioni, partite, giocatori diversi, quanti l'hanno finito, preferiti. Visite e partite si contano una volta sola per persona in poco tempo, e quelle dell'autore non contano.
+- **Recensioni a stelle**: media delle stelle, numero di recensioni e grafico con quante ne ha di ogni voto. Ognuno lascia una recensione (da 1 a 5 stelle, con un testo facoltativo) e può cambiarla o toglierla. Non si può recensire un proprio mondo.
+- **Commenti**: per parlare con l'autore e con gli altri giocatori, con «Rispondi»; i commenti dell'autore sono evidenziati. Ognuno può eliminare i suoi, e l'autore anche quelli sul suo mondo.
+- **❤ Preferiti**, **🚩 Segnala** (all'admin del server) e, se l'autore lo permette, **📥 Copia nel Parco giochi** per studiare il mondo nell'editor.
+- **Gioca** scarica il mondo e lo fa partire con un salvataggio tutto suo: la volta dopo compare **Continua**. Se l'autore ha aggiornato il mondo dopo la tua ultima partita, la scheda te lo dice. Uscendo dal mondo si torna alla sua scheda, e alla fine il gioco ti invita a lasciare una recensione.
+
+### Pubblicare dall'editor
+- Nuovo pulsante **🌐 Pubblica** in alto nell'editor (e 🌐 accanto a ogni mondo nel Parco giochi). La finestra mostra a destra **come apparirà la scheda** nel browser.
+- **Titolo, descrizione, generi** (fino a 4 tra Avventura, Storia, Dungeon, Esplorazione, Rompicapo, Combattimento, Arena, Mistero, Horror, Divertente, Rilassante, Breve, Lungo, Per tutti) e la scelta se permettere ad altri di copiarlo.
+- **Anteprime**: fino a 8 immagini e un video, da ordinare a piacere, con la **copertina** a scelta.
+  - **📷 Inquadra e scatta**: l'editor si fa da parte, compare un riquadro 16:9 e si muove la vista per inquadrare. La foto esce senza griglia, cartelli e aiuti dell'editor.
+  - **🖼 Carica immagini** dal computer (ridotte da sole a 1280×720).
+  - **🎬 Registra un video** fino a 20 secondi muovendo la vista, oppure **🎥 Video con giro automatico**: la telecamera passa da sola per i punti più belli della mappa (partenza, edifici, personaggi, porte, forzieri).
+  - Anche **durante ▶ Prova** ci sono i pulsanti **⏺ Video** e **📷 Foto**: si registra mentre si gioca e l'anteprima aspetta nella finestra di pubblicazione.
+- Il **controllo del mondo** avvisa se ci sono problemi gravi prima di pubblicare.
+- Dopo la pubblicazione si può **aggiornare il mondo e l'anteprima** o **solo l'anteprima** (titolo, descrizione, generi, immagini, video) senza toccare il mondo; anche dalla scheda nel browser con **✏ Modifica l'anteprima**.
+- **👤 Il mio profilo**: il **nome da autore** (sul server è solo tuo), il **codice personale** per usare i tuoi mondi anche da un altro computer o telefono, l'elenco dei mondi pubblicati con tutte le statistiche, e i pulsanti per aprirli nell'editor, **nasconderli** o **ritirarli**.
+
+### Server e pannello admin
+- Il server salva tutto nella cartella **mondi/** accanto a server.js (o in MONDI_DIR): l'indice con schede, recensioni e commenti, i file dei mondi e le anteprime. Controlla il vero formato di immagini e video, limita i caricamenti troppo grandi o troppo frequenti e rispetta i ban.
+- Nel pannello admin c'è la nuova pagina **🌐 Mondi**: elenco dei mondi con partite, stelle e segnalazioni; **⭐ Metti in evidenza** a mano; **nascondi**, **elimina**, **blocca un autore**; segnalazioni, commenti e recensioni da controllare ed eliminare; un interruttore per chiudere pubblicazioni, recensioni e commenti.
+
+### Sicurezza
+- I testi dei mondi che arrivano da fuori (pubblicati o importati da file) restano sempre testo: nomi, battute e descrizioni non possono far eseguire codice a chi gioca o apre il mondo nell'editor, e identificativi, colori e decorazioni vengono controllati prima di caricare il mondo.
+
+---
+
+## 7.5 — Voxelia Studio (9 ottobre 2026)
+
+Il **Parco giochi** diventa **Voxelia Studio**: un editor completo per creare le proprie avventure con gli stessi blocchi, arredi, personaggi, nemici e musiche del gioco, provarle al volo e poi giocarle dall'inizio alla fine come una vera storia.
+
+### Il menu del Parco giochi
+- Elenco dei mondi salvati sul dispositivo con anteprima, numero di mappe, personaggi e missioni: **Gioca**, **Continua**, **Modifica**, **Duplica**, **Esporta**, **Elimina**.
+- **Nuovo mondo** (con nome, modello e dimensioni della prima mappa) e **Importa un mondo** da file: un mondo esportato si può regalare a un amico.
+- **Mondo di esempio «La Valle di Pratofiorito»**: tre mappe, sette personaggi, tre missioni collegate, cinematiche, un boss, una leva e un finale. Si può giocare subito o aprire nell'editor per vedere come è fatto.
+
+### Mappe
+- Più mappe per mondo, da 16×16 a 96×96, collegate da porte e passaggi.
+- **14 modelli di partenza**: vuota, prato con alberi, bosco fitto, isola nel mare, valle con lago e fiume, grotta naturale, dungeon a stanze, villaggio, stanza interna, deserto, montagna innevata, labirinto di siepi, arena, isola nel cielo. Il generatore collega da solo tutte le parti di terreno al punto di arrivo, così niente resta chiuso tra alberi e rocce.
+- Per ogni mappa: cielo, luce (sempre giorno, giorno e notte, sempre notte, interno, buio, tenebre con solo torce), liquido (acqua, mare, palude, acqua gelida, lava, vuoto viola, sangue), particelle (foglie, petali, polvere, neve, pioggia, lucciole, braci, bolle, scintille, coriandoli), musica, livello dei nemici, colore di sfondo, nome mostrato all'ingresso e azioni all'ingresso.
+- Mappe ridimensionabili, duplicabili e rinominabili; minimappa colorata nel pannello.
+
+### Strumenti dell'editor
+- **16 strumenti** con scorciatoie da tastiera: seleziona e sposta, muovi la vista, terreno (29 materiali), muri (19 stili), acqua e lava, vuoto, decorazioni e arredi (156, con categorie e ricerca), edifici (case, castello, tempio, arena, osservatorio e altri, con colori di muri e tetto), personaggi, nemici (65 tipi), oggetti e forzieri, porte e passaggi (11 stili), zone evento, punto di partenza, gomma, contagocce.
+- Pennello da 1 a 7 caselle e forme: pennello, rettangolo, linea, riempimento.
+- **Annulla e rifai** (Ctrl+Z / Ctrl+Y), duplica (Ctrl+D), elimina (Canc), salvataggio automatico e manuale (Ctrl+S), griglia, anteprima notte, anteprima musica.
+- Gli edifici possono avere **un interno creato con un clic**, già collegato alla porta.
+- Pannello delle proprietà per ogni cosa messa nella mappa: si modifica tutto senza aprire altre finestre.
+
+### Personaggi
+- Si può partire da un personaggio del gioco e cambiarlo a piacere. Aspetto completo con anteprima animata: corpo, pelle, capelli e colore, barba, cappello, vestiti e accessori, oggetto in mano, modo di muoversi; oppure un animale (mucca, pecora, maiale, gallina, cavalli, gabbiano).
+- **Dialoghi a nodi** con risposte, condizioni per ogni battuta e risposta, battuta alternativa se la condizione non vale, e azioni quando si sceglie una risposta. Frasi a caso per il saluto.
+- **Mestieri**: mercante con il proprio negozio (oggetti, quantità, pozioni), fabbro, erborista, guaritore, locandiere, bardo, casinò, pescatore, compratori di pesce e di raccolti.
+- Comportamento sulla mappa: fermo, passeggia, fa la ronda tra punti, oppure **segue l'eroe come compagno**. Ogni personaggio può comparire solo se valgono certe condizioni.
+
+### Missioni
+- 9 tipi di passo: sconfiggi nemici (di un tipo o qualsiasi, anche in una mappa precisa), raccogli oggetti, parla con qualcuno, consegna oggetti, raggiungi un luogo, entra in una zona evento, una variabile raggiunge un valore, raccogli gemme, sconfiggi un nemico preciso (boss).
+- Chi la affida e a chi si consegna (anche automatica), livello minimo, condizioni, ripetibili, testi di attesa e di fine, ricompense in oro, esperienza, oggetti e azioni. Punti esclamativi e interrogativi sopra i personaggi e diario delle missioni.
+
+### Oggetti e armi
+- Pozioni, cibo, chiavi, oggetti di missione, lettere e libri, materiali, gemme, tesori, con prezzo, colore e azioni quando si usano.
+- **Armi e armature** su tutte le basi del gioco (spade, pugnali, stocchi, asce, martelli, lance, tridenti, bastoni, falci; elmi, corazze, scudi...) con rarità, valore, critico e **effetti speciali**: fuoco, gelo, vampiro, fulmine, veleno, spinta. Equipaggiamento iniziale dell'eroe a scelta.
+
+### Oggetti nel mondo
+- Forzieri (anche a chiave, ricchi, con bottino a caso), oggetti a terra, cartelli, note e pagine di diario, gemme da collezionare, torce, luci colorate, letti (riposo e salvataggio), **leve** con azioni di accensione e spegnimento, risorse da raccogliere che ricrescono, punti di pesca.
+- Nemici con livello, punti vita e attacco personalizzati, boss con barra, bottino, ricomparsa dopo un tempo, guardiani che sbarrano un passaggio, condizioni e azioni alla sconfitta.
+- Porte e passaggi verso altre mappe con punto d'arrivo preciso, chiave richiesta, condizioni e messaggio quando sono chiusi.
+
+### Eventi, variabili e azioni
+- **Zone evento** che scattano entrando, uscendo o premendo «usa», una volta sola o sempre, con condizioni.
+- **Variabili** del mondo e 9 tipi di condizione (variabile, ha / non ha un oggetto, missione, livello, oro, gemme, momento del giorno, probabilità).
+- **26 azioni**: messaggi, battute, finestre di testo, titoli, oro, esperienza, dare e togliere oggetti, pozioni, cure e ferite, variabili, avviare, far avanzare e completare missioni, teletrasporto, cinematiche, musica, suoni, far comparire nemici, cambiare una casella della mappa, aprire un negozio, terremoto, lampo, **vittoria** e **sconfitta**.
+
+### Musica
+- **Compositore di brani**: tempo, tonalità e 6 scale, melodia scritta a note o generata, 8 strumenti, 9 tipi di basso, 9 accompagnamenti, 11 ritmi di batteria più una batteria a griglia tutta propria. I brani si usano come musica delle mappe, nelle cinematiche e nelle azioni; si possono usare anche tutte le musiche del gioco.
+
+### Cinematiche
+- 20 tipi di passo: telecamera su un punto o su qualcuno con zoom, battute con ritratto, narrazione, titoli, personaggi che camminano, si girano, cambiano animazione o mostrano un fumetto, far comparire e sparire personaggi, attese, dissolvenze, lampi, terremoti, musica, suoni, spostare l'eroe, azioni. Bande nere, interfaccia nascosta e «Salta» a scelta; cinematica d'apertura e di finale del mondo.
+
+### Il mondo
+- Nome, autore e descrizione; l'eroe all'inizio (livello, oro, pozioni, posti nello zaino, arma, elmo, corazza e scudo); difficoltà, moltiplicatori di esperienza e oro, ora di partenza, gemme per vincere, obiettivo mostrato in alto a destra, cinematica d'apertura e testo finale.
+
+### Provare e giocare
+- **Prova** dall'inizio o **da qui** (dal punto della mappa che stai guardando) e ritorno all'editor con un tasto.
+- **Controllo del mondo**: trova riferimenti rotti, mappe irraggiungibili, missioni impossibili, porte senza destinazione e altro, con un clic porta al problema.
+- Le partite ai mondi creati hanno un salvataggio separato da quello della storia; schermata di vittoria e di sconfitta con le statistiche.
+
+### Correzioni
+- Le cinematiche non tolgono più dalla mappa un personaggio già presente quando ne fanno sparire uno con lo stesso aspetto: spariscono prima quelli fatti comparire dalla cinematica.
+- I passi «raggiungi un luogo» e le variabili delle missioni si controllano più spesso, così la missione avanza appena arrivi.
+
+---
+
 ## 7.4.1 — Linee guida nell'HUD (9 ottobre 2026)
 
 - **Linee guida mentre personalizzi l'HUD.** Trascinando un elemento compaiono delle linee che mostrano a cosa è allineato: i bordi dello schermo (anche a 12 px dal bordo), il centro dello schermo e i bordi e il centro degli altri elementi. Le linee azzurre sono i bordi, quelle rosa i centri.

@@ -135,10 +135,10 @@ const mb=b=>(b/1048576).toFixed(0)+' MB';
 function ping(ms){if(!(ms>=0))return'<span class="mu">…</span>';const c=ms<80?'#4c4':ms<150?'#cc4':ms<300?'#f90':'#e44',n=ms<80?4:ms<150?3:ms<300?2:1;
   return`<span class="pc" title="Ping ${ms|0} ms">${[4,7,10,13].map((h,i)=>`<i style="height:${h}px;background:${i<n?c:'#7778'}"></i>`).join('')}</span> <b style="color:${c}">${ms|0}</b> <span class="mu">ms</span>`}
 const sw=(id,on,label,desc,fn)=>`<div class="sw"><div><div>${label}</div>${desc?`<div class="d">${desc}</div>`:''}</div><label class="tg"><input type="checkbox" id="${id}" ${on?'checked':''} onchange="${fn}" aria-label="${esc(label)}"><span></span></label></div>`;
-const LOGK={plugin:'Plugin',join:'Ingresso',leave:'Uscita',kick:'Espulsione',ban:'Ban',admin:'Admin',arena:'Arena',trade:'Scambio',item:'Oggetti a terra',dungeon:'Dungeon',sys:'Sistema'};
+const LOGK={mondi:'Mondi',plugin:'Plugin',join:'Ingresso',leave:'Uscita',kick:'Espulsione',ban:'Ban',admin:'Admin',arena:'Arena',trade:'Scambio',item:'Oggetti a terra',dungeon:'Dungeon',sys:'Sistema'};
 
 /* ---------- intestazione e navigazione ---------- */
-const TABS=[['home','🏠','Panoramica'],['pl','👥','Giocatori'],['rooms','🏰','Stanze'],['chat','💬','Chat'],['lb','🏆','Classifica'],['bans','⛔','Ban e silenzi'],['cfg','⚙','Impostazioni'],['log','📜','Registro'],['plug','🧩','Plugin'],['srv','🖥','Server']];
+const TABS=[['home','🏠','Panoramica'],['pl','👥','Giocatori'],['rooms','🏰','Stanze'],['chat','💬','Chat'],['lb','🏆','Classifica'],['bans','⛔','Ban e silenzi'],['cfg','⚙','Impostazioni'],['log','📜','Registro'],['plug','🧩','Plugin'],['mondi','🌐','Mondi'],['srv','🖥','Server']];
 function header(){if(!S)return;const i=S.info;$('c-pl').textContent=`👥 ${i.players} / ${S.cfg.maxp}`;$('c-up').textContent='⏱ '+dur(i.up);
   const ev=[];if(S.cfg.lock)ev.push('🔒 Manutenzione');if(S.cfg.xpm>1)ev.push('✨ XP ×'+S.cfg.xpm);if(S.cfg.gm>1)ev.push('💰 Oro ×'+S.cfg.gm);$('c-ev').hidden=!ev.length;$('c-ev').textContent=ev.join(' · ');
   const n={pl:i.players,rooms:S.rooms.length,lb:S.lb.length,bans:S.bans.length+S.mutes.length,plug:S.plugins?S.plugins.list.filter(p=>p.ok&&!p.off).length:0};for(const k in n){const e=$('nn_'+k);if(e)e.textContent=n[k]}}
@@ -156,6 +156,7 @@ home:()=>`<div class="pagehead"><h2>Panoramica</h2><span class="mu">si aggiorna 
   <div class="grid g2"><div class="card"><h3>🔗 Indirizzi</h3><div id="addr"></div></div><div class="card"><h3>📜 Attività recente <button class="sm r" onclick="go('log')">Tutto il registro</button></h3><div id="recent"></div></div></div>`,
 pl:()=>`<div class="pagehead"><h2>Giocatori online</h2><div class="r"><input id="plq" placeholder="🔍 Cerca nome, stanza o IP" value="${esc(plQ)}" oninput="plQ=this.value;LIVE.pl()"></div></div><div class="card"><div class="tw" id="pllist"></div></div>`,
 rooms:()=>roomsView(),
+mondi:()=>{setTimeout(mdLoad,0);return`<div class="pagehead"><h2>Mondi pubblicati</h2><div class="r"><button class="sm" onclick="mdLoad()">↻ Aggiorna</button></div></div><div id="mdv"><p class="mu">Caricamento…</p></div>`},
 chat:()=>`<div class="pagehead"><h2>Chat</h2><div class="r"><select id="chf" onchange="chatF=this.value;LIVE.chat()" aria-label="Filtra per stanza"></select><button class="sm red" onclick="confirmBox('Svuotare la cronologia della chat?','Cancella i messaggi salvati nel pannello. I giocatori non perdono nulla.','Svuota',1).then(y=>y&&act({a:'clearchat'}))">Svuota</button></div></div>
   <div class="card"><div class="chatlist" id="chlist"></div></div>
   <div class="card"><h3>✍ Scrivi come Admin</h3><div class="row"><select id="chcode" aria-label="Stanza"></select><input id="chtxt" maxlength="120" placeholder="Messaggio" onkeydown="if(event.key==='Enter')say()"><button class="gold" onclick="say()">Invia</button></div>
@@ -247,6 +248,27 @@ function cfgView(){const c=S.cfg,mul=(id,v)=>`<select id="${id}">${[[1,'Normale 
   <div class="row"><button class="gold" onclick="saveCfg()">💾 Salva impostazioni</button><button onclick="go('cfg')">Annulla modifiche</button></div>`}
 function saveCfg(){act({a:'cfg',c:{maxp:+$('cf-maxp').value,lock:$('cf-lock').checked,pvp:$('cf-pvp').checked,trade:$('cf-trade').checked,chat:$('cf-chat').checked,motd:$('cf-motd').value,xpm:+$('cf-xpm').value,gm:+$('cf-gm').value}}).then(()=>go('cfg'))}
 function cfgSet(c){act({a:'cfg',c})}
+
+
+/* ---------- 7.6: mondi pubblicati con Voxelia Studio ---------- */
+let MDS=null,mdTab='w',mdQ='';
+async function mdLoad(){try{const{ok,j}=await api('/admin/api/mondi');if(!ok)return;MDS=j;mdRender()}catch(e){if(e.message!=='auth')toast('Server non raggiungibile',1)}}
+const mdAct=o=>act(o).then(ok=>{mdLoad();return ok});
+const mdAgo=t=>{const s=(Date.now()-t)/1000;return s<3600?Math.max(1,Math.floor(s/60))+' min fa':s<86400?Math.floor(s/3600)+' ore fa':Math.floor(s/86400)+' giorni fa'};
+function mdRender(){const el=$('mdv');if(!el||!MDS)return;const D=MDS,q=mdQ.toLowerCase(),L=D.list.filter(w=>!q||(w.n+' '+w.a).toLowerCase().includes(q));
+  const tabs=[['w','🌐 Mondi',D.list.length],['rep','🚩 Segnalazioni',D.reps.length],['com','💬 Commenti',D.com.length],['rev','⭐ Recensioni',D.rev.length]];
+  let h=`<div class="grid g2"><div class="card"><h3>🌐 Pubblicazioni</h3>${sw('md-open',D.open,'Pubblicazioni, recensioni e commenti aperti','Se spento, i giocatori possono solo giocare ai mondi già pubblicati.',"mdAct({a:'mopen',on:this.checked})")}</div>
+    <div class="card"><h3>💾 Spazio</h3><p>${D.list.length} ${D.list.length===1?'mondo':'mondi'} · ${(D.bytes/1048576).toFixed(1)} MB tra mondi, immagini e video</p><p class="mu">Cartella: ${esc(D.dir)}</p></div></div>
+    <div class="row" style="margin-bottom:10px">${tabs.map(([k,l,n])=>`<button class="sm${mdTab===k?' gold':''}" onclick="mdTab='${k}';mdRender()">${l} <span class="mu">${n}</span></button>`).join('')}${mdTab==='w'?`<input id="mdq" placeholder="🔍 Cerca titolo o autore" value="${esc(mdQ)}" oninput="mdQ=this.value;mdRender();const e=$('mdq');e.focus();e.setSelectionRange(e.value.length,e.value.length)" style="margin-left:auto">`:''}</div><div class="card"><div class="tw">`;
+  if(mdTab==='w')h+=L.length?`<table><tr><th></th><th>Mondo</th><th>Autore</th><th>Partite</th><th>Stelle</th><th>💬</th><th>Pubblicato</th><th>🚩</th><th></th></tr>${L.map(w=>`<tr><td>${w.cover?`<img src="${esc(w.cover)}" alt="" style="width:96px;height:54px;object-fit:cover;border-radius:4px;display:block">`:''}</td>
+      <td><b>${esc(w.n)}</b>${w.pin?' <span class="tag join">⭐ in evidenza</span>':''}${w.hide?' <span class="tag">nascosto</span>':''}${w.hot>=6?` <span class="tag">🔥 ${w.hot}</span>`:''}<br><span class="mu">${w.maps} mappe · ${(w.size/1024).toFixed(0)} KB${w.vid?' · video':''}${w.nimg?' · '+w.nimg+' immagini':''}</span></td>
+      <td>${esc(w.a)}${w.blk?' <span class="tag ban">bloccato</span>':''}</td><td>${w.st.p} <span class="mu">(${w.st.pu} giocatori)</span></td><td>${w.r.n?w.r.avg+' ★ <span class="mu">('+w.r.n+')</span>':'<span class="mu">—</span>'}</td><td>${w.st.c}</td><td class="mu">${mdAgo(w.t0)}</td><td>${w.reps?`<b style="color:#ff9c96">${w.reps}</b>`:''}</td>
+      <td style="white-space:nowrap"><button class="sm${w.pin?' gold':''}" onclick="mdAct({a:'mpin',id:'${esc(w.id)}'})">${w.pin?'Togli dall\'evidenza':'⭐ Metti in evidenza'}</button><button class="sm" onclick="mdAct({a:'mhide',id:'${esc(w.id)}'})">${w.hide?'Mostra':'Nascondi'}</button>
+      <button class="sm" onclick="mdAct({a:'mblk',u:'${esc(w.au)}'})">${w.blk?'Sblocca autore':'Blocca autore'}</button><button class="sm red" onclick="confirmBox('Eliminare «'+${JSON.stringify(w.n).replace(/"/g,'&quot;')}+'»?','Spariscono il mondo, le anteprime, le recensioni e i commenti. Non si può annullare.','Elimina',1).then(y=>y&&mdAct({a:'mdel',id:'${esc(w.id)}'}))">Elimina</button></td></tr>`).join('')}</table>`:`<p class="empty">${D.list.length?'Nessun mondo corrisponde alla ricerca.':'Nessun mondo pubblicato su questo server.'}</p>`;
+  if(mdTab==='rep')h+=D.reps.length?`<table><tr><th>Quando</th><th>Mondo</th><th>Da</th><th>Motivo</th><th></th></tr>${D.reps.map(r=>`<tr><td class="mu">${mdAgo(r.t)}</td><td><b>${esc(r.wn)}</b></td><td>${esc(r.n)}</td><td>${esc(r.why||'—')}</td><td style="white-space:nowrap"><button class="sm" onclick="mdAct({a:'mrep',i:${r.i}})">Archivia</button>${D.list.some(w=>w.id===r.w)?`<button class="sm" onclick="mdAct({a:'mhide',id:'${esc(r.w)}'})">Nascondi il mondo</button>`:''}</td></tr>`).join('')}</table>`:'<p class="empty">Nessuna segnalazione.</p>';
+  if(mdTab==='com')h+=D.com.length?`<table><tr><th>Quando</th><th>Mondo</th><th>Chi</th><th>Commento</th><th></th></tr>${D.com.map(c=>`<tr><td class="mu">${mdAgo(c.t)}</td><td>${esc(c.wn)}</td><td>${esc(c.n)}</td><td style="white-space:pre-wrap">${esc(c.tx)}</td><td><button class="sm red" onclick="mdAct({a:'mcom',id:'${esc(c.w)}',cid:'${esc(c.id)}'})">Elimina</button></td></tr>`).join('')}</table>`:'<p class="empty">Nessun commento.</p>';
+  if(mdTab==='rev')h+=D.rev.length?`<table><tr><th>Quando</th><th>Mondo</th><th>Chi</th><th>Stelle</th><th>Testo</th><th></th></tr>${D.rev.map(r=>`<tr><td class="mu">${mdAgo(r.t)}</td><td>${esc(r.wn)}</td><td>${esc(r.n)}</td><td>${'★'.repeat(r.s)}</td><td style="white-space:pre-wrap">${esc(r.tx)}</td><td><button class="sm red" onclick="mdAct({a:'mrev',id:'${esc(r.w)}',u:'${esc(r.u)}'})">Elimina</button></td></tr>`).join('')}</table>`:'<p class="empty">Nessuna recensione con testo.</p>';
+  el.innerHTML=h+'</div></div>'}
 
 /* ---------- azioni ---------- */
 function ann(id,code){const s=$(id).value.trim();if(!s)return toast('Scrivi prima il messaggio',1);act({a:'ann',s,code}).then(ok=>{if(ok)$(id).value=''})}

@@ -23,7 +23,7 @@ function load(k,from){LFROM=from;if(from==='arrembaggio'||from==='mare'||from===
 function load0(k,from){if(PM&&PM!=='trade')cl();if(!P)return;const REL=[P.px/(N||1),P.py/(N||1)];const z=zd(k);Zk=k;ZZ=z;N=z.N;
   R=(NET.code||z.dg||!z.th)?sd(hs((NET.code||'solo')+k+(z.dg?'#'+z.run:''))):Math.random;eid=0;
   M=grid(0);DEC=grid('');BM=null;FC=null;ents=[];fx=[];pop=[];PJ=[];let sp;LFP=0;
-  if(k==='town')sp=genTown();else if(k==='arena')sp=genArena();else if(z.lay)sp=genInterior(z);else if(z.dg)sp=genDungeon(z);else if(z.gen)sp=genDist(z);else sp=genWild(z);
+  if(z.ed)sp=edGen(z);else if(k==='town')sp=genTown();else if(k==='arena')sp=genArena();else if(z.lay)sp=genInterior(z);else if(z.dg)sp=genDungeon(z);else if(z.gen)sp=genDist(z);else sp=genWild(z);
   if(from){const ps=ents.filter(e=>e.k==='po'&&e.to===from);let p=ps[0];if(ps.length>1)p=ps.reduce((a,b)=>Math.hypot(b.px/N-REL[0],b.py/N-REL[1])<Math.hypot(a.px/N-REL[0],a.py/N-REL[1])?b:a);if(p){sp=nearFree(p.px|0,p.py|0);LFP=1}}
   R=Math.random;gndRestore();P.px=sp[0]+.5;P.py=sp[1]+.5;P.path=[];P.tg=null;camX=PX(P.px,P.py);camY=PY(P.px,P.py,10);parts=[];
   $('zn').innerHTML=esc(z.n)+(z.dg&&z.boss?' <small>· piano del boss</small>':'');if(cineOK()&&started)zoneCard(z);else msg('Entri in: '+z.n);music(z.mus||'town');

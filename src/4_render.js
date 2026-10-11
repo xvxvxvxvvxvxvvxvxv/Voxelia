@@ -1101,7 +1101,7 @@ body.dimm #qt{display:none!important}#dimobj b{display:block;color:#9ad0ff}#dimo
 #msel{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:10px 0}
 #msel .mode{text-align:left;padding:16px;border-radius:12px;border:1px solid #ffffff33;background:rgba(20,24,40,.7);color:#f0ece0;cursor:pointer;font:inherit;animation:vxin .6s ease-out both;transition:transform .15s,box-shadow .15s}
 #msel .mode:hover{transform:translateY(-4px);box-shadow:0 8px 22px rgba(0,0,0,.4)}#msel .mode b{display:block;font-size:20px;margin-bottom:6px}#msel .mode small{display:block;opacity:.85;line-height:1.4}
-#msel .mode.dim{border-color:#5a8ad8;background:linear-gradient(160deg,rgba(20,40,90,.8),rgba(30,10,60,.8))}#msel .mode.wip{opacity:.8}#msel .mode i{float:right;font-style:normal;font-size:11px;background:#f5b942;color:#1b2030;border-radius:10px;padding:1px 8px;font-weight:bold}
+#msel .mode.dim{border-color:#5a8ad8;background:linear-gradient(160deg,rgba(20,40,90,.8),rgba(30,10,60,.8))}#msel .mode.wip{opacity:.8}#msel .mode i:not(.vi){float:right;font-style:normal;font-size:11px;background:#f5b942;color:#1b2030;border-radius:10px;padding:1px 8px;font-weight:bold}
 .mback{margin:4px 0 8px;font:inherit;cursor:pointer;background:transparent;color:#f5d08a;border:1px solid #f5b94266;border-radius:6px;padding:5px 10px}
 #mdim .dgrid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}`;document.head.appendChild(st)})();
 

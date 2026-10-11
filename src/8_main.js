@@ -207,7 +207,7 @@ function introDraw(dt){const I=INTRO;I.t+=dt;let s=0,a0=0;while(s<ISC2.length&&I
   introSc(sc,cx,cy);
   if(f==='found'){const hs2=[[-6,-1,2,2,18,'#e0d0b0','#a8402f'],[-3,3,2,2,16,'#d8c8a0','#3a5a8a'],[3,4,3,2,20,'#c8a878','#7a3a2a'],[5,-1,2,2,18,'#e8d8b0','#2a5a5a'],[-5,4,2,2,16,'#b8c8a0','#6a3a8a'],[1,6,2,2,14,'#f0dcc0','#c8783a']];
     introCastle(0,-3,0);hs2.forEach((h,i)=>houseV(h[0],h[1],h[2],h[3],h[4],h[5],h[6],eob(Math.max(0,Math.min(1,(lt-.6-i*.7)/.9)))));
-    const kx=-2+Math.min(1,lt/6)*1.5;drawL(hum('#7a1a2a',SKIN,1.15,[6,'#d4af37']),kx,1,0)}
+    const kx=-2+Math.min(1,lt/6)*1.5;fNpc('re',kx,1,faceOf(1,-1),{walk:lt<6})}
   if(f==='crown'){const k=ease(Math.min(1,lt/3.2));for(let i=0;i<6;i++){const a=i*Math.PI/3+lt*.4,r=8*(1-k)+.75,z=60+(1-k)*50*Math.sin(i+1);box(Math.cos(a)*r-.2,Math.sin(a)*r-.2,z,.4,.4,8,cols[i],1.35)}
     if(k>=1){introCrown(0,0,62+Math.sin(lt*2)*3,lt*.8,cols);g.setTransform(DPR,0,0,DPR,0,0);const[x,y]=scr2(0,0,70,sc,cx,cy),p=.5+.5*Math.sin(lt*3),rg=g.createRadialGradient(x,y,4,x,y,160);rg.addColorStop(0,`rgba(255,230,140,${.35+p*.2})`);rg.addColorStop(1,'rgba(255,230,140,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);
       g.strokeStyle=`rgba(255,240,180,${.15+p*.1})`;g.lineWidth=2;for(let i=0;i<12;i++){const a=i*Math.PI/6+lt*.3;g.beginPath();g.moveTo(x,y);g.lineTo(x+Math.cos(a)*320,y+Math.sin(a)*320);g.stroke()}introSc(sc,cx,cy)}}
@@ -217,9 +217,9 @@ function introDraw(dt){const I=INTRO;I.t+=dt;let s=0,a0=0;while(s<ISC2.length&&I
     g.fillStyle='#e8d8c8';g.beginPath();g.ellipse(ex,ey,ew,Math.max(1,eh),0,0,6.3);g.fill();g.fillStyle='#8a0a0a';g.beginPath();g.arc(ex+Math.sin(lt*.7)*ew*.25,ey,Math.max(1,eh*.85),0,6.3);g.fill();g.fillStyle='#000';g.beginPath();g.ellipse(ex+Math.sin(lt*.7)*ew*.25,ey,Math.max(1,eh*.18),Math.max(1,eh*.75),0,0,6.3);g.fill();
     g.strokeStyle='#4a4a52';g.lineWidth=4;for(let i=-3;i<=3;i++){g.beginPath();g.moveTo(ex+i*ew*.45,gy+4);g.lineTo(ex+i*ew*.2,ey-eh*.5);g.stroke()}introSc(sc,cx,cy)}
   if(f==='peace'){introCastle(5,-5,0);introCrown(5,-5,92+Math.sin(lt*2)*4,lt*1.2,cols);for(let i=0;i<4;i++){const k=['#c0392b','#2980b9','#27ae60','#f39c12'][i];box(-3+i*1.4,2.5,0,.9,.7,9,'#8a6a42');box(-3.1+i*1.4,2.4,18,1.1,.9,2,k);box(-3+i*1.4,2.5,0,.08,.08,18,'#5a4a3a');box(-2.18+i*1.4,2.5,0,.08,.08,18,'#5a4a3a')}
-    for(let i=0;i<5;i++){const p=((lt*.5+i*.37)%2)-1;villager(-5+i*2+p*1.5,4.5-i*.3,['#a85a3a','#3a7a5a','#7a3a8a','#3a5a9a','#9a8a3a'][i],lt*8+i)}}
-  if(f==='malakar'){introCastle(cx+5,cy-5,1);drawL(hum('#2a1a4a','#cfe8ff',3.2,[12,'#d4af37']),-1,1,0);box(-1.2,1.38,84,.14,.05,6,'#ff3a3a',1.4);box(-.82,1.38,84,.14,.05,6,'#ff3a3a',1.4);
-    introCrown(-1,1,126,lt*.6,['#555555']);for(let i=0;i<16;i++){const a=lt*1.3+i*.4,r=2.4+Math.sin(lt+i)*.4;box(-1+Math.cos(a)*r,1+Math.sin(a)*r,20+((lt*30+i*9)%90),.15,.15,4,'#c46bff',1.4)}
+    for(let i=0;i<5;i++){const p=((lt*.5+i*.37)%2)-1;fNpc(['banditore','giardiniere','pescatore','attore','stalliere'][i],-5+i*2+p*1.5,4.5-i*.3,faceOf(1,0),{walk:1})}}
+  if(f==='malakar'){introCastle(cx+5,cy-5,1);fBoss('lich',-1,1,0,{s:1.6,e:FA.ilich||(FA.ilich={id:7})});
+    introCrown(-1,1,(E.lich.m.top||66)*1.6+6,lt*.6,['#555555']);for(let i=0;i<16;i++){const a=lt*1.3+i*.4,r=2.4+Math.sin(lt+i)*.4;box(-1+Math.cos(a)*r,1+Math.sin(a)*r,20+((lt*30+i*9)%90),.15,.15,4,'#c46bff',1.4)}
     if((lt*1.7)%3<.12){g.setTransform(DPR,0,0,DPR,0,0);g.fillStyle='rgba(220,200,255,.55)';g.fillRect(0,0,W,H);introSc(sc,cx,cy)}}
   if(f==='fog'){const fade=Math.max(0,Math.min(1,(lt-4.5)/2.5));for(let i=0;i<7;i++){const x=-6+i*2.1,y=-1+(i%3)*2;houseV(x,y,1.6,1.6,16+(i%3)*4,'#8a7a6a','#3a2a24',1);
       if(i%2===0){const fl=1+Math.sin(lt*12+i)*.2;box(x+.3,y+.3,20+(i%3)*4,1,1,10*fl*(1-fade),'#ff7a2a',1.3);box(x+.5,y+.5,24+(i%3)*4,.6,.6,10*fl*(1-fade),'#ffd04a',1.4)}}
@@ -236,7 +236,7 @@ function introDraw(dt){const I=INTRO;I.t+=dt;let s=0,a0=0;while(s<ISC2.length&&I
     for(let i=0;i<14;i++){const a=lt*.4+i*.45;box(Math.cos(a)*7-.15,Math.sin(a)*7-.15,60+Math.sin(lt*2+i)*14,.3,.3,6,'#c46bff',1.3)}
     g.setTransform(DPR,0,0,DPR,0,0);const ea=.5+.5*Math.sin(lt*2);g.fillStyle=`rgba(255,40,60,${.35+ea*.4})`;g.beginPath();g.ellipse(W*.44,H*.16,26,9,0,0,6.3);g.ellipse(W*.56,H*.16,26,9,0,0,6.3);g.fill();introSc(sc,cx,cy)}
   if(f==='seal'){const n=Math.min(40,Math.floor(lt*7));for(let i=0;i<n;i++){const col=i%10,row=Math.floor(i/10),k=Math.min(1,(lt*7-i)/2),z=row*7+Math.max(0,(1-eob(k))*40);box(-5+col*1.05,0,z,1,1,6.5,row%2?'#8a8e98':'#7b7f89')}
-    drawL(hum('#5a6a8a',SKIN,1,[4,'#9aa4b8']),-6,2,0);drawL(hum('#5a6a8a',SKIN,1,[4,'#9aa4b8']),6,2,0);drawL(hum('#7a1a2a',SKIN,1.1,[6,'#d4af37']),0,3.5,0)}
+    fNpc('sentinella',-6,2,faceOf(0,-1));fNpc('carceriere',6,2,faceOf(0,-1));fNpc('re',0,3.5,faceOf(0,-1))}
   if(f==='hero'){introCastle(7,-7,0);const k=Math.min(1,lt/6.5),hx=-6+k*6,hy=6-k*6;drawHero(walkLegs(heroL(APM,1,APM.hh?2:-1,1,20,0,0),lt*10),hx,hy,Math.abs(Math.sin(lt*9))*2,0,5);
     if(lt>D-3.4){g.setTransform(DPR,0,0,DPR,0,0);const a=Math.min(1,(lt-(D-3.4))/1.2),zz=1+(1-ease(a))*.3;g.save();g.globalAlpha=a;g.translate(W/2,H*.3);g.scale(zz,zz);g.textAlign='center';g.font=`bold ${Math.round(Math.min(W,H)/8)}px Georgia,serif`;g.lineWidth=6;g.strokeStyle='#3a1a08';g.strokeText('VOXELIA',0,0);g.fillStyle='#ffd88a';g.fillText('VOXELIA',0,0);g.restore()}}
   g.setTransform(DPR,0,0,DPR,0,0);
@@ -2202,7 +2202,8 @@ const EDIX='voxelia_ed_idx',EDWK='voxelia_ed_w_',EDSK='voxelia_ed_s_';
 const edUid=p=>(p||'')+Math.random().toString(36).slice(2,8);
 const edClone=o=>JSON.parse(JSON.stringify(o));
 /* ---- codifica dei livelli di una mappa: un carattere per casella, le serie lunghe compresse (~n~c) ---- */
-const B62='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+// 7.6: oltre i 62 caratteri di base, lettere accentate e greche (servono per i terreni e i muri dei luoghi del gioco)
+const B62='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'+'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ'+'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψω';
 function rleE(a){let s='',i=0;while(i<a.length){const v=a[i];let n=1;while(i+n<a.length&&a[i+n]===v)n++;const c=B62[v]||'0';s+=n>3?'~'+n+'~'+c:c.repeat(n);i+=n}return s}
 function rleD(s,n,d=0){const a=new Array(n).fill(d);if(typeof s!=='string')return a;let i=0,k=0;
   while(k<s.length&&i<n){if(s[k]==='~'){const j=s.indexOf('~',k+1);if(j<0)break;const c=+s.slice(k+1,j)||0,v=Math.max(0,B62.indexOf(s[j+1]));for(let q=0;q<c&&i<n;q++)a[i++]=v;k=j+2}else{a[i++]=Math.max(0,B62.indexOf(s[k]));k++}}return a}
@@ -2345,10 +2346,13 @@ function edSafe(o,k,d){if(d>40)return undefined;
   if(Array.isArray(o)){const r=[];for(let i=0;i<o.length&&i<20000;i++){const v=edSafe(o[i],k,d+1);r.push(v===undefined?null:v)}return r}
   if(o&&typeof o==='object'){const r={};for(const kk of Object.keys(o)){if(!/^[\w-]{1,64}$/.test(kk)||kk==='__proto__'||kk==='constructor'||kk==='prototype')continue;const v=edSafe(o[kk],kk,d+1);if(v!==undefined)r[kk]=v}return r}
   return undefined}
-function edSafeWorld(w){const D={};if(w.maps&&typeof w.maps==='object')for(const id in w.maps){const m=w.maps[id];if(m&&m.d&&typeof m.d==='object')D[id]=m.d}
+function edSafeWorld(w){const D={},SD={};if(w.maps&&typeof w.maps==='object')for(const id in w.maps){const m=w.maps[id];if(m&&m.d&&typeof m.d==='object')D[id]=m.d}
+  if(w.stamps&&typeof w.stamps==='object')for(const id in w.stamps){const st=w.stamps[id];if(st&&st.c&&st.c.d&&typeof st.c.d==='object')SD[id]=st.c.d}
   const r=edSafe(w,'',0)||{};if(!/^[\w-]{1,48}$/.test(r.id||''))r.id=edUid('w');
-  // le decorazioni hanno codici con simboli (& < > ...): valgono solo quelli del catalogo
-  for(const id in D)if(r.maps&&r.maps[id]){const o={};for(const i in D[id]){const v=D[id][i];if(/^\d{1,5}$/.test(i)&&typeof v==='string'&&EDECI[v])o[i]=v}r.maps[id].d=o}
+  // le decorazioni hanno codici con simboli (& < > ...): valgono solo quelli del catalogo (nelle mappe e nei timbri)
+  const deco=o0=>{const o={};for(const i in o0){const v=o0[i];if(/^\d{1,5}$/.test(i)&&typeof v==='string'&&EDECI[v])o[i]=v}return o};
+  for(const id in D)if(r.maps&&r.maps[id])r.maps[id].d=deco(D[id]);
+  for(const id in SD)if(r.stamps&&r.stamps[id]&&r.stamps[id].c)r.stamps[id].c.d=deco(SD[id]);
   return r}
 // lettura difensiva: un file importato o un salvataggio vecchio non deve mai bloccare il gioco
 function edFixWorld(w){if(!w||typeof w!=='object'||Array.isArray(w))return null;w=edSafeWorld(w);w.v=1;w.id=w.id||edUid('w');w.name=String(w.name||'Mondo senza nome').slice(0,60);w.desc=String(w.desc||'').slice(0,600);
@@ -2778,9 +2782,11 @@ function edFail(tx,perm){if(!EDG)return;cl();if(perm&&EDPLAY&&!EDPLAY.test)LS.de
 const EDS={tool:'paint',mat:0,wall:0,dec:'r',decK:'Natura',decQ:'',brush:1,shape:'brush',walk:0,scatter:0,sel:null,npc:'',en:'slime',enLv:0,enBoss:0,obj:'ch',por:'exit',porTo:'',porBack:1,
   bst:'casa',bwall:'#e0d0b0',broof:'#a8402f',bht:26,bdoor:1,bto:'',stK:'start',erase:'all',grid:1,dark:0,mus:0,labels:1,cam:{x:16,y:16},hover:null,drag:null,undo:[],redo:[],fdirty:0,ftime:0,dirty:0,saveT:0,pan:null,touches:{},
   itemSel:'',objCol:'#5ad0ff',sideTab:'',key:0};
-const EDTOOLS=[['sel','👆','Seleziona e sposta','V'],['hand','✋','Muovi la vista','H'],['paint','🟩','Terreno','B'],['wall','🧱','Muri','M'],['water','🌊','Acqua e lava','A'],['void','⬛','Vuoto (burrone)','X'],
-  ['dec','🌳','Decorazioni e arredi','D'],['bld','🏠','Edifici','E'],['npc','🧑','Personaggi','N'],['en','👹','Nemici','K'],['obj','🎁','Oggetti e forzieri','O'],['por','🚪','Porte e passaggi','P'],
-  ['trig','⚡','Zone evento (trigger)','T'],['start','🚩','Punto di partenza','S'],['erase','🧽','Gomma','G'],['pick','💧','Contagocce','I']];
+const EDTOOLS=[['sel','sel','Seleziona e sposta (anche una casella: terreno, muro, decorazione)','V',0],['area','area','Area: copia, taglia, incolla, sposta, ruota, specchia','R',0],['hand','hand','Muovi la vista','H',0],
+  ['paint','grass','Terreno','B',1],['wall','brick','Muri','M',1],['water','water','Acqua e lava','A',1],['void','void','Vuoto (burrone)','X',1],['dec','tree','Decorazioni e arredi','D',1],['bld','house','Edifici','E',1],
+  ['npc','person','Personaggi','N',2],['en','monster','Nemici','K',2],['obj','chest','Oggetti e forzieri','O',2],['por','door','Porte e passaggi','P',2],['trig','bolt','Zone evento (trigger)','T',2],['start','flag','Punto di partenza','S',2],
+  ['stamp','stamp','Timbri e modelli pronti','U',3],['erase','eraser','Gomma','G',3],['pick','dropper','Contagocce','I',3]];
+const EDTI={};EDTOOLS.forEach(q=>EDTI[q[0]]=q);
 const EDOBJ=[['ch','🧰','Forziere'],['it','💎','Oggetto a terra'],['sign','🪧','Cartello'],['note','📜','Nota o pagina di diario'],['gem','🔷','Gemma da collezionare'],['tc','🔥','Torcia'],['light','💡','Luce colorata'],
   ['bed','🛏','Letto (riposo e salvataggio)'],['lever','🕹','Leva o interruttore'],['res','🌾','Risorsa da raccogliere'],['fs','🎣','Punto di pesca']];
 const EDOBJI={};EDOBJ.forEach(o=>EDOBJI[o[0]]=o);
@@ -2822,43 +2828,53 @@ function edDispEnt(d){const x=d.x,y=d.y;switch(d.k){
 function edUI(){let el=$('ed');if(!el){el=document.createElement('div');el.id='ed';document.body.appendChild(el)}
   el.innerHTML=`<div id="edtop"><button class="edw" title="Impostazioni del mondo" onclick="edWorldWin()">🌍 <b id="edwn">${esc(EW.name)}</b></button>
     <span class="edg"><select id="edmap" title="Mappa che stai modificando" onchange="edGoMap(this.value)">${edMapOpts(EM?EM.id:'')}</select><button title="Mappe del mondo: nuova, duplica, elimina" onclick="edMapsWin()">🗺</button><button title="Proprietà di questa mappa (luce, cielo, musica, dimensioni...)" onclick="edMapWin()">⚙</button></span>
-    <span class="edg"><button title="Annulla (Ctrl+Z)" onclick="edUndo()">↶</button><button title="Rifai (Ctrl+Y)" onclick="edRedo()">↷</button><button title="Salva (Ctrl+S)" onclick="edSaveNow()">💾</button></span>
-    <span class="edg"><button class="edplay" title="Prova il mondo dall'inizio" onclick="edTest(0)">▶ Prova</button><button title="Prova partendo dal centro della vista" onclick="edTest(1)">▶ da qui</button><button class="edpub" title="Pubblica il mondo nel browser dei mondi: titolo, anteprime e video" onclick="mpubOpen()">🌐 Pubblica</button></span>
-    <span class="edg edwins"><button onclick="edNpcWin()" title="Personaggi: aspetto, dialoghi, negozi">🧑 Personaggi</button><button onclick="edQuestWin()" title="Missioni">📜 Missioni</button><button onclick="edItemWin()" title="Armi, armature, pozioni, chiavi e oggetti">⚔ Oggetti</button>
-      <button onclick="edSongWin()" title="Musiche">🎵 Musica</button><button onclick="edCineWin()" title="Cinematiche">🎬 Cinematiche</button><button onclick="edVarWin()" title="Variabili del mondo">🔣 Variabili</button></span>
+    <span class="edg"><button title="Annulla (Ctrl+Z)" onclick="edUndo()">↶</button><button title="Rifai (Ctrl+Y)" onclick="edRedo()">↷</button><button title="Cronologia delle modifiche" onclick="edHistWin()">⏱</button><button title="Salva (Ctrl+S)" onclick="edSaveNow()">💾</button></span>
+    <span class="edg"><button class="edplay" title="Prova il mondo dall'inizio" onclick="edTest(0)">▶ Prova</button><button title="Prova partendo dal centro della vista" onclick="edTest(1)">▶ da qui</button><button class="edpub" title="Pubblica il mondo nel browser dei mondi: titolo, anteprime e video" onclick="mpubOpen()">🌐 <span class="lb">Pubblica</span></button></span>
+    <span class="edg edwins"><button onclick="edNpcWin()" title="Personaggi: aspetto, dialoghi, negozi">🧑 <span class="lb">Personaggi</span></button><button onclick="edQuestWin()" title="Missioni">📜 <span class="lb">Missioni</span></button><button onclick="edItemWin()" title="Armi, armature, pozioni, chiavi e oggetti">⚔ <span class="lb">Oggetti</span></button>
+      <button onclick="edSongWin()" title="Musiche">🎵 <span class="lb">Musica</span></button><button onclick="edCineWin()" title="Cinematiche">🎬 <span class="lb">Cinematiche</span></button><button onclick="edVarWin()" title="Variabili del mondo">🔣 <span class="lb">Variabili</span></button></span>
     <span class="edg"><button title="Controlla il mondo: porte senza destinazione, missioni impossibili, oggetti irraggiungibili..." onclick="edCheckWin()">🩺</button><button title="Guida e comandi" onclick="edHelp()">❓</button><button title="Torna al menu (salva)" onclick="edExit()">✖</button></span></div>
-  <div id="edleft">${EDTOOLS.map(([k,i,n,h])=>`<button data-t="${k}" title="${n} (${h})" onclick="edTool('${k}')">${i}</button>`).join('')}<hr><button title="Griglia" id="edgrid" onclick="EDS.grid=!EDS.grid;edTool(EDS.tool)">#</button><button title="Mostra la luce vera (notte, buio, interni)" id="eddark" onclick="EDS.dark=!EDS.dark;edTool(EDS.tool)">🌙</button><button title="Musica della mappa" id="edmus" onclick="EDS.mus=!EDS.mus;music(EDS.mus?ZZ.mus:'menu');edTool(EDS.tool)">♪</button></div>
-  <div id="edside"></div><div id="edstat"></div><div id="edwin" hidden></div>`;edTool(EDS.tool);edTopFit()}
+  <div id="edleft">${EDTOOLS.map(([k,i,n,h,gr],j)=>(j&&EDTOOLS[j-1][4]!==gr?'<hr>':'')+`<button data-t="${k}" title="${n} (${h})" onclick="edTool('${k}')">${edI(i)}</button>`).join('')}<hr><button title="Griglia" id="edgrid" onclick="EDS.grid=!EDS.grid;edTool(EDS.tool)">${edI('grid')}</button><button title="Mostra la luce vera (notte, buio, interni)" id="eddark" onclick="EDS.dark=!EDS.dark;edTool(EDS.tool)">🌙</button><button title="Musica della mappa" id="edmus" onclick="EDS.mus=!EDS.mus;music(EDS.mus?ZZ.mus:'menu');edTool(EDS.tool)">♪</button></div>
+  <div id="edside"></div><div id="edstat"></div><div id="edwin" hidden></div>`;edStatBar();edTool(EDS.tool);edTopFit()}
 // la barra in alto può andare a capo su schermi stretti: gli strumenti e il pannello partono sotto di lei
 function edTopFit(){const t=$('edtop'),r=$('ed');if(t&&r)r.style.setProperty('--edt',(t.offsetHeight+2)+'px')}
 addEventListener('resize',()=>{if(EDIT)edTopFit()});
 function edGoMap(id){if(!EW.maps[id])return;edOpenMap(id)}
-function edTool(k){EDS.tool=k;EDS.drag=null;if(k!=='sel')EDS.sel=null;for(const b of document.querySelectorAll('#edleft button[data-t]'))b.classList.toggle('on',b.dataset.t===k);
+function edTool(k){EDS.tool=k;EDS.drag=null;if(k!=='sel')EDS.sel=null;if(k!=='area'&&k!=='stamp')EDS.paste=null;for(const b of document.querySelectorAll('#edleft button[data-t]'))b.classList.toggle('on',b.dataset.t===k);
   const tg=(id,v)=>{const b=$(id);if(b)b.classList.toggle('on',!!v)};tg('edgrid',EDS.grid);tg('eddark',EDS.dark);tg('edmus',EDS.mus);edSide()}
 function edSide(){const el=$('edside');if(!el||!EW||!EM)return;el.innerHTML=edSideHTML();edSideAfter()}
 function edBrushHTML(fill){const B=[1,2,3,5,7];return`<div class="edrow"><span>Pennello</span><span class="seg">${B.map(b=>`<button class="${EDS.brush===b?'on':''}" onclick="EDS.brush=${b};edSide()">${b}</button>`).join('')}</span></div>
   <div class="edrow"><span>Forma</span><span class="seg">${[['brush','✎','Pennello'],['rect','▭','Rettangolo pieno'],['line','╱','Linea'],...(fill?[['fill','🪣','Riempi l\'area']]:[])].map(([k,i,n])=>`<button title="${n}" class="${EDS.shape===k?'on':''}" onclick="EDS.shape='${k}';edSide()">${i}</button>`).join('')}</span></div>`}
 function edSideHTML(){const T=EDS.tool,m=EM;let h='';
   switch(T){
-  case 'sel':h=`<h4>👆 Seleziona</h4>`+(EDS.sel?edPropsHTML(EDS.sel):`<p class="mu">Clicca un personaggio, un nemico, un oggetto, una porta, un edificio o una zona evento per modificarlo. Trascinalo per spostarlo. <kbd>Canc</kbd> lo elimina, <kbd>Ctrl+D</kbd> lo duplica.</p>`);break;
+  case 'sel':h=(EDS.sel?(EDS.sel.k==='tile'?'':`<h4>👆 Seleziona</h4>`)+edPropsHTML(EDS.sel):`<h4>👆 Seleziona</h4><p class="mu">Clicca un personaggio, un nemico, un oggetto, una porta, un edificio o una zona evento per modificarlo. Trascinalo per spostarlo. <kbd>Canc</kbd> lo elimina, <kbd>Ctrl+D</kbd> lo duplica, <kbd>Maiusc+frecce</kbd> lo sposta di una casella.</p><p class="mu">Clicca una casella vuota per cambiarne terreno, muro e decorazione, o per sostituirli in tutta la mappa.</p>`);break;
   case 'hand':h=`<h4>✋ Muovi la vista</h4><p class="mu">Trascina per spostare la vista. Lo fai anche con il tasto destro o centrale del mouse con qualsiasi strumento, o con le frecce. La rotella ingrandisce.</p>`;break;
-  case 'paint':{h=`<h4>🟩 Terreno</h4>${edBrushHTML(1)}`;let k0='';EMAT.forEach((mt,i)=>{if(mt.k!==k0){k0=mt.k;h+=`<h5>${mt.k}</h5>`}h+=`<button class="edsw${EDS.mat===i?' on':''}" title="${esc(mt.n)}" onclick="EDS.mat=${i};edSide()"><img src="${edMatThumb(i)}" alt=""><small>${esc(mt.n)}</small></button>`});
+  case 'paint':{const q=(EDS.matQ||'').toLowerCase(),sw=i=>{const mt=EMAT[i];return`<button class="edsw${EDS.mat===i?' on':''}${EDS.mat2===i?' mix':''}" title="${esc(mt.n)}${mt.road?' (strada)':''} · Maiusc+clic: mescola" onclick="if(event.shiftKey){EDS.mat2=EDS.mat2===${i}?-1:${i};edSide()}else edMatPick(${i})"><img src="${edMatThumb(i)}" alt=""><small>${esc(mt.n)}</small></button>`};
+    h=`<h4>🟩 Terreno</h4>${edBrushHTML(1)}<div class="edrow"><span>Mescola con</span><select onchange="EDS.mat2=+this.value;edSide()"><option value="-1">(niente)</option>${EMAT.map((m2,i)=>`<option value="${i}"${EDS.mat2===i?' selected':''}>${esc(m2.n)}</option>`).join('')}</select>${EDS.mat2>=0?`<input type="range" min="5" max="95" step="5" value="${EDS.mixP}" title="Quanto del secondo terreno" oninput="EDS.mixP=+this.value;this.nextElementSibling.textContent=this.value+'%'"><small>${EDS.mixP}%</small>`:''}</div>
+    <input id="edmq" class="edsrch" placeholder="🔍 Cerca un terreno..." value="${esc(EDS.matQ)}" oninput="EDS.matQ=this.value;edSideKeep('edmq')">`;
+    if(EDS.recM.length&&!q)h+=`<h5>Usati di recente</h5>`+EDS.recM.filter(i=>EMAT[i]).map(sw).join('');
+    let k0='';EMAT.forEach((mt,i)=>{if(q&&!mt.n.toLowerCase().includes(q))return;if(mt.k!==k0){k0=mt.k;h+=`<h5>${mt.k}</h5>`}h+=sw(i)});if(q&&!EMAT.some(mt=>mt.n.toLowerCase().includes(q)))h+='<p class="mu">Nessun terreno con questo nome.</p>';
     h+=`<p class="mu">Il terreno si dipinge anche sotto muri, acqua e decorazioni. Le strade (lastricato, ciottoli, sentieri) sono quelle su cui passeggiano gli abitanti.</p>`;break}
-  case 'wall':{h=`<h4>🧱 Muri</h4>${edBrushHTML(0)}`;EWAL.forEach((st,i)=>{h+=`<button class="edsw tall${EDS.wall===i?' on':''}" title="${esc(st.n)}" onclick="EDS.wall=${i};edSide()"><img src="${edWallThumb(i)}" alt=""><small>${esc(st.n)}</small></button>`});
+  case 'wall':{const q=(EDS.walQ||'').toLowerCase();h=`<h4>🧱 Muri</h4>${edBrushHTML(0)}<input id="edwq" class="edsrch" placeholder="🔍 Cerca un muro..." value="${esc(EDS.walQ)}" oninput="EDS.walQ=this.value;edSideKeep('edwq')">`;let k0='';
+    EWAL.forEach((st,i)=>{if(q&&!st.n.toLowerCase().includes(q))return;if(st.k!==k0){k0=st.k;h+=`<h5>${esc(st.k||'')}</h5>`}h+=`<button class="edsw tall${EDS.wall===i?' on':''}" title="${esc(st.n)}" onclick="EDS.wall=${i};edSide()"><img src="${edWallThumb(i)}" alt=""><small>${esc(st.n)}</small></button>`});
     h+=`<div class="edrow"><span>Tinta dei muri della mappa</span><span><input type="color" value="${m.wc||'#7a7f89'}" onchange="edPush('tinta');EM.wc=this.value;edBuild()"> <button onclick="edPush('tinta');EM.wc='';edBuild();edSide()">originale</button></span></div><p class="mu">I muri non si attraversano e coprono la vista: quelli davanti all'eroe diventano trasparenti.</p>`;break}
   case 'water':h=`<h4>🌊 Acqua</h4>${edBrushHTML(1)}<div class="edrow"><span>Liquido di questa mappa</span><select onchange="edPush('liquido');EM.liq=this.value;edZone(EM);edBuild()">${Object.entries(ELIQ).map(([k,v])=>`<option value="${k}"${m.liq===k?' selected':''}>${v.n}</option>`).join('')}</select></div><p class="mu">Non si attraversa a piedi: per passarci sopra usa il terreno «Pontile di legno». Nell'acqua puoi mettere barche, boe e zampilli (Decorazioni → Acqua) e punti di pesca (Oggetti).</p>`;break;
   case 'void':h=`<h4>⬛ Vuoto</h4>${edBrushHTML(1)}<p class="mu">Caselle che non esistono: si vede lo sfondo della mappa. Servono per isole nel cielo, bordi irregolari e burroni.</p>`;break;
   case 'dec':{const q=(EDS.decQ||'').toLowerCase(),L=EDEC.filter(d=>q?d.n.toLowerCase().includes(q):d.k===EDS.decK);
     h=`<h4>🌳 Decorazioni</h4>${edBrushHTML(0)}<div class="edrow"><label><input type="checkbox" ${EDS.walk?'checked':''} onchange="EDS.walk=this.checked?1:0"> Attraversabile</label><label title="Mette le decorazioni a caso nell'area del pennello">Spargi <select onchange="EDS.scatter=+this.value">${[[0,'no'],[.15,'poco'],[.35,'medio'],[.6,'tanto']].map(([v,n])=>`<option value="${v}"${EDS.scatter===v?' selected':''}>${n}</option>`).join('')}</select></label></div>
     <input id="eddq" placeholder="🔍 Cerca un arredo..." value="${esc(EDS.decQ)}" oninput="EDS.decQ=this.value;edSideKeep('eddq')"><div class="edtabs">${EDECK.map(k=>`<button class="${!q&&EDS.decK===k?'on':''}" onclick="EDS.decK='${k}';EDS.decQ='';edSide()">${k}</button>`).join('')}</div>`;
-    for(const d of L)h+=`<button class="edsw${EDS.dec===d.c?' on':''}" title="${esc(d.n)}${d.walk?' (ci si cammina sopra)':''}" onclick="EDS.dec='${d.c.replace(/'/g,"\\'")}';edSide()"><img src="${edDecThumb(d.c)}" alt=""><small>${esc(d.n)}</small></button>`;
+    const dsw=d=>`<button class="edsw${EDS.dec===d.c&&EDS.mix.length<2?' on':''}${EDS.mix.includes(d.c)?' mix':''}" title="${esc(d.n)}${d.walk?' (ci si cammina sopra)':''} · Maiusc+clic: aggiungi al pennello misto" onclick="edDecPick('${d.c.replace(/'/g,"\\'")}',event)"><img src="${edDecThumb(d.c)}" alt=""><small>${esc(d.n)}</small></button>`;
+    if(EDS.mix.length>1)h+=`<div class="edselbox"><b>${edI('mix')} Pennello misto</b> <span class="mu">ogni casella prende a caso uno di questi ${EDS.mix.length} arredi</span><div>${EDS.mix.map(c=>`<img class="edtth" title="${esc((EDECI[c]||{}).n||c)}" src="${edDecThumb(c)}" alt="">`).join('')}</div><button onclick="EDS.mix=[];edSide()">Svuota</button></div>`;
+    else h+=`<p class="mu">Maiusc+clic su più arredi: il pennello li mescola a caso (alberi diversi, rocce, fiori...).</p>`;
+    if(EDS.recD.length&&!q)h+=`<h5>Usati di recente</h5>`+EDS.recD.filter(c=>EDECI[c]).map(c=>dsw(EDECI[c])).join('')+`<h5>${esc(EDS.decK)}</h5>`;
+    for(const d of L)h+=dsw(d);
     if(!L.length)h+='<p class="mu">Nessun arredo con questo nome.</p>';break}
   case 'bld':h=`<h4>🏠 Edifici</h4><p class="mu">Trascina sulla mappa per disegnare un edificio (almeno 2×2). La porta è sul lato davanti (in basso a destra): può portare a un'altra mappa, per esempio l'interno.</p>
     <div class="edrow"><span>Stile</span><select onchange="EDS.bst=this.value">${EBLD.map(b=>`<option value="${b.id}"${EDS.bst===b.id?' selected':''}>${b.n}</option>`).join('')}</select></div>
     <div class="edrow"><span>Muri / tetto</span><span><input type="color" value="${EDS.bwall}" onchange="EDS.bwall=this.value"> <input type="color" value="${EDS.broof}" onchange="EDS.broof=this.value"></span></div>
     <div class="edrow"><span>Altezza</span><input type="range" min="14" max="70" value="${EDS.bht}" oninput="EDS.bht=+this.value"></div>
     <div class="edrow"><label><input type="checkbox" ${EDS.bdoor?'checked':''} onchange="EDS.bdoor=this.checked?1:0"> Con la porta</label><select onchange="EDS.bto=this.value">${edMapSel(EDS.bto,'(nessuna destinazione)')}</select></div>`;break;
-  case 'npc':{const L=Object.values(EW.npcs);h=`<h4>🧑 Personaggi</h4><p class="mu">Scegli un personaggio e clicca sulla mappa per metterlo. Lo stesso personaggio può stare in più punti.</p><button onclick="edNpcNew()">＋ Nuovo personaggio</button><button onclick="edNpcWin()">🧑 Modifica i personaggi</button><div class="edlist">`;
+  case 'npc':{const L=Object.values(EW.npcs);h=`<h4>🧑 Personaggi</h4><p class="mu">Scegli un personaggio e clicca sulla mappa per metterlo. Lo stesso personaggio può stare in più punti.</p><button onclick="edNpcNew()">＋ Nuovo personaggio</button><button onclick="edNpcWin()">🧑 Modifica i personaggi</button>
+    <div class="edrow"><span>Dal gioco</span><select onchange="if(this.value){const id=edNpcFromGame(this.value);if(id){EDS.npc=id;edToast('«'+EW.npcs[id].n+'» è nel tuo mondo: clicca sulla mappa per metterlo')}edSide()}"><option value="">(scegli un personaggio di Aldoria)</option>${edGameNpcs().map(k=>`<option value="${k}">${esc(NPCS[k].n)}</option>`).join('')}</select></div><div class="edlist">`;
     if(!L.length)h+='<p class="mu">Nessun personaggio: creane uno!</p>';for(const d of L)h+=`<button class="edli${EDS.npc===d.id?' on':''}" onclick="EDS.npc='${d.id}';edSide()"><img src="${edNpcThumb(d)}" alt=""><span><b>${esc(d.n)}</b><small>${esc(d.title||EDROLE[d.role]||'')}</small></span></button>`;h+='</div>';break}
   case 'en':{h=`<h4>👹 Nemici</h4><div class="edrow"><span>Livello</span><select onchange="EDS.enLv=+this.value"><option value="0">della mappa (${m.lv})</option>${[1,2,3,4,5,6,8,10,12,15,18,22,26,30,40].map(v=>`<option value="${v}"${EDS.enLv===v?' selected':''}>${v}</option>`).join('')}</select></div><div class="edrow"><label><input type="checkbox" ${EDS.enBoss?'checked':''} onchange="EDS.enBoss=this.checked?1:0"> Boss (più forte, presentazione e bottino)</label></div><div class="edlist">`;
     for(const k of edEnemyList()){const b=E[k];h+=`<button class="edli${EDS.en===k?' on':''}" onclick="EDS.en='${k}';edSide()"><img src="${edEnThumb(k)}" alt=""><span><b>${esc(b.n)}</b><small>PV ${b.hp} · ATT ${b.at}${b.rng?' · a distanza':''}${b.boss?' · boss':''}</small></span></button>`}h+='</div>';break}
@@ -2872,8 +2888,9 @@ function edSideHTML(){const T=EDS.tool,m=EM;let h='';
   case 'start':h=`<h4>🚩 Partenza e arrivo</h4><div class="seg"><button class="${EDS.stK==='start'?'on':''}" onclick="EDS.stK='start';edSide()">Inizio dell'avventura</button><button class="${EDS.stK==='sp'?'on':''}" onclick="EDS.stK='sp';edSide()">Arrivo in questa mappa</button></div>
     <p class="mu">${EDS.stK==='start'?'Clicca dove comincia la partita: l\'eroe nasce qui.':'Clicca dove arriva l\'eroe in questa mappa quando non c\'è un passaggio di ritorno (teletrasporti, rinascita dopo una sconfitta).'}</p><p>Inizio: <b>${esc((EW.maps[EW.start.map]||{}).n||'?')}</b> (${EW.start.x}, ${EW.start.y})</p>`;break;
   case 'erase':h=`<h4>🧽 Gomma</h4>${edBrushHTML(0)}<div class="seg">${[['all','Tutto'],['dec','Solo decorazioni'],['obj','Solo oggetti']].map(([k,n])=>`<button class="${EDS.erase===k?'on':''}" onclick="EDS.erase='${k}';edSide()">${n}</button>`).join('')}</div><p class="mu">Toglie decorazioni, oggetti, muri, acqua ed edifici e lascia il terreno.</p>`;break;
+  case 'area':h=edAreaHTML();break;case 'stamp':h=edStampHTML();break;
   case 'pick':h=`<h4>💧 Contagocce</h4><p class="mu">Clicca una casella per prenderne il terreno, il muro o la decorazione e continuare a dipingere con quello.</p>`;break}
-  if(EDS.sel&&T!=='sel')h=`<div class="edselbox">${edPropsHTML(EDS.sel)}</div>`+h;
+  if(EDS.sel&&T!=='sel'&&EDS.sel.k!=='tile')h=`<div class="edselbox">${edPropsHTML(EDS.sel)}</div>`+h;
   h+=`<div class="edmini"><canvas id="edmm" width="150" height="150" title="Clicca per spostare la vista"></canvas></div>`;return h}
 // ridisegna il pannello senza perdere il campo di ricerca
 function edSideKeep(id){const a=document.activeElement,pos=a&&a.id===id?a.selectionStart:null;edSide();const el=$(id);if(el&&pos!=null){el.focus();el.setSelectionRange(pos,pos)}}
@@ -2885,7 +2902,7 @@ function edNpcThumb(d){const k='npc'+d.id+edNpcSpec(d.look)+(d.look.c||'')+(d.an
 
 /* ---- proprietà dell'oggetto selezionato ---- */
 function edSelRef(){const s=EDS.sel;if(!s)return null;return s}
-function edPropsHTML(s){const d=s.d;let h='';const f=(lab,inp)=>`<div class="edrow"><span>${lab}</span>${inp}</div>`,num=(k,v,a,b,st)=>`<input type="number" value="${v}" min="${a}" max="${b}" step="${st||1}" onchange="edPropSet('${k}',+this.value)">`,
+function edPropsHTML(s){if(s.k==='tile')return edTileHTML(s);const d=s.d;let h='';const f=(lab,inp)=>`<div class="edrow"><span>${lab}</span>${inp}</div>`,num=(k,v,a,b,st)=>`<input type="number" value="${v}" min="${a}" max="${b}" step="${st||1}" onchange="edPropSet('${k}',+this.value)">`,
     txt=(k,v,ph)=>`<input value="${esc(v||'')}" placeholder="${ph||''}" onchange="edPropSet('${k}',this.value)">`,area=(k,v,ph)=>`<textarea rows="4" placeholder="${ph||''}" onchange="edPropSet('${k}',this.value)">${esc(v||'')}</textarea>`,
     chk=(k,v,lab)=>`<label><input type="checkbox" ${v?'checked':''} onchange="edPropSet('${k}',this.checked?1:0)"> ${lab}</label>`,
     sel=(k,v,opts)=>`<select onchange="edPropSet('${k}',this.value)">${opts.map(([a,b])=>`<option value="${a}"${String(v)===String(a)?' selected':''}>${esc(b)}</option>`).join('')}</select>`;
@@ -2927,26 +2944,28 @@ function edDirty(){EDS.dirty=1}
 
 /* ---- annulla e rifai: istantanee della mappa ---- */
 function edSnap(){return JSON.stringify({m:{t:EM.t,f:EM.f,w:EM.w,d:EM.d,dw:EM.dw,b:EM.b,e:EM.e,sp:EM.sp,N:EM.N,wc:EM.wc,liq:EM.liq},st:EW.start,id:EM.id})}
-function edPush(lab){EDS.undo.push(edSnap());if(EDS.undo.length>60)EDS.undo.shift();EDS.redo=[];edDirty()}
+function edPush(lab){EDS.undo.push({s:edSnap(),l:lab||'',tl:(EDTI[EDS.tool]||[])[2]?EDTI[EDS.tool][2].split(' (')[0].split(':')[0]:'',mn:EM?EM.n:'',tm:Date.now()});if(EDS.undo.length>80)EDS.undo.shift();EDS.redo=[];edDirty()}
 function edRestore(s){const o=JSON.parse(s);if(!EW.maps[o.id])return;const m=EW.maps[o.id];Object.assign(m,o.m);EW.start=o.st;if(EM.id!==o.id)edOpenMap(o.id,0);else{EM=m;edZone(EM);edBuild()}EDS.sel=null;edSide()}
-function edUndo(){if(!EDS.undo.length){edToast('Niente da annullare');return}EDS.redo.push(edSnap());edRestore(EDS.undo.pop());edDirty()}
-function edRedo(){if(!EDS.redo.length){edToast('Niente da rifare');return}EDS.undo.push(edSnap());edRestore(EDS.redo.pop());edDirty()}
+function edUndo(){if(!EDS.undo.length){edToast('Niente da annullare');return}const u=EDS.undo.pop();EDS.redo.push(Object.assign({},u,{s:edSnap()}));edRestore(u.s);edDirty()}
+function edRedo(){if(!EDS.redo.length){edToast('Niente da rifare');return}const u=EDS.redo.pop();EDS.undo.push(Object.assign({},u,{s:edSnap()}));edRestore(u.s);edDirty()}
 function edSaveNow(q){if(!EW)return;const ok=edSaveWorld(EW,q);EDS.dirty=0;if(!q&&ok)edToast('💾 Mondo salvato')}
 
 /* ---- modificare le caselle ---- */
 const edIn=(x,y)=>x>=0&&y>=0&&x<N&&y<N;
 function edSync(x,y){const i=y*N+x,t0=EM.t[i],d=EM.d[i];if(BM&&BM[y]&&BM[y][x]>=0)return;
-  if(t0===1){M[y][x]=1;DEC[y][x]='';return}if(t0===9){M[y][x]=9;DEC[y][x]='';return}
-  if(t0===2){M[y][x]=2;DEC[y][x]=d&&EDECI[d]&&EDECI[d].water?d:'';return}
+  if(t0===1){M[y][x]=1;DEC[y][x]='';edFInv(x,y);return}if(t0===9){M[y][x]=9;DEC[y][x]='';edFInv(x,y);return}
+  if(t0===2){M[y][x]=2;DEC[y][x]=d&&EDECI[d]&&EDECI[d].water?d:'';edFInv(x,y);return}
   const mt=EMAT[EM.f[i]]||EMAT[0];if(mt.pier)PIERD.add(i);else PIERD.delete(i);
-  if(d&&!(EDECI[d]&&EDECI[d].water)){DEC[y][x]=d;M[y][x]=(EM.dw[i]||edDecWalk(d))?(mt.road?4:0):6}else{DEC[y][x]='';M[y][x]=mt.road?4:0}}
+  if(d&&!(EDECI[d]&&EDECI[d].water)){DEC[y][x]=d;M[y][x]=(EM.dw[i]||edDecWalk(d))?(mt.road?4:0):6}else{DEC[y][x]='';M[y][x]=mt.road?4:0}edFInv(x,y)}
+// 7.6: il disegno veloce tiene in memoria le caselle vuote come «niente da disegnare»: dopo una modifica vanno ricontrollate
+function edFInv(x,y){if(typeof FAST==='undefined'||!FAST.st||FAST.zk!==Zk||FAST.N!==N)return;for(let v=y-1;v<=y+1;v++)for(let u=x-1;u<=x+1;u++){if(u<0||v<0||u>=N||v>=N)continue;const i=v*N+u;FAST.st[i]=0;FAST.spr[i]=null;FAST.thr[i]=0}}
 function edApply(x,y){if(!edIn(x,y))return;const i=y*N+x,T=EDS.tool,m=EM;let fl=0;
   switch(T){
-  case 'paint':if(m.t[i]!==0||m.f[i]!==EDS.mat){if(m.t[i]===2&&m.d[i]&&EDECI[m.d[i]]&&EDECI[m.d[i]].water)delete m.d[i];m.t[i]=0;m.f[i]=EDS.mat;fl=1}break;
+  case 'paint':{const mt=edMatNow();if(m.t[i]!==0||m.f[i]!==mt){if(m.t[i]===2&&m.d[i]&&EDECI[m.d[i]]&&EDECI[m.d[i]].water)delete m.d[i];m.t[i]=0;m.f[i]=mt;fl=1}break}
   case 'wall':if(m.t[i]!==1||m.w[i]!==EDS.wall){m.t[i]=1;m.w[i]=EDS.wall;delete m.d[i];delete m.dw[i];fl=1}break;
   case 'water':if(m.t[i]!==2){m.t[i]=2;if(m.d[i]&&!(EDECI[m.d[i]]&&EDECI[m.d[i]].water))delete m.d[i];fl=1}break;
   case 'void':if(m.t[i]!==9){m.t[i]=9;delete m.d[i];fl=1}break;
-  case 'dec':{if(EDS.scatter&&Math.random()>EDS.scatter)return;const c=EDS.dec,wt=EDECI[c]&&EDECI[c].water;if(wt){if(m.t[i]!==2)m.t[i]=2}else if(m.t[i]!==0){m.t[i]=0;fl=1}
+  case 'dec':{if(EDS.scatter&&Math.random()>EDS.scatter)return;const c=edDecNow(),wt=EDECI[c]&&EDECI[c].water;if(wt){if(m.t[i]!==2)m.t[i]=2}else if(m.t[i]!==0){m.t[i]=0;fl=1}
     m.d[i]=c;if(EDS.walk)m.dw[i]=1;else delete m.dw[i];break}
   case 'erase':{if(EDS.erase!=='obj'){if(m.d[i]){delete m.d[i];delete m.dw[i]}else if(EDS.erase==='all'&&m.t[i]!==0){m.t[i]=0;fl=1}}
     if(EDS.erase!=='dec'){const n0=m.e.length;m.e=m.e.filter(e=>e.k==='trig'||!(Math.floor(e.x)===x&&Math.floor(e.y)===y));if(m.e.length!==n0)EDS.entDirty=1;
@@ -2974,8 +2993,8 @@ function edPlace(x,y){if(!edIn(x,y))return;const T=EDS.tool;
     edSelect('e',o,1);return}
   if(T==='start'){edPush('partenza');if(EDS.stK==='start')EW.start={map:EM.id,x,y};else EM.sp=[x,y];edDirty();edSide();edToast(EDS.stK==='start'?'🚩 L\'avventura comincia qui':'Punto d\'arrivo della mappa spostato');const s=$('edmap');if(s)s.innerHTML=edMapOpts(EM.id);return}}
 function edSelect(k,d,keep){EDS.sel={k:k==='e'?d.k:k,d};if(!keep&&EDS.tool!=='sel'){EDS.tool='sel';for(const b of document.querySelectorAll('#edleft button[data-t]'))b.classList.toggle('on',b.dataset.t==='sel')}edSide()}
-function edDelSel(){const s=EDS.sel;if(!s)return;edPush('elimina');if(s.k==='bld'){EM.b=EM.b.filter(b=>b!==s.d);EDS.sel=null;edBuild()}else{EM.e=EM.e.filter(e=>e!==s.d);EDS.sel=null;edRebuildEnts()}edDirty();edSide()}
-function edDup(){const s=EDS.sel;if(!s)return;edPush('duplica');const o=edClone(s.d);o.u=edUid(s.k==='bld'?'b':'e');
+function edDelSel(){const s=EDS.sel;if(!s)return;if(s.k==='tile'){edTileSet('d','');return}edPush('elimina');if(s.k==='bld'){EM.b=EM.b.filter(b=>b!==s.d);EDS.sel=null;edBuild()}else{EM.e=EM.e.filter(e=>e!==s.d);EDS.sel=null;edRebuildEnts()}edDirty();edSide()}
+function edDup(){const s=EDS.sel;if(!s||s.k==='tile')return;edPush('duplica');const o=edClone(s.d);o.u=edUid(s.k==='bld'?'b':'e');
   if(s.k==='bld'){o.x=Math.min(N-o.w,o.x+o.w+1);if(o.door)o.dx=o.x+(o.dx-s.d.x);EM.b.push(o);edBuild()}else{o.x=Math.min(N-1,o.x+1);EM.e.push(o);edRebuildEnts()}EDS.sel={k:s.k,d:o};edDirty();edSide()}
 function edBldInterior(){const s=EDS.sel;if(!s||s.k!=='bld')return;const b=s.d,nm=(b.n||'Casa')+' · interno';const w2=Math.max(8,Math.min(16,b.w*2)),h2=Math.max(8,Math.min(16,b.h*2));
   const m=edGenRoom(edNewMap({n:nm,N:Math.max(w2,h2)+2,light:'interno',mus:'inter',pt:''}),w2,h2);EW.maps[m.id]=m;edZone(m);edPush('interno');b.to=m.id;b.door=1;if(b.dx==null)b.dx=b.x+(b.w>>1);
@@ -2991,7 +3010,10 @@ function edDown(ev){if(!EDIT)return;ev.preventDefault();cv.setPointerCapture&&cv
   if(ev.button===1||ev.button===2||EDS.tool==='hand'||EDS.key===' '){EDS.pan={x:ev.clientX,y:ev.clientY,cx:EDS.cam.x,cy:EDS.cam.y};return}
   if(ev.button!==0)return;const[x,y]=edTile(ev),T=EDS.tool;
   if(EDS.key===1&&EDS.sel&&EDS.sel.d.k==='npc'){edPush('ronda');(EDS.sel.d.pts=EDS.sel.d.pts||[]).push([x,y]);edSide();return}
-  if(T==='sel'){const h=edHit(ev);EDS.sel=h;if(h){const d=h.d;EDS.drag={k:'move',x0:x,y0:y,ox:d.x,oy:d.y,moved:0}}edSide();return}
+  if(EDS.paste&&(T==='area'||T==='stamp')){edPasteAt(x,y);return}
+  if(T==='area'){const r=edAreaR();if(r&&x>=r.x&&y>=r.y&&x<r.x+r.w&&y<r.y+r.h){EDS.drag={k:'amove',x0:x,y0:y,dx:0,dy:0};return}EDS.drag={k:'area',x0:x,y0:y,x1:x,y1:y};EDS.area={x0:x,y0:y,x1:x,y1:y};return}
+  if(T==='stamp'){edToast('Scegli prima un timbro o un modello nel pannello a destra');return}
+  if(T==='sel'){const h=edHit(ev);EDS.sel=h||(edIn(x,y)?{k:'tile',d:{x,y}}:null);if(h){const d=h.d;EDS.drag={k:'move',x0:x,y0:y,ox:d.x,oy:d.y,moved:0}}edSide();return}
   if(edPaintTools()){if(T==='erase'||T==='dec'||EDS.shape==='brush'){edPush('pennello');EDS.drag={k:'paint',lx:x,ly:y};edBrushAt(x,y,edApply);return}
     if(EDS.shape==='fill'){edPush('riempi');edFill(x,y);edStrokeEnd();return}EDS.drag={k:EDS.shape,x0:x,y0:y,x1:x,y1:y};return}
   if(T==='pick'){edPick(x,y);return}
@@ -3007,11 +3029,13 @@ function edMove(ev){if(!EDIT)return;const tp=EDS.touches[ev.pointerId];if(tp){tp
   const D=EDS.drag;if(!D){edStat();return}
   if(D.k==='paint'){if(x!==D.lx||y!==D.ly){edLine(D.lx,D.ly,x,y,(u,v)=>edBrushAt(u,v,edApply));D.lx=x;D.ly=y}return}
   if(D.k==='rect'||D.k==='line'){D.x1=x;D.y1=y;return}
+  if(D.k==='area'){D.x1=x;D.y1=y;EDS.area={x0:D.x0,y0:D.y0,x1:x,y1:y};return}if(D.k==='amove'){D.dx=x-D.x0;D.dy=y-D.y0;return}
   if(D.k==='move'&&EDS.sel){const d=EDS.sel.d,nx=D.ox+x-D.x0,ny=D.oy+y-D.y0;if(nx===d.x&&ny===d.y)return;if(!D.moved){edPush('sposta');D.moved=1}
     if(EDS.sel.k==='bld'){const ox=d.x;d.x=clamp(nx,0,N-d.w);d.y=clamp(ny,0,N-d.h);if(d.door)d.dx+=d.x-ox;edBuild()}else if(EDS.sel.k==='trig'){d.x=clamp(nx,0,N-d.w);d.y=clamp(ny,0,N-d.h)}else{d.x=clamp(nx,0,N-1);d.y=clamp(ny,0,N-1);edRebuildEnts()}edDirty()}}
 function edUp(ev){if(!EDIT)return;delete EDS.touches[ev.pointerId];if(EDS.pan){if(!Object.keys(EDS.touches).length)EDS.pan=null;return}const D=EDS.drag;EDS.drag=null;if(!D)return;
   if(D.k==='paint'){edStrokeEnd();return}
   if(D.k==='move'){if(D.moved)edSide();return}
+  if(D.k==='area'){edSide();return}if(D.k==='amove'){if(D.dx||D.dy)edAreaMove(D.dx,D.dy);return}
   const x0=Math.min(D.x0,D.x1),y0=Math.min(D.y0,D.y1),x1=Math.max(D.x0,D.x1),y1=Math.max(D.y0,D.y1);
   if(EDS.tool==='bld'){if(x1-x0<1||y1-y0<1){edToast('Un edificio è grande almeno 2×2');return}edPush('edificio');const b={u:edUid('b'),x:x0,y:y0,w:x1-x0+1,h:y1-y0+1,st:EDS.bst,wall:EDS.bwall,roof:EDS.broof,ht:EDS.bht,door:EDS.bdoor,dx:x0+((x1-x0+1)>>1),to:EDS.bto||'',n:''};
     EM.b.push(b);edBuild();edSelect('bld',b,1);edDirty();return}
@@ -3021,16 +3045,22 @@ function edPick(x,y){if(!edIn(x,y))return;const i=y*N+x,m=EM;if(m.d[i]){EDS.dec=
   if(m.t[i]===1){EDS.wall=m.w[i];edTool('wall');return}if(m.t[i]===2){edTool('water');return}if(m.t[i]===9){edTool('void');return}EDS.mat=m.f[i];edTool('paint')}
 function edStat(){const el=$('edstat');if(!el||!EM)return;const hv=EDS.hover;let s=`<b>${esc(EM.n)}</b> · ${N}×${N}`;
   if(hv&&edIn(hv[0],hv[1])){const i=hv[1]*N+hv[0],t0=EM.t[i];s+=` · casella ${hv[0]}, ${hv[1]} · ${t0===1?'muro: '+EWAL[EM.w[i]].n:t0===2?(ELIQ[EM.liq]||ELIQ.acqua).n:t0===9?'vuoto':EMAT[EM.f[i]].n}${EM.d[i]&&EDECI[EM.d[i]]?' · '+EDECI[EM.d[i]].n:''}`}
-  s+=` · zoom ${Math.round(SZ*100)}%${EDS.dirty?' · <i>modifiche non salvate</i>':''}`;if(el.innerHTML!==s)el.innerHTML=s}
+  const ar=edAreaR();if(EDS.tool==='area'&&ar)s+=` · area ${ar.w}×${ar.h}`;if(EDS.paste)s+=` · incolla «${esc(EDS.paste.name)}» ${EDS.paste.c.w}×${EDS.paste.c.h}`;
+  s+=`${EDS.dirty?' · <i>modifiche non salvate</i>':''}`;let tx=$('edstx');if(!tx){edStatBar();tx=$('edstx')}if(tx&&tx.innerHTML!==s)tx.innerHTML=s;const zv=$('edzv');if(zv){const z=Math.round(SZ*100)+'%';if(zv.textContent!==z)zv.textContent=z}}
 
 /* ---- tastiera dell'editor ---- */
 function edKey(e){const k=e.key,lk=k.toLowerCase(),c=e.ctrlKey||e.metaKey,tg=e.target;
   if(tg&&(tg.tagName==='INPUT'||tg.tagName==='TEXTAREA'||tg.tagName==='SELECT'||tg.isContentEditable)){if(k==='Escape')tg.blur();return}
-  if(c&&lk==='z'){e.preventDefault();e.shiftKey?edRedo():edUndo();return}if(c&&lk==='y'){e.preventDefault();edRedo();return}if(c&&lk==='s'){e.preventDefault();edSaveNow();return}if(c&&lk==='d'){e.preventDefault();edDup();return}
-  if(k==='Escape'){if(!$('edwin').hidden){edWinClose();return}if(EDS.key===1){EDS.key=0;return}EDS.sel=null;EDS.drag=null;edSide();return}
+  if(c&&lk==='z'){e.preventDefault();e.shiftKey?edRedo():edUndo();return}
+  if(c&&lk==='c'){e.preventDefault();edCopy();return}if(c&&lk==='x'){e.preventDefault();edCopy(1);return}if(c&&lk==='v'){e.preventDefault();edPasteStart();return}if(c&&lk==='a'){e.preventDefault();edAreaAll();return}
+  if(EDS.paste&&!c&&(lk==='r'||lk==='f')){edPasteXf(lk==='r'?'rot':'x');return}if(c&&lk==='y'){e.preventDefault();edRedo();return}if(c&&lk==='s'){e.preventDefault();edSaveNow();return}if(c&&lk==='d'){e.preventDefault();edDup();return}
+  if(k==='Escape'){if(!$('edwin').hidden){edWinClose();return}if(EDS.key===1){EDS.key=0;return}if(EDS.paste){EDS.paste=null;edSide();return}if(EDS.area&&EDS.tool==='area'){EDS.area=null;edSide();return}EDS.sel=null;EDS.drag=null;edSide();return}
   if(k==='Enter'&&EDS.key===1){EDS.key=0;edToast('Ronda pronta');return}
   if(!$('edwin').hidden)return;
-  if(k==='Delete'||k==='Backspace'){if(EDS.sel){e.preventDefault();edDelSel()}return}
+  if(k==='Delete'||k==='Backspace'){if(EDS.tool==='area'&&EDS.area){e.preventDefault();edAreaDel();return}if(EDS.sel){e.preventDefault();edDelSel()}return}
+  if(k==='Tab'){e.preventDefault();const r=$('ed');if(r)r.classList.toggle('edfocus');return}if(k==='0'){edFit();return}
+  if(e.shiftKey&&k.startsWith('Arrow')&&EDS.sel&&EDS.sel.k!=='tile'){e.preventDefault();const d=EDS.sel.d,dx=k==='ArrowRight'?1:k==='ArrowLeft'?-1:0,dy=k==='ArrowDown'?1:k==='ArrowUp'?-1:0;edPush('sposta');
+    if(EDS.sel.k==='bld'){const ox=d.x;d.x=clamp(d.x+dx,0,N-d.w);d.y=clamp(d.y+dy,0,N-d.h);if(d.door)d.dx+=d.x-ox;edBuild()}else if(EDS.sel.k==='trig'){d.x=clamp(d.x+dx,0,N-d.w);d.y=clamp(d.y+dy,0,N-d.h)}else{d.x=clamp(d.x+dx,0,N-1);d.y=clamp(d.y+dy,0,N-1);edRebuildEnts()}edDirty();edSide();return}
   if(k===' '){EDS.key=' ';e.preventDefault();return}
   if(k==='+'||k==='='){SZ=clamp(SZ*1.15,.3,2.6);return}if(k==='-'){SZ=clamp(SZ/1.15,.3,2.6);return}
   if(k==='['){EDS.brush=Math.max(1,EDS.brush-1);edSide();return}if(k===']'){EDS.brush=Math.min(9,EDS.brush+1);edSide();return}
@@ -3077,21 +3107,27 @@ function edOverlay(){g.setTransform(S*DPR,0,0,S*DPR,(W/2-camX*S)*DPR,(H/2-camY*S
     for(let j=Math.max(0,cy-r);j<=Math.min(n,cy+r);j++){g.moveTo(PX(Math.max(0,cx-r),j),PY(Math.max(0,cx-r),j,0));g.lineTo(PX(Math.min(n,cx+r),j),PY(Math.min(n,cx+r),j,0))}g.stroke();
     g.strokeStyle='rgba(245,185,66,.5)';g.lineWidth=2/S;edDia(0,0,n,n,0);g.stroke()}
   // zone evento
-  for(const e of EM.e)if(e.k==='trig'){const sel=EDS.sel&&EDS.sel.d===e;g.fillStyle=sel?'rgba(196,107,255,.35)':'rgba(196,107,255,.18)';g.strokeStyle='rgba(220,160,255,.9)';g.lineWidth=(sel?3:1.5)/S;edDia(e.x,e.y,e.w,e.h,0);g.fill();g.stroke();
-    g.font='bold 11px Georgia,serif';g.textAlign='center';label('⚡ '+(e.n||'zona'),PX(e.x+e.w/2,e.y+e.h/2),PY(e.x+e.w/2,e.y+e.h/2,0),'#e8c8ff')}
+  for(const e of EM.e)if(e.k==='trig'&&!EDS.hideT){const sel=EDS.sel&&EDS.sel.d===e;g.fillStyle=sel?'rgba(196,107,255,.35)':'rgba(196,107,255,.18)';g.strokeStyle='rgba(220,160,255,.9)';g.lineWidth=(sel?3:1.5)/S;edDia(e.x,e.y,e.w,e.h,0);g.fill();g.stroke();
+    g.font='bold 11px Georgia,serif';g.textAlign='center';edLabI('bolt',e.n||'zona',PX(e.x+e.w/2,e.y+e.h/2),PY(e.x+e.w/2,e.y+e.h/2,0),'#e8c8ff')}
   // partenza e arrivo
   const flag=(x,y,c,l)=>{g.fillStyle=c;edDia(x+.2,y+.2,.6,.6,0);g.fill();g.fillRect(PX(x+.5,y+.5)-1,PY(x+.5,y+.5,34),2,34);g.beginPath();g.moveTo(PX(x+.5,y+.5)+1,PY(x+.5,y+.5,34));g.lineTo(PX(x+.5,y+.5)+16,PY(x+.5,y+.5,29));g.lineTo(PX(x+.5,y+.5)+1,PY(x+.5,y+.5,24));g.fill();g.font='bold 10px Georgia,serif';g.textAlign='center';label(l,PX(x+.5,y+.5),PY(x+.5,y+.5,40),c)};
   flag(EM.sp[0],EM.sp[1],'#5ad0ff','arrivo');if(EW.start.map===EM.id)flag(EW.start.x,EW.start.y,'#4cd07a','inizio');
   // etichette: personaggi, porte, ronde
-  if(EDS.labels){g.font='bold 10px Georgia,serif';g.textAlign='center';for(const e of ents){if(!e.ref)continue;const d=e.ref,X=PX(e.px,e.py);
-    if(d.k==='po'){const to=EW.maps[d.to];label('🚪 '+(to?to.n:'?'),X,PY(e.px,e.py,58),to?'#9ff0ff':'#ff9a8a')}
-    else if(d.k==='en')label((d.boss?'👑 ':'')+e.n+' Lv'+(d.lv||EM.lv),X,PY(e.px,e.py,e.boss?78:46),'#ffb0a0')
+  if(EDS.labels&&!EDS.hideE){g.font='bold 10px Georgia,serif';g.textAlign='center';for(const e of ents){if(!e.ref)continue;const d=e.ref,X=PX(e.px,e.py);
+    if(d.k==='po'){const to=EW.maps[d.to];edLabI('door',to?to.n:'?',X,PY(e.px,e.py,58),to?'#9ff0ff':'#ff9a8a')}
+    else if(d.k==='en'){if(d.boss)edLabI('crown',e.n+' Lv'+(d.lv||EM.lv),X,PY(e.px,e.py,78),'#ffb0a0');else label(e.n+' Lv'+(d.lv||EM.lv),X,PY(e.px,e.py,46),'#ffb0a0')}
     else if(d.k==='npc'){if(d.beh==='pattuglia'&&d.pts&&d.pts.length){g.strokeStyle='rgba(255,224,102,.7)';g.lineWidth=2/S;g.setLineDash([6,5]);g.beginPath();g.moveTo(X,PY(e.px,e.py,0));for(const p of d.pts)g.lineTo(PX(p[0]+.5,p[1]+.5),PY(p[0]+.5,p[1]+.5,0));g.stroke();g.setLineDash([])}}
-    else if(d.k==='ch'&&(d.key||d.items&&d.items.length))label(d.key?'🔒':'🎁',X,PY(e.px,e.py,30),'#ffd84a')}
-    for(const b of EM.b)if(b.door&&b.to){const to=EW.maps[b.to];label('🚪 '+(to?to.n:'?'),PX(b.dx+.5,b.y+b.h+.5),PY(b.dx+.5,b.y+b.h+.5,40),'#9ff0ff')}}
+    else if(d.k==='ch'&&(d.key||d.items&&d.items.length))edLabI(d.key?'lock':'chest','',X,PY(e.px,e.py,30),'#ffd84a')}
+    for(const b of EM.b)if(b.door&&b.to){const to=EW.maps[b.to];edLabI('door',to?to.n:'?',PX(b.dx+.5,b.y+b.h+.5),PY(b.dx+.5,b.y+b.h+.5,40),'#9ff0ff')}}
   // selezione
   const s=EDS.sel;if(s){const d=s.d,p=.5+.5*Math.sin(t*6);g.strokeStyle=`rgba(255,216,74,${.6+.4*p})`;g.lineWidth=3/S;
-    if(s.k==='bld'){edDia(d.x,d.y,d.w,d.h,0);g.stroke()}else if(s.k!=='trig'){g.beginPath();g.ellipse(PX(d.x+.5,d.y+.5),PY(d.x+.5,d.y+.5,0),26,13,0,0,6.3);g.stroke()}}
+    if(s.k==='bld'){edDia(d.x,d.y,d.w,d.h,0);g.stroke()}else if(s.k==='tile'){g.fillStyle='rgba(255,216,74,.18)';edDia(d.x,d.y,1,1,0);g.fill();g.stroke()}else if(s.k!=='trig'){g.beginPath();g.ellipse(PX(d.x+.5,d.y+.5),PY(d.x+.5,d.y+.5,0),26,13,0,0,6.3);g.stroke()}}
+  // area selezionata, pezzo da incollare
+  const ar=edAreaR();if(ar&&(EDS.tool==='area'||EDS.paste)){const D0=EDS.drag,mx=D0&&D0.k==='amove'?D0.dx:0,my=D0&&D0.k==='amove'?D0.dy:0;g.save();g.setLineDash([8/S,6/S]);g.lineDashOffset=-t*30/S;g.strokeStyle='#ffd84a';g.lineWidth=2/S;g.fillStyle='rgba(255,216,74,.10)';edDia(ar.x+mx,ar.y+my,ar.w,ar.h,0);g.fill();g.stroke();g.restore();
+    g.font='bold 12px Georgia,serif';g.textAlign='center';label(ar.w+'×'+ar.h,PX(ar.x+mx,ar.y+my),PY(ar.x+mx,ar.y+my,8),'#ffd84a')}
+  if(EDS.paste&&EDS.hover&&!EDS.pan){const c=EDS.paste.c,x0=EDS.hover[0]-(c.w>>1),y0=EDS.hover[1]-(c.h>>1);g.fillStyle='rgba(120,220,255,.16)';g.strokeStyle='#7ad0ff';g.lineWidth=2/S;
+    for(let y=0;y<c.h;y++)for(let x=0;x<c.w;x++){const j=y*c.w+x;if(c.t[j]<0&&!c.d[j])continue;edDia(x0+x,y0+y,1,1,0);g.fill()}for(const e of c.e){g.fillStyle='rgba(255,224,102,.55)';edDia(x0+e.x+.25,y0+e.y+.25,.5,.5,0);g.fill()}
+    edDia(x0,y0,c.w,c.h,0);g.stroke();return}
   // casella sotto il mouse e anteprime
   const hv=EDS.hover,D=EDS.drag;
   if(D&&(D.k==='rect'||D.k==='line')){g.fillStyle=EDS.tool==='trig'?'rgba(196,107,255,.3)':EDS.tool==='bld'?'rgba(255,200,120,.3)':'rgba(255,255,255,.22)';g.strokeStyle='#ffd84a';g.lineWidth=2/S;
@@ -3191,7 +3227,9 @@ function edMapWin(){EDF=EM;EDWR=edMapWin;EDRR=edMapWin;const m=EM;
   <label>Livello dei nemici<input type="number" min="1" max="60" value="${m.lv}" onchange="EM.lv=clamp(+this.value|0,1,60);edZone(EM);edRebuildEnts();edDirty()"></label>
   <label><span><input type="checkbox" ${m.low?'checked':''} onchange="EM.low=this.checked?1:0;edBuild();edDirty()"> Muri bassi sul bordo davanti (si vede dentro, come negli interni)</span></label></div>
   <h5>Quando l'eroe entra</h5><label class="edl">Cinematica la prima volta <select onchange="EM.cine=this.value;edDirty()">${edOpt(edCinesL(),m.cine||'')}</select></label>${edActHTML(m.enter,'EDF.enter')}
-  <h5>Rigenera la mappa</h5><p class="mu">Cancella tutto e la ricostruisce da un modello (si può annullare con Ctrl+Z).</p><span><select id="edgen">${edOpt(Object.entries(EGEN),'prato')}</select> <button class="danger" onclick="edRegen($('edgen').value)">Rigenera</button></span>`;
+  <h5>Rigenera la mappa</h5><p class="mu">Cancella tutto e la ricostruisce da un modello (si può annullare con Ctrl+Z).</p><span><select id="edgen">${edOpt(Object.entries(EGEN),'prato')}</select> <button class="danger" onclick="edRegen($('edgen').value)">Rigenera</button></span>
+  <h5>Trasforma la mappa</h5><p class="mu">Ruota o specchia tutto: terreno, arredi, edifici, oggetti, zone evento, punto d'arrivo e inizio. Si annulla con Ctrl+Z.</p><div class="edbtns"><button onclick="edMapXf('rot');edMapWin()">⟳ Ruota di 90°</button><button onclick="edMapXf('x');edMapWin()">${edI('fliph')} Specchia</button><button onclick="edMapXf('y');edMapWin()">${edI('flipv')} Capovolgi</button></div>
+  <div class="edrow"><span>Sposta tutto di</span><span>x <input type="number" id="edmdx" value="0" min="-95" max="95" style="width:64px"> y <input type="number" id="edmdy" value="0" min="-95" max="95" style="width:64px"> <button onclick="edMapXf('shift',+$('edmdx').value,+$('edmdy').value);edMapWin()">Sposta</button></span></div>`;
   if($('edwin').hidden||!$('edwc'))edWin('⚙ Proprietà della mappa',h);else edWinSet(h)}
 function edRegen(k){edPush('rigenera');const keep={id:EM.id,n:EM.n,light:EM.light,sky:EM.sky,mus:EM.mus,lv:EM.lv,pt:EM.pt,liq:EM.liq,enter:EM.enter,cine:EM.cine};const m=edNewMap({N:EM.N});edGenerate(m,k);
   Object.assign(EM,m,keep);edZone(EM);edBuild();edDirty();edWinClose();edToast('Mappa rigenerata: Ctrl+Z per tornare indietro')}
@@ -3419,9 +3457,14 @@ function edVarWin(){EDWR=edVarWin;EDRR=edVarWin;let h=`<p class="mu">Le variabil
 function edHelp(){edWin('❓ Guida di Voxelia Studio',`<div class="edhelp"><h5>Per cominciare</h5><ol><li>Dipingi il terreno (🟩), alza i muri (🧱), metti acqua (🌊) e decorazioni (🌳). Gli edifici (🏠) si disegnano trascinando.</li><li>Crea i personaggi (🧑 Personaggi in alto): aspetto, dialoghi, mestiere. Poi mettili nella mappa con lo strumento 🧑.</li>
   <li>Aggiungi nemici (👹), forzieri e oggetti (🎁), porte verso altre mappe (🚪) e zone evento (⚡).</li><li>Scrivi le missioni (📜), le musiche (🎵), le cinematiche (🎬).</li><li>Premi <b>▶ Prova</b>: giochi subito il tuo mondo. «Torna all'editor» ti riporta qui.</li></ol>
   <h5>Mouse e tastiera</h5><ul><li>Clic sinistro: usa lo strumento · tasto destro o centrale trascinando: sposta la vista · rotella: zoom · frecce: muovi la vista</li><li>Ctrl+Z annulla · Ctrl+Y rifai · Ctrl+S salva · Ctrl+D duplica · Canc elimina · [ ] pennello più piccolo o più grande · Spazio + trascina: sposta la vista</li>
-  <li>Strumenti: V seleziona · H mano · B terreno · M muri · A acqua · X vuoto · D decorazioni · E edifici · N personaggi · K nemici · O oggetti · P porte · T zone evento · S partenza · G gomma · I contagocce</li><li>Sul telefono: un dito usa lo strumento, due dita spostano e ingrandiscono la vista.</li></ul>
-  <h5>Pubblicare</h5><ul><li>Con <b>🌐 Pubblica</b> in alto il mondo finisce nel browser dei mondi del server: chi gioca lì lo trova, lo gioca, gli dà le stelle e lo commenta.</li><li>Scegli titolo, descrizione e generi, poi le anteprime: <b>📷 Inquadra e scatta</b> (senza griglia né aiuti), immagini dal computer, un <b>🎬 video</b> fino a 20 secondi registrato muovendo la vista oppure con il <b>🎥 giro automatico</b>. Anche durante ▶ Prova puoi premere ⏺ Video o 📷 Foto.</li><li>Quando cambi il mondo, torna su 🌐 Pubblica e premi «Aggiorna il mondo e l'anteprima». Serve il gioco aperto dal server (node server.js).</li></ul><h5>Idee</h5><ul><li>Una porta chiusa a chiave: crea una Chiave in ⚔ Oggetti, mettila in un forziere e scegli «Chiuso a chiave» nella porta.</li><li>Un ponte che compare: una zona evento con l'azione «Cambia una casella» (acqua → terreno).</li>
-  <li>Un personaggio che appare solo dopo una missione: nella sua posizione, «Compare solo se» → Missione completata.</li><li>Una scelta che cambia il finale: una variabile cambiata dal dialogo e controllata dall'ultima zona evento.</li></ul></div>`)}
+  <li>Strumenti: V seleziona · R area · H mano · B terreno · M muri · A acqua · X vuoto · D decorazioni · E edifici · N personaggi · K nemici · O oggetti · P porte · T zone evento · S partenza · U timbri · G gomma · I contagocce</li>
+  <li>Area: Ctrl+C copia · Ctrl+X taglia · Ctrl+V incolla (anche in un'altra mappa) · Ctrl+A tutta la mappa · Canc svuota · trascina dentro la selezione per spostarla · mentre incolli R ruota e F specchia</li>
+  <li>Maiusc+frecce sposta di una casella l'oggetto selezionato · 0 mostra tutta la mappa · Tab nasconde i pannelli · Maiusc+clic su più arredi o terreni li mescola nel pennello</li><li>Sul telefono: un dito usa lo strumento, due dita spostano e ingrandiscono la vista.</li></ul>
+  <h5>Pubblicare</h5><ul><li>Con <b>🌐 Pubblica</b> in alto il mondo finisce nel browser dei mondi del server: chi gioca lì lo trova, lo gioca, gli dà le stelle e lo commenta.</li><li>Scegli titolo, descrizione e generi, poi le anteprime: <b>📷 Inquadra e scatta</b> (senza griglia né aiuti), immagini dal computer, un <b>🎬 video</b> fino a 20 secondi registrato muovendo la vista oppure con il <b>🎥 giro automatico</b>. Anche durante ▶ Prova puoi premere ⏺ Video o 📷 Foto.</li><li>Quando cambi il mondo, torna su 🌐 Pubblica e premi «Aggiorna il mondo e l'anteprima». Serve il gioco aperto dal server (node server.js).</li></ul>
+  <h5>Idee</h5><ul><li>Una porta chiusa a chiave: crea una Chiave in ⚔ Oggetti, mettila in un forziere e scegli «Chiuso a chiave» nella porta.</li><li>Un ponte che compare: una zona evento con l'azione «Cambia una casella» (acqua → terreno).</li>
+  <li>Un personaggio che appare solo dopo una missione: nella sua posizione, «Compare solo se» → Missione completata.</li><li>Una scelta che cambia il finale: una variabile cambiata dal dialogo e controllata dall'ultima zona evento.</li>
+  <li>Un villaggio in un attimo: strumento Timbri (U) → «Piazza con fontana», «Mercato», «Orto recintato»... e poi ritocca a mano. I pezzi che costruisci tu si salvano come timbri con lo strumento Area.</li>
+  <li>Cambiare tutte le querce in abeti: Seleziona (V) una quercia sulla mappa → «Sostituisci in tutta la mappa».</li></ul></div>`)}
 
 /* ---- controllo del mondo: tutto quello che potrebbe non funzionare giocando ---- */
 function edCheck(){const L=[],add=(lv,tx,m,x,y,u)=>L.push({lv,tx,m:m?m.id:'',x,y,u}),nm=m=>'«'+m.n+'»';
@@ -3822,6 +3865,313 @@ body.edcine #hud,body.edcine #ruota,body.edcine #bar,body.edcine #qt,body.edcine
 .edmh{margin:14px 0 6px;color:#f5b942;letter-spacing:1px;text-transform:uppercase;font-size:13px}.edwl{display:flex;flex-direction:column;gap:6px}.edwc2{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:rgba(10,14,30,.7);border:1px solid #f5b94244;border-radius:8px;padding:8px 12px}
 .edwc2 b{display:block;font-size:16px;color:#f5d08a}.edwc2 small{display:block;opacity:.85;margin:2px 0}.edwc2 .mu{font-size:11px}.ednw label{display:flex;flex-direction:column;gap:3px;margin:8px 0;font-size:12px}.ednw select{font:inherit;background:#0007;color:#fff;border:1px solid #f5b94288;padding:6px;border-radius:3px}
 @media(max-width:820px){#edside{top:auto;bottom:0;left:0;width:auto;height:40vh;border-left:0;border-top:1px solid #f5b94255}#edleft{bottom:40vh}#edstat{display:none}.edlook{grid-template-columns:1fr}.edsplit{flex-direction:column}.edcol{width:auto;max-height:34%;border-right:0;border-bottom:1px solid #f5b94233}#edtop .edwins button{padding:4px 6px}#edtop{font-size:12px}}`;document.head.appendChild(st)})();
+
+/* ================= 7.6: VOXELIA STUDIO — tutti gli asset del gioco nell'editor =================
+   Terreni, strade e pavimenti di ogni luogo del gioco, i muri dei dungeon e delle mura della città, le gradinate
+   del Colosseo, gli oggetti speciali delle stanze segrete, le reti del porto, le conchiglie, le musiche dei viaggi
+   nel tempo e i personaggi del gioco da mettere direttamente nelle mappe.
+   L'ordine degli elenchi non cambia mai: le mappe salvate ricordano la posizione del terreno e del muro. */
+const EZFO=[["Colosseo di Aldoria", "#d8c08a", "#cfb680"], ["Aldoria Nord · Quartiere Nobile", "#7fa35e", "#7a9c5a"], ["Aldoria Est · Campi e Mestieri", "#86a64e", "#7f9e4a"], ["Borgo delle Ceneri · periferia di Aldoria Vecchia", "#5e6a48", "#586444"], ["Porto di Aldoria", "#8aa060", "#839a5c"], ["La Cabina · interno", "#1a2a4a", "#1e3052"], ["Dusty Creek · 1878", "#c8a870", "#c0a068"], ["Londra · 1888", "#5a6a5a", "#546454"], ["Parigi · 1789", "#8a8a70", "#82826a"], ["Il fronte · 1917", "#5a4a3a", "#54442f"], ["La Vedova Nera · stiva", "#5a3a22", "#52341e"], ["Il sogno", "#3a2420", "#2e1c18"], ["Aldoria Vecchia", "#5a6448", "#545e44"], ["Il culto", "#2e2a2a", "#282424"], ["La stanza dell'Occhio", "#2a2422", "#262020"], ["Battaglia · Il Guado dei Salici", "#7aa04a", "#74994a"], ["Battaglia · Il Colle dei Corvi", "#6a7a52", "#64744c"], ["Battaglia · L'assedio del Forte Nero", "#8a8a5a", "#828254"]],EZFR=[["Aldoria Nord · Quartiere Nobile", "#dcd6c8", "#d2ccbe"], ["Aldoria Est · Campi e Mestieri", "#a8916a", "#9e8862"], ["Borgo delle Ceneri · periferia di Aldoria Vecchia", "#7e7a70", "#76726a"], ["Porto di Aldoria", "#aaa294", "#a0988a"], ["La Cabina · interno", "#2a3a6a", "#24345e"], ["Dusty Creek · 1878", "#b89060", "#ae8858"], ["Londra · 1888", "#6a6a72", "#62626a"], ["Parigi · 1789", "#a09a8a", "#969080"], ["Il fronte · 1917", "#3a3024", "#342a20"], ["Aldoria Vecchia", "#7a7468", "#706a60"]],EZFI=[["Biblioteca Arcana", "#7a5a3a", "#725436"], ["Taverna del Drago Ubriaco", "#8a6a42", "#82643e"], ["Fucina di Borin", "#6a6a6a", "#646464"], ["Bottega dell'Erborista", "#6a7a5a", "#647456"], ["Casa abbandonata", "#7a6a52", "#72644e"], ["Casa di Gerald", "#8a7252", "#826c4e"], ["Palazzo del Conte", "#c8b898", "#beae8e"], ["Banca di Aldoria", "#a8a49a", "#9e9a90"], ["Segheria di Ettore", "#9a7a4a", "#8e7044"], ["Cappella in rovina", "#6a6a64", "#62625c"], ["Capitaneria di Porto", "#7a6a5a", "#726254"], ["Villa Smeraldo", "#8a9a7a", "#829272"], ["Villa Iris", "#b8a8c8", "#ae9ebe"], ["Villa Rossa", "#a87a6a", "#9e7062"], ["Villa Ponente", "#8aa0b0", "#8096a6"], ["Villa Grigia", "#9a9a9a", "#909090"], ["Teatro dell'Opera", "#7a2a2a", "#702424"], ["Mulino di Pietro", "#9a8a6a", "#908062"], ["Casa di Nonno Marino", "#8a8a7a", "#828272"], ["Casa degli Sposi", "#a89a7a", "#9e9072"], ["Deposito delle Merci", "#6a5a4a", "#625244"], ["Pescheria del Porto", "#a8b0b4", "#9ea6aa"], ["Faro di Aldoria", "#8a8a8a", "#808080"], ["La Rondine · stiva", "#6a4a2a", "#604426"], ["Motel della Rosa dei Venti", "#8a5a4a", "#805244"], ["Motel · primo piano", "#7a4a3a", "#704436"], ["Stanza 1 del Motel", "#8a6a4a", "#806244"], ["Panetteria di Gemma", "#c8a878", "#be9e70"], ["Sartoria di Ottavia", "#a88a9a", "#9e8090"], ["Caserma della Guardia", "#7a7a7a", "#727272"], ["Osservatorio", "#3a3a5a", "#343454"], ["Municipio di Aldoria", "#b8a888", "#ae9e80"], ["Castello · Prigioni", "#4a4a52", "#44444c"], ["Castello · Cucine", "#8a7a62", "#82725c"], ["Castello · Appartamenti Reali", "#6a3a3a", "#623434"], ["Caserma · dormitorio", "#8a8a80", "#828278"], ["Casinò · sala privata", "#4a0a1a", "#420816"], ["Osservatorio · cupola", "#2a3048", "#262c42"]],EZW=[["Aldoria Nord · Quartiere Nobile", "#e4ded2", 30, 0], ["Aldoria Est · Campi e Mestieri", "#7a5a3a", 18, 0], ["Borgo delle Ceneri · periferia di Aldoria Vecchia", "#6a6a70", 22, 1], ["Porto di Aldoria", "#8b8f99", 26, 0], ["La Vedova Nera · Arrembaggio", "#5a3a22", 14, 0], ["La Cabina · interno", "#2a4a8a", 44, 0], ["Dusty Creek · 1878", "#8a6a4a", 14, 0], ["Londra · 1888", "#5a3a32", 30, 0], ["Parigi · 1789", "#9a8a70", 24, 0], ["Il fronte · 1917", "#4a3a2a", 16, 0], ["La Vedova Nera · stiva", "#3a2414", 34, 0], ["Il sogno", "#2a1814", 40, 0], ["Aldoria Vecchia", "#5a5a60", 24, 1], ["Il culto", "#1e1a1a", 36, 0], ["La stanza dell'Occhio", "#1a1414", 44, 0], ["Prigioni del castello · una cella", "#3a3a42", 34, 0], ["In barca · Scogliera dei Gabbiani", "#3a3a44", 6, 0], ["In barca · Grotta Marina", "#2a2a32", 70, 0], ["Battaglia · Il Guado dei Salici", "#5a6a3a", 10, 0]];
+const EPROPN=[['b','Bacheca degli avvisi'],['d','Lavagna dei lavori'],['v','Vaso con piantina'],['l','Lumino votivo'],['k','Libro che fluttua'],['B','Libro chiuso',1],['N','Foglio a terra',1],['X','Scatolina'],
+  ['c','Scrigno dorato'],['C','Scrigno dorato aperto'],['a','Forziere aperto'],['A','Forziere prezioso aperto'],['s','Scrigno segreto'],['g','Piedistallo con gemma'],['r','Reliquia antica'],['R','Reliquia azzurra'],
+  ['f','Frammento di stella'],['h','Cuore della Corona'],['i','Indizio luminoso',1],['t','Botola chiusa',1],['P','Grande portale scuro'],['Q','Portale sigillato'],['m','Console della Cabina'],['o','Figura d\'ombra']];
+(function(){
+  const green=a=>{const v=parseInt(a.slice(1),16),r=v>>16,g2=v>>8&255,b=v&255;return g2>r+6&&g2>b+6};
+  EZFO.forEach(([n,a,b],i)=>EMAT.push({id:'zo'+i,n:'Terreno · '+n,a,b,v:.15,d:green(a)?'tuft':'peb',k:'Luoghi del gioco'}));
+  EZFR.forEach(([n,a,b],i)=>EMAT.push({id:'zr'+i,n:'Strada · '+n,a,b,v:.12,road:1,d:'cobble',k:'Strade del gioco'}));
+  EZFI.forEach(([n,a,b],i)=>EMAT.push({id:'zi'+i,n:'Pavimento · '+n,a,b,v:.08,k:'Interni del gioco'}));
+  for(const[id,n,a,b,d]of[['dg_pyr','Piramide di Khem','#c9a860','#bf9f58','crack'],['dg_fire','Fucina Infernale','#5a3a32','#523530','ember'],['dg_sea','Abisso Sommerso','#3f6a6a','#3a6262','peb']])EMAT.push({id,n:'Dungeon · '+n,a,b,v:.14,d,k:'Grotte'});
+  EMAT.forEach((m,i)=>EMATI[m.id]=i);
+  // muri: i dungeon con i loro ornamenti, le mura di ogni luogo, la torre e le gradinate
+  for(const w of EWAL)w.k=w.k||'Classici';
+  for(const[th,n,c]of[['cave','Tana dei Goblin','#4a3c30'],['crypt','Cripta Dimenticata','#3a3d4a'],['pyr','Piramide di Khem','#8f7a48'],['ice','Caverne di Cristallo','#6f9ab8'],['fire','Fucina Infernale','#3a2420'],['sea','Abisso Sommerso','#24464a'],['void','Cittadella del Vuoto','#211a30']])
+    EWAL.push({id:'th_'+th,n:'Muro · '+n,c,tint:1,k:'Dungeon del gioco',f:(x,y,h,c2)=>{box(x,y,0,1,1,36+h*10,c2,.95+h*.1);if(h>.85)box(x+.97,y+.3,14,.05,.4,10,c2,.7);wallOrn(x,y,h,{th,o:c2})}});
+  EZW.forEach(([n,c,wh,ru],i)=>EWAL.push({id:'zw'+i,n:'Mura · '+n,c,tint:1,k:'Luoghi del gioco',f:ru?(x,y,h,c2)=>{const r=h>.3?8+h*24:4;box(x,y,0,1,1,r,c2,.8+h*.15);if(h>.6)box(x+.2,y+.2,r,.5,.5,4,c2,.7)}
+    :(x,y,h,c2)=>{box(x,y,0,1,1,wh,c2,.9+h*.1);if((x+y)%2===0)box(x+.2,y+.2,wh,.6,.6,5,c2,.95)}}));
+  EWAL.push({id:'torre',n:'Torre delle mura',c:'#7b7f89',tint:1,k:'Speciali',f:(x,y,h,c)=>{box(x-.1,y-.1,0,1.2,1.2,46,c);box(x-.15,y-.15,46,1.3,1.3,5,shx(c,.87));if(h>.5)box(x+.4,y+1.08,24,.2,.04,9,'#1a1a22')}},
+    {id:'tribuna',n:'Gradinata con spettatori',c:'#c8b890',tint:1,k:'Speciali',f:(x,y,h,c)=>{const ht=8+((x*7+y*3)%4)*7;box(x,y,0,1,1,ht,c,.85+h*.1);if(h>.35){const bb=Math.abs(Math.sin(t*5+x*1.7+y*2.3))*3;box(x+.3,y+.3,ht,.4,.4,7,['#c0392b','#2980b9','#27ae60','#8e44ad','#f39c12'][(h*50|0)%5]);box(x+.33,y+.33,ht+7+bb,.34,.34,6,SKIN)}}},
+    {id:'cancellata',n:'Cancellata di ferro',c:'#3a3a42',tint:1,k:'Speciali',f:(x,y,h,c)=>{for(let i=0;i<4;i++){box(x+.1+i*.25,y+.45,0,.06,.06,26,c);box(x+.1+i*.25,y+.45,26,.06,.06,3,'#d4af37')}box(x,y+.44,22,1,.08,2,c);box(x,y+.44,6,1,.08,2,c)}},
+    {id:'staccionata',n:'Staccionata alta',c:'#8a6a42',tint:1,k:'Speciali',f:(x,y,h,c)=>{box(x+.1,y+.45,0,.1,.1,16,c);box(x+.8,y+.45,0,.1,.1,16,c);box(x,y+.46,6,1,.08,3,shx(c,1.1));box(x,y+.46,12,1,.08,3,shx(c,1.1))}});
+  EWAL.forEach((w,i)=>EWALI[w.id]=i);
+  // arredi che mancavano e gli oggetti speciali delle stanze del gioco
+  EDEC.push({k:'Porto',c:'Ф',n:'Reti stese ad asciugare',walk:false,water:false});
+  for(const[c,n,walk]of EPROPN)EDEC.push({k:'Oggetti speciali',c:'¿'+c,n,walk:!!walk,water:false});
+  for(const d of EDEC)EDECI[d.c]=d;for(const d of EDEC)if(!EDECK.includes(d.k))EDECK.push(d.k);
+  Object.assign(ETRKN,{dimintro:'Viaggio nel tempo',dimend:'Ritorno dal viaggio'});ERES.conchiglia='Conchiglie';
+})();
+// gli oggetti speciali: gli stessi modelli che il gioco usa per bacheche, scrigni, reliquie, portali e segreti
+function EPROPF(c,x,y){const u=Math.sin(t*3+x*1.7)*3;switch(c){
+  case 'b':return[[-.4,-.05,0,.08,.08,30,'#5a4a3a'],[.32,-.05,0,.08,.08,30,'#5a4a3a'],[-.45,-.06,14,.9,.06,18,'#8a6a42'],[-.38,-.02,16,.2,.02,6,'#f4f0e0'],[-.1,-.02,18,.24,.02,8,'#f4f0e0'],[.18,-.02,15,.18,.02,7,'#f4f0e0']];
+  case 'v':return VASOL();case 'l':return[[-.2,-.2,0,.4,.4,10,'#6a4a2a'],[-.05,-.05,10,.1,.1,6,'#f4f0e0'],[-.03,-.03,16,.06,.06,3,'#ffcc33',1.3]];
+  case 'k':return[[-.2,-.08,8+u,.4,.16,3,'#f4e8c8'],[-.24,-.1,8+u,.06,.2,4,'#a0703a'],[.18,-.1,8+u,.06,.2,4,'#a0703a']];
+  case 'f':{const r=t%6.28,L=[[-.12,-.12,12+u,.24,.24,18,'#ffd84a',1.2],[-.06,-.06,30+u,.12,.12,6,'#fff6c0',1.3],[-.2,-.04,18+u,.4,.08,6,'#ffcc33',1.2]];if(r>3)L.push([-.04,-.2,18+u,.08,.4,6,'#ffcc33',1.2]);return L}
+  case 'h':return SH7L();case 'o':return FIGL();case 'c':return C100L({});case 'C':return C100L({o:1});case 'r':return RELL({px:x+.5});case 'R':return RELL({px:x+.5,c:'#7ad0ff'});
+  case 't':return BOTL();case 'P':return PORTL();case 'Q':return PORTCL();case 'm':return consoleL();
+  case 'i':return[[-.08,-.08,4+Math.sin(t*3+x)*2,.16,.16,6,'#fff2a0',1.4],[-.14,-.14,1,.28,.28,1,'#ffe08a',1.2]];
+  case 's':return[[-.35,-.25,0,.7,.5,12,'#5a2a6a'],[-.37,-.27,12,.74,.54,4,'#d4af37'],[-.08,.25,6,.16,.03,5,'#d4af37']];
+  case 'a':return[[-.3,-.22,0,.6,.44,9,'#8a5a2a'],[-.32,-.24,9,.64,.48,1,'#3a2410'],[-.3,-.26,9,.6,.06,12,'#f5c342'],[-.18,-.12,10,.36,.24,2,'#fff2a0',1.2]];
+  case 'A':return[[-.3,-.22,0,.6,.44,9,'#5a2a8a'],[-.32,-.24,9,.64,.48,1,'#3a2410'],[-.3,-.26,9,.6,.06,12,'#f5c342']];
+  case 'B':return SECL.book;case 'N':return SECL.note;case 'X':return SECL.box;
+  case 'g':return[[-.12,-.1,0,.24,.2,6,'#8a6a3a'],[-.07,-.06,6,.14,.12,3,'#6a4a2a'],[-.15,-.15,12+Math.sin(t*4)*3,.3,.3,10,'#c88aff']];
+  case 'd':return[[-.4,-.05,0,.08,.08,30,'#5a4a3a'],[.32,-.05,0,.08,.08,30,'#5a4a3a'],[-.45,-.06,14,.9,.06,18,'#2a4a3a'],[-.3,-.02,18,.6,.02,10,'#e8e4d8']]}return null}
+const _dec76=dec;dec=function(x,y,c,h){if(c&&c.length===2&&c[0]==='¿'){const L=EPROPF(c[1],x,y);if(L&&L.length)drawLB(L,x+.5,y+.5,0,1);return}_dec76(x,y,c,h)};
+// i personaggi del gioco: si copiano nel mondo con nome, aspetto e colori e si mettono subito nella mappa
+function edGameNpcs(){return Object.keys(NPS).filter(k=>!k.startsWith('edn_')&&NPCS[k]&&NPCS[k].n&&NPCS[k].n!=='???').sort((a,b)=>NPCS[a].n.localeCompare(NPCS[b].n))}
+function edNpcFromGame(k){if(!NPCS[k])return null;const ex=Object.values(EW.npcs).find(d=>d.from===k);if(ex)return ex.id;const d=edFixNpc({id:edUid('n'),n:NPCS[k].n,from:k});d.look=edLookFromGame(k);
+  const r=NPCS[k].role;if(r&&EDROLE[r]!==undefined)d.role=r;EW.npcs[d.id]=d;edRegNpc(d);edDirty();return d.id}
+
+/* ================= 7.6: VOXELIA STUDIO — icone voxel =================
+   Ogni icona è un disegno di 12×12 cubetti: il davanti colorato, lo spessore in ombra verso l'alto a destra e i bordi
+   illuminati come i blocchi del gioco. Le emoji dell'interfaccia dell'editor diventano queste icone da sole. */
+const EDIP={k:'#262b36',w:'#ffffff',W:'#dfe4ee',g:'#a3adc0',G:'#5f6879',y:'#ffd84a',o:'#f0a83a',O:'#a8701c',r:'#ec4a50',R:'#a42a32',p:'#ff92b4',b:'#58aef8',B:'#2c62c4',c:'#a8f2ff',n:'#a0703c',N:'#623e1e',t:'#dcb47c',e:'#52d07e',E:'#2a8a3c',l:'#b4f27e',v:'#bc92ff',V:'#6c3cb4',s:'#ffd4a4',S:'#c0824a',x:'#3a4050',m:'#ff8a2a'};
+const EDICO={"sel":["k...........","kk..........","kwk.........","kwwk........","kwwwk.......","kwwwwk......","kwwwwwk.....","kwwwwwwk....","kwwwkkkk....","kwkkwk......","kk..kwk.....",".....kk....."],"hand":["....k.k.k...","...ksksksk..","...ksksksk..","...ksksksk..",".kkksssssk..","kssksssssk..",".ksssssssk..","..kssssssk..","..kssssssk..","...ksssssk..","...kssssk...","....kkkk...."],"grass":["............","eeeeeeeeeeee","elleeeleelle","eEeeEEeeeEee","EnEEnnEEnEnE","nnnnnnnnnnnn","nnNnnnnnnNnn","nnnnnNnnnnnn","nNnnnnnnNnnn","nnnnnnnNnnnn","nnnNnnnnnnNn","NNNNNNNNNNNN"],"brick":["............","rrrrr.rrrrrr","RRRRR.RRRRRR","RRRRR.RRRRRR","............","rr.rrrrrr.rr","RR.RRRRRR.RR","RR.RRRRRR.RR","............","rrrrr.rrrrrr","RRRRR.RRRRRR","RRRRR.RRRRRR"],"water":["............","..c.....c...",".cbc...cbc..","cbbbcccbbbcc","bbbbbbbbbbbb","bBbbbbbBbbbb","bbbbBbbbbbBb","bbbbbbbbbbbb","bbBbbbbbBbbb","bbbbbbBbbbbb","bbbbbbbbbbbb","BBBBBBBBBBBB"],"void":["............","...VVVVVV...",".VVkkkkkkVV.",".VkkkkvkkkV.","VkkvkkkkkkkV","VkkkkkkkvkkV","VkkkkvkkkkkV","VkvkkkkkkkkV",".VkkkkkkvkV.",".VVkkkkkkVV.","...VVVVVV...","............"],"tree":["....EEEE....","..EEeeeeEE..",".EeelleeeeE.",".Eelleeeeee.","EeeeeeeeleeE","EeeeeleeeeeE",".EeeeeeeeeE.","..EEeeeeEE..","....EnnE....",".....nn.....",".....nN.....","....NnnN...."],"house":[".....RR.....","....RrrR....","...RrrrrR...","..RrrrrrrR..",".RrrrrrrrrR.","RRRRRRRRRRRR",".tttttttttt.",".tccttttcct.",".tccttttcct.",".ttttnntttt.",".ttttnntttt.",".NNNNNNNNNN."],"person":["....kkkk....","...kNNNNk...","...kssssk...","...kskksk...","...kssssk...","..kkbbbbkk..",".kbbbbbbbbk.",".kbkbbbbkbk.",".ksbbbbbbsk.","..kbbbbbbk..","..kNNkkNNk..","..kkk..kkk.."],"monster":[".k........k.",".Wk......kW.",".WWk....kWW.","..kRrrrrRk..",".krrrrrrrrk.",".kryyrryyrk.",".krrrrrrrrk.",".krwkwwkwrk.",".krrrrrrrrk.","..krrrrrrk..","...kkkkkk...","............"],"chest":["............","..nnnnnnnn..",".nNNNNNNNNn.",".nNnnnnnnNn.","nnnnnnnnnnnn","oooooyyooooo","nnnnnyynnnnn","nNnnnoonnnNn","nNnnnnnnnnNn","nNnnnnnnnnNn","nnnnnnnnnnnn","NNNNNNNNNNNN"],"door":["...gggggg...","..gGGGGGGg..",".gGnnnnnnGg.",".gGnNnnNnGg.",".gGnNnnNnGg.",".gGnnnnnnGg.",".gGnnnnyyGg.",".gGnNnnNnGg.",".gGnNnnNnGg.",".gGnnnnnnGg.",".gGnnnnnnGg.","gggggggggggg"],"bolt":["......yyyy..",".....yyyy...","....yyyy....","...yyyy.....","..yyyyyyyy..","......yyy...",".....yyy....","....yyy.....","...yyy......","..yy........",".y..........","............"],"flag":[".WW.........",".WWeeeee....",".WWeeeeeee..",".WWeeelleee.",".WWeeeeeee..",".WWeeeee....",".WW.........",".WW.........",".WW.........",".WW.........","gggg........","GGGG........"],"eraser":["............","............","............",".pppppppbbb.",".pppppppbbb.",".pppppppbbb.",".pppppppbbb.",".RRRRRRRBBB.","............","..g..g..g...","............","............"],"drop":[".....bb.....",".....bb.....","....bbbb....","....bbbb....","...bbbbbb...","..bbbbbbbb..",".bbwbbbbbbb.",".bwbbbbbbbb.",".bbbbbbbbbb.",".bbbbbbbbBb.","..bbbbbbBb..","...bbbbbb..."],"dropper":[".........kk.","........kGGk",".......kGGGk","......kGGGk.",".....kWkGk..","....kWWWk...","...kWWWk....","..kbWWk.....",".kbbbk......",".kbbk.......","kbk.........",".b.........."],"area":["yyy..yy..yyy","y..........y","y..........y","............","............","y..........y","y..........y","............","............","y..........y","y..........y","yyy..yy..yyy"],"stamp":["....nnnn....","...nNNNNn...","...nNNNNn...","....nNNn....",".....nn.....",".....nn.....","..gggggggg..",".gGGGGGGGGg.",".gGGGGGGGGg.","..rrrrrrrr..","............",".rr.rrr.rr.."],"grid":["WWWWWWWWWWWW","W...W...W..W","W...W...W..W","W...W...W..W","WWWWWWWWWWWW","W...W...W..W","W...W...W..W","W...W...W..W","WWWWWWWWWWWW","W...W...W..W","W...W...W..W","WWWWWWWWWWWW"],"moon":["....yyyy....","..yyyy......",".yyyy.......",".yyy........","yyyy........","yyyy........","yyyy........","yyyyy.......",".yyyyy....y.",".yyyyyyyyy..","..yyyyyyy...","....yyy....."],"note":["....vvvvvvv.","....vVVVVVv.","....v.....v.","....v.....v.","....v.....v.","....v.....v.","....v.....v.","..vvv...vvv.",".vvvv..vvvv.",".vvvv..vvvv.","..vv....vv..","............"],"eye":["............","............","....kkkk....","..kkWWWWkk..",".kWWWbbWWWk.","kWWWbkkbWWWk","kWWWbkkbWWWk",".kWWWbbWWWk.","..kkWWWWkk..","....kkkk....","............","............"],"globe":["....bbbb....","..bbeebbbb..",".bbeeeebbbb.",".beeeeebbeb.","bbeeeebbeeeb","bbbeebbbeeeb","bbbbbbbbbeeb","bbbeebbbbbbb",".bbeeebbbbb.",".bbbeeebbbb.","..bbbbbbbb..","....bbbb...."],"map":["............","tttttttttttt","teettttttbbt","teeettttbbbt","ttetttrtttbt","tttttrtrtttt","ttttrtttrttt","tttrtttttrtt","ttrttteetttt","tyytteeeettt","tyytttettttt","tttttttttttt"],"gear":[".....gg.....","..g..gg..g..",".gggggggggg.","..gggggggg..",".gggGGGGggg.","gggGG..GGggg","gggGG..GGggg",".gggGGGGggg.","..gggggggg..",".gggggggggg.","..g..gg..g..",".....gg....."],"undo":["............","...W........","..WW........",".WWWWWWWW...","WWWWWWWWWW..",".WWW.....WW.","..WW......WW","...W......WW","..........WW",".........WW.","....WWWWWW..","....WWWWW..."],"save":["bbbbbbbbbbb.","bbbgggggbbbb","bbbgGGggbbbb","bbbgGGggbbbb","bbbgggggbbbb","bbbbbbbbbbbb","bbWWWWWWWWbb","bbWggggggWbb","bbWWWWWWWWbb","bbWggggggWbb","bbWWWWWWWWbb","bbbbbbbbbbbb"],"play":["............",".ee.........",".eeee.......",".eeeeee.....",".eeeeeeee...",".eeeeeeeeee.",".eeeeeeeeee.",".eeeeeeee...",".eeeeee.....",".eeee.......",".ee.........","............"],"scroll":["..nnnnnnnn..",".nttttttttn.","..tttttttt..","..tNNNNNNt..","..tttttttt..","..tNNNNNtt..","..tttttttt..","..tNNNNNNt..","..tttttttt..","..tNNNNttt..",".nttttttttn.","..nnnnnnnn.."],"sword":[".....Wg.....",".....Wg.....",".....Wg.....",".....Wg.....",".....Wg.....",".....Wg.....",".....Wg.....","..oooooooo..","..oOOOOOOo..",".....nn.....",".....nn.....","....oooo...."],"film":["WkkWWkkWWkkW","WkkWWkkWWkkW","............","gggggggggggg","gGGGGGGGGGGg","gGWWWWWWWWGg","gGGGGGGGGGGg","gGWWWWWGGGGg","gGGGGGGGGGGg","gGWWWWWWWGGg","gGGGGGGGGGGg","gggggggggggg"],"vars":["............","oooooooooooo","o..........o","o.y...y....o","o..y.y..WW.o","o...y......o","o..y.y..WW.o","o.y...y....o","o..........o","oooooooooooo","............","............"],"check":[".bbbbbbbbbb.",".bBBBBBBBBb.",".bBBBBBBBeb.",".bBBBBBBeeb.",".bBeBBBeeBb.",".bBeeBeeBBb.",".bBBeeeBBBb.","..bBBeBBBb..","..bBBBBBBb..","...bBBBBb...","....bBBb....",".....bb....."],"help":["...yyyyyy...","..yyyyyyyy..",".yyy....yyy.",".yy......yy.","........yyy.",".......yyy..",".....yyy....",".....yy.....",".....yy.....","............",".....yy.....",".....yy....."],"close":["............",".WW......WW.",".WWW....WWW.","..WWW..WWW..","...WWWWWW...","....WWWW....","....WWWW....","...WWWWWW...","..WWW..WWW..",".WWW....WWW.",".WW......WW.","............"],"trash":["....gggg....","gggggggggggg","GGGGGGGGGGGG",".gGgGgGgGgG.",".gGgGgGgGgG.",".gGgGgGgGgG.",".gGgGgGgGgG.",".gGgGgGgGgG.",".gGgGgGgGgG.",".gGgGgGgGgG.",".gGgGgGgGgG.","..gggggggg.."],"dup":["....WWWWWWWW","....W......W","....W......W","WWWWWWWW...W","WggggggW...W","WggggggW...W","WggggggW...W","WggggggWWWWW","WggggggW....","WggggggW....","WggggggW....","WWWWWWWW...."],"plus":["............","............",".....ee.....",".....ee.....",".....ee.....","..eeeeeeee..","..eeeeeeee..",".....ee.....",".....ee.....",".....ee.....","............","............"],"minus":["............","............","............","............","............","..rrrrrrrr..","..rrrrrrrr..","............","............","............","............","............"],"pencil":[".........pp.","........pppp",".......gggp.","......yyyg..",".....yyyo...","....yyyo....","...yyyo.....","..yyyo......",".tyyo.......",".tto........",".kt.........","............"],"pin":["....rrrr....","...rrrrrr...","..rrwwrrrr..","..rrwrrrrr..","..rrrrrrrr..","...rrrrrr...","....rrrr....",".....RR.....",".....RR.....",".....gg.....",".....gg.....","............"],"coin":["....oooo....","..ooyyyyoo..",".oyyyyyyyyo.",".oywyyyyyyo.","oywyyyyyyyyo","oyyyyyyyyyyo","oyyyyyyyyyyo","oyyyyyyyyyyo",".oyyyyyyyyo.",".oyyyyyyyyo.","..ooyyyyoo..","....oooo...."],"fire":[".....r......",".....rr.....","....rrr.....","....rrmr....","...rrmmr..r.","..rrmmmrrrr.",".rrmmymmmrr.",".rmmyyymmmr.",".rmyyyyymmr.",".rmyyWyyymr.","..rmyyyymr..","...rrrrrr..."],"gem":["............","...cccccc...","..cwcccccc..",".cwcccccccc.","bbbbbbbbbbbb",".bbbbbbbbbB.","..bbbbbbbB..","...bbbbbB...","....bbbB....",".....bB.....","............","............"],"sign":["............","nnnnnnnnnnnn","nttttttttttn","ntNNNNNNtttn","nttttttttttn","ntNNNNNttttn","nttttttttttn","nnnnnnnnnnnn",".....nn.....",".....nn.....",".....nn.....","....NNNN...."],"bulb":["...yyyyyy...","..yyyyyyyy..",".yyywyyyyyy.",".yywyyyyyyy.",".yyyyyyyyyy.",".yyyyyyyyyy.","..yyyyyyyy..","...yyyyyy...","...gggggg...","...GGGGGG...","...gggggg...","....GGGG...."],"bed":["............","............","n...........","nWWW........","nWWWbbbbbbb.","nbbbbbbbbbbn","nBBBBBBBBBBn","nnnnnnnnnnnn","n..........n","n..........n","............","............"],"lever":["........rr..",".......rrrr.",".......rrrr.","........rr..",".......nn...","......nn....",".....nn.....","....nn......",".gggggggggg.","gGGGGGGGGGGg","gGGGGGGGGGGg","gggggggggggg"],"wheat":[".....o......","....ooo.....","...o.o.o....","....ooo.....","...o.o.o....","....ooo.....","...o.o.o....",".....o......",".....e......",".....e......","....ee......",".....e......"],"fish":["............","............","....bbbb....","..bbbbbbbb.b",".bbwkbbbbbbb","bbbbbbbbbbbb",".bbbbbbbbbbb","..bbbbbbbb.b","....bbbb....","............","............","............"],"shield":["bbbbbbbbbbbb","bBBBBoBBBBBb","bBBBBoBBBBBb","bBBBBoBBBBBb","boooooooooob","bBBBBoBBBBBb",".bBBBoBBBBb.",".bBBBoBBBBb.","..bBBoBBBb..","...bBoBBb...","....bobb....",".....bb....."],"helmet":["............","...gggggg...","..gWWWWWWg..",".gWWWWWWWWg.",".gWWWWWWWWg.","gggggggggggg","gGGGGGGGGGGg","gWkkkWWkkkWg","gWWWWWWWWWWg",".gWWWWWWWWg.","..gggggggg..","............"],"potion":["....nnnn....",".....WW.....",".....WW.....","....WWWW....","...WrrrrW...","..WrwrrrrW..",".WrwrrrrrrW.",".WrrrrrrrrW.",".WrrrrrrrrW.",".WRrrrrrrRW.","..WRRRRRRW..","...WWWWWW..."],"key":["............","............","..ooo.......",".oyyyo......","oy..yooooooo","oy..yyyyyyyo",".oyyyoooyoyo","..ooo...o.o.","............","............","............","............"],"box":["............","SSSSSSSSSSSS","tttttnnttttt","tttttnnttttt","SSSSSnnSSSSS","tttttttttttt","tttttttttttt","ttWWWWtttttt","ttWggWtttttt","ttWWWWtttttt","tttttttttttt","SSSSSSSSSSSS"],"stall":["rrWWrrWWrrWW","rrWWrrWWrrWW","RR..RR..RR..","n..........n","n..........n","nnnnnnnnnnnn","nyyrreeoobbn","nnnnnnnnnnnn","n..........n","n..........n","n..........n","N..........N"],"palette":["...tttttt...",".tttttttttt.","ttrrttbbtttt","ttrrttbbtttt","tyyttttteett","tyytt..tteet","ttttt..ttttt","tvvttttttttt","tvvtttttttt.",".ttttttttt..","..tttttt....","............"],"speech":["............",".WWWWWWWWWW.","WWWWWWWWWWWW","WWWWWWWWWWWW","WWWkWWkWWkWW","WWWWWWWWWWWW",".WWWWWWWWWW.","..WWW.......","..WW........",".W..........","............","............"],"crown":["............","............","y....y....y.","yy..yyy..yy.","yyy.yyy.yyy.","yyyyyyyyyyy.","yyyryybyyry.","yyyyyyyyyyy.","ooooooooooo.","............","............","............"],"lock":["....gggg....","...g....g...","..g......g..","..g......g..",".oooooooooo.",".oyyyyyyyyo.",".oyyykkyyyo.",".oyyykkyyyo.",".oyyyykyyyo.",".oyyyyyyyyo.",".oooooooooo.","............"],"warn":[".....yy.....",".....yy.....","....yyyy....","....ykky....","...yykkyy...","...yykkyy...","..yyykkyyy..","..yyykkyyy..",".yyyyyyyyyy.",".yyyykkyyyy.","yyyyyyyyyyyy","yyyyyyyyyyyy"],"stop":["...rrrrrr...","..rrrrrrrr..",".rrrrrrrrrr.","rrrrrrrrrrrr","rrrrrrrrrrrr","rWWWWWWWWWWr","rWWWWWWWWWWr","rrrrrrrrrrrr","rrrrrrrrrrrr",".rrrrrrrrrr.","..rrrrrrrr..","...rrrrrr..."],"info":["...bbbbbb...","..bbbbbbbb..",".bbbbWWbbbb.","bbbbbWWbbbbb","bbbbbbbbbbbb","bbbbWWWbbbbb","bbbbbWWbbbbb","bbbbbWWbbbbb","bbbbbWWbbbbb",".bbbWWWWbbb.","..bbbbbbbb..","...bbbbbb..."],"ok":["............","..........ee",".........eee","........eee.",".......eee..","ee....eee...","eee..eee....",".eeeeee.....","..eeee......","...ee.......","............","............"],"star":[".....yy.....",".....yy.....","....yyyy....","yyyyyyyyyyyy",".yyyyyyyyyy.","..yyyyyyyy..","...yyyyyy...","..yyyyyyyy..","..yyy..yyy..",".yyy....yyy.",".yy......yy.","............"],"dice":["............",".WWWWWWWWWW.",".WrrWWWWrrW.",".WrrWWWWrrW.",".WWWWWWWWWW.",".WWWWrrWWWW.",".WWWWrrWWWW.",".WWWWWWWWWW.",".WrrWWWWrrW.",".WrrWWWWrrW.",".WWWWWWWWWW.","............"],"export":[".....ee.....","....eeee....","...eeeeee...",".....ee.....",".....ee.....",".....ee.....","g....ee....g","g..........g","g..........g","g..........g","gggggggggggg","GGGGGGGGGGGG"],"import":[".....bb.....",".....bb.....",".....bb.....",".....bb.....","...bbbbbb...","....bbbb....","g....bb....g","g..........g","g..........g","g..........g","gggggggggggg","GGGGGGGGGGGG"],"cap":["............",".....BB.....","...BBBBBB...",".BBBBBBBBBB.","BBBBBBBBBBBy",".BBBBBBBBB.y","...bbbbbb..y","...bbbbbb.yy","...bbbbbb...","....bbbb....","............","............"],"search":["...gggg.....",".gg....gg...",".g.cc...g...","g.cc.....g..","g.c......g..","g........g..",".g......g...",".gg....gg...","...ggggnn...",".......nnn..","........nnn.",".........nn."],"zoomin":["...gggg.....",".gg....gg...",".g..ee..g...","g...ee...g..","g.eeeeee.g..","g...ee...g..",".g..ee..g...",".gg....gg...","...ggggnn...",".......nnn..","........nnn.",".........nn."],"zoomout":["...gggg.....",".gg....gg...",".g......g...","g........g..","g.rrrrrr.g..","g........g..",".g......g...",".gg....gg...","...ggggnn...",".......nnn..","........nnn.",".........nn."],"bucket":["............","..gggggggg..",".g........g.","gWWWWWWWWWWg","gbbbbbbbbbbg","gbbbbbbbbbbg",".gbbbbbbbbg.",".gbbbbbbbbg.",".gbbbbbbbbg.","..gbbbbbbg..","..gggggggg..","............"],"skull":["...WWWWWW...","..WWWWWWWW..",".WWWWWWWWWW.",".WkkWWWWkkW.",".WkkWWWWkkW.",".WWWWkkWWWW.","..WWWWWWWW..","...WWWWWW...","...WkWWkW...","....WWWW....","............","............"],"snow":[".....cc.....","..c..cc..c..","...c.cc.c...","....cccc....",".c..cccc..c.","cccccccccccc","cccccccccccc",".c..cccc..c.","....cccc....","...c.cc.c...","..c..cc..c..",".....cc....."],"wind":["............",".......WWW..","..........W.","WWWWWWWWWW..","............","WWWWWWWWWWW.","...........W","WWWWWWWWWWW.","............","WWWWWW......",".......W....","....WWW....."],"rock":["............","............","....gggg....","..gggWgggg..",".ggWWggggGg.",".gggggggGGg.","ggggggggGGGg","gggggggGGGGg","gGGggGGGGGGg",".GGGGGGGGGG.","............","............"],"stopb":["............","............","..rrrrrrrr..","..rrrrrrrr..","..rrrrrrrr..","..rrrrrrrr..","..rrrrrrrr..","..rrrrrrrr..","..rrrrrrrr..","..rrrrrrrr..","............","............"],"timer":["....gggg....",".....gg.....","...WWWWWW...","..WWWWkWWW..",".WWWWWkWWWW.",".WWWWWkWWWW.",".WWWWWkkkWW.",".WWWWWWWWWW.",".WWWWWWWWWW.","..WWWWWWWW..","...WWWWWW...","............"],"rotr":["...WWWWW....","..W.....W.W.",".W.......WW.","W.......WWW.","W...........","W...........","W..........W","W..........W",".W........W.","..W......W..","...WWWWWW...","............"],"arrowr":["............","............","......W.....","......WW....","WWWWWWWWW...","WWWWWWWWWW..","WWWWWWWWWW..","WWWWWWWWW...","......WW....","......W.....","............","............"],"up":["............","............",".....WW.....","....WWWW....","...WWWWWW...","..WWWWWWWW..",".WWWWWWWWWW.","............","............","............","............","............"],"anvil":["............","............","gggggggggg..",".GGGGGGGGGgg","..GGGGGGGG..","....GGGG....","....GGGG....","...GGGGGG...","..gggggggg..","..GGGGGGGG..","............","............"],"book":["............",".WWWW..WWWW.","WWWWWggWWWWW","WgggWggWgggW","WWWWWggWWWWW","WggggggWgggW","WWWWWggWWWWW","WgggWggWgggW","WWWWWggWWWWW","nnnnnnnnnnnn",".....nn.....","............"],"rect":["............",".WWWWWWWWWW.",".WggggggggW.",".WggggggggW.",".WggggggggW.",".WggggggggW.",".WggggggggW.",".WggggggggW.",".WggggggggW.",".WggggggggW.",".WWWWWWWWWW.","............"],"line":["..........WW",".........WWW","........WWW.",".......WWW..","......WWW...",".....WWW....","....WWW.....","...WWW......","..WWW.......",".WWW........","WWW.........","WW.........."],"scissors":["W.........W.",".W.......W..","..W.....W...","...W...W....","....W.W.....",".....W......","....W.W.....","..rrr.rrr...",".r..r.r..r..",".r..r.r..r..","..rr...rr...","............"],"paste":["....gggg....",".nnngWWgnnn.",".nWWWWWWWWn.",".nWggggggWn.",".nWWWWWWWWn.",".nWgggggWWn.",".nWWWWWWWWn.",".nWggggggWn.",".nWWWWWWWWn.",".nWgggWWWWn.",".nWWWWWWWWn.",".nnnnnnnnnn."],"fliph":[".....WW.....",".....WW.....","..b..WW..b..",".bb..WW..bb.","bbbbbWWbbbbb","bbbbbWWbbbbb",".bb..WW..bb.","..b..WW..b..",".....WW.....",".....WW.....","............","............"],"layers":["....bbbb....","..bbbbbbbb..","....bbbb....","............","....eeee....","..eeeeeeee..","....eeee....","............","....oooo....","..oooooooo..","....oooo....","............"],"fit":["WWWW....WWWW","W..........W","W..........W","W..........W","............","....gggg....","....gggg....","............","W..........W","W..........W","W..........W","WWWW....WWWW"],"tile":["............","............","......ee....","....eeeeee..","..eeeeeeeeee","eeeeeeeeeeee","nneeeeeeeeNN","nnnneeeeNNNN","nnnnnnNNNNNN","..nnnnNNNN..","....nnNN....","............"],"cursorplus":["k...........","kk..........","kwk.........","kwwk........","kwwwk.......","kwwwwk...ee.","kwwwwwk..ee.","kwwwkkk.eeee","kwkkwk..eeee","kk..kwk..ee.",".....kk..ee.","............"],"wand":["..........y.",".........yyy","..........y.","......y.....",".....yWy....","......yn....",".....nn.....","....nn......","...nn.......","..nn........",".nn.........","nn.........."],"mix":["yy....rr....","yy....rr....","............","...bb....ee.","...bb....ee.","............","ee....yy....","ee....yy....","............","...rr....bb.","...rr....bb.","............"],"replace":["..WWWWWWW...",".W.......W..","W.......WWW.","W........W..","W...........","............","..........W.",".W........W.","WWW.......W.",".W.......W..","..WWWWWWW...","............"],"world":["....eeee....","..eeeeeeee..",".eebbbbbbee.","eebbwbbbbbee","ebbbbbbbbbbe","ebbbbbbbbbbe","eeeeeeeeeeee","nnnnnnnnnnnn","nNnnnnnnNnnn",".nnnnNnnnnn.","..nnnnnnnn..","....nnnn...."]};
+(function(){const mir=R=>R.map(r=>[...r].reverse().join('')),flip=R=>R.slice().reverse(),tr=R=>R.map((_,y)=>R.map(r=>r[y]).join(''));
+  Object.assign(EDICO,{redo:mir(EDICO.undo),rotl:mir(EDICO.rotr),down:flip(EDICO.up),flipv:tr(EDICO.fliph),arrowl:mir(EDICO.arrowr),blood:EDICO.drop.map(r=>r.replace(/b/g,'r').replace(/B/g,'R').replace(/w/g,'p')),
+    flask:EDICO.potion.map(r=>r.replace(/r/g,'e').replace(/R/g,'E')),poison:EDICO.potion.map(r=>r.replace(/r/g,'v').replace(/R/g,'V'))})})();
+const EDIC={};
+function edIcoC(n){if(EDIC[n])return EDIC[n];const R=EDICO[n];if(!R)return null;const sc=4,D=3,c=document.createElement('canvas');c.width=12*sc+D;c.height=12*sc+D;const q=c.getContext('2d'),at=(x,y)=>y>=0&&y<12&&x>=0&&x<12?R[y][x]:'.';
+  for(let k=D;k>=1;k--)for(let y=0;y<12;y++)for(let x=0;x<12;x++){const ch=R[y][x];if(ch==='.')continue;q.fillStyle=shx(EDIP[ch]||'#ff00ff',k===D?.38:.55);q.fillRect(x*sc+k,y*sc+D-k,sc,sc)}
+  for(let y=0;y<12;y++)for(let x=0;x<12;x++){const ch=R[y][x];if(ch==='.')continue;const col=EDIP[ch]||'#ff00ff',X=x*sc,Y=y*sc+D;q.fillStyle=col;q.fillRect(X,Y,sc,sc);
+    if(at(x,y-1)!==ch){q.fillStyle=shx(col,1.28);q.fillRect(X,Y,sc,1)}if(at(x-1,y)!==ch){q.fillStyle=shx(col,1.14);q.fillRect(X,Y,1,sc)}
+    if(at(x,y+1)!==ch){q.fillStyle=shx(col,.72);q.fillRect(X,Y+sc-1,sc,1)}if(at(x+1,y)!==ch){q.fillStyle=shx(col,.82);q.fillRect(X+sc-1,Y,1,sc)}}
+  return EDIC[n]=c}
+function edIcoURL(n){const k='u'+n;if(EDIC[k])return EDIC[k];const c=edIcoC(n);return EDIC[k]=c?c.toDataURL():''}
+let EDICS=null;function edIcoRule(n){if(EDIC['r'+n]||!EDICO[n])return;EDIC['r'+n]=1;if(!EDICS){EDICS=document.createElement('style');EDICS.id='edicons';document.head.appendChild(EDICS)}
+  try{EDICS.sheet.insertRule(`.vi[data-v="${n}"]{background-image:url(${edIcoURL(n)})}`,EDICS.sheet.cssRules.length)}catch(e){}}
+// un'icona dentro l'HTML
+const edI=(n,cls)=>{edIcoRule(n);return`<i class="vi${cls?' '+cls:''}" data-v="${n}"></i>`};
+// emoji dell'interfaccia → icona (quelle dei fumetti e le note musicali restano com'erano: sono contenuto, non interfaccia)
+const EDEM={'👆':'sel','✋':'hand','🟩':'grass','🧱':'brick','🌊':'water','⬛':'void','🌳':'tree','🏠':'house','🧑':'person','👹':'monster','🎁':'chest','🧰':'chest','🚪':'door','⚡':'bolt','🚩':'flag','🧽':'eraser','💧':'drop',
+  '🌙':'moon','🎵':'note','♪':'note','🌍':'globe','🗺':'map','⚙':'gear','↶':'undo','↷':'redo','💾':'save','▶':'play','📜':'scroll','⚔':'sword','🎬':'film','🔣':'vars','🩺':'check','❓':'help','✖':'close','✕':'close',
+  '🗑':'trash','⧉':'dup','＋':'plus','✏':'pencil','✎':'pencil','📍':'pin','💰':'coin','🔥':'fire','🔷':'gem','💎':'gem','🪧':'sign','💡':'bulb','🛏':'bed','🕹':'lever','🌾':'wheat','🎣':'fish','🛡':'shield','⛑':'helmet',
+  '🧪':'potion','🔑':'key','📦':'box','🛒':'stall','🎨':'palette','💬':'speech','👑':'crown','🔒':'lock','⚠':'warn','⛔':'stop','ℹ':'info','✔':'ok','⭐':'star','✨':'star','🎲':'dice','📤':'export','📥':'import','🎓':'cap',
+  '🔍':'search','🪣':'bucket','☠':'skull','💀':'skull','❄':'snow','🩸':'blood','💨':'wind','💪':'up','🪨':'rock','⏹':'stopb','⏱':'timer','⟲':'rotl','⟳':'rotr','↺':'rotl','↪':'arrowr','▲':'up','▼':'down','⚒':'anvil','⚗':'flask',
+  '🎰':'dice','⚜':'crown','📖':'book','⏏':'export','▭':'rect','╱':'line','🧺':'box','🎡':'world','🗝':'key','📋':'paste','✂':'scissors','🧭':'map'};
+const EDEMR=new RegExp('('+Object.keys(EDEM).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\uFE0F?\\s?','gu');
+function edIcoTree(root){if(!root||!root.nodeType)return;if(root.nodeType===3){if(root.parentNode)edIcoTree(root.parentNode);return}if(root.nodeType!==1)return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),L=[];while(w.nextNode()){const n=w.currentNode,p=n.parentNode;if(!p||p.nodeName==='TEXTAREA'||p.nodeName==='SCRIPT'||p.nodeName==='STYLE'||(p.closest&&p.closest('.noico')))continue;EDEMR.lastIndex=0;if(EDEMR.test(n.nodeValue))L.push(n)}
+  for(const n of L){const p=n.parentNode,s=n.nodeValue;EDEMR.lastIndex=0;
+    if(p.nodeName==='OPTION'||p.nodeName==='SELECT'||p.nodeName==='TITLE'){n.nodeValue=s.replace(EDEMR,'');continue}
+    const fr=document.createDocumentFragment();let last=0;s.replace(EDEMR,(m,k,off)=>{if(off>last)fr.appendChild(document.createTextNode(s.slice(last,off)));const i=document.createElement('i'),v=EDEM[k];i.className='vi';i.dataset.v=v;edIcoRule(v);fr.appendChild(i);
+      if(/\s$/.test(m))fr.appendChild(document.createTextNode(' '));last=off+m.length;return m});if(last<s.length)fr.appendChild(document.createTextNode(s.slice(last)));p.replaceChild(fr,n)}
+  if(root.querySelectorAll)for(const i of root.querySelectorAll('.vi[data-v]'))edIcoRule(i.dataset.v)}
+// osserva solo le parti dell'interfaccia che appartengono all'editor
+const EDOBS=new MutationObserver(ms=>{for(const m of ms){if(m.type==='childList')for(const n of m.addedNodes)edIcoTree(n);else if(m.type==='characterData')edIcoTree(m.target)}});
+const EDOBR=new WeakSet();function edIcoWatch(el){if(!el||EDOBR.has(el))return;EDOBR.add(el);edIcoTree(el);EDOBS.observe(el,{childList:true,subtree:true,characterData:true})}
+const EDOBB=new MutationObserver(()=>{for(const id of['ed','edtoast','edend','edcin','edback','mparco'])edIcoWatch($(id))});
+EDOBB.observe(document.body,{childList:true});setTimeout(()=>{for(const id of['mparco','ed','edtoast'])edIcoWatch($(id));const pc=document.querySelector('#msel .mode.parco');if(pc)edIcoTree(pc)},0);
+// icone disegnate sulla mappa (porte, boss, forzieri chiusi): un'icona e poi la scritta
+function edLabI(n,txt,x,y,col){const c=edIcoC(n);g.font=g.font||'bold 10px Georgia,serif';const tw=txt?g.measureText(txt).width:0,sz=15;if(c)g.drawImage(c,x-(tw+sz+3)/2,y-sz+3,sz,sz);if(txt)label(txt,x+(sz+3)/2,y,col)}
+
+/* ================= 7.6: VOXELIA STUDIO — strumenti da professionisti =================
+   Selezione d'area (copia, taglia, incolla, sposta, ruota, specchia, riempi), timbri salvati nel mondo e modelli pronti,
+   ispettore della casella con «sostituisci in tutta la mappa», pennello misto, terreno mescolato, elementi recenti,
+   cronologia delle modifiche, controlli della vista, livelli nascondibili e trasformazioni dell'intera mappa. */
+Object.assign(EDS,{area:null,alay:{t:1,d:1,e:1,b:1},clip:null,paste:null,mix:[],mat2:-1,mixP:30,recD:[],recM:[],matQ:'',walQ:'',hideE:0,hideT:0,stName:''});
+
+/* ---- appunti: un pezzo di mappa con terreno, muri, decorazioni, oggetti ed edifici ---- */
+function edClipNew(w,h,lay){return{w,h,t:new Array(w*h).fill(-1),f:new Array(w*h).fill(0),wl:new Array(w*h).fill(0),d:{},dw:{},e:[],b:[],full:1,lay:Object.assign({t:1,d:1,e:1,b:1},lay||{})}}
+function edClipFrom(m,x0,y0,w,h,lay){lay=lay||EDS.alay;const n=m.N,c=edClipNew(w,h,lay);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const X=x0+x,Y=y0+y,j=y*w+x;if(X<0||Y<0||X>=n||Y>=n)continue;const i=Y*n+X;
+    if(lay.t){c.t[j]=m.t[i];c.f[j]=m.f[i];c.wl[j]=m.w[i]}if(lay.d&&m.d[i]){c.d[j]=m.d[i];if(m.dw[i])c.dw[j]=1}}
+  if(lay.e)for(const e of m.e){if(!edInRect(e,x0,y0,w,h))continue;const o=edClone(e);o.x-=x0;o.y-=y0;if(o.pts)o.pts=o.pts.map(([a,b])=>[a-x0,b-y0]);c.e.push(o)}
+  if(lay.b)for(const b of m.b)if(b.x>=x0&&b.y>=y0&&b.x+b.w<=x0+w&&b.y+b.h<=y0+h){const o=edClone(b);o.x-=x0;o.y-=y0;o.dx-=x0;c.b.push(o)}
+  return c}
+// un oggetto sta nell'area se ci sta il suo punto; una zona evento se ci sta tutta
+function edInRect(e,x0,y0,w,h){return e.k==='trig'?e.x>=x0&&e.y>=y0&&e.x+e.w<=x0+w&&e.y+e.h<=y0+h:e.x>=x0&&e.y>=y0&&e.x<x0+w&&e.y<y0+h}
+function edAreaClear(m,x0,y0,w,h,lay){lay=lay||EDS.alay;const n=m.N;
+  for(let y=y0;y<y0+h;y++)for(let x=x0;x<x0+w;x++){if(x<0||y<0||x>=n||y>=n)continue;const i=y*n+x;if(lay.d){delete m.d[i];delete m.dw[i]}if(lay.t&&m.t[i]!==0){m.t[i]=0;if(m.d[i]&&EDECI[m.d[i]]&&EDECI[m.d[i]].water)delete m.d[i]}}
+  if(lay.e)m.e=m.e.filter(e=>!edInRect(e,x0,y0,w,h));if(lay.b)m.b=m.b.filter(b=>!(b.x>=x0&&b.y>=y0&&b.x+b.w<=x0+w&&b.y+b.h<=y0+h))}
+function edClipPaste(m,c,x0,y0){const n=m.N;let k=0;
+  for(let y=0;y<c.h;y++)for(let x=0;x<c.w;x++){const X=x0+x,Y=y0+y;if(X<0||Y<0||X>=n||Y>=n)continue;const i=Y*n+X,j=y*c.w+x;
+    if(c.t[j]>=0){m.t[i]=c.t[j];m.f[i]=c.f[j]<EMAT.length?c.f[j]:0;m.w[i]=c.wl[j]<EWAL.length?c.wl[j]:0;k++}
+    if(c.d[j]&&EDECI[c.d[j]]){m.d[i]=c.d[j];if(c.dw[j])m.dw[i]=1;else delete m.dw[i];if(m.t[i]===1||m.t[i]===9)m.t[i]=0;if(m.t[i]===2&&!EDECI[c.d[j]].water)m.t[i]=0;k++}
+    else if(c.full&&c.lay&&c.lay.d){delete m.d[i];delete m.dw[i]}
+    if((m.t[i]===1||m.t[i]===9)&&m.d[i]){delete m.d[i];delete m.dw[i]}}
+  for(const e of c.e){const o=edClone(e);o.u=edUid('e');o.x+=x0;o.y+=y0;if(o.pts)o.pts=o.pts.map(([a,b])=>[a+x0,b+y0]);
+    if(o.k==='trig'?(o.x<0||o.y<0||o.x+o.w>n||o.y+o.h>n):(o.x<0||o.y<0||o.x>=n||o.y>=n))continue;if(o.k==='po')o.face='';m.e.push(o);k++}
+  for(const b of c.b){const o=edClone(b);o.u=edUid('b');o.x+=x0;o.y+=y0;o.dx+=x0;if(o.x<0||o.y<0||o.x+o.w>n||o.y+o.h>n)continue;m.b.push(o);k++}return k}
+// ruota di 90° in senso orario; specchia a destra-sinistra (x) o sopra-sotto (y)
+function edClipRot(c){const w=c.w,h=c.h,n=edClipNew(h,w,c.lay);n.full=c.full;const P=(x,y)=>[h-1-y,x];
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const j=y*w+x,[X,Y]=P(x,y),k=Y*n.w+X;n.t[k]=c.t[j];n.f[k]=c.f[j];n.wl[k]=c.wl[j];if(c.d[j]){n.d[k]=c.d[j];if(c.dw[j])n.dw[k]=1}}
+  for(const e of c.e){const o=edClone(e);if(o.k==='trig'){const nx=h-o.y-o.h,ny=o.x;o.x=nx;o.y=ny;const t0=o.w;o.w=o.h;o.h=t0}else{[o.x,o.y]=P(o.x,o.y);if(o.pts)o.pts=o.pts.map(([a,b])=>P(a,b));if(o.fc!=null)o.fc=((o.fc|0)+2)%8;if(o.k==='po')o.face=''}n.e.push(o)}
+  for(const b of c.b){const o=edClone(b);o.x=h-b.y-b.h;o.y=b.x;o.w=b.h;o.h=b.w;o.dx=o.x+(o.w>>1);n.b.push(o)}return n}
+function edClipFlip(c,ax){const w=c.w,h=c.h,n=edClipNew(w,h,c.lay);n.full=c.full;const P=(x,y)=>ax==='x'?[w-1-x,y]:[x,h-1-y];
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const j=y*w+x,[X,Y]=P(x,y),k=Y*w+X;n.t[k]=c.t[j];n.f[k]=c.f[j];n.wl[k]=c.wl[j];if(c.d[j]){n.d[k]=c.d[j];if(c.dw[j])n.dw[k]=1}}
+  for(const e of c.e){const o=edClone(e);if(o.k==='trig'){if(ax==='x')o.x=w-o.x-o.w;else o.y=h-o.y-o.h}else{[o.x,o.y]=P(o.x,o.y);if(o.pts)o.pts=o.pts.map(([a,b])=>P(a,b));if(o.fc!=null)o.fc=(((ax==='x'?2:6)-(o.fc|0))%8+8)%8;if(o.k==='po')o.face=''}n.e.push(o)}
+  for(const b of c.b){const o=edClone(b);if(ax==='x'){o.x=w-b.x-b.w;o.dx=o.x+(b.w-1-(b.dx-b.x))}else{o.y=h-b.y-b.h;o.dx=b.dx}n.b.push(o)}return n}
+function edClipCount(c){return Object.keys(c.d).length+c.e.length+c.b.length}
+// anteprima: una piccola mappa vista dall'alto
+function edClipThumb(c,px){px=px||Math.max(2,Math.min(8,Math.floor(96/Math.max(c.w,c.h))));const cv2=document.createElement('canvas');cv2.width=c.w*px;cv2.height=c.h*px;const q=cv2.getContext('2d');
+  for(let y=0;y<c.h;y++)for(let x=0;x<c.w;x++){const j=y*c.w+x,t0=c.t[j];let col=null;if(t0===0)col=(EMAT[c.f[j]]||EMAT[0]).a;else if(t0===1)col=shx((EWAL[c.wl[j]]||EWAL[0]).c,.75);else if(t0===2)col='#3b86d6';else if(t0===9)col='#0a0c14';
+    if(col){q.fillStyle=col;q.fillRect(x*px,y*px,px,px)}if(c.d[j]){q.fillStyle=c.dw[j]?'rgba(255,255,255,.35)':'rgba(30,20,10,.65)';q.fillRect(x*px+px*.2,y*px+px*.2,px*.6,px*.6)}}
+  for(const b of c.b){q.fillStyle=b.roof||'#a8402f';q.fillRect(b.x*px,b.y*px,b.w*px,b.h*px)}
+  for(const e of c.e){q.fillStyle={npc:'#ffe066',en:'#ff4a4a',po:'#44eeff',ch:'#ffaa33',trig:'#c46bff'}[e.k]||'#ffffff';if(e.k==='trig'){q.globalAlpha=.4;q.fillRect(e.x*px,e.y*px,e.w*px,e.h*px);q.globalAlpha=1}else q.fillRect(e.x*px+px*.15,e.y*px+px*.15,px*.7,px*.7)}
+  return cv2.toDataURL()}
+
+/* ---- l'area selezionata ---- */
+const edAreaR=()=>{const a=EDS.area;return a?{x:Math.min(a.x0,a.x1),y:Math.min(a.y0,a.y1),w:Math.abs(a.x1-a.x0)+1,h:Math.abs(a.y1-a.y0)+1}:null};
+function edCopy(cut){const r=edAreaR();if(!r){edToast('Prima seleziona un\'area con lo strumento ▭ Area (R)');return}EDS.clip=edClipFrom(EM,r.x,r.y,r.w,r.h);
+  if(cut){edPush('taglia');edAreaClear(EM,r.x,r.y,r.w,r.h);edAfterBulk()}edToast((cut?'✂ Tagliato':'📋 Copiato')+': '+r.w+'×'+r.h+(edClipCount(EDS.clip)?' · '+edClipCount(EDS.clip)+' tra arredi e oggetti':'')+' — Ctrl+V per incollare');edSide()}
+function edPasteStart(c,name){if(!c){c=EDS.clip;if(!c){edToast('Gli appunti sono vuoti: copia prima un\'area (Ctrl+C)');return}}EDS.paste={c,name:name||'appunti'};if(EDS.tool!=='area'&&EDS.tool!=='stamp')edTool('area');else edSide();
+  edToast('Clic sulla mappa per incollare «'+(name||'appunti')+'» · R ruota · F specchia · Esc per finire')}
+function edPasteAt(x,y){const P=EDS.paste;if(!P)return;const c=P.c,x0=x-(c.w>>1),y0=y-(c.h>>1);edPush('incolla');const k=edClipPaste(EM,c,x0,y0);edAfterBulk();EDS.area={x0,y0,x1:x0+c.w-1,y1:y0+c.h-1};if(!k)edToast('Niente da incollare qui (fuori dalla mappa?)')}
+function edAreaDel(){const r=edAreaR();if(!r)return;edPush('cancella area');edAreaClear(EM,r.x,r.y,r.w,r.h);edAfterBulk();edToast('Area svuotata')}
+function edAreaFill(){const r=edAreaR();if(!r)return;edPush('riempi area');for(let y=r.y;y<r.y+r.h;y++)for(let x=r.x;x<r.x+r.w;x++){if(!edIn(x,y))continue;const i=y*N+x;EM.t[i]=0;EM.f[i]=EDS.mat;if(EDS.mat2>=0&&Math.random()*100<EDS.mixP)EM.f[i]=EDS.mat2;if(EM.d[i]&&EDECI[EM.d[i]]&&EDECI[EM.d[i]].water)delete EM.d[i]}edAfterBulk()}
+function edAreaXf(k){const r=edAreaR();if(!r)return;edPush(k==='rot'?'ruota area':'specchia area');const c=edClipFrom(EM,r.x,r.y,r.w,r.h);edAreaClear(EM,r.x,r.y,r.w,r.h);const c2=k==='rot'?edClipRot(c):edClipFlip(c,k);
+  edClipPaste(EM,c2,r.x,r.y);EDS.area={x0:r.x,y0:r.y,x1:r.x+c2.w-1,y1:r.y+c2.h-1};edAfterBulk()}
+function edAreaMove(dx,dy){const r=edAreaR();if(!r||(!dx&&!dy))return;edPush('sposta area');const c=edClipFrom(EM,r.x,r.y,r.w,r.h);edAreaClear(EM,r.x,r.y,r.w,r.h);edClipPaste(EM,c,r.x+dx,r.y+dy);
+  EDS.area={x0:r.x+dx,y0:r.y+dy,x1:r.x+dx+r.w-1,y1:r.y+dy+r.h-1};edAfterBulk()}
+function edAreaAll(){EDS.area={x0:0,y0:0,x1:N-1,y1:N-1};if(EDS.tool!=='area')edTool('area');else edSide()}
+// dopo un cambiamento grande: si ricostruisce la zona, gli oggetti e la minimappa
+function edAfterBulk(){EDS.sel=null;edZone(EM);edBuild();EDS.mmv=(EDS.mmv|0)+1;edDirty();edSide();edStat()}
+function edPasteXf(k){const P=EDS.paste;if(!P)return;P.c=k==='rot'?edClipRot(P.c):edClipFlip(P.c,k);edSide()}
+
+/* ---- timbri: pezzi di mappa salvati nel mondo, più i modelli pronti fatti con gli arredi del gioco ---- */
+function edStamps(){if(!EW.stamps||typeof EW.stamps!=='object')EW.stamps={};return EW.stamps}
+function edStampSave(){const r=edAreaR();if(!r){edToast('Seleziona prima un\'area');return}const n=(EDS.stName||'').trim()||('Timbro '+(Object.keys(edStamps()).length+1));const id=edUid('s');
+  edStamps()[id]={id,n:n.slice(0,40),c:edClipFrom(EM,r.x,r.y,r.w,r.h)};EDS.stName='';edDirty();edToast('Timbro «'+n+'» salvato: lo trovi nello strumento Timbri (U)');edSide()}
+function edStampDel(id){const s=edStamps()[id];if(!s||!confirm('Eliminare il timbro «'+s.n+'»?'))return;delete edStamps()[id];edDirty();edSide()}
+// modelli pronti: una legenda di caratteri → terreno, muro, decorazione o oggetto
+const EPREF=[
+  ['Piazza con fontana','Città',['ccccccc','clcccLc','ccc_ccc','cc_Y_cc','ccc_ccc','cLcccLc','ccccccc'],{c:{f:'ciottoli'},l:{f:'ciottoli',d:'l'},L:{f:'ciottoli',d:'n'},_:{f:'ciottoli'},Y:{f:'ciottoli',d:'Y'}}],
+  ['Mercato','Città',['sssssss','.s.H.ʍ.','sssssss','.k.b.k.','sssssss'],{s:{f:'strada'},'.':{f:'strada'},H:{f:'strada',d:'H'},'ʍ':{f:'strada',d:'ʍ'},k:{f:'strada',d:'k'},b:{f:'strada',d:'b'}},[[1,1,'s']]],
+  ['Orto recintato','Campagna',['ffffff','fqqqqf','fqqqqf','fqEqqf','fqqqqf','ff..ff'],{f:{f:'terra',d:'f'},q:{f:'terra',d:'q'},E:{f:'terra',d:'E'},'.':{f:'terra'}}],
+  ['Campo di grano','Campagna',['gggggg','gggggg','gggggg','ggygg+','gggggg'],{g:{f:'terra',d:'g'},y:{f:'terra',d:'y'},'+':{f:'terra',d:'+'}}],
+  ['Accampamento','Natura',['..r..','.L.k.','r.F.b','.b.L.','..u..'],{'.':{f:'terra'},r:{f:'erba',d:'r'},L:{f:'terra',d:'L'},k:{f:'terra',d:'k'},b:{f:'terra',d:'b'},F:{f:'terra',d:'ƒ'},u:{f:'terra',d:'u'}}],
+  ['Boschetto','Natura',['.r.a.r','r.h..r','.r.rh.','h.r..r','.r.u.r','r..r.h'],{'.':{f:'erba2'},r:{f:'erba2',d:'r'},a:{f:'erba2',d:'a'},h:{f:'erba2',d:'h'},u:{f:'erba2',d:'u'}}],
+  ['Laghetto','Natura',['..hh..','.wwww.','hwwwwh','hwwOwh','.wwww.','..hh..'],{'.':{f:'erba'},h:{f:'erba',d:'h'},w:{t:2},O:{t:2,d:'^'}}],
+  ['Molo','Porto',['ww p ww'.replace(/ /g,''),'wwpww','wwpww','wbp@w','wwpww','wwpkw'],{w:{t:2},p:{f:'pontile'},b:{f:'pontile',d:'b'},'@':{f:'pontile',d:'@'},k:{f:'pontile',d:'k'}}],
+  ['Cimitero','Segrete',['ǂǂǂǂǂǂ','ǂtʭtʭǂ','ǂ....ǂ','ǂtʭt5ǂ','ǂ....ǂ','ǂǂ..ǂǂ'],{'ǂ':{f:'terra',d:'ǂ'},t:{f:'terra',d:'t'},'ʭ':{f:'terra',d:'ʭ'},'5':{f:'terra',d:'ċ'},'.':{f:'terra'}}],
+  ['Altare oscuro','Segrete',['ğ...ğ','.ċРċ.','.РĀР.','.ċРċ.','ğ.ш.ğ'],{'ğ':{f:'cripta',d:'ğ'},'.':{f:'cripta'},'ċ':{f:'cripta',d:'ċ'},'Р':{f:'cripta',d:'Р'},'Ā':{f:'cripta',d:'Ā'},'ш':{f:'cripta',d:'ш'}}],
+  ['Stanza del tesoro','Segrete',['#####','#ØCØ#','#Ø.Ø#','#...#','##.##'],{'#':{t:1,w:'cripta'},'Ø':{f:'oro',d:'Ø'},'.':{f:'oro'},C:{f:'oro',o:{k:'ch',rich:1,g:0,rnd:2,items:[],acts:[]}}}],
+  ['Rovine','Segrete',['Ш..ğ.','.Г...','ğ..ШГ','..u..','Г.ğ.Ш'],{'Ш':{f:'pietra',d:'Ш'},'ğ':{f:'pietra',d:'ğ'},'Г':{f:'pietra',d:'Г'},u:{f:'pietra',d:'u'},'.':{f:'pietra'}}],
+  ['Trincea','Guerra',['ŖŖŖŖŖŖ','ßß..ßß','č·čč·č','.¤¤¤¤.'],{'Ŗ':{f:'fango',d:'Ŗ'},'ß':{f:'fango',d:'ß'},'.':{f:'fango'},'č':{f:'fango',d:'č',w:1},'·':{f:'fango',d:'·',w:1},'¤':{f:'fango',d:'¤'}}],
+  ['Taverna (arredi)','Casa',['F.TT.S','..TT..','C....b','C.TT.b','..TT.p'],{F:{f:'legno',d:'F'},T:{f:'legno',d:'T'},S:{f:'legno',d:'S'},C:{f:'legno',d:'C'},b:{f:'legno',d:'b'},p:{f:'legno',d:'p'},'.':{f:'legno'}}],
+  ['Sala del trono','Castello',['ŧ.K.ŧ','..ž..','§.ž.§','..ž..','*.ž.*'],{'ŧ':{f:'marmo',d:'ŧ'},K:{f:'marmo',d:'K'},'ž':{f:'marmo',d:'ž',w:1},'§':{f:'marmo',d:'§'},'*':{f:'marmo',d:'*'},'.':{f:'marmo'}}]];
+function edPrefab(i){const P=EPREF[i];if(!P)return null;const[n,,rows,leg,extra]=P,h=rows.length,w=Math.max(...rows.map(r=>[...r].length)),c=edClipNew(w,h);c.full=0;c.lay={t:1,d:1,e:1,b:1};
+  rows.forEach((r,y)=>[...r].forEach((ch,x)=>{const L=leg[ch];if(!L)return;const j=y*w+x;if(L.t!=null){c.t[j]=L.t;if(L.w)c.wl[j]=EWALI[L.w]|0}else if(L.f){c.t[j]=0;c.f[j]=EMATI[L.f]|0}if(L.d&&EDECI[L.d]){c.d[j]=L.d;if(L.w===1||EDECI[L.d].walk)c.dw[j]=1}if(L.o)c.e.push(Object.assign({x,y},edClone(L.o)))}));
+  void extra;return c}
+function edStampUse(id){if(id[0]==='#'){const c=edPrefab(+id.slice(1));if(c)edPasteStart(c,EPREF[+id.slice(1)][0]);return}const s=edStamps()[id];if(s)edPasteStart(edClone(s.c),s.n)}
+
+/* ---- pannelli dei nuovi strumenti ---- */
+function edAreaHTML(){const r=edAreaR(),P=EDS.paste,L=EDS.alay,lay=(k,n)=>`<label><input type="checkbox" ${L[k]?'checked':''} onchange="EDS.alay.${k}=this.checked?1:0"> ${n}</label>`;let h=`<h4>▭ Area</h4>`;
+  if(P){h+=`<div class="edselbox"><h5>Incolla: ${esc(P.name)}</h5><img class="edcth" src="${edClipThumb(P.c)}" alt=""><p class="mu">${P.c.w}×${P.c.h} · clic sulla mappa per incollarlo (anche più volte). <kbd>R</kbd> ruota · <kbd>F</kbd> specchia · <kbd>Esc</kbd> finisce.</p>
+    <span class="seg"><button title="Ruota (R)" onclick="edPasteXf('rot')">⟳ Ruota</button><button title="Specchia (F)" onclick="edPasteXf('x')">${edI('fliph')} Specchia</button><button title="Capovolgi" onclick="edPasteXf('y')">${edI('flipv')} Capovolgi</button></span><button onclick="EDS.paste=null;edSide()">✔ Fine</button></div>`}
+  h+=`<p class="mu">Trascina per selezionare un rettangolo. Trascinando dentro la selezione la sposti. <kbd>Ctrl+C</kbd> copia · <kbd>Ctrl+X</kbd> taglia · <kbd>Ctrl+V</kbd> incolla · <kbd>Canc</kbd> svuota · <kbd>Ctrl+A</kbd> tutta la mappa.</p>
+    <div class="edchk edlays">${lay('t','Terreno e muri')}${lay('d','Decorazioni')}${lay('e','Oggetti e personaggi')}${lay('b','Edifici')}</div>`;
+  if(r){let ne=0,nd=0;for(const e of EM.e)if(edInRect(e,r.x,r.y,r.w,r.h))ne++;for(let y=r.y;y<r.y+r.h;y++)for(let x=r.x;x<r.x+r.w;x++)if(edIn(x,y)&&EM.d[y*N+x])nd++;
+    h+=`<div class="edselbox"><b>${r.w}×${r.h}</b> <span class="mu">da ${r.x}, ${r.y} · ${nd} decorazioni · ${ne} oggetti</span>
+    <div class="edbtns"><button onclick="edCopy()">📋 Copia</button><button onclick="edCopy(1)">✂ Taglia</button><button onclick="edPasteStart()" ${EDS.clip?'':'disabled'}>${edI('paste')} Incolla</button><button class="danger" onclick="edAreaDel()">🗑 Svuota</button>
+    <button onclick="edAreaXf('rot')" title="Ruota di 90° (l'area deve essere libera intorno)">⟳ Ruota</button><button onclick="edAreaXf('x')">${edI('fliph')} Specchia</button><button onclick="edAreaXf('y')">${edI('flipv')} Capovolgi</button>
+    <button onclick="edAreaFill()" title="Riempie l'area con il terreno scelto nello strumento Terreno">🪣 Riempi di ${esc((EMAT[EDS.mat]||EMAT[0]).n)}</button><button onclick="EDS.area=null;edSide()">Deseleziona</button></div>
+    <div class="edrow"><input id="edstn" placeholder="Nome del timbro" value="${esc(EDS.stName)}" oninput="EDS.stName=this.value"><button onclick="edStampSave()">${edI('stamp')} Salva come timbro</button></div></div>`}
+  else h+=`<p class="mu">Nessuna area selezionata.</p><button onclick="edAreaAll()">Seleziona tutta la mappa</button>`;
+  if(EDS.clip&&!P)h+=`<h5>Appunti</h5><div class="edrow"><img class="edcth" src="${edClipThumb(EDS.clip)}" alt=""><span class="mu">${EDS.clip.w}×${EDS.clip.h}<br>si possono incollare anche in un'altra mappa</span><button onclick="edPasteStart()">${edI('paste')} Incolla</button></div>`;
+  return h}
+function edStampHTML(){const S=Object.values(edStamps());let h=`<h4>${edI('stamp')} Timbri e modelli</h4><p class="mu">Scegli un timbro e clicca sulla mappa per stamparlo: terreno, arredi e oggetti in un colpo solo. Per creare i tuoi timbri seleziona un pezzo di mappa con lo strumento ▭ Area e premi «Salva come timbro».</p>`;
+  if(EDS.paste)h=`<div class="edselbox"><h5>Stai stampando: ${esc(EDS.paste.name)}</h5><span class="seg"><button onclick="edPasteXf('rot')">⟳ Ruota</button><button onclick="edPasteXf('x')">${edI('fliph')} Specchia</button></span><button onclick="EDS.paste=null;edSide()">✔ Fine</button></div>`+h;
+  h+=`<h5>I timbri del mondo</h5><div class="edstl">`;if(!S.length)h+='<p class="mu">Ancora nessun timbro.</p>';
+  for(const s of S)h+=`<div class="edstc"><button class="edstb" onclick="edStampUse('${s.id}')"><img src="${edClipThumb(s.c)}" alt=""><b>${esc(s.n)}</b><small>${s.c.w}×${s.c.h}</small></button><button class="danger edsx" title="Elimina" onclick="edStampDel('${s.id}')">✕</button></div>`;
+  h+=`</div><h5>Modelli pronti</h5><div class="edstl">`;EPREF.forEach((p,i)=>{const c=edPrefab(i);h+=`<div class="edstc"><button class="edstb" onclick="edStampUse('#${i}')"><img src="${edClipThumb(c)}" alt=""><b>${esc(p[0])}</b><small>${p[1]} · ${c.w}×${c.h}</small></button></div>`});
+  return h+'</div>'}
+// ispettore della casella (strumento Seleziona su una casella senza oggetti)
+function edTileHTML(s){const{x,y}=s.d,i=y*N+x,m=EM;if(!edIn(x,y))return'';const t0=m.t[i],d=m.d[i],dd=d&&EDECI[d];
+  const grp=(L,cur,lab)=>{let o='',k0=null;L.forEach((q,j)=>{const k=q.k||'';if(k!==k0){if(k0!==null)o+='</optgroup>';o+=`<optgroup label="${esc(k)}">`;k0=k}o+=`<option value="${j}"${j===cur?' selected':''}>${esc(q.n)}</option>`});return o+(k0!==null?'</optgroup>':'')};
+  const decG=()=>{let o='<option value="">(niente)</option>';for(const k of EDECK){o+=`<optgroup label="${esc(k)}">`+EDEC.filter(q=>q.k===k).map(q=>`<option value="${esc(q.c)}"${q.c===d?' selected':''}>${esc(q.n)}</option>`).join('')+'</optgroup>'}return o};
+  let h=`<h4>${edI('tile')} Casella ${x}, ${y}</h4><div class="seg edtyp">${[[0,'Terreno'],[1,'Muro'],[2,'Acqua'],[9,'Vuoto']].map(([v,n])=>`<button class="${t0===v?'on':''}" onclick="edTileSet('t',${v})">${n}</button>`).join('')}</div>
+    <div class="edrow"><span>Terreno</span><select onchange="edTileSet('f',+this.value)">${grp(EMAT,m.f[i])}</select></div>`;
+  if(t0===1)h+=`<div class="edrow"><span>Muro</span><select onchange="edTileSet('w',+this.value)">${grp(EWAL,m.w[i])}</select></div>`;
+  h+=`<div class="edrow"><span>Decorazione</span>${dd?`<img class="edtth" src="${edDecThumb(d)}" alt="">`:''}<select onchange="edTileSet('d',this.value)">${decG()}</select></div>`;
+  if(d)h+=`<div class="edrow"><label><input type="checkbox" ${m.dw[i]||edDecWalk(d)?'checked':''} ${edDecWalk(d)?'disabled':''} onchange="edTileSet('dw',this.checked?1:0)"> Ci si cammina sopra</label><button class="danger" onclick="edTileSet('d','')">🗑 Togli</button></div>`;
+  const mats=EMAT.map((q,j)=>[j,q.n]),dec=[['','(niente: toglile)'],...EDEC.map(q=>[q.c,q.n])];
+  h+=`<h5>Sostituisci in tutta la mappa</h5><p class="mu">Cambia in un colpo tutte le caselle uguali a questa (si annulla con Ctrl+Z).</p>`;
+  if(t0===0)h+=`<div class="edrow"><span>${esc(EMAT[m.f[i]].n)} →</span><select id="edrpf">${edOpt(mats,m.f[i])}</select><button onclick="edReplace('f',${m.f[i]},+$('edrpf').value)">Sostituisci (${m.f.filter((v,j)=>v===m.f[i]&&m.t[j]===0).length})</button></div>`;
+  if(t0===1)h+=`<div class="edrow"><span>${esc(EWAL[m.w[i]].n)} →</span><select id="edrpw">${edOpt(EWAL.map((q,j)=>[j,q.n]),m.w[i])}</select><button onclick="edReplace('w',${m.w[i]},+$('edrpw').value)">Sostituisci (${m.w.filter((v,j)=>v===m.w[i]&&m.t[j]===1).length})</button></div>`;
+  if(d)h+=`<div class="edrow"><span>${esc(dd?dd.n:d)} →</span><select id="edrpd">${edOpt(dec,d)}</select><button onclick="edReplace('d','${d.replace(/'/g,"\\'")}',$('edrpd').value)">Sostituisci (${Object.values(m.d).filter(v=>v===d).length})</button></div>`;
+  return h}
+function edTileSet(k,v){const s=EDS.sel;if(!s||s.k!=='tile')return;const{x,y}=s.d,i=y*N+x,m=EM;edPush('casella');
+  if(k==='t'){m.t[i]=v;if(v!==0&&m.d[i]&&!(v===2&&EDECI[m.d[i]]&&EDECI[m.d[i]].water)){delete m.d[i];delete m.dw[i]}}
+  else if(k==='f'){m.f[i]=v}else if(k==='w'){m.w[i]=v}else if(k==='d'){if(!v){delete m.d[i];delete m.dw[i]}else{m.d[i]=v;const wt=EDECI[v]&&EDECI[v].water;if(wt)m.t[i]=2;else if(m.t[i]!==0)m.t[i]=0}}else if(k==='dw'){if(v)m.dw[i]=1;else delete m.dw[i]}
+  edSync(x,y);EDS.fdirty=1;EDS.ftime=0;EDS.mmv=(EDS.mmv|0)+1;edDirty();edSide();edStat()}
+function edReplace(k,from,to){const m=EM,n=m.N*m.N;let c=0;edPush('sostituisci');
+  for(let i=0;i<n;i++){if(k==='f'&&m.t[i]===0&&m.f[i]===from){m.f[i]=to;c++}else if(k==='w'&&m.t[i]===1&&m.w[i]===from){m.w[i]=to;c++}else if(k==='d'&&m.d[i]===from){if(to){m.d[i]=to}else{delete m.d[i];delete m.dw[i]}c++}}
+  edAfterBulk();edToast('Sostituite '+c+' caselle')}
+
+/* ---- pennello misto, terreno mescolato, recenti ---- */
+function edDecPick(c,ev){if(ev&&ev.shiftKey){const i=EDS.mix.indexOf(c);if(i>=0)EDS.mix.splice(i,1);else{if(!EDS.mix.length&&EDS.dec&&EDS.dec!==c)EDS.mix.push(EDS.dec);EDS.mix.push(c)}}else{EDS.dec=c;if(EDS.mix.length&&!EDS.mix.includes(c))EDS.mix=[]}
+  EDS.recD=[c,...EDS.recD.filter(q=>q!==c)].slice(0,10);edSide()}
+function edMatPick(i){EDS.mat=i;EDS.recM=[i,...EDS.recM.filter(q=>q!==i)].slice(0,10);edSide()}
+function edDecNow(){return EDS.mix.length>1?EDS.mix[Math.floor(Math.random()*EDS.mix.length)]:EDS.dec}
+function edMatNow(){return EDS.mat2>=0&&Math.random()*100<EDS.mixP?EDS.mat2:EDS.mat}
+
+/* ---- cronologia ---- */
+const EDHL={pennello:'Pennello',riempi:'Riempimento',rettangolo:'Rettangolo',linea:'Linea',oggetto:'Oggetto aggiunto',partenza:'Punto di partenza',elimina:'Eliminato',duplica:'Duplicato',interno:'Interno creato',sposta:'Spostato',edificio:'Edificio',zona:'Zona evento',
+  modifica:'Proprietà cambiata',ronda:'Ronda',rigenera:'Mappa rigenerata',dimensioni:'Dimensioni della mappa',tinta:'Tinta dei muri',liquido:'Liquido',taglia:'Area tagliata',incolla:'Incollato','cancella area':'Area svuotata','riempi area':'Area riempita',
+  'ruota area':'Area ruotata','specchia area':'Area specchiata','sposta area':'Area spostata',casella:'Casella cambiata',sostituisci:'Sostituzione','trasforma mappa':'Mappa trasformata'};
+function edHistWin(){EDWR=edHistWin;const U=EDS.undo,R=EDS.redo;let h=`<p class="mu">Ogni riga è un momento a cui puoi tornare. Le modifiche più recenti sono in alto. Puoi anche usare Ctrl+Z e Ctrl+Y.</p><div class="edcl edhist">`;
+  h+=`<div class="edcr on"><span class="edn">●</span><b>Adesso</b></div>`;
+  for(let i=U.length-1;i>=0;i--){const u=U[i];h+=`<div class="edcr"><span class="edn">${U.length-i}</span><span style="flex:1">${esc(EDHL[u.l]||u.l||'Modifica')}${u.tl?' <small class="mu">· '+esc(u.tl)+'</small>':''}${u.mn?' <small class="mu">· '+esc(u.mn)+'</small>':''}</span><small class="mu">${u.tm?new Date(u.tm).toLocaleTimeString('it-IT'):''}</small><button onclick="edHistGo(${i})">↶ Torna qui</button></div>`}
+  if(!U.length)h+='<p class="mu">Ancora nessuna modifica in questa sessione.</p>';if(R.length)h+=`<p class="mu">${R.length} modifiche annullate si possono rifare con Ctrl+Y.</p>`;
+  if($('edwin').hidden||!$('edwc'))edWin('⏱ Cronologia delle modifiche',h+'</div>');else edWinSet(h+'</div>')}
+function edHistGo(i){let n=0;while(EDS.undo.length>i&&n<80){edUndo();n++}edHistWin()}
+
+/* ---- vista: zoom, adatta, livelli ---- */
+function edZoom(k){SZ=clamp(k==='+'?SZ*1.2:k==='-'?SZ/1.2:k,.3,2.6);edStat()}
+function edFit(){const mob=innerWidth<=820,aw=Math.max(200,W-(mob?50:372)),ah=Math.max(160,H-(mob?H*.4:0)-80);const k=SZ/S;SZ=clamp(Math.min(aw*.92/(64*N),ah*.92/(34*N+50))*k,.3,2.6);const S2=SZ/k;EDS.cam.x=EDS.cam.y=N/2;
+  // il centro della parte di mappa che si vede davvero (il pannello copre la destra, o il basso sul telefono)
+  if(mob){const o=H*.2/S2/16/2;EDS.cam.x+=o;EDS.cam.y+=o}else{const o=(318-54)/2/S2/32/2;EDS.cam.x+=o;EDS.cam.y-=o}edStat()}
+function edCenterStart(){if(EW.start.map!==EM.id){edOpenMap(EW.start.map)}EDS.cam.x=EW.start.x+.5;EDS.cam.y=EW.start.y+.5}
+function edLayer(k){EDS[k]=EDS[k]?0:1;edStatBar();edStat()}
+function edStatBar(){const el=$('edstat');if(!el)return;const tg=(k,ic,n,inv)=>`<button class="${(inv?!EDS[k]:EDS[k])?'on':''}" title="${n}" onclick="edLayer('${k}')">${edI(ic)}</button>`;
+  el.innerHTML=`<span id="edstx"></span><span class="edzc">${tg('labels','sign','Etichette sulla mappa')}${tg('hideE','person','Mostra personaggi e oggetti',1)}${tg('hideT','bolt','Mostra le zone evento',1)}<i class="edsep"></i>
+    <button title="Riduci (−)" onclick="edZoom('-')">${edI('zoomout')}</button><b id="edzv" title="Zoom al 100%" onclick="edZoom(1)">100%</b><button title="Ingrandisci (+)" onclick="edZoom('+')">${edI('zoomin')}</button><button title="Tutta la mappa (0)" onclick="edFit()">${edI('fit')}</button><button title="Vai all'inizio dell'avventura" onclick="edCenterStart()">${edI('flag')}</button></span>`}
+const _ent76=ent;ent=function(e){if(EDIT&&EDS.hideE&&e.ref)return;_ent76(e)};
+
+/* ---- trasformare tutta la mappa ---- */
+function edMapXf(k,dx,dy){const m=EM,n=m.N;edPush('trasforma mappa');const all={t:1,d:1,e:1,b:1},c=edClipFrom(m,0,0,n,n,all);edAreaClear(m,0,0,n,n,all);for(let i=0;i<n*n;i++)m.t[i]=0;
+  let c2=c,P=(x,y)=>[x,y];if(k==='rot'){c2=edClipRot(c);P=(x,y)=>[n-1-y,x]}else if(k==='x'||k==='y'){c2=edClipFlip(c,k);P=(x,y)=>k==='x'?[n-1-x,y]:[x,n-1-y]}else if(k==='shift'){dx|=0;dy|=0;P=(x,y)=>[clamp(x+dx,0,n-1),clamp(y+dy,0,n-1)];
+    // le caselle che restano scoperte prendono il terreno del bordo
+    const f0=m.f.slice();for(let i=0;i<n*n;i++)m.f[i]=f0[i]}
+  edClipPaste(m,c2,k==='shift'?dx:0,k==='shift'?dy:0);m.sp=P(m.sp[0],m.sp[1]);if(EW.start.map===m.id){const[a,b]=P(EW.start.x,EW.start.y);EW.start.x=a;EW.start.y=b}edAfterBulk();edToast('Mappa trasformata: Ctrl+Z per tornare indietro')}
+
+/* ---- stile 7.6: interfaccia più ordinata, icone voxel, controlli della vista ---- */
+(function(){const st=document.createElement('style');st.id='ed76css';st.textContent=`
+.vi{display:inline-block;width:1.32em;height:1.32em;vertical-align:-.32em;background:center/contain no-repeat;flex-shrink:0;filter:drop-shadow(0 1px 0 #0008)}
+#ed{--ac:#f5b942;--bg0:#0d111c;--bg1:#151b2b;--bg2:#1d2539;--bg3:#273150;--ln:#ffffff16;--tx:#e6eaf3;--mu:#97a2b8;font:13px/1.35 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+#ed button,#edwin button{font:inherit;font-size:12.5px;background:linear-gradient(180deg,var(--bg3),var(--bg2));color:var(--tx);border:1px solid #ffffff1f;border-radius:6px;padding:5px 9px;margin:1px;display:inline-flex;align-items:center;gap:5px;transition:background .12s,border-color .12s,box-shadow .12s;box-shadow:0 1px 0 #ffffff0d inset,0 1px 2px #0006}
+#ed button:hover:not(:disabled),#edwin button:hover:not(:disabled){background:linear-gradient(180deg,#34406a,#273150);border-color:#f5b94299}
+#ed button:active:not(:disabled){transform:translateY(1px)}#ed button.danger,#edwin button.danger{background:linear-gradient(180deg,#7a2a32,#5a1e24);border-color:#e5484f88}#ed button.gold,#edwin button.gold{background:linear-gradient(180deg,#8a6420,#6a4a16);border-color:var(--ac)}
+#ed button.on,#ed .seg button.on,#ed .edtabs button.on,#edwin .edtabs button.on{background:linear-gradient(180deg,#8a6420,#5e4314);border-color:var(--ac);box-shadow:0 0 0 1px #f5b94255,0 1px 0 #ffffff22 inset}
+#ed h4,#edwin .edwh b{font-family:Georgia,serif}#edside h4{display:flex;align-items:center;gap:7px;margin:4px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--ln);font-size:17px}
+#edtop{background:linear-gradient(180deg,#1a2136,#121828);border-bottom:1px solid #f5b94255;gap:6px;padding:4px 8px}#edtop .edg{gap:2px;padding:2px 2px 2px 8px;border-left:1px solid var(--ln)}
+#edtop button{padding:4px 8px}#edtop .edw{font-family:Georgia,serif;font-size:15px;box-shadow:none}#edtop .edplay{background:linear-gradient(180deg,#3a9a4a,#2a7036)!important;border-color:#7aff8a!important;font-weight:600}
+#edtop .edwins button{padding:4px 8px;font-size:12px}
+#edleft{width:54px;background:linear-gradient(90deg,#121828,#0f1422);gap:3px;padding:6px 0}#edleft button{width:42px;height:40px;padding:0;justify-content:center;border-radius:9px;font-size:20px}
+#edleft button .vi{width:26px;height:26px;vertical-align:0}#edleft hr{width:60%;border:0;border-top:1px solid #ffffff1c;margin:3px 0}
+#edleft button.on{background:linear-gradient(180deg,#9a7224,#6a4a16);border-color:#ffd27a;box-shadow:0 0 0 2px #f5b94255,0 0 14px #f5b94244}
+#edside{width:318px;background:linear-gradient(180deg,#141a2a,#101523);scrollbar-width:thin;scrollbar-color:#3a4566 transparent;padding:8px 12px 12px}
+#edside h5{display:flex;align-items:center;gap:6px;margin:12px 0 5px;color:#f5c66a;letter-spacing:1.4px;font-size:10.5px}#edside h5::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#f5b94244,transparent)}
+.edsw{width:90px!important;background:linear-gradient(180deg,#1d2539,#161c2c)!important;transition:border-color .12s,transform .12s}.edsw:hover{border-color:#f5b94299!important;transform:translateY(-1px)}.edsw.mix{border-color:#7ad0ff!important;box-shadow:0 0 0 2px #7ad0ff44}
+.edli:hover{border-color:#f5b94288!important}.edselbox{background:linear-gradient(180deg,#f5b9421a,#f5b94208);border-color:#f5b94255}
+.edsrch{width:100%;margin:6px 0!important}.edbtns{display:flex;flex-wrap:wrap;gap:3px;margin:6px 0}.edbtns button{flex:1 1 auto}.edlays{margin:6px 0}
+.edcth{max-width:96px;max-height:96px;image-rendering:pixelated;border:1px solid #f5b94255;border-radius:4px;background:#0006;display:block;margin:4px 0}.edtth{width:30px;height:34px;object-fit:contain;vertical-align:middle;background:#0005;border-radius:4px;margin:1px}
+.edstl{display:grid;grid-template-columns:1fr 1fr;gap:6px}.edstc{position:relative}.edstb{width:100%;flex-direction:column;align-items:center!important;padding:6px 4px!important;gap:2px!important;height:100%}
+.edstb img{width:72px;height:72px;object-fit:contain;image-rendering:pixelated;background:#0006;border-radius:4px}.edstb b{font-size:12px;text-align:center}.edstb small{color:var(--mu);font-size:10.5px}.edsx{position:absolute;top:2px;right:2px;padding:1px 4px!important;font-size:10px!important}
+#edstat{left:54px;right:318px;height:30px;line-height:30px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 6px 0 12px;background:#0a0d16f0;font-size:12px;overflow:visible}
+#edstx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#c8cede}.edzc{display:inline-flex;align-items:center;gap:2px;flex-shrink:0}
+.edzc button{padding:2px 5px!important;height:24px}.edzc button .vi{width:18px;height:18px;vertical-align:0}.edzc button.on{background:linear-gradient(180deg,#3a4a76,#2a3558)!important;border-color:#7ad0ff99!important;box-shadow:none!important}
+#edzv{min-width:44px;text-align:center;cursor:pointer;color:#ffd84a;font-variant-numeric:tabular-nums}.edsep{width:1px;height:18px;background:var(--ln);margin:0 4px}
+#ed.edfocus #edside,#ed.edfocus #edleft{display:none}#ed.edfocus #edstat{left:0;right:0}
+.edwb{background:linear-gradient(180deg,#1b2133,#151a29);border-color:#f5b942cc;border-radius:12px}.edwh{background:linear-gradient(180deg,#232b44,#1a2034);padding:8px 10px 8px 16px}.edwh b{display:flex;align-items:center;gap:8px}
+#edwin{font:13px/1.35 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}#edwin select,#edwin input:not([type=checkbox]):not([type=range]):not([type=color]),#edwin textarea,#ed select,#ed input:not([type=checkbox]):not([type=range]):not([type=color]){font:inherit;font-size:12.5px;background:#0a0e18;color:#e6eaf3;border:1px solid #ffffff26;border-radius:5px;padding:4px 6px}
+#ed select:focus,#ed input:focus,#ed textarea:focus,#edwin select:focus,#edwin input:focus,#edwin textarea:focus{outline:none;border-color:#f5b942;box-shadow:0 0 0 2px #f5b94233}
+.edcr{background:#00000033;border-color:#ffffff10}.edhist .edcr.on{border-color:#f5b94288}.edtyp{display:flex;margin:4px 0 8px}.edtyp button{flex:1;justify-content:center}
+.edic .vi{width:28px;height:28px}.edli .edic{display:flex;justify-content:center}#edtoast{font:14px "Segoe UI",system-ui,sans-serif;display:flex;align-items:center;gap:6px}
+#mparco .vi{width:1.25em;height:1.25em}
+#edside select{max-width:100%;min-width:0}#edside .edrow select{flex:1 1 120px}#edside .edrow>span:first-child{flex-shrink:0}.edsw{height:104px!important}.edsw.tall{height:120px!important}.edsw small{max-height:2.4em;overflow:hidden}
+@media(max-width:1500px){#edtop .edwins .lb{display:none}#edtop .edwins button{padding:4px 7px}}
+@media(max-width:820px){#edside{width:auto}#edleft{width:50px;bottom:calc(40vh + 30px)}#edleft button{width:40px;height:38px}#edstat{display:flex;left:50px;right:0;bottom:40vh}#edstx{font-size:11px}.edzc button{padding:2px 3px!important}}`;document.head.appendChild(st)})();
 
 /* ================= avvio, salvataggi, menu ================= */
 function contHTML(){const s=LS.get(SAVEK,null);$('cont').innerHTML=s&&s.p?`<button class="mbtn cont" onclick="contGame()">${ico('gioca',24)}<span><b>Continua: ${esc(s.name)}</b><small>Livello ${s.p.lv|0} · ${DFS[s.df]?DFS[s.df].n:''} · frammenti ${(s.p.sh||[]).length}/6 · salvato ${esc(new Date(s.t).toLocaleString('it-IT'))}</small></span></button>`:'';menuPort();

@@ -19,12 +19,13 @@ function blk(x,y){const i=Math.floor(x),j=Math.floor(y);return i<0||j<0||i>=N||j
 function mv(o,dx,dy){if(!blk(o.px+dx,o.py))o.px+=dx;if(!blk(o.px,o.py+dy))o.py+=dy}
 function hurtE(e,d,rem,cr){if(e.shd&&e.shd>t){flt(e,'Immune','#9adcff');return}if(!rem)wmHit();d=tryParry(e,d,rem);if(!rem){NET.hits.push([e.id,+(d/e.mx).toFixed(4),++NET.seq]);if(NET.hits.length>14)NET.hits.shift()}
   e.hp-=d;e.fl=.12;e.al=1;flt(e,(cr?'💥':'')+d,cr?'#ffd84a':'#ffffff');tone(cr?330:220,.05);if(e.hp<=0)kill(e)}
-function hurtP(at){if(P.iv>0){flt(P,'Schivata!','#8ce7ff');P.pf=3;tone(900,.05,'triangle');return}const d=Math.max(1,Math.round(at*(.8+Math.random()*.4)*100/(100+def()*2.5)));P.hp-=d;P.fl=.15;flt(P,d,'#ff6666');tone(110,.08);if(P.hp<=0)die()}
+// 7.11: nella storia l'armatura protegge un po' meno (2 invece di 2,5): con l'equipaggiamento leggendario l'eroe non è più quasi intoccabile
+function hurtP(at){if(P.iv>0){flt(P,'Schivata!','#8ce7ff');P.pf=3;tone(900,.05,'triangle');return}const d=Math.max(1,Math.round(at*(.8+Math.random()*.4)*100/(100+def()*(MODE==='story'?2:2.5))));P.hp-=d;P.fl=.15;flt(P,d,'#ff6666');tone(110,.08);if(P.hp<=0)die()}
 function kill(e){const i=ents.indexOf(e);if(i<0)return;ents.splice(i,1);if(cineOK()&&e.m)ents.push({k:'dead',m:e.m,px:e.px,py:e.py,t0:t,boss:e.boss,fc:e.m.rg?faceOf(...(e.fd||[0,1])):null});if(Zk==='arrembaggio'&&!ARRW&&!ents.some(x=>x.k==='en')){ARRW=1;navHatch()}if(Zk==='stiva'&&!ARRW&&!ents.some(x=>x.k==='en')){ARRW=1;setTimeout(navWin,900)}if(MODE==='dim'&&e.dtag)dimKill(e);const z=ZZ;gainXP(Math.round(e.xp*DF.x*(NET.cfg.xpm||1)*nightXP()));
   const gd=Math.round(ri(2,6+z.lv*3)*(e.boss?6:1)*(1+(z.run||0)*.25)*(NET.cfg.gm||1));P.g+=gd;flt(e,'+'+gd+' oro','#ffd84a');goldFly(gd,e.px,e.py);
   if(e.boss){ents.push(dropOk({k:'dr',px:e.px,py:e.py,it:uniq(e.t,z.lv)}),dropOk({k:'dr',px:e.px+.7,py:e.py+.2,it:item(z.lv+1,2)}))}
   else if(Math.random()<.4*DF.lt)ents.push(dropOk({k:'dr',px:e.px,py:e.py,it:item(z.lv+1)}));
-  if(Math.random()<.12){P.pot++;flt(P,'+🧪','#88ff88')}
+  if(Math.random()<(MODE==='story'?.08:.12)){P.pot++;flt(P,'+🧪','#88ff88')}
   P.kills++;questKill(e);if(e.boss)bossDown(e);hud()}
 function bossDown(e){jingle([60,64,67,72,76,79],.11);if(cineOK())sceneBossDown(e);else msg('Hai sconfitto '+e.n+'!');clog('','Hai sconfitto '+e.n+'!',{sys:1});if(ZZ.dg)dungeonClear(e)}
 function exitSpot(x,y){const d=bfs(Math.floor(P.px),Math.floor(P.py)),busy=(u,v)=>ents.some(e=>(e.k==='po'||e.k==='npc'||e.k==='ch'||e.k==='shard'||e.k==='dr')&&Math.abs(e.px-(u+.5))<1.7&&Math.abs(e.py-(v+.5))<1.7);let best=null,bs=-1e9;
@@ -43,7 +44,8 @@ function dungeonClear(e){const id=ZZ.dg,d=DG[id],x=Math.floor(e.px),y=Math.floor
   if(d.fin&&P.st===3){P.st=4;setTimeout(()=>{const show=()=>{PA={ti:'La caduta di Malakar',tx:'Il Re Lich si dissolve in una nube di voxel neri. Torna dal Re Aldric al castello.'};pn('txt')};if(typeof filmFall==='function')filmFall(show);else show()},1500)}
   save()}
 function die(){sceneDeath();if(MODE==='dim'){dimDie();return}if(DF.pm){started=0;LS.del(SAVEK);netLeave();pn('dead');return}
-  P.hp=P.mx;if(DFS.indexOf(DF)>0)P.g=P.g*.9|0;irisGo(()=>load('town'));if(!cineOK())msg('Sei stato sconfitto: ti risvegli ad Aldoria.')}
+  // 7.11: cadere costa di più: il 15% dell'oro a Normale, il 25% a Difficile (prima il 10%)
+  P.hp=P.mx;const dfi=DFS.indexOf(DF);if(dfi>0)P.g=P.g*(MODE==='story'?(dfi>=2?.75:.85):.9)|0;irisGo(()=>load('town'));if(!cineOK())msg('Sei stato sconfitto: ti risvegli ad Aldoria.')}
 // Affondo per tipo di arma: portata (caselle), moltiplicatore di danno, ricarica (secondi), nome. Schivata: ricarica DODGE_CD secondi.
 const DODGE_CD=3;
 const LG={Pugnale:{r:2.4,m:1.3,cd:4.5,n:'Fendente rapido'},Spada:{r:2.8,m:1.6,cd:6,n:'Affondo'},Stocco:{r:3.4,m:1.7,cd:6,n:'Affondo di stocco'},Lancia:{r:4,m:1.8,cd:7,n:'Stoccata'},Ascia:{r:2.2,m:2.1,cd:8,n:'Fendente'},Martello:{r:2.2,m:2.3,cd:9.5,n:'Schianto'},Bastone:{r:3,m:1.5,cd:6,n:'Colpo di bastone'},Falce:{r:2.6,m:1.8,cd:7,n:'Falciata'}},LGA={Lama:'Spada',Clava:'Martello',Tridente:'Lancia',Mannaia:'Ascia',Pungiglione:'Stocco',Daga:'Pugnale',Coltello:'Pugnale',Mazza:'Martello',Randello:'Martello',Maglio:'Martello',Alabarda:'Lancia',Picca:'Lancia',Scettro:'Bastone',Bacchetta:'Bastone',Verga:'Bastone'};
@@ -63,7 +65,10 @@ function lunge(){if(!started||P.lgc>0||P.dm||P.hp<=0)return;const T=lgType();let
 function area(){if(PM==='dig'&&DIG){digHit();return}if(FSH&&PM==='fish'){fishKey(1);return}if(DU&&PM==='duel'){duelShoot();return}if(NAV&&Zk==='mare'){navHold(1);return}if(!started||P.sk>0)return;P.sk=6;P.swc++;fxArea();tone(300,.15);
   for(const e of ents.slice())if(e.k==='en'&&dist(e,P)<2.6){const r=roll(1.7);hurtE(e,r.d,0,r.cr)}
   if(inPit(P.px,P.py))for(const o of NET.list)if(inPit(o.px,o.py)&&dist(o,P)<2.6){const r=roll(1.7);pvpHit(o,r.d,r.cr)}}
-function pot(){if(!started)return;if(P.pot>0&&P.pc<=0&&P.hp<P.mx){P.pot--;P.pc=1;const h=Math.round(P.mx*.4);sceneHeal();P.hp=Math.min(P.mx,P.hp+h);flt(P,'+'+h,'#66ff66');tone(520,.1);hud()}}
+// 7.11: nella storia una pozione cura il 35% (prima il 40%) e tra un sorso e l'altro passano 2,5 secondi (prima 1): in battaglia non si può più bere a raffica
+const POTH=()=>MODE==='ed'?.4:.35,POT_CD=()=>MODE==='ed'?1:2.5;
+function pot(){if(!started)return;if(P.pot>0&&P.pc>0&&P.hp<P.mx){if(!(P.pcm>t)){P.pcm=t+.8;flt(P,'Pozione tra '+Math.ceil(P.pc)+'s','#9adcff')}return}
+  if(P.pot>0&&P.pc<=0&&P.hp<P.mx){P.pot--;P.pc=POT_CD();const h=Math.round(P.mx*POTH());sceneHeal();P.hp=Math.min(P.mx,P.hp+h);flt(P,'+'+h,'#66ff66');tone(520,.1);hud()}}
 function shoot(e,tp){const n=e.boss&&e.enr?3:1,a0=Math.atan2(tp.py-e.py,tp.px-e.px);for(let i=0;i<n;i++){const a=a0+(i-(n-1)/2)*.25;PJ.push({x:e.px,y:e.py,vx:Math.cos(a)*7,vy:Math.sin(a)*7,t:1.6,d:e.at,c:e.b.rng})}tone(600,.05,'triangle',.03)}
 
 /* ================= missioni ================= */

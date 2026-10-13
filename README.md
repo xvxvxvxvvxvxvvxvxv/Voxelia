@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.10** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.11** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -44,8 +44,10 @@ gioco, nel menu **Novità**).
   e qualità regolabile da «leggera» a «Ultra».
 - **Musica procedurale e scritta nota per nota**: 57 brani scritti a mano, fra cui uno diverso per ogni edificio di
   Aldoria, suonati in tempo reale dal sintetizzatore del gioco (Web Audio).
-- **Un regno grande**: 99 zone (67 interni da esplorare), 7 dungeon a più piani, 150 personaggi, 124 missioni,
-  69 tipi di nemici di cui 13 boss.
+- **Un regno grande**: 99 zone (67 interni da esplorare), 7 dungeon a più piani, 162 personaggi, 124 missioni,
+  71 tipi di nemici di cui 13 boss.
+- **Una storia raccontata da filmati** girati nei luoghi veri del gioco, con i suoi personaggi e l'eroe vestito con il
+  suo equipaggiamento.
 - **Multigiocatore** con un server Node.js **senza dipendenze**: stanze, chat, scambi, arena PvP con classifica,
   pannello admin e plugin.
 - **Voxelia Studio**: un editor completo per creare mondi con mappe, personaggi, dialoghi, missioni, oggetti, musiche
@@ -136,18 +138,39 @@ orizzontale, e si possono spostare e ridimensionare con l'**editor dell'HUD** (I
 ## La Modalità Storia
 
 Re Aldric affida all'eroe la missione di ritrovare i **sei frammenti della Corona di Voxel**, custoditi dai signori dei
-dungeon. Poi c'è la **Cittadella del Vuoto**, dove aspetta il Re Lich Malakar. Il viaggio è raccontato dal **prologo** e
-da **scene della storia** fatte come piccoli film, che si possono rivedere dal menu. Aldoria nasconde anche segreti,
-pagine di diario, un quartiere murato e più di un finale.
+dungeon. Poi c'è la **Cittadella del Vuoto**, dove aspetta il Re Lich Malakar. Aldoria nasconde anche segreti, pagine di
+diario, un quartiere murato e più di un finale: il vero finale si conquista sotto Aldoria Vecchia, contro l'**Abominio**,
+in una battaglia lunga e molto difficile divisa in cinque fasi (le braccia, il ventre, l'eco della Regina Elara, l'Occhio e
+il cuore).
+
+### Scene della storia
+Il viaggio è raccontato da **filmati girati nei luoghi veri del gioco**: la sala del trono, la piazza, la porta ovest, il
+porto, Aldoria Vecchia, la cappella, le prigioni, la fucina di Borin, i dungeon e la stanza dell'Occhio, con i loro arredi,
+le luci e gli abitanti. I personaggi camminano lungo le strade, entrano in scena camminando o con una dissolvenza e
+parlano con i sottotitoli. Ci sono il **prologo** (la storia della Corona dall'inizio), il giuramento, i sei ricordi dei
+frammenti, la forgia della Corona, la caduta di Malakar, la festa del Campione, il settimo cuore, la verità su Aldoria
+Vecchia, l'arresto, il vero finale e le scene della battaglia navale. Ogni filmato si vede una volta durante la partita
+(si salta con «Salta») e poi si rivede dal menu, in **Scene della storia**.
 
 ### Difficoltà
 
 | Difficoltà | Nemici | Bottino | Quando si cade |
 |---|---|---|---|
 | **Facile** | vita −30%, danni −40% | più ricco | si rinasce in città |
-| **Normale** | equilibrati | normale | si rinasce in città perdendo il 10% dell'oro |
-| **Difficile** | vita +50%, danni +40% | meno ricco | si rinasce in città perdendo il 10% dell'oro |
+| **Normale** | equilibrati | normale | si rinasce in città perdendo il 15% dell'oro |
+| **Difficile** | vita +50%, danni +40% | meno ricco | si rinasce in città perdendo il 25% dell'oro |
 | **Incubo** | vita ×2,2, danni ×2 | povero | **morte permanente**: il salvataggio viene cancellato |
+
+Dalla 7.11 la Modalità Storia è più impegnativa a ogni difficoltà:
+- nei dungeon i nemici hanno un altro 10% (Facile), 20% (Normale) o 30% (Difficile e Incubo) di vita e di danni; fuori
+  dai dungeon l'aumento è di tre quarti;
+- i nemici lavorano in **branco**: chi ti vede o viene colpito chiama quelli che gli stanno vicino;
+- compaiono i **Campioni**, nemici più grossi con un alone dorato ai piedi: quasi il doppio della vita, più danni, più
+  velocità, e un bottino sicuro. Nei dungeon aumentano a ogni ciclo;
+- i boss usano le abilità più spesso e, sotto un quarto della vita, entrano nell'**ultima furia**;
+- le pozioni curano il 35% e se ne beve una ogni 2,5 secondi, l'armatura protegge un po' meno e i falò curano più piano.
+
+I mondi di Voxelia Studio tengono l'equilibrio scelto dal loro autore.
 
 ---
 
@@ -177,8 +200,8 @@ in più.
 | Picchi Gelidi | 7 | Drago di Brina |
 
 ### I sette dungeon
-I dungeon cambiano forma a ogni discesa e **rinascono a ogni vittoria**: ogni nuovo ciclo è più forte e più ricco. Nei piani
-ci sono forzieri, pagine di diario e **falò** dove la vita torna piano piano.
+I dungeon cambiano forma a ogni discesa e **rinascono a ogni vittoria**: ogni nuovo ciclo è più forte e più ricco, e con
+più **Campioni**. Nei piani ci sono forzieri, pagine di diario e **falò** dove la vita torna piano piano.
 
 | Dungeon | Ingresso | Livello | Piani | Boss |
 |---|---|---|---|---|
@@ -191,7 +214,8 @@ ci sono forzieri, pagine di diario e **falò** dove la vita torna piano piano.
 | Cittadella del Vuoto | Castello di Aldoria | 15 | 4 | Re Lich Malakar |
 
 Ogni boss ha il suo stile: carica, terremoto, pioggia di colpi, esplosioni, teletrasporto, rigenerazione, scudo,
-rinforzi. Quando si infuria diventa più veloce.
+rinforzi. Quando si infuria diventa più veloce, e sotto un quarto della vita entra nell'**ultima furia**: attacca ancora di
+più e usa un'abilità ogni tre o quattro secondi.
 
 ![Nella Cripta Dimenticata](docs/dungeon.jpg)
 
@@ -199,7 +223,8 @@ rinforzi. Quando si infuria diventa più veloce.
 - **Battaglia navale** contro la *Vedova Nera* del Capitano Scarlatto: cannonate, arrembaggio e stiva.
 - **La Puledra**, la barca di Stefano: cinque posti di pesca in mare aperto.
 - **I campi di battaglia di Ryan il Pelato**: cinque battaglie in cui si comanda un esercito (fanti, lancieri, arcieri,
-  cavalieri, catapulte), si scelgono corsia e ordini e si distrugge l'accampamento nemico.
+  cavalieri, catapulte), si scelgono corsia e ordini e si distrugge l'accampamento nemico. Le truppe aggirano gli ostacoli
+  da sole, anche quando nascono accanto alla base.
 
 ---
 
@@ -240,7 +265,8 @@ rinforzi. Quando si infuria diventa più veloce.
   (livello 5), **Passo dell'Ombra** (livello 8), **Respiro della Tigre** (livello 10).
 - **Zaini**: da 24 posti fino a 48 (Zaino da viaggio, da esploratore e del Mercante Reale). Gli oggetti si possono
   bloccare, gettare a terra, vendere o distruggere.
-- **Pozioni** (tasto Q): ognuna ridà il 40% della vita. Si comprano dall'Erborista.
+- **Pozioni** (tasto Q): ognuna ridà il 35% della vita, e tra un sorso e l'altro passano 2,5 secondi. Si comprano
+  dall'Erborista.
 
 ---
 
@@ -450,7 +476,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.10 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.11 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -482,9 +508,12 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8_main.js` | Menu, musiche scritte, storia, personaggi e routine della città, castello, battaglie, Voxelia Studio, abilità, ciclo principale e tastiera |
 | `8t_touch.js` | Comandi touch per telefoni e tablet |
 | `8u_musiche.js` | Le canzoni degli edifici, gli strumenti e le batterie nuove |
+| `8v_abominio.js` | Il vero finale: l'Abominio in cinque fasi, l'ombra della Regina Elara, lo scudo di Malakar |
+| `8v_sfida.js` | La difficoltà della Modalità Storia: nemici più forti, branco, Campioni, ultima furia dei boss |
 | `8w_icone.js` | Icone voxel in tutto il gioco |
 | `8x_dev.js` | Pannello sviluppatore |
-| `8y_film.js` | Scene della storia |
+| `8y_film.js` | Il motore dei filmati: luoghi veri costruiti a parte, attori che camminano lungo le strade, telecamera, sottotitoli |
+| `8y_film2.js` | I filmati della storia, della battaglia navale e di Voxelia Dimension, e le scene disegnate apposta |
 | `8z_mondi.js` | Mondi della community: browser, schede e pubblicazione |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
@@ -511,7 +540,7 @@ Poi si apre `voxelia.html` nel browser, oppure si avvia `node server.js` per pro
 - Nessuna dipendenza esterna: niente framework né librerie, solo JavaScript, Canvas 2D e Web Audio.
 - Testi, commenti e changelog in italiano.
 - I salvataggi devono restare compatibili tra una versione e l'altra.
-- Le versioni seguono lo schema `7.9` → `7.9.1` → … → `7.10`: il secondo numero per gli aggiornamenti con novità, il terzo
+- Le versioni seguono lo schema `7.9` → `7.9.1` → … → `7.10` → `7.11`: il secondo numero per gli aggiornamenti con novità, il terzo
   per le correzioni.
 
 ---

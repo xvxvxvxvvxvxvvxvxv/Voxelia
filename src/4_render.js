@@ -726,7 +726,7 @@ function navUIupd(me,en){const h=$('nvh');if(!h||!NAV)return;h.style.width=Math.
   $('nvz').style.left=((tp-.065)*100)+'%';$('nvz').style.width='13%';$('nvk').style.left=(NAV.pw*100)+'%';
   $('nvs').textContent=NAV.ph==='sink'?'La Vedova Nera sta affondando...':NAV.inc?'⚠ Bordata in arrivo: Manovra!':NAV.rl>0?'Ricarica dei cannoni...':NAV.hold?'Rilascia nella zona verde!':'Pronto al fuoco'}
 function navWin(){const lv=Z.arrembaggio.lv,gd=Math.round((300+lv*60)*(NET.cfg.gm||1)),xp=200+lv*40;P.g+=gd;gainXP(xp);P.navw=(P.navw||0)+1;
-  const it=item(lv+3,3,'w');it.n='Sciabola di Scarlatto';ents.push({k:'dr',px:P.px+.5,py:P.py,it});
+  const it=item(lv+3,3,'w');it.n='Sciabola di Scarlatto';ents.push(dropOk({k:'dr',px:P.px+.5,py:P.py,it}));
   banner('Vittoria sul mare!','+'+gd+' oro, +'+xp+' XP: la Vedova Nera è sconfitta','corona');goldFly(gd);jingle([72,76,79,84,88,91],.1,'triangle');if(cineOK())coinRain(30);
   ents.push(po(14,4,'porto',{st:'gate',n:'Torna al Porto'}));music('town');save()}
 addEventListener('keyup',e=>{if(NAV&&Zk==='mare'&&e.key===' ')navHold(0)});
@@ -863,7 +863,9 @@ function bossAI(dt){for(const e of ents){if(e.k!=='en'||!e.boss||!e.al)continue;
     case 'summon':{const ty=E[arg]?arg:'scheletro';if(ents.filter(x=>x.k==='en').length>18)break;
       for(let i=0;i<3;i++){const an=i*2.1+Math.random(),[x,y]=nearFree(clamp(Math.floor(e.px+Math.cos(an)*1.8),1,N-2),clamp(Math.floor(e.py+Math.sin(an)*1.8),1,N-2));if(WK(M[y][x])){const m=mk(ty,x,y,20000+e.id*10+(e.sc=(e.sc||0)+1));m.al=1;ents.push(m)}}break}}}}
 /* falò nei dungeon: ci si riposa e la vita torna piano piano */
-function campfires(sp){const r=sd(hs(Zk+'falo')),d=bfs(sp[0],sp[1]),free=(x,y)=>{for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(M[y+dy][x+dx]!==0||DEC[y+dy][x+dx])return false;return!ents.some(e=>e.k==='en'&&Math.abs(e.px-x-.5)<5&&Math.abs(e.py-y-.5)<5)};
+function campfires(sp){const r=sd(hs(Zk+'falo')),d=bfs(sp[0],sp[1]),free=(x,y)=>{for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(M[y+dy][x+dx]!==0||DEC[y+dy][x+dx])return false;
+    // 7.10: niente falò (né ceppi intorno) sopra forzieri, pagine di diario, portali o oggetti: prima finivano murati dentro il fuoco
+    return!ents.some(e=>(e.k==='en'&&Math.abs(e.px-x-.5)<5&&Math.abs(e.py-y-.5)<5)||(e.k!=='en'&&e.k!=='tc'&&Math.abs((e.px|0)-x)<=1&&Math.abs((e.py|0)-y)<=1))};
   const C=[];for(let y=2;y<N-2;y++)for(let x=2;x<N-2;x++){const v=d[y*N+x];if(v>2&&free(x,y))C.push([x,y,v])}if(!C.length)return;
   const pick=(a,b)=>{const L=C.filter(c=>c[2]>=a&&c[2]<=b);return L.length?L[Math.floor(r()*L.length)]:null},max=Math.max(...C.map(c=>c[2]));
   for(const q of[pick(3,9),pick(max*.4,max*.6),pick(max*.7,max*.85)]){if(!q)continue;const[x,y]=q;if(M[y][x]!==0)continue;M[y][x]=6;DEC[y][x]=',';if(M[y+1][x-1]===0){M[y+1][x-1]=6;DEC[y+1][x-1]='m'}if(M[y-1][x+1]===0){M[y-1][x+1]=6;DEC[y-1][x+1]='m'}}}
@@ -1315,7 +1317,7 @@ function mapMe(){let tx=0,ty=0,z=2.6;
   MV.k=MV.k0*z;MV.x=tx;MV.y=ty;MV.fit=0;mapClampView();mapDirty()}
 function mapDirty(){MV.dirty=1}
 function mapUI(){const e=$('mzoom');if(e)e.textContent=Math.round(MV.k/MV.k0*100)+'%'}
-function openMap(){if(!started)return;let el=$('mappa');if(!el){el=document.createElement('div');el.id='mappa';document.body.appendChild(el)}
+function openMap(){if(!started)return;winOnly('map');let el=$('mappa');if(!el){el=document.createElement('div');el.id='mappa';document.body.appendChild(el)}
   const tl=['Tema automatico','Tema scuro','Tema chiaro'][SET.mapt|0];
   el.className=(mapDark()?'mdark':'')+(MV.guide?'':' nog');
   el.innerHTML=`<div class="mbox" role="dialog" aria-label="Mappa di Aldoria"><div class="mhd"><b>${ico('mappa',24)} Mappa di Aldoria</b>
@@ -1616,8 +1618,8 @@ function ent(e){if(e.k==='abo'){aboDraw(e);return}if(e.k==='resx'||(e===P&&Zk===
     else{g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(sx,sy,e.k==='dr'?8:e.boss?28:15,e.boss?13:7,0,0,6.3);g.fill()}}
   let L=[],top=36;const wh=e.fl>0,mov=(e===P&&(P.path.length||P.km))||e.k==='en'||(e.k==='npc'&&e.path&&e.path.length)||(e.k==='pl'&&e.mv>0);
   const bob=mov?Math.abs(Math.sin(t*9+e.px*3))*2:0;
-  let fc=-1;if(e===P)fc=heroFace(P.fc|0),L=heroL(P.ap,P.eq.c?P.eq.c.r:-1,P.eq.h?P.eq.h.r:-1,P.eq.w?P.eq.w.r:0,P.eq.w?iv(P.eq.w):3,P.eq.s?P.eq.s.r:-1,P.sw).concat(bagL(P.bag||0),FSH&&PM==='fish'?rodL2():[]);
-  else if(e.k==='pl')fc=e.fc|0,L=heroL(e.ap,e.c,e.h,e.w,e.wv,e.s,e.sw);
+  let fc=-1;if(e===P)fc=heroFace(P.fc|0),L=heroL(P.ap,P.eq.c?P.eq.c.r:-1,P.eq.h?P.eq.h.r:-1,P.eq.w?P.eq.w.r:0,P.eq.w?iv(P.eq.w):3,P.eq.s?P.eq.s.r:-1,P.sw,eqTy(P.eq)).concat(bagL(P.bag||0),FSH&&PM==='fish'?rodL2():[]);
+  else if(e.k==='pl')fc=e.fc|0,L=heroL(e.ap,e.c,e.h,e.w,e.wv,e.s,e.sw,e.ty);
   else if(e.k==='po'&&e.st==='hole'){L=HOLEL(e);top=30}else if(e.k==='secret'){L=secretL(e);top=14}else if(e.k==='shard7'){L=SH7L();top=24}else if(e.k==='portac'){L=PORTCL();top=52}else if(e.k==='po'&&e.st==='tap'){L=TAPL(e);top=40}else if(e.k==='reliq'){L=RELL(e);top=16}else if(e.k==='botola'){L=BOTL();top=10}else if(e.k==='portap'){L=PORTL();top=52}
   else if(e.k==='cho'){const k=Math.min(1,(t-e.ot)/.35),c=e.rich?'#5a2a8a':'#8a5a2a';L=[[-.3,-.22,0,.6,.44,9,c],[-.32,-.24,9,.64,.48,1,'#3a2410']];
     L.push(k<1?[-.3,-.22,9+k*10,.6,.44,4-k*2,'#f5c342']:[-.3,-.26,9,.6,.06,12,'#f5c342']);if(t-e.ot<1.4)L.push([-.18,-.12,10,.36,.24,2,'#fff2a0']);top=20}
@@ -1630,7 +1632,10 @@ function ent(e){if(e.k==='abo'){aboDraw(e);return}if(e.k==='resx'||(e===P&&Zk===
   else if(e.k==='lore'){const u=Math.sin(t*3)*3;L=[[-.2,-.08,8+u,.4,.16,3,'#f4e8c8'],[-.24,-.1,8+u,.06,.2,4,'#a0703a'],[.18,-.1,8+u,.06,.2,4,'#a0703a']];top=26}
   else if(e.k==='figura'){L=FIGL();top=0}else if(e.k==='letto'){L=[[-.2,-.2,0,.4,.4,10,'#6a4a2a'],[-.05,-.05,10,.1,.1,6,'#f4f0e0'],[-.03,-.03,16,.06,.06,3,'#ffcc33',1.3]];top=22}else if(e.k==='c100'){L=C100L(e);top=22}else if(e.k==='vaso'){L=VASOL();top=22}else if(e.k==='console'){L=consoleL();top=52}else if(e.k==='clue'){L=[[-.08,-.08,4+Math.sin(t*3+e.px)*2,.16,.16,6,'#fff2a0',1.4],[-.14,-.14,1,.28,.28,1,'#ffe08a',1.2]];top=22}else if(e.k==='stash'){L=[[-.35,-.25,0,.7,.5,12,'#5a2a6a'],[-.37,-.27,12,.74,.54,4,'#d4af37'],[-.08,.25,6,.16,.03,5,'#d4af37']];top=24}else if(e.k==='ship'){L=shipL(e);top=0;if(NK>.02)nlight(e.px-e.ex*.5,e.py-e.ey*.5,24,150,'255,200,120',.6)}else if(e.k==='res'){L=RESM[e.r]();top=24}else if(e.k==='fs'){const u=Math.sin(t*3+e.px)*1.5;L=[[e.ox-.06,e.oy-.06,-3+u,.12,.12,5,'#e8483a'],[e.ox-.05,e.oy-.05,2+u,.1,.1,3,'#ffffff'],[e.ox-.01,e.oy-.01,5+u,.02,.02,6,'#3a3a3a']];top=22}
   else if(e.k==='po')L=portalL(e),top=e.st==='door'?30:e.st==='cancello'?64:e.st==='pozzo'?52:44;
-  else{L=[[-.15,-.15,6+Math.sin(t*4)*3,.3,.3,10,RC[e.it.r]]];top=24;if(e.gid)L=[[-.12,-.1,0,.24,.2,6,'#8a6a3a'],[-.07,-.06,6,.14,.12,3,'#6a4a2a'],[-.15,-.15,12+Math.sin(t*4)*3,.3,.3,10,RC[e.it.r]]],top=30}
+  else{const it=e.it,md=it&&'whcs'.includes(it.s)?dropL(it):null,u=Math.sin(t*4+e.px*1.7)*2.5,z0=e.gid?13:5;
+    // 7.10: armi, elmi, corazze e scudi a terra mostrano il loro modello (lo stesso dello zaino), piccolo e fluttuante
+    if(md){L=md.map(b=>[b[0],b[1],b[2]+z0+u,b[3],b[4],b[5],b[6]]);top=z0+30}else{L=[[-.15,-.15,z0+1+u,.3,.3,10,RC[it?it.r|0:0]]];top=z0+18}
+    if(e.gid)L=[[-.12,-.1,0,.24,.2,6,'#8a6a3a'],[-.07,-.06,6,.14,.12,3,'#6a4a2a']].concat(L)}
   let aox=0,aoy=0;if(e===P||e.k==='pl'){L=heroAnim(L,e,mov);if(mov&&!(e===P&&HA))L=walkLegs(L,t*10+e.px*2+e.py);if(e===P)L=heroPose(L)}else if(mov&&L.length>=5&&L.hm)L=walkA(L,t*10+e.px*2+e.py);else if(e.k==='npc'&&L.hm&&!e.wg){L=e===PA&&PM==='npc'?talkA(L):idleA(L,e)}
   if(e.k==='en'&&L.hm&&e.atkT&&t-e.atkT<.3)L=L.map((q,i)=>i===3||i===4?[q[0],q[1],q[2]+5,q[3],q[4],q[5],q[6]]:q);
   if(e.pry&&t-e.pry<.35&&L.hm)L=L.map((q,i)=>i===3||i===4?[q[0],q[1]+.12,q[2]+6,q[3],q[4],q[5],q[6]]:q);
@@ -1810,10 +1815,10 @@ function drawSky(){const dk=Math.round(Math.max(DK,NK*.3)*20)/20;if(!SKC||SKC.z!
 /* ================= icone voxel degli oggetti (generate una volta e tenute in cache) ================= */
 const ICO={};
 function itype(it){const n=it.n||'';
-  if(it.s==='w'){for(const[k,v]of[['Pugnale','dag'],['Stocco','dag'],['Pungiglione','dag'],['Ascia','axe'],['Mannaia','axe'],['Martello','ham'],['Clava','ham'],['Lancia','spr'],['Tridente','tri'],['Bastone','stf'],['Falce','scy']])if(n.includes(k))return v;return'swd'}
-  if(it.s==='h'){if(/Corona|Diadema/.test(n))return'crn';if(/Cappuccio/.test(n))return'hood';if(/Maschera/.test(n))return'mask';return'helm'}
+  if(it.s==='w'){for(const[k,v]of[['Pugnale','dag'],['Stocco','dag'],['Pungiglione','dag'],['Daga','dag'],['Coltello','dag'],['Ascia','axe'],['Mannaia','axe'],['Martello','ham'],['Clava','ham'],['Mazza','ham'],['Randello','ham'],['Maglio','ham'],['Lancia','spr'],['Alabarda','spr'],['Picca','spr'],['Tridente','tri'],['Bastone','stf'],['Scettro','stf'],['Bacchetta','stf'],['Verga','stf'],['Falce','scy']])if(n.includes(k))return v;return'swd'}
+  if(it.s==='h'){if(/Corona|Diadema|Tiara/.test(n))return'crn';if(/Cappuccio/.test(n))return'hood';if(/Maschera/.test(n))return'mask';return'helm'}
   if(it.s==='c'){if(/Tunica|Veste/.test(n))return'robe';if(/Cotta|Giaco/.test(n))return'mail';return'plate'}
-  return /Brocchiere/.test(n)?'buck':'kite'}
+  return /Brocchiere|Rotella/.test(n)?'buck':/Pavese/.test(n)?'pav':'kite'}
 function iconModel(ty,c){const Wd='#6b4a2b',Gd='#d4af37',D='#3a3a42',K='#1d1d24';
   // anelli della cotta di maglia: piccoli quadrati scuri sfalsati sulle due facce visibili
   const rings=()=>{const o=[];for(let z=5,row=0;z<28;z+=5,row++){for(let x=-.22+(row%2?.06:0);x<.2;x+=.12)o.push([x,.15,z,.05,.015,2.5,D]);for(let y=-.13+(row%2?.06:0);y<.11;y+=.12)o.push([.24,y,z,.015,.05,2.5,D])}return o};
@@ -1833,8 +1838,11 @@ function iconModel(ty,c){const Wd='#6b4a2b',Gd='#d4af37',D='#3a3a42',K='#1d1d24'
   case 'plate':return[[-.22,-.14,0,.44,.28,8,c],[-.25,-.15,8,.5,.3,22,c],[-.38,-.16,22,.14,.32,10,c],[.24,-.16,22,.14,.32,10,c],[-.08,-.08,30,.16,.16,1,K],[-.23,-.15,6,.46,.3,3,Gd],[-.03,.15,12,.06,.02,16,Gd],[-.12,.15,22,.24,.02,3,Gd]];
   case 'mail':return[[-.24,-.15,0,.48,.3,30,c],[-.35,-.13,12,.11,.26,16,c],[.24,-.13,12,.11,.26,16,c],[-.09,-.09,30,.18,.18,1,K],[-.25,-.16,0,.5,.32,3,Wd],...rings()];
   case 'robe':return[[-.27,-.17,0,.54,.34,5,c],[-.24,-.15,5,.48,.3,27,c],[-.25,-.16,14,.5,.32,3,Gd],[-.34,-.12,16,.1,.24,14,c],[.24,-.12,16,.1,.24,14,c],[-.08,-.08,32,.16,.16,1,K],[-.03,.15,0,.06,.02,14,Gd]];
+  case 'pav':return[[-.3,-.06,0,.6,.12,40,c],[-.04,.06,3,.08,.03,34,Gd],[-.31,-.07,0,.62,.14,2.5,Gd],[-.31,-.07,37.5,.62,.14,2.5,Gd],[-.1,.06,16,.2,.03,8,Gd],[-.2,.06,30,.4,.02,3,'#f4f0e0']];
   case 'buck':return[[-.1,-.05,0,.2,.1,4,c],[-.2,-.05,4,.4,.1,4,c],[-.26,-.05,8,.52,.1,16,c],[-.2,-.05,24,.4,.1,4,c],[-.1,-.05,28,.2,.1,4,c],[-.08,.05,11,.16,.06,10,Gd],[-.27,.05,15,.54,.02,2,Wd]];
   default:return[[-.06,-.06,0,.12,.12,5,c],[-.14,-.06,5,.28,.12,6,c],[-.22,-.06,11,.44,.12,6,c],[-.28,-.06,17,.56,.12,7,c],[-.32,-.06,24,.64,.12,14,c],[-.04,.06,4,.08,.03,32,Gd],[-.24,.06,26,.48,.03,4,Gd],[-.33,-.07,37,.66,.14,2,Gd]]}}
+// modellino di un oggetto a terra: il modello dell'icona, rimpicciolito (in cache per tipo e rarità)
+const DRC=new Map();function dropL(it){const ty=itype(it),r=Math.max(0,Math.min(4,it.r|0)),k=ty+r;let L=DRC.get(k);if(!L){L=scl(iconModel(ty,RC[r]),.42);DRC.set(k,L)}return L}
 function icon(it){const ty=itype(it),r=Math.max(0,Math.min(4,it.r|0)),k=ty+r;if(ICO[k])return ICO[k];
   const big=document.createElement('canvas');big.width=big.height=256;const og=g,bg=big.getContext('2d');g=bg;g.setTransform(2.4,0,0,2.4,128,200);
   try{drawL(iconModel(ty,RC[r]),0,0,0)}finally{g=og}

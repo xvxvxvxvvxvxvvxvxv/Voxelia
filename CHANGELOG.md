@@ -5,6 +5,57 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.10 — Armi vere in mano, una musica per ogni edificio e caccia ai bug (13 ottobre 2026)
+
+### L'equipaggiamento si vede davvero
+- **L'arma in mano non è più una barra colorata accanto al braccio.** Ogni tipo ha il suo modello voxel, preso dalle icone dello zaino: spada con guardia e pomo d'oro, pugnale, ascia con la lama di fianco, martello, lancia, tridente, bastone con la sfera e falce. La parte in metallo ha il colore della rarità, impugnatura e finiture sono in legno e oro.
+- **Anche elmo, corazza e scudo hanno il loro modello**, semplice ma riconoscibile:
+  - **elmi:** elmo con paranaso e cresta d'oro, corona con le gemme, cappuccio che scende sulle spalle, maschera del faraone con il copricapo a strisce;
+  - **corazze:** armatura a piastre con spallacci e cintura, cotta di maglia con le maniche corte e gli anelli, tunica lunga con la fascia d'oro;
+  - **scudi:** scudo a goccia con la croce, brocchiere rotondo e pavese alto, portati sul braccio sinistro e rivolti in avanti.
+- Arma e scudo seguono il braccio in tutte le animazioni: fendente, affondo, colpo ad area, Palmo del Drago e Respiro della Tigre.
+- **Gli altri giocatori ti vedono con il tuo equipaggiamento vero**, nel mondo e nel ritratto del profilo. Lo vedi anche nell'anteprima dell'aspetto (tasto C) e nelle scene.
+- **Gli oggetti a terra mostrano il loro modello**, piccolo e fluttuante, invece di un cubetto colorato.
+- Il **Pavese** ha la sua icona, uno scudo alto e rettangolare. Prima usava quella dello scudo normale.
+
+### Una canzone per ogni edificio
+Prima quasi tutti gli interni suonavano lo stesso valzer. Ora **41 edifici hanno ognuno il suo brano**, scritto a tema con il nome:
+- la **Taverna del Drago Ubriaco** suona una giga con violino e battimani;
+- la **Fucina di Borin** batte sull'incudine, e il **Cantiere Navale** martella le chiglie;
+- il **Tempio della Luce** ha un inno per coro;
+- la **Cappella in rovina** ha un organo triste;
+- la **Biblioteca Arcana** suona un tema lidio misterioso;
+- il **Faro di Aldoria** ha campane lontane sopra il rumore delle onde;
+- il **Casinò** balla un tango per fisarmonica;
+- il **Palazzo del Conte** e la **Sartoria di Ottavia** hanno minuetti per clavicembalo;
+- la **Casa di Rosa** ha un valzer da carillon;
+- la **Caserma** marcia con piffero e tamburi;
+- la **Scuderia** galoppa;
+- il **Mulino** gira in tondo;
+- la **Segheria** canta con il respiro della sega;
+- la **Banca** ticchetta come un orologio;
+- l'**Osservatorio** suona note lunghe come le stelle;
+- e così via per ogni casa, villa, bottega e magazzino.
+
+Le stanze di uno stesso edificio, cioè i piani, l'archivio, le camere e la cupola, tengono la stessa musica, così salendo le scale il brano non ricomincia.
+
+Per scriverle sono arrivati **11 strumenti nuovi**: arpa celtica, organo, carillon, liuto, clavicembalo, fisarmonica, zufolo, coro, marimba, violino e banjo. Sono arrivati anche suoni nuovi (incudine, legnetto, sega, onda del mare), la scala misolidia e il basso del tango. **In Voxelia Studio** si possono usare nell'editor dei brani, e le 41 musiche compaiono nell'elenco delle musiche delle mappe.
+
+### Corretto: la caccia ai bug
+Un lungo playtest automatico di tutto il gioco ha controllato tutte le zone, i dialoghi, i dungeon giocati dall'inizio alla fine, le missioni, le porte, i tasti, il salvataggio, il multigiocatore, il telefono e il tablet. Ecco cosa ha trovato:
+- **Il tasto C apriva l'aspetto dell'eroe ma non lo chiudeva**: bisognava premere Esc. Ora C apre e chiude.
+- **Le finestre finivano una sopra l'altra.** Aprendo zaino, missioni, diario, classifica, giocatori, aspetto, opzioni o mappa (con i tasti, dalla barra o dal menu touch) si chiudono le altre. Uno scambio in corso non viene toccato.
+- **Nei dungeon un falò poteva nascere sopra un forziere**, una pagina di diario o un oggetto, e lo chiudeva dentro il fuoco e i ceppi. Ora i falò lasciano libere quelle caselle.
+- **Il bottino del boss e i premi dei forzieri potevano cadere dentro un muro** o un arredo, se il boss moriva contro una parete. Succedeva in quasi tutti i dungeon. Ora cadono sulla casella libera più vicina e si raccolgono sempre.
+- **«Togli» sul pugnale di base regalava un pugnale nuovo ogni volta**, riempiendo lo zaino di pugnali. Ora il pugnale di base non si toglie: per cambiarlo si equipaggia un'altra arma.
+- **Tre armi uniche facevano l'affondo sbagliato.** Ora il Tridente dei Mille Duelli fa la stoccata della lancia, la Mannaia di Grugnak il fendente dell'ascia e il Pungiglione Regale l'affondo di stocco. Prima facevano tutte l'affondo della spada, anche se il modello diceva altro.
+- **La barra della vita poteva mostrare 0 con l'eroe ancora vivo** (con meno di un punto di vita). Ora il numero si arrotonda per eccesso.
+- **L'esperienza per salire di livello aveva i decimali**, per esempio «XP 0/31.5». Ora è sempre un numero intero.
+- Armi, elmi e scudi con nomi diversi da quelli classici vengono riconosciuti, anche negli oggetti creati con Voxelia Studio: mazza, daga, coltello, scettro, bacchetta, alabarda, picca, tiara e rotella.
+- Il gioco ha la sua icona nella scheda del browser. Prima, giocando con il server, la console segnalava un errore 404 per l'icona mancante.
+
+---
+
 ## 7.9.4 — Battaglie di Ryan: si esce di nuovo (12 ottobre 2026)
 
 - **Corretto:** alla fine di una battaglia di Ryan il pulsante **«Torna in caserma da Ryan»** non rispondeva al tocco o al click, e non si riusciva a uscire. Ora funziona sia dopo una vittoria sia dopo una sconfitta.

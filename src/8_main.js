@@ -47,7 +47,14 @@ function drm(c,t0,v){v*=SGV;const ac=AU.ac;switch(c){
   case 'h':nz(t0,.028,.03*v,8500,'highpass');break;case 'o':nz(t0,.16,.026*v,7000,'highpass');break;case 'r':nz(t0,.05,.032*v,5500,'bandpass');break;
   case 't':{const o=ac.createOscillator(),g2=ac.createGain();o.type='sine';o.frequency.setValueAtTime(150,t0);o.frequency.exponentialRampToValueAtTime(80,t0+.18);g2.gain.setValueAtTime(.12*v,t0);g2.gain.exponentialRampToValueAtTime(.0001,t0+.22);o.connect(g2);g2.connect(AU.fd);o.start(t0);o.stop(t0+.25);break}
   case 'T':{const o=ac.createOscillator(),g2=ac.createGain();o.type='sine';o.frequency.setValueAtTime(82,t0);o.frequency.exponentialRampToValueAtTime(60,t0+.6);g2.gain.setValueAtTime(.2*v,t0);g2.gain.exponentialRampToValueAtTime(.0001,t0+.8);o.connect(g2);g2.connect(AU.fd);if(AU.rvIn)g2.connect(AU.rvIn);o.start(t0);o.stop(t0+.85);nz(t0,.08,.04*v,400,'lowpass');break}
-  case 'c':for(let i=0;i<3;i++)nz(t0+i*.011,.05,.05*v,1500,'bandpass');break}}
+  case 'c':for(let i=0;i<3;i++)nz(t0+i*.011,.05,.05*v,1500,'bandpass');break
+  // 7.10: suoni nuovi per le musiche degli edifici
+  case 'a':{for(const[f,g0]of[[1180,.05],[1760,.034],[2650,.02]]){const o=ac.createOscillator(),g2=ac.createGain();o.type='sine';o.frequency.setValueAtTime(f,t0);g2.gain.setValueAtTime(g0*v,t0);g2.gain.exponentialRampToValueAtTime(.0001,t0+.35);o.connect(g2);g2.connect(AU.fd);if(AU.rvIn)g2.connect(AU.rvIn);o.start(t0);o.stop(t0+.4)}nz(t0,.02,.05*v,6000,'highpass');break}
+  case 'w':{const o=ac.createOscillator(),g2=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(1250,t0);g2.gain.setValueAtTime(.09*v,t0);g2.gain.exponentialRampToValueAtTime(.0001,t0+.07);o.connect(g2);g2.connect(AU.fd);o.start(t0);o.stop(t0+.09);break}
+  case 'n':{const s2=ac.createBufferSource(),fl=ac.createBiquadFilter(),g2=ac.createGain();s2.buffer=AU.nb;fl.type='bandpass';fl.Q.value=3;fl.frequency.setValueAtTime(900,t0);fl.frequency.linearRampToValueAtTime(2200,t0+.22);fl.frequency.linearRampToValueAtTime(900,t0+.44);
+    g2.gain.setValueAtTime(0,t0);g2.gain.linearRampToValueAtTime(.05*v,t0+.05);g2.gain.linearRampToValueAtTime(.0001,t0+.45);s2.connect(fl);fl.connect(g2);g2.connect(AU.fd);s2.start(t0,Math.random()*.03);s2.stop(t0+.46);break}
+  case 'W':{const s2=ac.createBufferSource(),fl=ac.createBiquadFilter(),g2=ac.createGain();s2.buffer=AU.nb;s2.loop=true;fl.type='lowpass';fl.frequency.setValueAtTime(500,t0);fl.frequency.linearRampToValueAtTime(900,t0+1.2);fl.frequency.linearRampToValueAtTime(400,t0+2.4);
+    g2.gain.setValueAtTime(0,t0);g2.gain.linearRampToValueAtTime(.045*v,t0+1.1);g2.gain.linearRampToValueAtTime(.0001,t0+2.6);s2.connect(fl);fl.connect(g2);g2.connect(AU.fd);if(AU.rvIn)g2.connect(AU.rvIn);s2.start(t0);s2.stop(t0+2.7);break}}}
 const BASS={root:'r.......r.......',long:'r...............',pulse:'r.r.r.r.r.r.r.r.',pulse8:'r.r.o.r.r.r.o.r.',walk:'r...3...5...a...',ostinato:'r..r..5.r..r..3.',gallop:'r..r..r.r..r..r.',waltz:'r...........',shanty:'r.....5.....'};
 const DRUMS={none:{},soft:{k:'x.......x.......',r:'..r...r...r...r.'},folk:{k:'x.......x.......',s:'....s.......s...',r:'..r...r...r...r.'},light:{k:'x.......x.......',r:'..r...r...r..rr.'},
   tribal:{k:'x.....x...x.....',t:'...t.....t..t.t.',r:'r.r.r.r.r.r.r.r.'},heart:{k:'x..x............'},rock:{k:'x.....x.x.......',s:'....s.......s...',h:'h.h.h.h.h.h.h.h.'},
@@ -935,7 +942,7 @@ function vfDraw(){if(!VF.length)return;g.setTransform(S*DPR,0,0,S*DPR,(W/2-camX*
 let VSHK=0;function shake(a){if(cineOK())VSHK=Math.max(VSHK,a)}
 function shakeTick(dt){if(VSHK>0){VSHK=Math.max(0,VSHK-dt*2.2);camX+=(Math.random()-.5)*VSHK*16;camY+=(Math.random()-.5)*VSHK*10}}
 // istantanea dell'eroe per le immagini fantasma
-function heroSnap(){return heroL(P.ap,P.eq.c?P.eq.c.r:-1,P.eq.h?P.eq.h.r:-1,P.eq.w?P.eq.w.r:0,P.eq.w?iv(P.eq.w):3,P.eq.s?P.eq.s.r:-1,0)}
+function heroSnap(){return heroL(P.ap,P.eq.c?P.eq.c.r:-1,P.eq.h?P.eq.h.r:-1,P.eq.w?P.eq.w.r:0,P.eq.w?iv(P.eq.w):3,P.eq.s?P.eq.s.r:-1,0,eqTy(P.eq))}
 const ANG=(dx,dy)=>Math.atan2(dy,dx);
 // ---- gli effetti di ogni abilità ----
 function fxArea(){haStart('area',.45);const c=lgFxCol();vf({k:'spin',x:P.px,y:P.py,r:1.5,a:0,c,d:.5,fol:1});vf({k:'ring',x:P.px,y:P.py,r0:.4,r:2.6,c:'255,230,170',w:7,d:.55,fill:1});
@@ -2694,7 +2701,7 @@ const _act75=act;act=function(e){if(MODE!=='ed'||!EDG){_act75(e);return}const d=
   if(e.k==='edtrig'){edTrig(d,1);return}
   if(e.k==='edlever'){const L=EDG.lev||(EDG.lev={});if(d.once&&EDG.used[d.u]){msg('Non si muove più.');return}e.on=e.on?0:1;L[d.u]=e.on;if(d.once)EDG.used[d.u]=1;if(d.v)EDG.v[d.v]=e.on;tone(e.on?240:180,.12,'square',.05);setTimeout(()=>tone(e.on?360:140,.08,'square',.04),90);if(cineOK())sparks(e.px,e.py,6,['#c8c8d0'],40);edRun(e.on?d.acts:d.off,{});save();return}
   if(e.k==='ch'&&d){if(d.key&&edHas(d.key)<1){msg('Il forziere è chiuso a chiave: serve '+((EW.items[d.key]||{}).n||'una chiave')+'.');tone(150,.2);return}EDG.open[d.u]=1;const lv=ZZ.lv||P.lv;
-    if(cineOK()){e.k='cho';e.ot=t;sceneChest(e)}else ents.splice(ents.indexOf(e),1);const nr=d.rnd==null?1:d.rnd|0;for(let i=0;i<nr;i++){const q={k:'dr',px:e.px+i*.5-.4,py:e.py+.5,it:item(lv+1,e.rich?1:0)};arcFrom(q,e.px,e.py,.25+i*.12);ents.push(q)}
+    if(cineOK()){e.k='cho';e.ot=t;sceneChest(e)}else ents.splice(ents.indexOf(e),1);const nr=d.rnd==null?1:d.rnd|0;for(let i=0;i<nr;i++){const q=dropOk({k:'dr',px:e.px+i*.5-.4,py:e.py+.5,it:item(lv+1,e.rich?1:0)});arcFrom(q,e.px,e.py,.25+i*.12);ents.push(q)}
     const gd=d.g>0?d.g|0:Math.round(ri(10,30)*(1+lv)*(e.rich?3:1)*(EW.set.gm||1));P.g+=gd;setTimeout(()=>goldFly(gd,e.px,e.py),250);for(const r of(d.items||[]))edGive(r.item,r.n||1,e.px,e.py);tone(800,.1);msg('Forziere aperto! +'+gd+' oro');edRun(d.acts,{});hud();save();return}
   if(e.k==='po'&&(d||e.edb)){const q=d||{};if(q.key&&edHas(q.key)<1){msg(q.msg||('È chiuso a chiave: serve '+((EW.items[q.key]||{}).n||'una chiave')+'.'));tone(150,.2);return}
     if(q.cond&&q.cond.length&&!edCond(q.cond)){msg(q.msg||'Il passaggio è chiuso.');tone(150,.2);return}if(IRB)return;const to=e.to,fr=Zk;if(!Z[to]){msg('Questo passaggio non porta da nessuna parte.');return}
@@ -4216,7 +4223,9 @@ const MOVEK=['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'];
 onkeydown=e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;const k=e.key.toLowerCase();
   if(k==='escape'&&$('mappa')&&$('mappa').style.display==='flex'){closeMap();return}
   if(k==='escape'){if(HED)hudEdit(0);else if($('look').style.display==='block')closeLook();else if($('chg').style.display==='block')closeChg();else if($('set').style.display==='block')closeSet();else if(started)cl();return}
-  if(HED||$('look').style.display==='block')return;
+  if(HED)return;
+  // 7.10: con la finestra dell'aspetto aperta il tasto C la chiude (come Esc); gli altri tasti restano fermi
+  if($('look').style.display==='block'){if(k==='c'&&!e.repeat)closeLook();return}
   if(!started)return;
   if(SET.wasd&&MOVEK.includes(k)){KEYS[k]=1;e.preventDefault();return}
   if(k==='r'){if(IT){P.path=[];P.tg=null;act(IT)}return}

@@ -8,7 +8,7 @@ let HUDh='',QTh='';
 function hud(){if(!P||!DF)return;skBar();const I=ico,cd=(n,v)=>`<span>${I(n)}${v}</span>`;
   const net=NET.code?`<div class="st">${NET.ok?`<span>${I('gente')}${NET.list.length+1} qui · stanza ${esc(NET.code)} ${pingTag(NET.ping)}</span>`+(NET.cfg.xpm>1||NET.cfg.gm>1?`<b style="color:#ffd84a">${I('stella')}Evento: ${NET.cfg.xpm>1?'XP ×'+NET.cfg.xpm:''}${NET.cfg.xpm>1&&NET.cfg.gm>1?' · ':''}${NET.cfg.gm>1?'oro ×'+NET.cfg.gm:''}</b>`:''):esc(NET.st)}</div>`:'';
   let c='';if(P.sk>0)c+=cd('esplosione',Math.ceil(P.sk)+'s');if(P.dgc>0)c+=cd('vortice',P.dgc.toFixed(1)+'s');if(P.lgc>0)c+=cd('pugnale',P.lgc.toFixed(1)+'s');if(P.bA>0)c+=cd('forza',Math.ceil(P.bA)+'s');if(P.bD>0)c+=cd('pietra',Math.ceil(P.bD)+'s');
-  const h=`<b>${esc(NET.name)}</b> · Livello ${P.lv} <small>(${DF.n})</small><div class="hb">${I('cuore')}<div class="b"><i style="width:${Math.max(0,P.hp)/P.mx*100}%;background:#d33"></i><span>${Math.max(0,P.hp)|0}/${P.mx}</span></div></div><div class="hb">${I('xp')}<div class="b"><i style="width:${P.xp/need()*100}%;background:#4ad"></i><span>XP ${P.xp|0}/${need()}</span></div></div>`+
+  const h=`<b>${esc(NET.name)}</b> · Livello ${P.lv} <small>(${DF.n})</small><div class="hb">${I('cuore')}<div class="b"><i style="width:${Math.max(0,P.hp)/P.mx*100}%;background:#d33"></i><span>${Math.ceil(Math.max(0,P.hp))}/${P.mx}</span></div></div><div class="hb">${I('xp')}<div class="b"><i style="width:${P.xp/need()*100}%;background:#4ad"></i><span>XP ${P.xp|0}/${need()}</span></div></div>`+
     `<div class="st"><span id="hg">${I('oro')}${P.g}</span>${cd('pozione',P.pot)}${cd('spada',atk())}${cd('scudo',def())}${cd('mira',crit()+'%')}${NET.ar?cd('trofeo',NET.ar.ap):''}</div>`+(c?`<div class="st">${c}</div>`:'')+
     (P.inv.length>=INV-4?`<div class="st"><b style="color:${P.inv.length>=INV?'#ff7a6a':'#ffd84a'}">${I('zaino')}${P.inv.length}/${INV}${P.inv.length>=INV?' · zaino pieno':''}</b></div>`:'')+
     (isNight()?`<div class="st"><span style="color:#b8c8ff">${I('luna')}Notte: esperienza +20%</span></div>`:'')+
@@ -17,7 +17,12 @@ function hud(){if(!P||!DF)return;skBar();const I=ico,cd=(n,v)=>`<span>${I(n)}${v
   let q='';const so=storyObj(1);if(so)q+=`${I('corona')} ${esc(so)}<br>`;for(const x of P.q){const T=QT[x.id];q+=`${I(qReady(x)?'spunta':'punto')} ${esc(T.ti)}: <b>${esc(qReady(x)?'consegna a '+NPCS[x.npc].n:qProg(x))}</b><br>`}
   if(q!==QTh){QTh=q;$('qt').innerHTML=q}}
 function cl(){if(PM==='trade'){trCancel();return}PM=0;$('pn').style.display='none';cineOff()}
-function tog(m){if(!started)return;if(PM===m)cl();else{if(m==='lb')NET.send({t:'lb'});if(m==='who'){NET.who=null;NET.send({t:'who'});NET.wt=0}pn(m)}}
+// 7.10: una finestra grande alla volta. Aprendo zaino, missioni, diario, classifica o giocatori, l'aspetto, le opzioni o la mappa
+// (da tastiera, dalla barra o dal menu touch) si chiudono le altre, invece di finire una sopra l'altra. Lo scambio in corso non si tocca.
+function winOnly(keep){if(keep!=='pn'&&started&&PM&&PM!=='trade'&&PM!=='treq')cl();
+  if(keep!=='look'&&$('look').style.display==='block')closeLook();if(keep!=='set'&&$('set').style.display==='block')closeSet();
+  if(keep!=='map'){const m=$('mappa');if(m&&m.style.display==='flex')closeMap()}}
+function tog(m){if(!started)return;if(PM===m)cl();else{winOnly('pn');if(m==='lb')NET.send({t:'lb'});if(m==='who'){NET.who=null;NET.send({t:'who'});NET.wt=0}pn(m)}}
 const cmp=it=>{const e=P.eq[it.s],d=iv(it)-iv(e);return d>0?`<span class="up">▲${d}</span>`:d<0?`<span class="dn">▼${-d}</span>`:''};
 function invRows(mode){let h=`<h4>Zaino (${P.inv.length}/${INV})</h4>`;if(!P.inv.length)h+='<p class="mu">Vuoto.</p>';
   P.inv.forEach((it,i)=>{h+=`<div class="it"><span>${fmt(it)} ${cmp(it)}</span><span>${mode==='sell'?(it.ar?'<span class="mu">invendibile</span>':it.lk?'<span class="mu" title="Sbloccalo dallo zaino per venderlo">🔒 bloccato</span>':`<button onclick="sell(${i})">Vendi ${it.p}💰</button>`):''}<button onclick="eqp(${i})">Equipa</button></span></div>`});return h}
@@ -98,7 +103,7 @@ function whoHTML(){let h=`<h3>👥 Giocatori nella stanza${NET.code?' '+esc(NET.
 function whoProf(id){const p=(NET.who||[]).find(q=>q.id===id);if(!p)return;const o=NET.pl[id]||{k:'pl',id,n:p.n,lv:p.lv};o.prof=null;o.par=null;NET.send({t:'prof',to:id});pn('pl',o)}
 /* ---- profilo di un altro giocatore: dati inviati dal suo gioco, risultati dell'arena dal server ---- */
 function profHTML(e){const p=e.prof,n=v=>Math.max(0,Math.round(+v||0));
-  let h=`<canvas class="port" width="96" height="122" data-ap='${JSON.stringify(apPack(apFix(e.ap)))}' data-eq='${JSON.stringify({c:e.c,h:e.h,w:e.w,wv:e.wv,s:e.s})}'></canvas><h3>👤 ${esc(e.n)} · Livello ${n(p?p.lv:e.lv)}</h3>`;
+  let h=`<canvas class="port" width="96" height="122" data-ap='${JSON.stringify(apPack(apFix(e.ap)))}' data-eq='${JSON.stringify({c:e.c,h:e.h,w:e.w,wv:e.wv,s:e.s,ty:e===P?tyPack(eqTy(P.eq)):e.ty||''})}'></canvas><h3>👤 ${esc(e.n)} · Livello ${n(p?p.lv:e.lv)}</h3>`;
   if(!p)h+=`<p class="mu">${NET.ok?'Caricamento del profilo…':'Profilo non disponibile senza server.'}</p>`;
   else{const df=DFS[n(p.df)],fh=`<b${n(p.df)===3?' style="color:#ff6a6a"':''}>${df?df.n:'?'}</b>`,hp=Math.min(n(p.hp),n(p.mx));
     h+=`<div class="b"><i style="width:${p.mx?hp/n(p.mx)*100:0}%;background:#d33"></i><span>Vita ${hp}/${n(p.mx)}</span></div><div class="b"><i style="width:${p.need?Math.min(100,n(p.xp)/n(p.need)*100):0}%;background:#4ad"></i><span>XP ${n(p.xp)}/${n(p.need)}</span></div>`;
@@ -136,7 +141,10 @@ function story(s){if(s===1&&P.st===0){P.st=1;PA={ti:'La missione del Re',tx:STOR
   jingle([60,67,72,76],.15,'triangle');npcMarks();hud();save()}
 /* ---- azioni di negozi e personaggi ---- */
 function eqp(i){const it=P.inv.splice(i,1)[0];if(P.eq[it.s])P.inv.push(P.eq[it.s]);P.eq[it.s]=it;recalc();sceneEquip();pn(PM);hud()}
-function uneq(s){if(P.inv.length>=INV){msg('Zaino pieno');return}P.inv.push(P.eq[s]);P.eq[s]=null;if(s==='w')P.eq.w={u:uid(),s:'w',r:0,v:3,n:'Pugnale',p:0};recalc();pn(PM);hud()}
+function uneq(s){const w0=P.eq[s];if(!w0)return;
+  // 7.10: il pugnale di base (quello che si riceve togliendo l'arma) non si toglie: prima ogni «Togli» regalava un pugnale in più nello zaino
+  if(s==='w'&&w0.n==='Pugnale'&&!w0.p&&!w0.up&&!w0.ml&&w0.v<=3){msg('È il pugnale di base: per cambiarlo equipaggia un\'altra arma');tone(150,.12);return}
+  if(P.inv.length>=INV){msg('Zaino pieno');return}P.inv.push(P.eq[s]);P.eq[s]=null;if(s==='w')P.eq.w={u:uid(),s:'w',r:0,v:3,n:'Pugnale',p:0};recalc();pn(PM);hud()}
 const dayN=(o=0)=>gDay()+o;
 function h01(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}h^=h>>>13;h=Math.imul(h,0x5bd1e995);h^=h>>>15;return(h>>>0)/4294967296}
 const dayEv=d=>{const u=h01('ev'+d);return u<.14?1:u>.88?2:0},offerQ=(k,d)=>h01('of'+k+d)<.2;
@@ -238,7 +246,7 @@ function setHTML(){const cats=setCats();if(!cats.some(c=>c[0]===SETC))SETC='gen'
 <section class="stc" role="tabpanel" aria-label="${C[2]}"><div class="stct">${ico(C[1],28)}<div><h4>${C[2]}</h4><div class="mu">${C[3]}</div></div></div>${setBody(SETC)}</section></div>
 <div class="stf"><span class="mu">Le impostazioni vengono salvate automaticamente.</span><span><button onclick="resetCat()">Ripristina questa sezione</button><button onclick="resetSet()">Ripristina tutto</button>${started?'<button onclick="closeSet();toMenu()">Salva ed esci al menu</button>':''}<button class="gold" onclick="closeSet()">Chiudi</button></span></div></div>`}
 // keep=1: stessa categoria, resta lo scorrimento; altrimenti si torna in cima
-function openSet(newCat){auInit();$('ztc').className='';const el=$('set'),was=el.style.display==='block',oc=el.querySelector('.stc'),sc=oc&&!newCat?oc.scrollTop:0;
+function openSet(newCat){auInit();winOnly('set');$('ztc').className='';const el=$('set'),was=el.style.display==='block',oc=el.querySelector('.stc'),sc=oc&&!newCat?oc.scrollTop:0;
   el.innerHTML=setHTML();el.classList.add('nw');el.style.display='block';const nc=el.querySelector('.stc');if(nc)nc.scrollTop=sc;const nv=el.querySelector('.stn'),on=nv&&nv.querySelector('.on');if(on){const a=on.offsetLeft-nv.offsetLeft,b=a+on.offsetWidth;if(a<nv.scrollLeft||b>nv.scrollLeft+nv.clientWidth)nv.scrollLeft=a-8;const t=on.offsetTop-nv.offsetTop,u=t+on.offsetHeight;if(t<nv.scrollTop||u>nv.scrollTop+nv.clientHeight)nv.scrollTop=t-8}
   if(!was&&cineOK()){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}}
 function closeSet(){$('set').style.display='none'}

@@ -4,7 +4,7 @@ const atk=()=>Math.round((4+P.lv*2+iv(P.eq.w))*(P.bA>0?1.25:1));
 const def=()=>Math.round(['h','c','s'].reduce((a,s)=>a+iv(P.eq[s]),0)*(P.bD>0?1.25:1));
 const crit=()=>5+eqs().reduce((a,i)=>a+(i.cr||0),0);
 const maxHP=()=>60+P.lv*15+eqs().reduce((a,i)=>a+(i.hp||0),0);
-const need=()=>20+P.lv*P.lv*11.5;
+const need=()=>Math.round(20+P.lv*P.lv*11.5);// 7.10: intero (prima ai livelli dispari compariva «XP 0/31.5»)
 let INV=24;
 function recalc(){P.mx=maxHP();P.hp=Math.min(P.hp,P.mx)}
 function newP(){return{k:'me',px:0,py:0,hp:75,mx:75,lv:1,xp:0,g:30,pot:3,eq:{w:{u:uid(),s:'w',r:0,v:3,n:'Pugnale',p:0}},inv:[],path:[],tg:null,at:0,sk:0,pc:0,fl:0,sw:0,rp:0,swc:0,bt:0,bA:0,bD:0,
@@ -22,8 +22,8 @@ function hurtE(e,d,rem,cr){if(e.shd&&e.shd>t){flt(e,'Immune','#9adcff');return}i
 function hurtP(at){if(P.iv>0){flt(P,'Schivata!','#8ce7ff');P.pf=3;tone(900,.05,'triangle');return}const d=Math.max(1,Math.round(at*(.8+Math.random()*.4)*100/(100+def()*2.5)));P.hp-=d;P.fl=.15;flt(P,d,'#ff6666');tone(110,.08);if(P.hp<=0)die()}
 function kill(e){const i=ents.indexOf(e);if(i<0)return;ents.splice(i,1);if(cineOK()&&e.m)ents.push({k:'dead',m:e.m,px:e.px,py:e.py,t0:t,boss:e.boss,fc:e.m.rg?faceOf(...(e.fd||[0,1])):null});if(Zk==='arrembaggio'&&!ARRW&&!ents.some(x=>x.k==='en')){ARRW=1;navHatch()}if(Zk==='stiva'&&!ARRW&&!ents.some(x=>x.k==='en')){ARRW=1;setTimeout(navWin,900)}if(MODE==='dim'&&e.dtag)dimKill(e);const z=ZZ;gainXP(Math.round(e.xp*DF.x*(NET.cfg.xpm||1)*nightXP()));
   const gd=Math.round(ri(2,6+z.lv*3)*(e.boss?6:1)*(1+(z.run||0)*.25)*(NET.cfg.gm||1));P.g+=gd;flt(e,'+'+gd+' oro','#ffd84a');goldFly(gd,e.px,e.py);
-  if(e.boss){ents.push({k:'dr',px:e.px,py:e.py,it:uniq(e.t,z.lv)},{k:'dr',px:e.px+.7,py:e.py+.2,it:item(z.lv+1,2)})}
-  else if(Math.random()<.4*DF.lt)ents.push({k:'dr',px:e.px,py:e.py,it:item(z.lv+1)});
+  if(e.boss){ents.push(dropOk({k:'dr',px:e.px,py:e.py,it:uniq(e.t,z.lv)}),dropOk({k:'dr',px:e.px+.7,py:e.py+.2,it:item(z.lv+1,2)}))}
+  else if(Math.random()<.4*DF.lt)ents.push(dropOk({k:'dr',px:e.px,py:e.py,it:item(z.lv+1)}));
   if(Math.random()<.12){P.pot++;flt(P,'+🧪','#88ff88')}
   P.kills++;questKill(e);if(e.boss)bossDown(e);hud()}
 function bossDown(e){jingle([60,64,67,72,76,79],.11);if(cineOK())sceneBossDown(e);else msg('Hai sconfitto '+e.n+'!');clog('','Hai sconfitto '+e.n+'!',{sys:1});if(ZZ.dg)dungeonClear(e)}
@@ -46,7 +46,7 @@ function die(){sceneDeath();if(MODE==='dim'){dimDie();return}if(DF.pm){started=0
   P.hp=P.mx;if(DFS.indexOf(DF)>0)P.g=P.g*.9|0;irisGo(()=>load('town'));if(!cineOK())msg('Sei stato sconfitto: ti risvegli ad Aldoria.')}
 // Affondo per tipo di arma: portata (caselle), moltiplicatore di danno, ricarica (secondi), nome. Schivata: ricarica DODGE_CD secondi.
 const DODGE_CD=3;
-const LG={Pugnale:{r:2.4,m:1.3,cd:4.5,n:'Fendente rapido'},Spada:{r:2.8,m:1.6,cd:6,n:'Affondo'},Stocco:{r:3.4,m:1.7,cd:6,n:'Affondo di stocco'},Lancia:{r:4,m:1.8,cd:7,n:'Stoccata'},Ascia:{r:2.2,m:2.1,cd:8,n:'Fendente'},Martello:{r:2.2,m:2.3,cd:9.5,n:'Schianto'},Bastone:{r:3,m:1.5,cd:6,n:'Colpo di bastone'},Falce:{r:2.6,m:1.8,cd:7,n:'Falciata'}},LGA={Lama:'Spada',Clava:'Martello'};
+const LG={Pugnale:{r:2.4,m:1.3,cd:4.5,n:'Fendente rapido'},Spada:{r:2.8,m:1.6,cd:6,n:'Affondo'},Stocco:{r:3.4,m:1.7,cd:6,n:'Affondo di stocco'},Lancia:{r:4,m:1.8,cd:7,n:'Stoccata'},Ascia:{r:2.2,m:2.1,cd:8,n:'Fendente'},Martello:{r:2.2,m:2.3,cd:9.5,n:'Schianto'},Bastone:{r:3,m:1.5,cd:6,n:'Colpo di bastone'},Falce:{r:2.6,m:1.8,cd:7,n:'Falciata'}},LGA={Lama:'Spada',Clava:'Martello',Tridente:'Lancia',Mannaia:'Ascia',Pungiglione:'Stocco',Daga:'Pugnale',Coltello:'Pugnale',Mazza:'Martello',Randello:'Martello',Maglio:'Martello',Alabarda:'Lancia',Picca:'Lancia',Scettro:'Bastone',Bacchetta:'Bastone',Verga:'Bastone'};
 function lgTypeOf(n){n=n||'';const k=Object.keys(LG).find(x=>n.includes(x))||LGA[Object.keys(LGA).find(x=>n.includes(x))]||'Spada';return LG[k]}
 function lgType(){return lgTypeOf(P.eq.w?P.eq.w.n:'')}
 // direzione dei tasti WASD/frecce sullo schermo → direzione nel mondo isometrico (destra = (1,-1), giù = (1,1)); null se nessun tasto è premuto
@@ -100,7 +100,7 @@ function act(e){
   if(e.k==='po'&&e.st==='tap'&&!(P.sec&&P.sec.c2)){secretFind('c2');return}
   if(e.k==='po'&&e.lock&&!(P.unl&&P.unl[e.lock])){msg(e.lockMsg||'Il passaggio è sbarrato.');tone(150,.2);return}
   if(e.k==='npc'){if(e.wd){e.path=[];e.wt=6}questTalk(e.nid);if(typeof QAS!=='undefined')QAS={id:'',i:-1};if(typeof MQA!=='undefined')MQA=-1;PA=e;pn('npc');if(!e.slp)voice(e);npcMarks();cineOn(e,1.25);return}
-  if(e.k==='ch'){if(cineOK()){e.k='cho';e.ot=t;sceneChest(e)}else ents.splice(ents.indexOf(e),1);const lv=ZZ.lv||Math.max(1,P.lv-1),n=e.rich?3:ri(1,2);for(let i=0;i<n;i++){const d={k:'dr',px:e.px+i*.5-.4,py:e.py+.5,it:item(lv+1,e.rich?1:0)};arcFrom(d,e.px,e.py,.25+i*.12);ents.push(d)}
+  if(e.k==='ch'){if(cineOK()){e.k='cho';e.ot=t;sceneChest(e)}else ents.splice(ents.indexOf(e),1);const lv=ZZ.lv||Math.max(1,P.lv-1),n=e.rich?3:ri(1,2);for(let i=0;i<n;i++){const d=dropOk({k:'dr',px:e.px+i*.5-.4,py:e.py+.5,it:item(lv+1,e.rich?1:0)});arcFrom(d,e.px,e.py,.25+i*.12);ents.push(d)}
     const gd=Math.round(ri(10,30)*(1+lv)*(e.rich?3:1)*(NET.cfg.gm||1));P.g+=gd;if(e.hc)P.hc[e.hc]=Date.now();tone(800,.1);msg('Forziere aperto! +'+gd+' oro');setTimeout(()=>goldFly(gd,e.px,e.py),250);hud();return}
   if(e.k==='po'&&e.dgx&&!e.ok){const L=dgLeft();if(L){PA={po:e,L};pn('exitask');tone(330,.08,'triangle');return}}
   if(e.k==='po'){if(IRB)return;whoosh();const to=e.to,fr=Zk;irisGo(()=>load(to,fr));return}
@@ -111,6 +111,9 @@ function act(e){
     if(P.sh.length>=6&&P.st===1)P.st=2;pn('txt');save();if(typeof filmShard==='function')filmShard(e.id);return}
   if(e.k==='lore'){ents.splice(ents.indexOf(e),1);if(cineOK()){sparks(e.px,e.py,12,['#f4e8c8','#ffd98a'],70);flyIcon(ICON('pagina',2).u,scr(e.px,e.py,14),bagBtn(),{sz:26})}P.lore.push(e.id);jingle([64,67,71],.12,'triangle');PA={ti:LORE[e.id][0],tx:LORE[e.id][1],sub:'Pagina '+P.lore.length+'/'+Object.keys(LORE).length+' · la trovi nel Diario (K)'};pn('txt');save();return}
   if(e.k==='board'){NET.send({t:'lb'});pn('lb');return}}
+// 7.10: un oggetto che cadrebbe dentro un muro, un arredo o l'acqua (boss ucciso contro una parete, forziere accanto al muro)
+// finisce sulla casella libera più vicina, così si può sempre raccogliere
+function dropOk(d){if(blk(d.px,d.py)){const[u,v]=nearFree(d.px|0,d.py|0);if(!blk(u+.5,v+.5)){d.px=u+.5;d.py=v+.5}}return d}
 function gain(it,wx,wy){if(P.inv.length<INV){P.inv.push(it);msg('Raccolto: '+iname(it));itemFly(it,wx,wy);hud();return true}
   const[x,y]=dropPos();dropLocal(it,x,y);msg('Zaino pieno: '+iname(it)+' è rimasto a terra accanto a te');hud();return false}
 /* ---- oggetti a terra personali (giocando da soli, o quando lo zaino è pieno): restano nella zona per 10 minuti ---- */

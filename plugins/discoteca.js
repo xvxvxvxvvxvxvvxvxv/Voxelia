@@ -6,8 +6,9 @@
 // In città c'è un portale per la discoteca, in piazza accanto alla strada sud (di fronte a quello del Borgo delle Case).
 // Mentre il DJ è occupato, parlandogli si vede la coda, si vota per saltare o mettere in pausa il brano
 // e si regola il volume. Si esce dalla porta: si torna nel punto da cui si era partiti.
-// I fari seguono il tempo del brano (124 battiti al minuto, o quelli scritti dopo il link): YouTube e
-// SoundCloud non lasciano leggere l'audio alla pagina, quindi il ritmo non si può ricavare dal suono.
+// I fari seguono il tempo del brano: il BPM si cerca per titolo su Deezer (gratis, senza chiave) e, se c'è una chiave,
+// su GetSongBPM; chi chiede il brano può anche scriverlo (/dj <link> 128). Se non si trova si usa 124. YouTube e SoundCloud
+// non lasciano leggere l'audio alla pagina, quindi il tempo è giusto ma il primo battito non è allineato al suono.
 
 // ======================= codice nel gioco =======================
 function nelGioco(ID, CFG) {
@@ -432,7 +433,7 @@ function nelGioco(ID, CFG) {
       h += '<div style="background:#221a34;border-radius:8px;padding:8px 10px;margin-bottom:10px">' +
         '<div style="font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:.05em">' + (c.pausa ? '⏸ In pausa' : '♪ Sta suonando') + '</div>' +
         '<div style="font-weight:600;margin:2px 0">' + e2(c.titolo) + '</div>' +
-        '<div style="font-size:12px;opacity:.75">' + (c.tipo === 'yt' ? 'YouTube' : 'SoundCloud') + ' · chiesto da ' + e2(c.by) + ' · <span data-tempo></span></div></div>';
+        '<div style="font-size:12px;opacity:.75">' + (c.tipo === 'yt' ? 'YouTube' : 'SoundCloud') + ' · chiesto da ' + e2(c.by) + ' · <span data-tempo></span>' + (c.bpm ? ' · <span title="' + e2(c.bpmFonte ? 'BPM da ' + c.bpmFonte : 'BPM non trovato: tempo predefinito') + '">' + (c.bpmFonte ? '' : '~') + c.bpm + ' BPM</span>' : '') + '</div></div>';
       const tuo = c.mio && CFG.richiedenteDecide;
       h += '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">' +
         btn(' data-voto="skip">⏭ ' + (tuo ? 'Salta' : (v.mioSkip ? 'Togli il voto' : 'Vota per saltare') + ' (' + v.skip + '/' + v.serve + ')'), v.mioSkip ? '#8a3a5a' : '#6a3a8a') +
@@ -544,15 +545,54 @@ function prendi(url, cb, giri = 0) {
   } catch (e) { fine(e); }
 }
 
+// ---- BPM dei brani: si cercano per titolo su Deezer (gratis, senza chiave) e, se c'è una chiave, su GetSongBPM ----
+// dal titolo di YouTube o SoundCloud ad artista e brano puliti: «Daft Punk - Get Lucky (Official Video) ft. X» → Daft Punk, Get Lucky
+function pulisci(titolo, autore) {
+  let t = String(titolo || '');
+  t = t.replace(/[\[(【][^\])】]*[\])】]/g, ' ');
+  t = t.replace(/\s*[|｜].*$/, '');
+  t = t.replace(/\b(official\s+(music\s+)?video|official\s+audio|lyric\s+video|lyrics?|visuali[sz]er|audio|videoclip|hd|4k)\b/gi, ' ');
+  let artista = '', brano = t;
+  const m = t.match(/^(.+?)\s+[-–—~]\s+(.+)$/);
+  if (m) { artista = m[1]; brano = m[2]; }
+  else artista = String(autore || '').replace(/\s*-\s*topic$/i, '').replace(/vevo$/i, '').replace(/\bofficial\b/gi, '');
+  const via = x => x.replace(/\s*\b(feat\.?|ft\.?|featuring|prod\.?)\s.*$/i, '').replace(/["“”«»]/g, '').replace(/\s+/g, ' ').trim();
+  return { artista: via(artista).slice(0, 60), brano: via(brano).slice(0, 80) };
+}
+const bpmOk = v => v >= 50 && v <= 220;
+const json = r => { try { return JSON.parse(r.corpo); } catch (e) { return null; } };
+function bpmDeezer(artista, brano, cb) {
+  const prova = (L, dopo) => {
+    const t = L.shift(); if (!t || !t.id) return dopo();
+    prendi('https://api.deezer.com/track/' + (t.id | 0), (e, r) => { const j = r && json(r), v = j && +j.bpm; if (bpmOk(v)) cb(v); else prova(L, dopo); });
+  };
+  const cerca = (q, dopo) => prendi('https://api.deezer.com/search?limit=3&q=' + encodeURIComponent(q), (e, r) => {
+    const j = r && json(r), L = j && Array.isArray(j.data) ? j.data.slice(0, 3) : [];
+    if (!L.length) dopo(); else prova(L, dopo);
+  });
+  if (artista) cerca('artist:"' + artista + '" track:"' + brano + '"', () => cerca(artista + ' ' + brano, () => cb(0)));
+  else cerca(brano, () => cb(0));
+}
+function bpmGetSong(chiave, artista, brano, cb) {
+  if (!chiave) return cb(0);
+  const look = 'song:' + brano + (artista ? ' artist:' + artista : '');
+  prendi('https://api.getsong.co/search/?api_key=' + encodeURIComponent(chiave) + '&type=' + (artista ? 'both' : 'song') + '&lookup=' + encodeURIComponent(look), (e, r) => {
+    const j = r && json(r), L = j && Array.isArray(j.search) ? j.search : [], t = L.find(x => x && bpmOk(+x.tempo));
+    cb(t ? +t.tempo : 0);
+  });
+}
+
 module.exports = {
   name: 'Discoteca',
-  version: '1.3',
+  version: '1.4',
   author: 'Voxelia',
   description: '/discoteca: una discoteca con DJ, brani da YouTube e SoundCloud, coda, voti e luci a tempo',
   defaults: {
     nome: 'Discoteca Voxel',
     nomeDj: 'DJ Voxel',
-    bpm: 124,                  // tempo delle luci quando chi chiede il brano non lo scrive (es. /dj <link> 128)
+    bpm: 124,                  // tempo delle luci quando il BPM del brano non si trova e chi lo chiede non lo scrive (es. /dj <link> 128)
+    cercaBpm: true,            // cerca il BPM di ogni brano per titolo su Deezer (gratis, senza registrarsi)
+    chiaveGetSongBpm: '',      // facoltativa: chiave gratuita di getsongbpm.com, usata quando Deezer non trova il brano
     sogliaVoto: 0.5,           // frazione dei presenti da superare per saltare o mettere in pausa (0.5 = più della metà)
     richiedenteDecide: true,   // chi ha chiesto il brano può saltarlo o metterlo in pausa senza voto
     maxCoda: 25,               // brani in coda al massimo
@@ -584,7 +624,7 @@ module.exports = {
     // ---- stato verso il gioco: uguale per tutti, più quello che riguarda chi lo riceve ----
     function invia(r, solo) {
       const s = sala(r), qui = presenti(r), adesso = Date.now(), c = s.cur;
-      const base = c && { n: c.n, tipo: c.tipo, vid: c.vid, url: c.url, titolo: c.titolo, by: c.by, bpm: c.bpm, dur: c.dur ? Math.min(c.dur, maxMs()) : 0,
+      const base = c && { n: c.n, tipo: c.tipo, vid: c.vid, url: c.url, titolo: c.titolo, by: c.by, bpm: c.bpm, bpmFonte: c.bpmFonte || '', dur: c.dur ? Math.min(c.dur, maxMs()) : 0,
         pausa: c.pausa != null, pos: c.pausa != null ? c.pausa : adesso - c.t0, t0: c.t0 };
       for (const p of solo ? [solo] : qui) {
         const k = p.name.toLowerCase();
@@ -595,6 +635,33 @@ module.exports = {
           voti: c ? { skip: c.skip.size, pausa: c.pz.size, serve: serve(qui.length), presenti: qui.length, mioSkip: c.skip.has(k), mioPausa: c.pz.has(k) } : null
         });
       }
+    }
+    // ---- BPM: dalla cache, poi Deezer, poi GetSongBPM se c'è la chiave; quando arriva si aggiorna chi è in sala ----
+    const cacheBpm = () => api.store.bpm && typeof api.store.bpm === 'object' ? api.store.bpm : (api.store.bpm = {});
+    function trovaBpm(q, r) {
+      if (q.bpmFonte) return;
+      const chiave = q.vid || q.url, C0 = cacheBpm();
+      const metti = (v, fonte) => {
+        q.bpm = Math.round(v); q.bpmFonte = fonte;
+        const s = sala(r); if (s.cur === q || s.coda.includes(q)) invia(r);
+      };
+      if (C0[chiave]) { metti(C0[chiave].b, C0[chiave].f); return; }
+      if (C.cercaBpm === false || q.senzaTitolo) return;
+      const { artista, brano } = pulisci(q.titolo, q.autore);
+      if (!brano) return;
+      const trovato = (v, fonte) => {
+        const K = Object.keys(C0); if (K.length >= 500) delete C0[K[0]];
+        C0[chiave] = { b: Math.round(v), f: fonte }; api.save();
+        api.log('BPM di «' + q.titolo + '»: ' + Math.round(v) + ' (' + fonte + ')');
+        metti(v, fonte);
+      };
+      bpmDeezer(artista, brano, v => {
+        if (v) return trovato(v, 'Deezer');
+        bpmGetSong(String(C.chiaveGetSongBpm || ''), artista, brano, v2 => {
+          if (v2) trovato(v2, 'GetSongBPM');
+          else api.log('BPM non trovato per «' + q.titolo + '» (cercato: ' + (artista ? artista + ' – ' : '') + brano + '): le luci vanno a ' + q.bpm);
+        });
+      });
     }
     const dici = (r, testo) => { for (const p of presenti(r)) p.tell('🎧 ' + testo); };
 
@@ -658,8 +725,8 @@ module.exports = {
         if (err) { if (o) o.send('esito', { testo: err }); return; }
         if (s.cur && ((q.vid && s.cur.vid === q.vid) || (q.url && s.cur.url === q.url))) { if (o) o.send('esito', { testo: 'Questo brano sta già suonando.' }); return; }
         if ((q.vid && s.coda.some(x => x.vid === q.vid)) || (q.url && s.coda.some(x => x.url === q.url))) { if (o) o.send('esito', { testo: 'Questo brano è già in coda.' }); return; }
-        Object.assign(q, { n: ++s.n, by: p.name, byKey: k, bpm: bpm || (+C.bpm || 124) });
-        s.coda.push(q);
+        Object.assign(q, { n: ++s.n, by: p.name, byKey: k, bpm: bpm || (+C.bpm || 124), bpmFonte: bpm ? 'scritto da ' + p.name : '' });
+        s.coda.push(q); trovaBpm(q, p.room);
         api.log(p.name + ' ha chiesto ' + (q.url || 'https://youtu.be/' + q.vid) + ' («' + q.titolo + '»)');
         if (o) o.send('esito', { ok: 1, testo: s.cur ? '«' + q.titolo + '» è in coda, al posto ' + s.coda.length + '.' : 'Arriva «' + q.titolo + '»!' });
         if (!s.cur) prossimo(p.room);
@@ -669,19 +736,19 @@ module.exports = {
       if (L.tipo === 'yt') {
         const link = 'https://www.youtube.com/watch?v=' + L.vid;
         prendi('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent(link), (e, r) => {
-          if (e || !r) return pronto(null, { tipo: 'yt', vid: L.vid, titolo: 'Video ' + L.vid });
+          if (e || !r) return pronto(null, { tipo: 'yt', vid: L.vid, titolo: 'Video ' + L.vid, senzaTitolo: 1 });
           if (r.stato === 401) return pronto('Questo video non si può riprodurre fuori da YouTube.');
           if (r.stato === 404 || r.stato === 400) return pronto('Non trovo questo video: forse è privato o è stato tolto.');
           let j = null; try { j = JSON.parse(r.corpo); } catch (x) {}
-          pronto(null, { tipo: 'yt', vid: L.vid, titolo: String(j && j.title || 'Video ' + L.vid).slice(0, 120) });
+          pronto(null, { tipo: 'yt', vid: L.vid, titolo: String(j && j.title || 'Video ' + L.vid).slice(0, 120), autore: String(j && j.author_name || '').slice(0, 80), senzaTitolo: !(j && j.title) });
         });
       } else {
         const conTitolo = url => prendi('https://soundcloud.com/oembed?format=json&url=' + encodeURIComponent(url), (e, r) => {
-          if (e || !r) return pronto(null, { tipo: 'sc', url, titolo: url.replace(/^https:\/\/soundcloud\.com\//, '') });
+          if (e || !r) return pronto(null, { tipo: 'sc', url, titolo: url.replace(/^https:\/\/soundcloud\.com\//, ''), senzaTitolo: 1 });
           if (r.stato === 404) return pronto('Non trovo questo brano su SoundCloud: forse è privato o è stato tolto.');
           let j = null; try { j = JSON.parse(r.corpo); } catch (x) {}
           const t = j && j.title ? String(j.title) : url.replace(/^https:\/\/soundcloud\.com\//, '');
-          pronto(null, { tipo: 'sc', url, titolo: t.slice(0, 120) });
+          pronto(null, { tipo: 'sc', url, titolo: t.slice(0, 120), autore: String(j && j.author_name || '').slice(0, 80), senzaTitolo: !(j && j.title) });
         });
         if (!L.corto) conTitolo(L.url);
         else prendi(L.corto, (e, r) => {

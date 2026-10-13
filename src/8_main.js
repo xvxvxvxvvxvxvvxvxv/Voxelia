@@ -1965,7 +1965,9 @@ function warSetup(id){const b=BATS[id];WAR={id,b,t:0,sup:[50,50*b.diff],lane:1,o
 function warSpawn(side,ut,lane,free){const W=WAR;if(!W||W.over)return false;const U=UT[ut];if(ents.filter(e=>e.tr&&!e.bld&&e.side===side).length>=30){if(!side)msg('Ryan: «Il campo è pieno, soldato! Aspetta che si liberi.»');return false}if(!free){if(W.sup[side]<U.c)return false;W.sup[side]-=U.c}
   const b=W.b,lv=P.lv||1,hm=(1+lv*.06)*(side?.8+.4*b.diff:1),am=(1+lv*.05)*(side?.8+.3*b.diff:1);const base=side?WE:WA,pts=lanePts(side,lane),d0=pts[1],dd=Math.hypot(d0[0]-base[0],d0[1]-base[1]);
   for(let i=0;i<U.sq;i++){const ox=(d0[0]-base[0])/dd*2.2+(Math.random()-.5)*1.2,oy=(d0[1]-base[1])/dd*2.2+(Math.random()-.5)*1.2,hp=Math.round(U.hp*hm);
-    const e={k:side?'en':'tr',tr:1,side,ut,id:eid++,t:'tr_'+ut,n:(side?'':'')+U.n,px:base[0]+ox,py:base[1]+oy,hp,mx:hp,at:U.at*am,r:U.r,sp:U.sp,cd:U.cd,cdt:.5+Math.random()*.5,lane,wp:1,m:warModel(side,ut),b:{n:U.n,np:1},fl:0,al:1,ag:0,xp:8+lv,boss:0,fd:[d0[0]-base[0],d0[1]-base[1]]};
+    // 7.11: la squadra nasce solo su caselle libere (prima un soldato su cinque della corsia centrale nasceva dentro il recinto dell'accampamento e restava lì per sempre)
+    const[sx,sy]=warFree(base[0]+ox,base[1]+oy,(d0[0]-base[0])/dd,(d0[1]-base[1])/dd);
+    const e={k:side?'en':'tr',tr:1,side,ut,id:eid++,t:'tr_'+ut,n:(side?'':'')+U.n,px:sx,py:sy,hp,mx:hp,at:U.at*am,r:U.r,sp:U.sp,cd:U.cd,cdt:.5+Math.random()*.5,lane,wp:1,m:warModel(side,ut),b:{n:U.n,np:1},fl:0,al:1,ag:0,xp:8+lv,boss:0,fd:[d0[0]-base[0],d0[1]-base[1]]};
     ents.push(e)}
   if(!side){tone(520,.06,'triangle');if(cineOK())sparks(base[0],base[1],10,['#7ad0ff','#ffffff'],50)}return true}
 function warGen(){const W=WAR,b=W.b;const lv=P.lv||1,hp=Math.round(3200*(1+lv*.06)),e={k:'en',tr:1,side:1,ut:'gen',id:eid++,t:'tr_gen',n:'Generale Varg',px:WE[0]-2,py:WE[1]+2,hp,mx:hp,at:26*(1+lv*.05),r:1.6,sp:1.4,cd:1.3,cdt:1,lane:1,wp:1,m:warModel(1,'gen'),b:{n:'Generale Varg',np:1,pt:1},fl:0,al:1,ag:0,xp:600,boss:0};
@@ -2002,8 +2004,19 @@ function warTick(dt){const W=WAR;if(!W||!ZZ||!ZZ.war||!started)return;W.t+=dt;if
   TRP=TRP.filter(p=>!p.done);
   if(W.base[1].hp<=0&&!W.over)warEnd(1);else if(W.base[0].hp<=0&&!W.over)warEnd(0,'Il tuo accampamento è caduto.');
   if(Math.floor(W.t*4)!==Math.floor((W.t-dt)*4))warUI()}
-function warMove(e,x,y,dt,boost){const dx=x-e.px,dy=y-e.py,d=Math.hypot(dx,dy);if(d<.05)return;const s=Math.min(d,e.sp*dt*(boost?1.45:1)),x0=e.px,y0=e.py;mv(e,dx/d*s,dy/d*s);e.fd=[dx/d,dy/d];e.mvT=t;
-  const mvd=Math.hypot(e.px-x0,e.py-y0);if(mvd<s*.25){e.stk=(e.stk||0)+dt;if(e.stk>1.2){e.igT=t+3;e.stk=0;e.wp=Math.max(1,e.wp)}}else e.stk=0}
+function warMove(e,x,y,dt,boost){const dx=x-e.px,dy=y-e.py,d=Math.hypot(dx,dy);if(d<.05)return;const sp=e.sp*dt*(boost?1.45:1);
+  // 7.11: chi si trova dentro una casella bloccata (recinto dell'accampamento, palizzata, acqua) ne esce verso la casella libera più vicina
+  if(blk(e.px,e.py)){const[u,v]=nearFree(e.px|0,e.py|0),ex=u+.5-e.px,ey=v+.5-e.py,ed=Math.hypot(ex,ey)||1,s=Math.min(ed,sp);e.px+=ex/ed*s;e.py+=ey/ed*s;e.fd=[ex/ed,ey/ed];e.mvT=t;return}
+  // 7.11: davanti a un ostacolo (il recinto, la palizzata del Forte Nero, il fiume del Ponte) la truppa lo aggira seguendo una strada vera
+  if(e.wpath&&e.wpath.length&&e.wpt>t&&Math.hypot(e.wgx-x,e.wgy-y)<3){const w=e.wpath[0],wx=w.x+.5-e.px,wy=w.y+.5-e.py,wd=Math.hypot(wx,wy);
+    if(wd<.3){e.wpath.shift();if(!e.wpath.length)e.wpath=null}else{const s=Math.min(wd,sp),x0=e.px,y0=e.py;mv(e,wx/wd*s,wy/wd*s);e.fd=[wx/wd,wy/wd];e.mvT=t;if(Math.hypot(e.px-x0,e.py-y0)<s*.2)e.wpath=null}return}
+  const s=Math.min(d,sp),x0=e.px,y0=e.py;mv(e,dx/d*s,dy/d*s);e.fd=[dx/d,dy/d];e.mvT=t;
+  const mvd=Math.hypot(e.px-x0,e.py-y0);if(mvd<s*.25){e.stk=(e.stk||0)+dt;if(e.stk>.5){e.stk=0;const[gx,gy]=warGoal(x,y),p=path(e.px|0,e.py|0,gx,gy);
+      if(p.length){e.wpath=p.slice(0,40);e.wpt=t+8;e.wgx=x;e.wgy=y}else{e.igT=t+3;e.wp=Math.max(1,e.wp)}}}else e.stk=0}
+// la casella libera più vicina a un punto, cercando prima lungo la direzione della corsia
+function warFree(x,y,dx,dy){if(!blk(x,y))return[x,y];for(let k=.25;k<=5;k+=.25){const u=x+dx*k,v=y+dy*k;if(!blk(u,v))return[u,v]}const[u,v]=nearFree(x|0,y|0);return[u+.5,v+.5]}
+// la meta di un percorso deve essere una casella libera (il centro dell'accampamento è recintato)
+function warGoal(x,y){const gx=x|0,gy=y|0;if(gx>=0&&gy>=0&&gx<N&&gy<N&&WK(M[gy][gx]))return[gx,gy];return nearFree(gx,gy)}
 function warShoot(e,tg,k,dmg){const st=k==='stone';TRP.push({k,x0:e.px,y0:e.py,z0:e.bld?40:st?14:18,x1:tg.px,y1:tg.py,t:0,d:st?1.1:.35+dist(e,tg)*.06,tg,src:e,side:e.side,dmg});if(Math.random()<.4)tone(st?140:900,.04,st?'sawtooth':'triangle',.02)}
 function warHit(src,o,d){d=Math.max(1,Math.round(d));if(o===P){hurtP(d);return}if(o.hp<=0)return;o.hp-=d;o.fl=.12;if(SET.dmg&&(src===P||Math.random()<.35))flt(o,d,o.side?'#ffffff':'#ffb0a0');if(o.hp<=0)kill(o)}
 // la morte di una truppa (dagli eroi o dalle truppe)

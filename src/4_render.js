@@ -850,7 +850,7 @@ const BABN={charge:'Carica!',slam2:'Terremoto!',rain:'Pioggia di colpi!',nova:'E
 function bossAI(dt){for(const e of ents){if(e.k!=='en'||!e.boss||!e.al)continue;const d=dist(e,P);
   if(e.ch){e.ch.t-=dt;const s=10*dt;mv(e,e.ch.dx*s,e.ch.dy*s);if(!e.ch.h&&dist(e,P)<1.3){e.ch.h=1;hurtP(e.at*1.4)}if(e.ch.t<=0)e.ch=null;continue}
   if(d>14)continue;e.bab=(e.bab==null?4:e.bab)-dt;if(e.bab>0)continue;
-  const L=BAB[e.t]||['nova','slam2'],[k,arg]=L[(e.bi=(e.bi||0)+1)%L.length].split(':');e.bab=(e.enr?4.5:6.5)+Math.random()*1.5;flt(e,BABN[k]||'!','#ffb04a');
+  const L=BAB[e.t]||['nova','slam2'],[k,arg]=L[(e.bi=(e.bi||0)+1)%L.length].split(':');e.bab=bossGap(e);flt(e,BABN[k]||'!','#ffb04a');
   switch(k){
     case 'charge':{const dd=d||1;e.ch={dx:(P.px-e.px)/dd,dy:(P.py-e.py)/dd,t:Math.min(.7,d/10+.15)};whoosh();break}
     case 'slam2':for(let i=0;i<3;i++)fx.push({k:'warn',x:e.px+(P.px-e.px)*i/2,y:e.py+(P.py-e.py)*i/2,r:2,t:1+i*.25,mx:1+i*.25,dmg:e.at*1.3});tone(70,.3,'sawtooth',.05);break;
@@ -872,7 +872,7 @@ function campfires(sp){const r=sd(hs(Zk+'falo')),d=bfs(sp[0],sp[1]),free=(x,y)=>
 let CAMPM=0;
 function campTick(dt){if(!ZZ||!ZZ.dg||P.hp<=0)return;let near=false;const x0=P.px|0,y0=P.py|0;for(let y=y0-2;y<=y0+2&&!near;y++)for(let x=x0-2;x<=x0+2;x++)if(y>0&&x>0&&y<N&&x<N&&DEC[y][x]===','&&Math.hypot(x+.5-P.px,y+.5-P.py)<1.9){near=true;break}
   if(!near){CAMPM=0;return}if(ents.some(e=>e.k==='en'&&e.al&&dist(e,P)<7))return;if(!CAMPM){CAMPM=1;msg('Ti riposi accanto al fuoco: la vita torna piano piano.')}
-  if(P.hp<P.mx){P.hp=Math.min(P.mx,P.hp+P.mx*.05*dt);if(Math.random()<dt*1.5&&cineOK())sparks(P.px,P.py,2,['#66ff88'],30)}}
+  if(P.hp<P.mx){P.hp=Math.min(P.mx,P.hp+P.mx*(MODE==='story'?.03:.05)*dt);if(Math.random()<dt*1.5&&cineOK())sparks(P.px,P.py,2,['#66ff88'],30)}}
 /* motel: due scale (a destra e a sinistra) e un corridoio con tutte le stanze */
 Z.in_motel=Object.assign({},Z.in_motel,{N:16,np:[['portiere',7,2],['ospite',3,10]],po:[[1,7,'in_motel2','Scale (sinistra) · primo piano',{st:'up'}],[14,7,'in_motel2','Scale (destra) · primo piano',{st:'up'}]],lay:[
   '################','#p...CCCCCC...p#','#..............#','#..............#','#.nn...TT...nn.#','#.nn........nn.#','#..............#','#..............#','#....======....#','#....======....#','#..............#','#k............b#','#..............#','#p............p#','#..............#','#######D########']});
@@ -1277,7 +1277,7 @@ const MNODE={nord:[-.78,-.82],forest:[0,-1.05],campi:[1.02,-.55],desert:[1.08,.0
 function zoneCreatures(k){const z=Z[k];if(!z)return'';const L=[...new Set((z.en||[]).filter(e=>E[e]).map(e=>E[e].n))];const b=z.boss&&E[z.boss]?E[z.boss].n:'';return(L.length?L.join(', '):'')+(b?(L.length?' · ':'')+'boss: '+b:'')}
 function brochureHTML(){let h='<div class="bro"><div class="bcov"><b>Benvenuti ad Aldoria</b><span>Guida ufficiale del Regno · con mappa, quartieri, creature e dungeon</span></div>';
   for(const z of ZB){const Zz=Z[z.k]||{},cr=zoneCreatures(z.k);h+=`<div class="bcard" id="zb_${z.k}"><h4>${z.ic} ${esc(z.nm||Zz.n||z.k)}</h4><p class="mu">Come arrivare: ${z.how}${Zz.lv?' · livello consigliato: '+Zz.lv+'+':''}</p><p>${z.tx}</p><p><b>Cosa trovi</b></p><ul>${z.f.map(x=>`<li>${x}</li>`).join('')}</ul>${cr?`<p class="mu"><b>Creature:</b> ${esc(cr)}</p>`:''}</div>`}
-  h+='<div class="bcard" id="zb_dun"><h4>⚔ I sette dungeon</h4><p>Ogni dungeon custodisce un frammento della Corona (la Cittadella è la dimora di Malakar). Rinascono più forti a ogni ciclo.</p><ul>';
+  h+='<div class="bcard" id="zb_dun"><h4>⚔ I sette dungeon</h4><p>Ogni dungeon custodisce un frammento della Corona (la Cittadella è la dimora di Malakar). Rinascono più forti a ogni ciclo.</p><p class="mu">Attenti ai <b>Campioni</b>, più grossi e con un alone dorato ai piedi: sono molto più forti degli altri, ma lasciano sempre un buon bottino, e a ogni ciclo se ne incontrano di più. E i nemici non sono mai soli: chi vi vede chiama quelli che gli stanno vicino.</p><ul>';
   for(const id in DG){const d=DG[id];h+=`<li><b>${esc(d.n)}</b> · livello ${d.lv}+ · ${d.fls} piani · boss: ${E[d.boss]?esc(E[d.boss].n):'?'}<br><span class="mu">Dove: ${esc(DGH[id]||'')}</span></li>`}
   return h+'</ul></div><p class="mu" style="text-align:center">Stampato dalla Tipografia Reale di Aldoria · distribuito gratis alle porte della città</p></div>'}
 /* ---- 6.10: mappa rinnovata. Si ingrandisce (rotellina, +/−, pizzico, doppio clic), si trascina,
@@ -1448,8 +1448,8 @@ const EN={'Il Regno Perduto':'The Lost Kingdom','— RPG punta e clicca in grafi
 'Una cabina blu spuntata nel bosco ti trascina attraverso le epoche: Far West, Londra vittoriana, Rivoluzione e Grande Guerra. Più azione, scelte difficili, finali diversi.':'A blue booth that appeared in the woods drags you through time: the Wild West, Victorian London, the Revolution and the Great War. More action, hard choices, different endings.',
 '🎡 Parco giochi':'🎡 Playground','Modalità libera e creativa. In lavorazione.':'A free, creative mode. Work in progress.','← Torna alle modalità':'← Back to modes','Il tuo eroe':'Your hero','Nome':'Name','Codice stanza':'Room code',
 'Aspetto dell\'eroe':'Hero\'s look','Pelle, capelli, occhi, barba, vestiti, mantello e corporatura.':'Skin, hair, eyes, beard, clothes, cloak and build.','Nuova partita':'New game','Facile':'Easy','Normale':'Normal','Difficile':'Hard','Incubo':'Nightmare',
-'Nemici deboli (HP −30%, danni −40%), più bottino. Si rinasce in città.':'Weak enemies (HP −30%, damage −40%), more loot. You respawn in town.','L\'esperienza bilanciata. Si rinasce in città perdendo il 10% dell\'oro.':'The balanced experience. You respawn in town losing 10% of your gold.',
-'Nemici resistenti (HP +50%, danni +40%), meno bottino.':'Tough enemies (HP +50%, damage +40%), less loot.','HP ×2,2, danni ×2. Morte permanente: se cadi, il salvataggio viene cancellato.':'HP ×2.2, damage ×2. Permadeath: if you fall, your save is deleted.',
+'Nemici deboli (HP −30%, danni −40%), più bottino. Si rinasce in città.':'Weak enemies (HP −30%, damage −40%), more loot. You respawn in town.','L\'esperienza bilanciata. Si rinasce in città perdendo il 15% dell\'oro.':'The balanced experience. You respawn in town losing 15% of your gold.',
+'Nemici resistenti (HP +50%, danni +40%), meno bottino. Si rinasce perdendo il 25% dell\'oro.':'Tough enemies (HP +50%, damage +40%), less loot. You respawn losing 25% of your gold.','HP ×2,2, danni ×2. Morte permanente: se cadi, il salvataggio viene cancellato.':'HP ×2.2, damage ×2. Permadeath: if you fall, your save is deleted.',
 'Prologo':'Prologue','La storia della Corona di Voxel, raccontata dall\'inizio':'The story of the Voxel Crown, told from the beginning','Impostazioni':'Settings','Audio, grafica, fotogrammi, comandi, cursore e HUD':'Audio, graphics, frame rate, controls, cursor and HUD',
 'Novità':'What\'s new','NUOVO':'NEW','Tutte le modifiche, versione per versione':'Every change, version by version','Comandi':'Controls','Tastiera e mouse':'Keyboard and mouse',
 '▶ Continua il viaggio':'▶ Continue the journey','✨ Nuovo viaggio':'✨ New journey','Inizia dalla cabina apparsa nella Foresta di Elmwood.':'Start from the booth that appeared in the Elmwood Forest.','🎬 Cinematica iniziale':'🎬 Opening cutscene','Come siamo finiti dentro la cabina.':'How we ended up inside the booth.',

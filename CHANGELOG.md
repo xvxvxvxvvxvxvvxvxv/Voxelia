@@ -5,6 +5,51 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.11 — Un regno più difficile, l'Abominio in cinque fasi e tutti i filmati rifatti (14 ottobre 2026)
+
+### Il regno è più difficile
+Nella Modalità Storia l'eroe con l'equipaggiamento migliore non è più quasi intoccabile. I mondi di Voxelia Studio tengono l'equilibrio scelto dal loro autore.
+- **Nemici più forti.** Nei dungeon vita e danni crescono del 10% a Facile, del 20% a Normale e del 30% a Difficile e Incubo. Fuori dai dungeon l'aumento è di tre quarti. I boss hanno un altro 15% di vita, e tutti i nemici ti notano da un po' più lontano.
+- **Il branco.** Quando un nemico ti vede o viene colpito, chiama quelli che gli stanno vicino. Entrare in una stanza piena non vuol dire più affrontarli uno alla volta.
+- **I Campioni.** Ogni tanto un nemico è un Campione: più grosso, con quasi il doppio della vita, danni più alti, più veloce e con attacchi più frequenti. Si riconosce dall'alone dorato ai piedi e dalla scritta «★ Campione» sopra la testa. Nei dungeon se ne incontrano di più a ogni ciclo (dall'8% dei nemici fino al 20%), fuori città sono rari, in città mai. Un Campione vinto lascia sempre un oggetto, più oro e due volte e mezzo l'esperienza.
+- **Boss più aggressivi.** Usano le abilità più spesso. Quando sono già furiosi e scendono sotto un quarto della vita entrano nell'**ultima furia**: diventano più veloci, attaccano di più e usano un'abilità ogni tre o quattro secondi.
+- **Pozioni.** Curano il 35% della vita (prima il 40%) e tra un sorso e l'altro passano 2,5 secondi (prima 1): in battaglia non si può più bere a raffica. Se premi troppo presto, sopra l'eroe compare quanto manca. Dai nemici cadono un po' meno spesso.
+- **Armatura e falò.** L'armatura protegge un po' meno, e i falò dei dungeon curano più piano (3% della vita al secondo invece del 5%).
+- **Cadere costa di più.** Si perde il 15% dell'oro a Normale e il 25% a Difficile (prima il 10%).
+- La guida di Aldoria (nella mappa) avvisa dei Campioni e del branco.
+
+### Il vero finale: l'Abominio in cinque fasi
+La battaglia contro l'Abominio, sotto Aldoria Vecchia, ora è lunga e molto difficile. È divisa in cinque fasi, ognuna con il suo bersaglio, i suoi attacchi e un consiglio del fantasma di Malakar. I cerchi rossi a terra dicono sempre dove arriverà il colpo.
+1. **Le braccia.** Quattro braccia schiacciano il punto dove sei e spazzano la stanza da un lato all'altro. Quando ne restano due colpiscono due volte di fila: dove sei e dove stai andando.
+2. **Il ventre.** Piove acido che lascia pozze velenose, arrivano ondate di vomito a ventaglio, e ogni dieci secondi il ventre si chiude (non si può colpire) e libera le anime.
+3. **L'eco della Regina.** Dal ventre squarciato esce l'ombra della Regina Elara, presa dall'Abominio la notte della nebbia. Si teletrasporta intorno a te, piange un anello di colpi (il Lamento) e chiama le anime, mentre l'Abominio continua a colpire. Non va uccisa ma liberata: quando la sconfiggi se ne va in pace e ti lascia la sua benedizione, +20% ai danni fino alla fine della battaglia.
+4. **L'Occhio.** La testa si abbassa. Raggi dritti verso di te, anelli di colpi, anime e lo **sguardo che ruota** per la stanza: bisogna corrergli dietro, non davanti.
+5. **Il cuore.** La nebbia si stringe verso il centro della stanza e fa male a chi resta fuori, e arrivano tutti gli attacchi insieme. Il fantasma di Malakar ti protegge con uno scudo ogni 14 secondi. Dopo 75 secondi l'Abominio impazzisce e ogni colpo fa più male.
+- A Normale, al livello 17-18 con l'equipaggiamento epico, la battaglia dura sei o sette minuti e servono parecchie pozioni.
+- Anche il dialogo con il fantasma di Malakar prima della battaglia racconta tutte le fasi.
+
+### Tutti i filmati rifatti
+- **Girati nei luoghi veri del gioco.** La sala del trono, la piazza della fontana, la porta ovest, il porto, Aldoria Vecchia, la stanza del culto, la cappella, le prigioni, la fucina di Borin, i dungeon dei frammenti, la Cittadella e la stanza dell'Occhio, con gli stessi edifici, arredi, luci e abitanti che vedi giocando. I ricordi e le visioni hanno scene disegnate apposta.
+- **Personaggi nuovi per la storia.** Aldric il Primo, Aldric e Malakar da giovani e da bambini, i muratori che chiudono la porta ovest, bambini e abitanti in fuga, la Regina Elara. L'eroe compare con il suo equipaggiamento vero.
+- **Niente più scatti.** I personaggi camminano lungo le strade, mai nell'acqua o dentro i muri. Partono e si fermano con dolcezza, si girano verso dove vanno o verso chi parla, ed entrano in scena camminando o con una dissolvenza: nessuno compare o sparisce di colpo, e nemmeno gli oggetti.
+- **Come al cinema.** Bande nere, sottotitoli con il nome di chi parla, musica e suoni per ogni inquadratura. Si salta con «Salta». Sui telefoni in verticale l'inquadratura si avvicina un po', così i personaggi non diventano minuscoli.
+- **Il prologo** racconta la storia della Corona dall'inizio: la fondazione di Aldoria, la forgia della Corona, ciò che dorme sotto la città, i due fratelli da bambini, il Re Lich, la notte della nebbia, i sei frammenti e i loro signori, la porta ovest murata, e l'eroe che attraversa la piazza.
+- **Scene nuove:**
+  - **Il settimo cuore**: l'eroe trova il frammento nel pozzo prosciugato della vecchia piazza;
+  - **La notte della nebbia**: quando trovi l'ultimo pezzo della verità, vedi come sono andate davvero le cose ad Aldoria Vecchia;
+  - nel **vero finale**: l'arresto di Aldric nella sala del trono, i fiori di Malakar davanti alla porta ovest, l'incoronazione in piazza e Borin che distrugge la Corona sull'incudine;
+  - nella **festa del Campione**: la piazza in festa con il Re, Ryan, Stefano, Dino, Gilda, Borin e Mira, il bardo che suona e i bambini che ballano.
+- **I ricordi dei frammenti** (uno per frammento, nell'ordine in cui li trovi) partono dalla stanza del signore appena sconfitto.
+- Anche **la battaglia navale** (la tempesta, l'arrembaggio, il tesoro del Capitano Scarlatto) e **Voxelia Dimension** (la cabina blu che si materializza nella Foresta di Elmwood e il ritorno a casa all'alba) hanno filmati veri.
+- Ogni filmato si vede **una volta sola** durante la partita e poi si rivede dal menu, in **Scene della storia**.
+- Durante un filmato i banner, il nome della zona e i messaggi aspettano la fine invece di comparire sopra le immagini, e la ruota delle azioni resta nascosta.
+
+### Correzioni
+- **Battaglie di Ryan il Pelato:** alcune truppe nascevano dentro la base centrale e restavano bloccate lì per tutta la battaglia. Ora nascono sulla casella libera più vicina, verso il nemico, e se restano incastrate cercano da sole la strada intorno agli ostacoli.
+- I messaggi in basso compaiono sopra la ruota delle azioni: prima finivano mezzi coperti.
+
+---
+
 ## 7.10 — Armi vere in mano, una musica per ogni edificio e caccia ai bug (13 ottobre 2026)
 
 ### L'equipaggiamento si vede davvero

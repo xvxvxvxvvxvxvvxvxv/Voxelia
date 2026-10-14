@@ -88,11 +88,23 @@ function nelGioco(ID) {
     'font:600 13px system-ui,sans-serif;color:#fff;text-shadow:0 1px 2px #000;text-align:center';
   bar.innerHTML = '<div class=n></div><div style="height:10px;margin-top:3px;background:#0009;border:1px solid #ffd84a88;border-radius:5px;overflow:hidden"><div class=v style="height:100%;width:100%;background:linear-gradient(90deg,#c0392b,#ff8a3a);transition:width .3s"></div></div>';
   document.body.appendChild(bar);
+  // sui telefoni la barra al centro finirebbe sopra l'HUD e la minimappa (comandi touch della 7.9): se non c'è spazio
+  // va sotto l'HUD in alto a sinistra, come la scheda della Discoteca, e il riquadro dei Gruppi si mette sotto
+  let pos = '';
+  function posizionaBarra() {
+    const h = document.getElementById('hud'), r = h && h.getBoundingClientRect();
+    const larga = Math.min(420, innerWidth * .7), sotto = !!(r && r.height && r.right + 8 > (innerWidth - larga) / 2);
+    const p = sotto ? [Math.round(r.bottom + 8), Math.max(8, Math.round(r.left)), Math.min(240, Math.max(180, Math.round(r.width + 25)))].join() : 'centro';
+    if (p === pos) return; pos = p;
+    if (!sotto) { Object.assign(bar.style, { left: '50%', top: '54px', transform: 'translateX(-50%)', width: 'min(420px,70vw)', textAlign: 'center' }); return; }
+    const [top, left, larg] = p.split(',');
+    Object.assign(bar.style, { left: left + 'px', top: top + 'px', transform: 'none', width: 'min(' + larg + 'px,calc(100vw - 32px))', textAlign: 'left' });
+  }
   function disegna() {
     const e = boss();
     if (!qui() || !e) { bar.style.display = 'none'; return; }
     const f = Math.max(0, Math.min(1, e.hp / e.mx));
-    bar.style.display = 'block';
+    bar.style.display = 'block'; posizionaBarra();
     bar.querySelector('.n').textContent = '⚔ ' + B.nome + ' · ' + Math.ceil(f * 100) + '%';
     bar.querySelector('.v').style.width = (f * 100) + '%';
   }
@@ -124,7 +136,7 @@ function nelGioco(ID) {
 
 module.exports = {
   name: 'Boss del mondo',
-  version: '1.0',
+  version: '1.1',
   author: 'Voxelia',
   description: 'Un boss enorme compare in una zona selvaggia: si affronta tutti insieme e il premio va in base al contributo (/boss)',
   defaults: {

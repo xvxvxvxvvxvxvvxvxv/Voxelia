@@ -3,6 +3,11 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Link interi in chat
+
+- Controllo del 14 ottobre, per la 7.11.1, che rende cliccabili i link nella chat (provato: i link dei due plugin diventano cliccabili): solo due plugin scrivevano in chat un link a metà (`/plugins/…` senza indirizzo), **Albo degli eroi** (`/albo` col tuo nome) e **Speedrun dei dungeon** (`/speedrun`). Ora scrivono il link intero, es. `https://voxelia.esempio.it/plugins/albo/`. Gli altri plugin in chat non scrivono link: le pagine admin si aprono dal pannello.
+- L'indirizzo è quello da cui ogni eroe ha aperto il gioco (lo manda il codice del plugin nella pagina del gioco), quindi è giusto anche per chi gioca in locale o in LAN. Chi ha il server dietro un dominio o un tunnel può fissarlo con `indirizzo` nel config dei due plugin. Su un gioco senza i link cliccabili il testo resta leggibile come prima.
+
 ## Compatibilità con la 7.11
 
 - Controllo del 14 ottobre sul gioco 7.11 (con le novità di 7.9, 7.9.1-7.9.4 e 7.10): tutti i plugin si caricano senza errori, e nel gioco vero (computer e telefono, due eroi online) non compaiono errori. I nomi del gioco che i plugin usano ci sono tutti, con gli stessi parametri, e il ponte `VXP` è uguale riga per riga.
@@ -49,7 +54,10 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - I messaggi di chat compaiono come fumetto sopra chi li scrive, al posto della scritta gialla del gioco (`fumettiChat`). Il fumetto compare solo se il server ha consegnato il messaggio: chi è silenziato dall'admin o dal Guardiano non ha più la scritta sopra la testa, che il gioco mostrava lo stesso.
 - Funziona insieme ai Gruppi d'avventura (nome verde e barra della vita restano) e col «rendering veloce». Chi non ha ricaricato la pagina dopo l'installazione non vede i fumetti e `/saluta` glielo dice.
 
-## Speedrun dei dungeon (`speedrun.js`) — 1.0
+## Speedrun dei dungeon (`speedrun.js`) — 1.1
+
+**1.1** — 14 ottobre 2026
+- Link interi in chat: `/speedrun` scrive l'indirizzo completo della pagina (es. `https://voxelia.esempio.it/plugins/speedrun/?stanza=…`), così dalla 7.11.1 si apre con un clic dalla chat. L'indirizzo è quello da cui l'eroe gioca, oppure `indirizzo` nel config.
 
 **1.0** — 14 ottobre 2026 (scritto e provato sulla 7.8, insieme a tutti gli altri plugin)
 - Il cronometro parte quando l'eroe entra nel primo piano di un dungeon e si ferma quando ne sconfigge il boss; a ogni piano nuovo arriva il tempo parziale. Tutto misurato sul server.
@@ -264,7 +272,10 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 **1.0** — 8 ottobre 2026
 - `/giornaliero` e `/serie`: 7 premi crescenti nei giorni di fila, un premio al giorno per connessione, promemoria all'ingresso.
 
-## Albo degli eroi (`albo.js`) — 1.0
+## Albo degli eroi (`albo.js`) — 1.1
+
+**1.1** — 14 ottobre 2026
+- Link interi in chat: `/albo` con il tuo nome scrive l'indirizzo completo della pagina (es. `https://voxelia.esempio.it/plugins/albo/`), così dalla 7.11.1 si apre con un clic dalla chat. L'indirizzo è quello da cui l'eroe gioca, oppure `indirizzo` nel config.
 
 **1.0** — 9 ottobre 2026
 - Pagina web pubblica `/plugins/albo/` con una scheda per eroe: livello, ultima volta online, ore di gioco (contate dall'Albo con l'ingresso e l'uscita, più un controllo al minuto), punti e posizione nell'arena. Ricerca per nome e ordinamento per livello, ore, arena, visti di recente o nome; si aggiorna da sola e va bene su telefono.

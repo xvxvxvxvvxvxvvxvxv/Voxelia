@@ -23,13 +23,14 @@ function nomiPesci(dir) {
 
 module.exports = {
   name: 'Albo degli eroi',
-  version: '1.0',
+  version: '1.1',
   author: 'Voxelia',
   description: 'Pagina web con la scheda di ogni eroe (livello, ore di gioco, arena e i dati degli altri plugin) e /albo <nome>',
   defaults: {
     titolo: 'Albo degli eroi',
     nascosti: [],              // nomi da non mostrare mai sulla pagina pubblica
-    minutiMinimi: 0            // sulla pagina solo gli eroi con almeno tanti minuti di gioco contati dall'Albo (0 = tutti)
+    minutiMinimi: 0,           // sulla pagina solo gli eroi con almeno tanti minuti di gioco contati dall'Albo (0 = tutti)
+    indirizzo: ''              // indirizzo pubblico del server per i link in chat, es. https://voxelia.example.it (vuoto = quello da cui gioca ogni eroe)
   },
 
   setup(api) {
@@ -38,6 +39,15 @@ module.exports = {
     const pesce = nomiPesci(__dirname);
     const bot = p => !!(globalThis.VoxeliaStress && globalThis.VoxeliaStress.bot(p));
     const valido = n => !!K(n) && K(n) !== 'eroe';   // "Eroe" è il nome di chi non l'ha ancora scelto
+
+    // ---------- indirizzo completo per i link in chat (dalla 7.11.1 i link in chat si cliccano) ----------
+    // "indirizzo" nel config vince; se è vuoto si usa l'indirizzo da cui ogni eroe ha aperto il gioco
+    const origini = new Map();   // id della connessione → es. https://voxelia.example.it
+    api.client('(function(){const ID=' + JSON.stringify(api.id) + ';let u=0;const di=()=>VXP.send(ID,"origine",{o:location.origin});' +
+      'VXP.on(ID,"origine?",di);setInterval(()=>{try{if(NET.ok&&NET.id&&NET.id!==u){u=NET.id;di()}}catch(e){}},1000)})();');
+    api.onClient('origine', (p, d) => { const o = String(d && d.o || ''); if (/^https?:\/\/[A-Za-z0-9.:\[\]-]{1,200}$/.test(o)) origini.set(p.id, o); });
+    api.after(500, () => { for (const p of api.players()) p.send('origine?', {}); });   // dopo una Ricarica del plugin
+    const linkPagina = (p, resto) => (String(C.indirizzo || '').trim().replace(/\/+$/, '') || origini.get(p.id) || '') + '/plugins/' + api.id + '/' + (resto || '');
 
     // ---------- ore di gioco ----------
     const visto = new Map();   // id della connessione → ultima volta che il tempo è stato contato
@@ -51,7 +61,7 @@ module.exports = {
       return e;
     }
     api.on('join', p => { visto.delete(p.id); const e = conta(p); if (e) { e.accessi++; api.save(); } });
-    api.on('leave', p => { if (conta(p, true)) api.save(); });
+    api.on('leave', p => { origini.delete(p.id); if (conta(p, true)) api.save(); });
     api.every(MIN, () => { let n = 0; for (const p of api.players()) if (conta(p)) n++; if (n) api.save(); });
     api.on('start', () => { for (const p of api.players()) conta(p); });   // dopo Ricarica: riprende chi è già online
     api.on('stop', () => { for (const p of api.players()) conta(p, true); api.save(); });
@@ -136,7 +146,7 @@ module.exports = {
       if (k !== K(p.name) && nascosto(k)) return chi + ' non compare nell\'Albo.';
       const e = eroi(false).find(e => K(e.nome) === k);
       if (!e) return 'Nell\'Albo non c\'è nessun eroe di nome ' + chi + '.';
-      return scheda(e) + (k === K(p.name) ? '\nLa pagina con tutti gli eroi: /plugins/' + api.id + '/' : '');
+      return scheda(e) + (k === K(p.name) ? '\nLa pagina con tutti gli eroi: ' + linkPagina(p) : '');
     });
 
     // ---------- pagina web ----------

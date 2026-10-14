@@ -235,7 +235,7 @@ const descr = it => it.n + (it.up ? ' +' + it.up : '');
 
 module.exports = {
   name: 'Mercatino di Aldoria',
-  version: '1.0',
+  version: '1.1',
   author: 'Voxelia',
   description: '/mercato: metti in vendita gli oggetti dello zaino e compra quelli degli altri, anche quando il venditore non è online',
   defaults: {
@@ -271,7 +271,10 @@ module.exports = {
     const proprio = p => !!p && aut.get(p.id) === K(p.name);
     const durata = () => (+C.giorniScadenza > 0 ? +C.giorniScadenza : 7) * GIORNO;
     const scade = b => b.t + durata() - Date.now();
-    const tassa = n => Math.floor(n * Math.max(0, Math.min(100, +C.tassaPercento || 0)) / 100);
+    // tassa del momento: quella del config, meno lo sconto di un decreto del Sindaco se è in corso
+    const scontoOra = () => S.sconto && S.sconto.fino > Date.now() ? S.sconto : null;
+    const tassaPc = () => { const t = Math.max(0, Math.min(100, +C.tassaPercento || 0)), sc = scontoOra(); return sc ? Math.max(0, t - sc.pc) : t; };
+    const tassa = n => Math.floor(n * tassaPc() / 100);
     const vietata = p => (C.vietateDa || []).some(z => String(p.zone).split('@')[0] === z) || (!C.ancheNeiDungeon && String(p.zone).includes('@'));
     const consDi = k => S.cons[k] || (S.cons[k] = []);
     const online = k => api.players().filter(o => K(o.name) === k && proprio(o));
@@ -287,13 +290,27 @@ module.exports = {
         miei: S.banchi.filter(b => b.k === k).map(pub),
         cons: (mio && S.cons[k] || []).map(c => ({ id: c.id, it: c.it, paga: c.paga || 0, perche: c.perche })),
         vendite: S.storia.filter(v => mio && v.dk === k).slice(-8).reverse().map(v => ({ n: v.n, a: v.a, netto: v.netto, t: v.t })),
-        oro: inc && mio ? inc.oro : 0, tassa: Math.max(0, Math.min(100, +C.tassaPercento || 0)), giorni: +(durata() / GIORNO).toFixed(1),
+        oro: inc && mio ? inc.oro : 0, tassa: tassaPc(), giorni: +(durata() / GIORNO).toFixed(1),
         max: C.banchiPerEroe | 0, prezzoMax: Math.max(1, C.prezzoMax | 0), proprio: mio, bloccato: !!S.bloccati[k]
       });
     }
     // chi guarda il mercatino vede subito i banchi cambiati (solo chi ha chiesto lo stato da poco)
     const guarda = new Map();
     function aggiornaTutti() { const ora = Date.now(); for (const p of api.players()) if ((guarda.get(p.id) || 0) > ora - 120000) stato(p); }
+
+    // aggancio per il Sindaco di Aldoria: decreto «sconto» = tassa più bassa di pc punti per ms millisecondi
+    globalThis.VoxeliaMercato = {
+      sconto(pc, ms, chi) {
+        if (scontoOra()) return 'C\'è già uno sconto in corso al ' + C.nome + '.';
+        const prima = Math.max(0, Math.min(100, +C.tassaPercento || 0));
+        if (!prima) return 'Il ' + C.nome + ' non ha tasse da scontare.';
+        pc = Math.max(1, Math.min(100, +pc || 0)); S.sconto = { pc, fino: Date.now() + Math.max(60000, +ms || 0), da: String(chi || '') }; api.save();
+        api.log('sconto di ' + pc + ' punti sulla tassa' + (chi ? ' (decreto di ' + chi + ')' : ''));
+        aggiornaTutti();
+        const ora = tassaPc(), min = Math.round((S.sconto.fino - Date.now()) / 60000);
+        return { testo: (ora ? 'tassa del ' + C.nome + ' al ' + ora + '% invece del ' + prima + '%' : C.nome + ' senza tassa sulle vendite') + ' per ' + min + (min === 1 ? ' minuto' : ' minuti') };
+      }
+    };
 
     // ---------- oro al venditore ----------
     function paga(o, n) { while (n > 0) { const q = Math.min(n, 1e6); o.give('gold', q); n -= q; } }
@@ -525,5 +542,5 @@ module.exports = {
     }), { admin: true });
   },
 
-  stop(api) { for (const p of api.players()) p.send('spegni', {}); }
+  stop(api) { delete globalThis.VoxeliaMercato; for (const p of api.players()) p.send('spegni', {}); }
 };

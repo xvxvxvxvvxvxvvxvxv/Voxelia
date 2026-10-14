@@ -3,7 +3,7 @@
 // Un giorno del mondo dura 24 minuti veri, quindi una notte dalle 22 alle 5 dura circa 7 minuti.
 module.exports = {
   name: 'Notti di caccia',
-  version: '1.0',
+  version: '1.1',
   author: 'Voxelia',
   description: 'Eventi notturni con XP moltiplicata e una gara a punti: /evento',
   defaults: {
@@ -102,7 +102,7 @@ module.exports = {
       const ev = st().ev, a = adesso();
       if (ev) {
         const cl = Object.values(ev.punti).sort((x, y) => y.p - x.p), mio = ev.punti[chiave(p.name)];
-        return 'Notte di caccia in corso (XP ×' + ev.xpEvento + ', finisce alle ' + String(C.oraFine).padStart(2, '0') + ':00 del mondo, ora sono le ' + a.c.time + ').\n' +
+        return 'Notte di caccia in corso (XP ×' + ev.xpEvento + ', ' + (ev.fino ? 'decreto del sindaco: finisce tra ' + ((m => m + (m === 1 ? ' minuto' : ' minuti'))(Math.max(1, Math.ceil((ev.fino - Date.now()) / 60000)))) : 'finisce alle ' + String(C.oraFine).padStart(2, '0') + ':00 del mondo, ora sono le ' + a.c.time) + ').\n' +
           (cl.length ? cl.slice(0, 5).map((r, i) => (i + 1) + '. ' + r.nome + ': ' + r.p).join('\n') : 'Ancora nessun punto: sconfiggi un boss!') +
           '\nI tuoi punti: ' + (mio ? mio.p : 0) + '. Boss: ' + C.puntiBoss + ', vittoria nel Colosseo: ' + C.puntiArena + '.';
       }
@@ -118,14 +118,27 @@ module.exports = {
     // all'avvio e ogni 5 secondi: inizia, riprende o chiude l'evento secondo l'ora del mondo
     function controlla() {
       const a = adesso(), ev = st().ev;
-      if (ev && (!a.notte || a.numero !== ev.notte)) finisci();
+      if (ev && ev.fino) { if (Date.now() >= ev.fino) finisci(); else if (ev.sospeso) { ev.sospeso = false; api.server.setCfg({ xpm: ev.xpEvento }); api.save(); } }   // anticipata dal Sindaco: dura quanto una notte
+      else if (ev && (!a.notte || a.numero !== ev.notte)) finisci();
       else if (ev && ev.sospeso) { ev.sospeso = false; api.server.setCfg({ xpm: ev.xpEvento }); api.save(); }   // ripresa dopo Ricarica o riavvio
       else if (!ev && a.notte && evento(a.numero)) inizia(a.numero);
       return a;
     }
     api.on('start', controlla);
+
+    // aggancio per il Sindaco di Aldoria: decreto «notte di caccia anticipata», che parte subito e dura quanto una notte del mondo
+    globalThis.VoxeliaNotti = {
+      inCorso: () => !!st().ev,
+      anticipa(chi) {
+        if (st().ev) return 'C\'è già una notte di caccia in corso.';
+        const ore = ((C.oraFine - C.oraInizio) % 24 + 24) % 24 || 7;   // un'ora del mondo = un minuto vero
+        inizia('sindaco'); st().ev.fino = Date.now() + ore * 60000; api.save();
+        api.log('notte di caccia anticipata' + (chi ? ' da ' + chi : '') + ' per ' + ore + ' minuti');
+        return { testo: 'notte di caccia adesso, per ' + ore + (ore === 1 ? ' minuto' : ' minuti') };
+      }
+    };
   },
 
   // spegnendo il plugin a metà evento, l'XP torna com'era; se il plugin riparte prima dell'alba, l'evento riprende
-  stop(api) { const ev = api.store.ev; if (ev && api.server.cfg.xpm === ev.xpEvento) { api.server.setCfg({ xpm: ev.xpPrima }); ev.sospeso = true; api.save(); } }
+  stop(api) { delete globalThis.VoxeliaNotti; const ev = api.store.ev; if (ev && api.server.cfg.xpm === ev.xpEvento) { api.server.setCfg({ xpm: ev.xpPrima }); ev.sospeso = true; api.save(); } }
 };

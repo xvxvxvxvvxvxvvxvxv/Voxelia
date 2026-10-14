@@ -117,7 +117,7 @@ function sensore(ID, INT) {
 
 module.exports = {
   name: 'Guardiano',
-  version: '2.4',
+  version: '2.5',
   author: 'Voxelia',
   description: 'Riconosce oro, livelli, statistiche e oggetti ottenuti con trucchi o cheat esterni; pagina admin con le prove',
   defaults: {
@@ -595,7 +595,61 @@ module.exports = {
 
     // ---------- pagina admin ----------
     const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const GC = { alta: '#ff6b6b', media: '#f2b84b', bassa: '#8fb3ff' };
+    // stesso aspetto dei menu di Voxelia e della guida: Georgia, oro con l'ombra ruggine, barra di legno con i chiodi,
+    // pannelli col bordo color legno e l'ombra piena sotto, intestazioni delle tabelle in legno; tema chiaro e scuro
+    const CSS = `:root{--bg:#10131a;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--lo:#c98a1a;
+--title:#f5b942;--tshadow:#8a3b12;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--rowh:#f5b9420f;--code:#ffd98a;--good:#4cd07a;--bad:#e8484f;--sea:#4aa3ff;--ember:#ff8a5a;
+--f:Georgia,'Times New Roman',serif;color-scheme:dark}
+:root[data-theme=light]{--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;--title:#6a2a1a;--tshadow:#e0c48a;
+--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;--code:#6a2a1a;--good:#1f8a45;--bad:#b8282f;--sea:#1f6ab8;--ember:#a8460a;color-scheme:light}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;--title:#6a2a1a;--tshadow:#e0c48a;
+--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;--code:#6a2a1a;--good:#1f8a45;--bad:#b8282f;--sea:#1f6ab8;--ember:#a8460a;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--fg);font:400 15px/1.55 var(--f);
+background:radial-gradient(ellipse 90% 50% at 50% -10%,#24305466,transparent 70%),repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}
+a{color:var(--ac);text-decoration-thickness:1px;text-underline-offset:2px}a:hover{color:var(--hi)}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 26px 13px;
+background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,0 5px 0 #00000066}
+.top::before,.top::after{content:'';position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}
+.top::before{left:8px}.top::after{right:8px}
+h1{margin:0;font:bold 1.45rem/1.1 var(--f);font-variant:small-caps;letter-spacing:.05em;color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244}
+h1 small{display:block;font:italic 400 .8rem var(--f);font-variant:normal;letter-spacing:0;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:3px}
+.top .r{margin-left:auto;display:flex;gap:8px;align-items:center}
+main{max-width:1280px;margin:0 auto;padding:22px clamp(14px,3vw,32px) 56px}
+.stats{display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin:0 0 18px;padding:0}
+.stats li{display:flex;align-items:baseline;gap:7px;background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 4px 0 var(--drop);padding:.35em .85em;color:var(--mu);font-size:.92rem}
+.stats b{font:bold 1.35rem var(--f);color:var(--hi);font-variant-numeric:tabular-nums}
+.card{background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005;padding:.75em 1em;margin:.6em 0 1em}
+.card p{margin:.3em 0}
+section{position:relative;padding-top:26px;margin-top:22px}
+section::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--lo),var(--line2) 40%,transparent);border-radius:2px}
+h2{display:flex;align-items:center;flex-wrap:wrap;gap:.5em;font:bold 1.55rem/1.15 var(--f);color:var(--title);text-shadow:2px 2px 0 var(--tshadow);margin:0 0 .4em}
+h2 a,h2 span{font-size:1rem;text-shadow:none}h2 span{font-size:inherit}
+p{margin:.45em 0}.mu{color:var(--mu)}.note{color:var(--mu);font-size:.92rem;max-width:90ch}
+b{color:var(--hi)}
+.tw{overflow:auto;border:2px solid var(--frame);border-radius:4px;background:var(--pan);margin:.7em 0 1em;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005}
+.tw.tall{max-height:78vh}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th{position:sticky;top:0;z-index:1;text-align:left;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.75em .7em;white-space:nowrap;
+background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}
+td{padding:.5em .7em;border-bottom:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:var(--rowh)}tr:hover td{background:var(--line)}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}td.vuoto{color:var(--mu);font-style:italic;text-align:center;padding:1em}
+td.az{white-space:nowrap}.t{font-weight:bold;color:var(--hi)}
+button,.chip{font:14px var(--f);color:#fff;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;padding:.38em .8em;margin:1px;cursor:pointer;text-decoration:none;
+box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,background .15s;display:inline-flex;align-items:center;gap:6px}
+button:hover,.chip:hover{background:#3b4770;color:#fff}button:active,.chip:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}
+button.r{background:#5a2228;border-color:#e8484f;color:#ffd2d2}button.r:hover{background:#74303a}
+.chip.on,button.on{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:.5em 0}
+.b{display:inline-block;font:bold .62rem var(--f);text-transform:uppercase;letter-spacing:.08em;border:1px solid #0005;border-radius:2px;box-shadow:0 2px 0 #0007;padding:.2em .5em;vertical-align:.1em}
+.b.alta{background:linear-gradient(180deg,#ff7a6a,#c8323a);color:#fff;text-shadow:0 1px 0 #0006}.b.media{background:linear-gradient(180deg,#ffd27a,#c98a1a);color:#2a1a06}.b.bassa{background:linear-gradient(180deg,#8fc4ff,#3f7fd0);color:#0b1830}
+.ok{color:var(--good);font-weight:bold}.no{color:var(--mu)}
+details summary{cursor:pointer;color:var(--ac);font-size:.85rem;margin-top:.3em}
+pre{white-space:pre-wrap;font:.78rem/1.4 ui-monospace,Menlo,Consolas,monospace;color:var(--code);background:var(--pan2);border:1px solid var(--line);border-radius:3px;padding:.5em .65em;margin:.35em 0 0}
+.sosp{list-style:none;padding:0;margin:.4em 0;display:grid;gap:6px}.sosp li{background:var(--pan2);border:1px solid var(--line2);border-left:5px solid var(--bad);border-radius:3px;padding:.4em .7em}.sosp li.sil{border-left-color:var(--sea)}
+@media(max-width:600px){.top{padding:10px 18px}h1{font-size:1.2rem}h2{font-size:1.25rem}}`;
     api.route('GET', '/', (req, res, x) => {
       const q = x.query, tutte = st().lista.slice().reverse();
       const L = tutte.filter(r => (!q.nome || chiave(r.nome) === chiave(q.nome)) && (!q.g || (GRAV[r.g || 'media'] || 2) >= (GRAV[q.g] || 1)));
@@ -604,46 +658,50 @@ module.exports = {
       const online = api.players().filter(p => !finto(p)).map(p => { const s = stato.get(p.id) || {}; return { p, sens: !!s.foto, n: tutte.filter(r => r.nome === p.name && r.t >= (s.entrato || 0)).length }; });
       const G = C.statistiche ? tabellaGuadagni() : [];
       const link = (o) => '?' + Object.entries(Object.assign({ nome: q.nome || '', g: q.g || '' }, o)).filter(([, v]) => v).map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
-      x.send(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guardiano</title>
-<style>body{font:14px system-ui,sans-serif;margin:0;padding:16px;background:#14161c;color:#e8e6e1}h1{font-size:20px}h2{font-size:16px;margin-top:22px}table{border-collapse:collapse;width:100%}
-td,th{padding:6px 8px;border-bottom:1px solid #2c303a;text-align:left;vertical-align:top}th{color:#9aa0ab;font-weight:600}.t{font-weight:600}a{color:#9cc4ff}
-button{background:#2a2f3a;color:#e8e6e1;border:1px solid #444b5a;border-radius:6px;padding:4px 10px;cursor:pointer;margin:1px}button.r{background:#3a2a2a;color:#ffd2d2;border-color:#6a3a3a}
-.wrap{overflow-x:auto}p{color:#9aa0ab}.b{display:inline-block;border-radius:10px;padding:1px 8px;font-size:12px;font-weight:600;color:#14161c}pre{white-space:pre-wrap;font-size:12px;color:#c9c6bf;margin:4px 0}
-summary{cursor:pointer;color:#9aa0ab}.ok{color:#7bd88f}.no{color:#9aa0ab}</style>
-<h1>🛡 Guardiano ${esc(api.gameVersion ? '· Voxelia ' + api.gameVersion : '')}</h1>
-<p>${AM().attiva ? 'Automoderazione <b>accesa</b> (sostituisce l\'azione qui sotto) ·' : ''} Azione: <b>${esc(C.azione)}</b>${C.azione !== 'segnala' ? ' dalle segnalazioni di gravità <b>' + esc(C.azioneDa) + '</b>' : ''}${C.espelliDopo > 0 ? ' · espulsione dopo ' + C.espelliDopo + ' segnalazioni gravi' : ''} · sensore nel gioco: <b>${C.sensore ? 'acceso' : 'spento'}</b> · copia dell'eroe: <b>${esc(C.copia)}</b> · ${tutte.length} segnalazioni salvate. Le soglie si cambiano in guardiano.config.json.</p>
-<p><span class="b" style="background:${GC.alta}">alta</span> prova sicura di un trucco · <span class="b" style="background:${GC.media}">media</span> sospetto da controllare · <span class="b" style="background:${GC.bassa}">bassa</span> da sapere (progressi fuori dal server, grossi passaggi d'oro)</p>
-<h2>In gioco ora (${online.length})</h2>
-<div class="wrap"><table><tr><th>Eroe</th><th>Stanza / zona</th><th>Lv</th><th>Oro</th><th>Vita</th><th>Sensore</th><th>Segnalazioni</th><th></th></tr>
-${online.map(({ p, sens, n }) => `<tr><td><a href="${link({ nome: p.name })}">${esc(p.name)}</a></td><td>${esc(p.room)} / ${esc(p.zone)}</td><td>${p.lv}</td><td>${fmt(p.gold)}</td><td>${p.hp}/${p.maxHp}</td><td>${sens ? '<span class="ok">sì</span>' : '<span class="no">no</span>'}</td><td>${n}</td>
-<td><button onclick="az('${esc(p.id)}','ripristina','Riportare ${esc(p.name)} a oro e livello di inizio sessione e togliere gli oggetti impossibili?')">Ripristina</button><button onclick="az('${esc(p.id)}','citta')">In città</button><button class="r" onclick="az('${esc(p.id)}','espelli','Disconnettere ${esc(p.name)}?')">Espelli</button></td></tr>`).join('') || '<tr><td colspan="8">Nessuno.</td></tr>'}
-</table></div>
-${C.statistiche ? `<h2>Guadagni per ora di gioco</h2>
-<p>Per ogni fascia di livelli: la mediana dei giocatori con almeno mezz'ora di gioco e i 5 che guadagnano di più. Si segnala chi supera ${C.statMultiplo} volte la mediana dopo ${C.statOreMin} ${C.statOreMin == 1 ? 'ora' : 'ore'}, se nella fascia ci sono almeno ${C.statGiocatoriMin + 1} giocatori.</p>
-<div class="wrap"><table><tr><th>Fascia</th><th>Giocatori</th><th>Oro/ora (mediana)</th><th>Esperienza/ora (mediana)</th><th>Chi guadagna di più (oro/ora · volte la mediana · ore)</th></tr>
-${G.map(F => `<tr><td>${F.b * 10 || 1}-${F.b * 10 + 9}</td><td>${F.L.length}</td><td>${fmt(F.oro)}</td><td>${fmt(F.xp)}</td><td>${F.L.slice().sort((a, b) => b.oro - a.oro).slice(0, 5).map(r => `<a href="${link({ nome: r.nome })}">${esc(r.nome)}</a> ${fmt(r.oro)} · ${F.oro > 0 ? (r.oro / F.oro).toFixed(1) + '×' : '–'} · ${r.ore.toFixed(1)} h`).join('<br>')}</td></tr>`).join('') || '<tr><td colspan="5">Ancora pochi dati: servono almeno 30 minuti di gioco a testa.</td></tr>'}
-</table></div>` : ''}
+      const gr = q.g || '', alte = tutte.filter(r => r.g === 'alta').length;
+      x.send(`<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guardiano</title>
+<script>try{var t=localStorage.getItem('vx-tema');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>${CSS}</style>
+<header class="top"><h1>🛡 Guardiano<small>Pannello anti-trucchi${esc(api.gameVersion ? ' · Voxelia ' + api.gameVersion : '')}</small></h1>
+<div class="r"><button type="button" onclick="tema()" title="Tema chiaro o scuro">◐ Tema</button></div></header>
+<main>
+<ul class="stats"><li><b>${online.length}</b> in gioco</li><li><b>${tutte.length}</b> segnalazioni salvate</li><li><b>${alte}</b> di gravità alta</li>
+<li>Automoderazione <span class="${AM().attiva ? 'ok">accesa' : 'no">spenta'}</span></li><li>Sensore <span class="${C.sensore ? 'ok">acceso' : 'no">spento'}</span></li></ul>
+<div class="card"><p>${AM().attiva ? 'Automoderazione <b>accesa</b> (sostituisce l\'azione qui sotto) ·' : ''} Azione: <b>${esc(C.azione)}</b>${C.azione !== 'segnala' ? ' dalle segnalazioni di gravità <b>' + esc(C.azioneDa) + '</b>' : ''}${C.espelliDopo > 0 ? ' · espulsione dopo ' + C.espelliDopo + ' segnalazioni gravi' : ''} · sensore nel gioco: <b>${C.sensore ? 'acceso' : 'spento'}</b> · copia dell'eroe: <b>${esc(C.copia)}</b> · ${tutte.length} segnalazioni salvate. Le soglie si cambiano in guardiano.config.json.</p>
+<p><span class="b alta">alta</span> prova sicura di un trucco · <span class="b media">media</span> sospetto da controllare · <span class="b bassa">bassa</span> da sapere (progressi fuori dal server, grossi passaggi d'oro)</p></div>
+<section><h2>In gioco ora (${online.length})</h2>
+<div class="tw"><table><tr><th>Eroe</th><th>Stanza / zona</th><th>Lv</th><th>Oro</th><th>Vita</th><th>Sensore</th><th>Segnalazioni</th><th></th></tr>
+${online.map(({ p, sens, n }) => `<tr><td><a href="${link({ nome: p.name })}">${esc(p.name)}</a></td><td>${esc(p.room)} / ${esc(p.zone)}</td><td class="n">${p.lv}</td><td class="n">${fmt(p.gold)}</td><td class="n">${p.hp}/${p.maxHp}</td><td>${sens ? '<span class="ok">sì</span>' : '<span class="no">no</span>'}</td><td class="n">${n}</td>
+<td class="az"><button onclick="az('${esc(p.id)}','ripristina','Riportare ${esc(p.name)} a oro e livello di inizio sessione e togliere gli oggetti impossibili?')">Ripristina</button><button onclick="az('${esc(p.id)}','citta')">In città</button><button class="r" onclick="az('${esc(p.id)}','espelli','Disconnettere ${esc(p.name)}?')">Espelli</button></td></tr>`).join('') || '<tr><td colspan="8" class="vuoto">Nessuno.</td></tr>'}
+</table></div></section>
+${C.statistiche ? `<section><h2>Guadagni per ora di gioco</h2>
+<p class="note">Per ogni fascia di livelli: la mediana dei giocatori con almeno mezz'ora di gioco e i 5 che guadagnano di più. Si segnala chi supera ${C.statMultiplo} volte la mediana dopo ${C.statOreMin} ${C.statOreMin == 1 ? 'ora' : 'ore'}, se nella fascia ci sono almeno ${C.statGiocatoriMin + 1} giocatori.</p>
+<div class="tw"><table><tr><th>Fascia</th><th>Giocatori</th><th>Oro/ora (mediana)</th><th>Esperienza/ora (mediana)</th><th>Chi guadagna di più (oro/ora · volte la mediana · ore)</th></tr>
+${G.map(F => `<tr><td>${F.b * 10 || 1}-${F.b * 10 + 9}</td><td class="n">${F.L.length}</td><td class="n">${fmt(F.oro)}</td><td class="n">${fmt(F.xp)}</td><td>${F.L.slice().sort((a, b) => b.oro - a.oro).slice(0, 5).map(r => `<a href="${link({ nome: r.nome })}">${esc(r.nome)}</a> ${fmt(r.oro)} · ${F.oro > 0 ? (r.oro / F.oro).toFixed(1) + '×' : '–'} · ${r.ore.toFixed(1)} h`).join('<br>')}</td></tr>`).join('') || '<tr><td colspan="5" class="vuoto">Ancora pochi dati: servono almeno 30 minuti di gioco a testa.</td></tr>'}
+</table></div></section>` : ''}
 ${(() => { const a = AM(), s = st(), ora = Date.now(), M = Object.entries(s.mod).map(([k, m]) => ({ k, m, pt: puntiDi(k) })).filter(r => r.pt > 0 || (r.m.storia.length && ora - r.m.storia[r.m.storia.length - 1].t < 7 * 86400000)).sort((x, y) => y.pt - x.pt).slice(0, 50);
   const Sp = Object.entries(s.sospesi).filter(([, v]) => !v.fino || v.fino > ora), Si = Object.entries(s.silenziati).filter(([, v]) => !v.fino || v.fino > ora);
   const mb = (a2, nome, t, c) => `<button${c ? ' class="r"' : ''} onclick="md('${a2}','${esc(String(nome).replace(/'/g, ''))}')">${t}</button>`;
-  return `<h2>Automoderazione: ${a.attiva ? '<span class="ok">accesa</span>' : '<span class="no">spenta</span>'} ${a.attiva ? mb('spegni', '', 'Spegni', 1) : mb('accendi', '', 'Accendi')}</h2>
-<p>Punti per segnalazione: alta ${a.punti.alta}, media ${a.punti.media}, bassa ${a.punti.bassa}${Object.keys(a.puntiTipo).length ? ' · ' + Object.entries(a.puntiTipo).map(([t, v]) => esc(t) + ' ' + v).join(', ') : ''} · scadono dopo ${a.scadenzaOre} ore${a.esenti.length ? ' · esenti: ' + a.esenti.map(esc).join(', ') : ''}.<br>
-Regole: ${a.regole.map(r => r.punti + ' punti → ' + esc(r.azione) + (r.ore != null && (r.azione === 'sospendi' || r.azione === 'silenzia') ? (+r.ore ? ' ' + oreTxt(+r.ore) : ' per sempre') : '')).join(' · ')}. Si cambiano in guardiano.config.json (automoderazione).<br>
-${a.da === 'pagina' ? 'Accesa o spenta con il pulsante qui sopra: la scelta resta anche dopo riavvii e rebuild.' : a.da === 'config' ? 'Stato preso da guardiano.config.json: il pulsante qui sopra lo fissa e lo fa restare dopo riavvii e rebuild.' : 'Stato preso dalla variabile GUARDIANO_AUTOMODERAZIONE: il pulsante qui sopra ha la precedenza.'}</p>
-<div class="wrap"><table><tr><th>Eroe</th><th>Punti ora</th><th>Ultime sanzioni</th><th></th></tr>
-${M.map(({ k, m, pt }) => `<tr><td><a href="${link({ nome: m.nome })}">${esc(m.nome)}</a></td><td>${pt}</td><td>${m.storia.slice(-3).reverse().map(h => quando(h.t) + ': ' + esc(h.azione) + (h.tipo ? ' (' + esc(h.tipo) + ', ' + h.punti + ' punti)' : '')).join('<br>') || '–'}</td><td>${pt ? mb('azzera', m.nome, 'Azzera i punti') : ''}</td></tr>`).join('') || '<tr><td colspan="4">Nessun eroe con punti.</td></tr>'}
+  return `<section><h2>Automoderazione: ${a.attiva ? '<span class="ok">accesa</span>' : '<span class="no">spenta</span>'} ${a.attiva ? mb('spegni', '', 'Spegni', 1) : mb('accendi', '', 'Accendi')}</h2>
+<div class="card"><p>Punti per segnalazione: alta ${a.punti.alta}, media ${a.punti.media}, bassa ${a.punti.bassa}${Object.keys(a.puntiTipo).length ? ' · ' + Object.entries(a.puntiTipo).map(([t, v]) => esc(t) + ' ' + v).join(', ') : ''} · scadono dopo ${a.scadenzaOre} ore${a.esenti.length ? ' · esenti: ' + a.esenti.map(esc).join(', ') : ''}.</p>
+<p>Regole: ${a.regole.map(r => r.punti + ' punti → ' + esc(r.azione) + (r.ore != null && (r.azione === 'sospendi' || r.azione === 'silenzia') ? (+r.ore ? ' ' + oreTxt(+r.ore) : ' per sempre') : '')).join(' · ')}. Si cambiano in guardiano.config.json (automoderazione).</p>
+<p class="mu">${a.da === 'pagina' ? 'Accesa o spenta con il pulsante qui sopra: la scelta resta anche dopo riavvii e rebuild.' : a.da === 'config' ? 'Stato preso da guardiano.config.json: il pulsante qui sopra lo fissa e lo fa restare dopo riavvii e rebuild.' : 'Stato preso dalla variabile GUARDIANO_AUTOMODERAZIONE: il pulsante qui sopra ha la precedenza.'}</p></div>
+<div class="tw"><table><tr><th>Eroe</th><th>Punti ora</th><th>Ultime sanzioni</th><th></th></tr>
+${M.map(({ k, m, pt }) => `<tr><td><a href="${link({ nome: m.nome })}">${esc(m.nome)}</a></td><td class="n">${pt}</td><td>${m.storia.slice(-3).reverse().map(h => quando(h.t) + ': ' + esc(h.azione) + (h.tipo ? ' (' + esc(h.tipo) + ', ' + h.punti + ' punti)' : '')).join('<br>') || '–'}</td><td class="az">${pt ? mb('azzera', m.nome, 'Azzera i punti') : ''}</td></tr>`).join('') || '<tr><td colspan="4" class="vuoto">Nessun eroe con punti.</td></tr>'}
 </table></div>
-${Sp.length || Si.length ? `<p>${Sp.map(([, v]) => '⛔ <b>' + esc(v.nome) + '</b> sospeso ' + (v.fino ? 'fino al ' + quando(v.fino) : 'per sempre') + (v.ip ? ' (anche IP ' + esc(v.ip) + ')' : '') + ' per ' + esc(v.motivo) + ' ' + mb('riammetti', v.nome, 'Togli la sospensione', 1)).concat(Si.map(([, v]) => '🔇 <b>' + esc(v.nome) + '</b> silenziato ' + (v.fino ? 'fino al ' + quando(v.fino) : 'senza scadenza') + ' ' + mb('parla', v.nome, 'Togli il silenzio'))).join('<br>')}</p>` : ''}`; })()}
-<h2>Segnalazioni${q.nome ? ' di ' + esc(q.nome) + ' · <a href="' + link({ nome: '' }) + '">tutti</a>' : ''}</h2>
-<p>Mostra: <a href="${link({ g: '' })}">tutte</a> · <a href="${link({ g: 'media' })}">media e alta</a> · <a href="${link({ g: 'alta' })}">solo alta</a>
-${top.length ? ' · Più segnalati: ' + top.map(([n, c]) => '<a href="' + link({ nome: n }) + '">' + esc(n) + '</a> (' + c + ')').join(', ') : ''}</p>
-<p><button class="r" onclick="if(confirm('Cancellare tutte le segnalazioni?'))fetch('pulisci',{method:'POST',headers:{'x-voxelia':'1'}}).then(()=>location.reload())">Cancella le segnalazioni</button></p>
-<div class="wrap"><table><tr><th>Quando</th><th>Eroe</th><th>Gravità</th><th>Tipo</th><th>Dettaglio e prove</th><th>Stanza / zona</th><th>Lv</th><th>Oro</th><th>IP</th></tr>
-${L.slice(0, 400).map(r => { const g = r.g || 'media'; return `<tr><td>${new Date(r.t).toLocaleString('it-IT')}</td><td><a href="${link({ nome: r.nome })}">${esc(r.nome)}</a></td><td><span class="b" style="background:${GC[g]}">${g}</span></td><td class="t">${esc(r.tipo)}</td>
-<td>${esc(r.dettaglio)}${r.prove ? '<details><summary>prove</summary><pre>' + esc(JSON.stringify(r.prove, null, 1)) + '</pre></details>' : ''}</td><td>${esc(r.stanza)} / ${esc(r.zona)}</td><td>${r.lv}</td><td>${r.oro == null ? '' : fmt(r.oro)}</td><td>${esc(r.ip)}</td></tr>`; }).join('') || '<tr><td colspan="9">Nessuna segnalazione.</td></tr>'}
-</table></div>
+${Sp.length || Si.length ? `<ul class="sosp">${Sp.map(([, v]) => '<li>⛔ <b>' + esc(v.nome) + '</b> sospeso ' + (v.fino ? 'fino al ' + quando(v.fino) : 'per sempre') + (v.ip ? ' (anche IP ' + esc(v.ip) + ')' : '') + ' per ' + esc(v.motivo) + ' ' + mb('riammetti', v.nome, 'Togli la sospensione', 1) + '</li>').concat(Si.map(([, v]) => '<li class="sil">🔇 <b>' + esc(v.nome) + '</b> silenziato ' + (v.fino ? 'fino al ' + quando(v.fino) : 'senza scadenza') + ' ' + mb('parla', v.nome, 'Togli il silenzio') + '</li>')).join('')}</ul>` : ''}</section>`; })()}
+<section><h2>Segnalazioni${q.nome ? ' di ' + esc(q.nome) + ' <a href="' + link({ nome: '' }) + '">tutti gli eroi</a>' : ''}</h2>
+<div class="chips"><a class="chip${gr ? '' : ' on'}" href="${link({ g: '' })}">Tutte</a><a class="chip${gr === 'media' ? ' on' : ''}" href="${link({ g: 'media' })}">Media e alta</a><a class="chip${gr === 'alta' ? ' on' : ''}" href="${link({ g: 'alta' })}">Solo alta</a>
+<button class="r" style="margin-left:auto" onclick="if(confirm('Cancellare tutte le segnalazioni?'))fetch('pulisci',{method:'POST',headers:{'x-voxelia':'1'}}).then(()=>location.reload())">Cancella le segnalazioni</button></div>
+${top.length ? '<p class="note">Più segnalati: ' + top.map(([n, c]) => '<a href="' + link({ nome: n }) + '">' + esc(n) + '</a> (' + c + ')').join(', ') + '</p>' : ''}
+<div class="tw tall"><table><tr><th>Quando</th><th>Eroe</th><th>Gravità</th><th>Tipo</th><th>Dettaglio e prove</th><th>Stanza / zona</th><th>Lv</th><th>Oro</th><th>IP</th></tr>
+${L.slice(0, 400).map(r => { const g = r.g || 'media'; return `<tr><td style="white-space:nowrap">${new Date(r.t).toLocaleString('it-IT')}</td><td><a href="${link({ nome: r.nome })}">${esc(r.nome)}</a></td><td><span class="b ${esc(g)}">${esc(g)}</span></td><td class="t">${esc(r.tipo)}</td>
+<td>${esc(r.dettaglio)}${r.prove ? '<details><summary>prove</summary><pre>' + esc(JSON.stringify(r.prove, null, 1)) + '</pre></details>' : ''}</td><td>${esc(r.stanza)} / ${esc(r.zona)}</td><td class="n">${r.lv}</td><td class="n">${r.oro == null ? '' : fmt(r.oro)}</td><td>${esc(r.ip)}</td></tr>`; }).join('') || '<tr><td colspan="9" class="vuoto">Nessuna segnalazione.</td></tr>'}
+</table></div></section>
+</main>
 <script>function md(a,nome){if((a==='accendi'||a==='riammetti')&&!confirm(a==='accendi'?'Accendere l’automoderazione? Le sanzioni scatteranno da sole.':'Togliere la sospensione a '+nome+'?'))return;fetch('moderazione',{method:'POST',headers:{'x-voxelia':'1','Content-Type':'application/json'},body:JSON.stringify({a,nome})}).then(r=>r.json()).then(j=>{alert(j.ok||j.err);location.reload()})}
-function az(id,a,c){if(c&&!confirm(c))return;fetch('azione',{method:'POST',headers:{'x-voxelia':'1','Content-Type':'application/json'},body:JSON.stringify({id,a})}).then(r=>r.json()).then(j=>{alert(j.ok||j.err);location.reload()})}</script>`);
+function az(id,a,c){if(c&&!confirm(c))return;fetch('azione',{method:'POST',headers:{'x-voxelia':'1','Content-Type':'application/json'},body:JSON.stringify({id,a})}).then(r=>r.json()).then(j=>{alert(j.ok||j.err);location.reload()})}
+function tema(){var d=document.documentElement,c=d.dataset.theme||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'),n=c==='light'?'dark':'light';d.dataset.theme=n;try{localStorage.setItem('vx-tema',n)}catch(e){}}</script>`);
     }, { admin: true });
     api.route('GET', '/segnalazioni', (req, res, x) => x.json({ lista: st().lista }), { admin: true });
     api.route('POST', '/pulisci', (req, res, x) => { st().lista = []; api.save(); x.json({ ok: 1 }); }, { admin: true });

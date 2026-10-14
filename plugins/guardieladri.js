@@ -102,7 +102,7 @@ function nelGioco(ID) {
 
 module.exports = {
   name: 'Guardie e ladri',
-  version: '1.1',
+  version: '1.2',
   author: 'Voxelia',
   description: 'Nascondino a squadre in un quartiere: i ladri si nascondono, le guardie li cercano (/guardie)',
   defaults: {
@@ -466,39 +466,87 @@ module.exports = {
     // ---------- pagine web ----------
     api.client('(' + nelGioco.toString() + ')(' + JSON.stringify(ID) + ');');
     const e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-    const STILE = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:14px system-ui,sans-serif;background:#141822;color:#e8ecf4;margin:16px;max-width:820px}' +
-      'h1,h2{font-family:Georgia,serif;color:#ffd84a}table{border-collapse:collapse;width:100%}td,th{padding:5px 8px;border-bottom:1px solid #fff2;text-align:left}small{opacity:.7}' +
-      '.box{background:#0003;border-radius:8px;padding:10px 12px;margin:10px 0}button,select{padding:5px 9px;border-radius:4px;border:0;margin:2px;font:inherit}button{cursor:pointer;background:#f5b942}a{color:#ffd84a}</style>';
-    const quando = t => new Date(t).toLocaleString('it-IT');
+    // aspetto dei menu di Voxelia, come la guida: Georgia, oro con l'ombra ruggine, barra di legno coi chiodi,
+    // pannelli col bordo e l'ombra piena sotto, intestazioni delle tabelle in legno; tema chiaro se il sistema lo chiede
+    const STILE = '<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>' +
+      ':root{--bg:#10131a;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--lo:#c98a1a;--ember:#ff8a5a;' +
+      '--title:#f5b942;--tshadow:#8a3b12;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--rowh:#f5b9420f;--good:#4cd07a;--bad:#e8484f;--sea:#4aa3ff;--f:Georgia,"Times New Roman",serif;color-scheme:dark}' +
+      '@media(prefers-color-scheme:light){:root{--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;' +
+      '--title:#6a2a1a;--tshadow:#e0c48a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;--good:#1f8a4a;--bad:#b8323a;--sea:#1f6ab8;color-scheme:light}}' +
+      '*{box-sizing:border-box}body{margin:0;color:var(--fg);font:400 16px/1.55 var(--f);min-height:100vh;background:radial-gradient(ellipse 90% 50% at 50% -10%,#24305466,transparent 70%),' +
+      'repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}' +
+      'a{color:var(--ac);text-underline-offset:2px}a:hover{color:var(--hi)}' +
+      '.top{position:relative;padding:14px 26px 15px;background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);' +
+      'border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,inset 0 -2px 0 #2e1d1055,0 5px 0 #00000066}' +
+      '.top::before,.top::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}.top::before{left:8px}.top::after{right:8px}' +
+      '.top>div{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}' +
+      '.top h1{margin:0;font:bold clamp(1.35rem,4.5vw,1.9rem)/1.1 var(--f);font-variant:small-caps;letter-spacing:.04em;color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244}' +
+      '.top h1 small{display:block;font:italic 400 .8rem var(--f);font-variant:normal;letter-spacing:0;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:3px}' +
+      '.top nav{margin-left:auto;display:flex;gap:8px}' +
+      'main{max-width:900px;margin:0 auto;padding:22px 16px 40px}' +
+      'h2{display:flex;align-items:center;gap:10px;font:bold clamp(1.3rem,3.4vw,1.7rem)/1.15 var(--f);color:var(--title);text-shadow:2px 2px 0 var(--tshadow);margin:1.4em 0 .55em}' +
+      'h2::after{content:"";flex:1;min-width:30px;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}' +
+      '.mu,small{color:var(--mu)}small{font-size:.85rem}' +
+      '.box,.tw{background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005;margin:0 0 16px}' +
+      '.box{padding:.85em 1.05em}.box>p{margin:.45em 0 0}.box.vuoto{color:var(--mu);font-style:italic}' +
+      '.cap{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}.cap b{color:var(--hi);font-size:1.08rem}.cap .t{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--mu)}.cap .t b{font-size:1rem;color:var(--fg)}' +
+      '.info{background:var(--pan2);border:3px solid var(--lo);border-radius:6px;box-shadow:0 0 0 3px #4a301b,0 7px 0 3px var(--drop);padding:.75em 1.05em;margin:4px 3px 20px}' +
+      '.tag{display:inline-block;font:bold .62rem var(--f);text-transform:uppercase;letter-spacing:.08em;border-radius:2px;padding:.22em .55em;box-shadow:0 2px 0 #0006;background:#2a3452;color:#e8ecf4;white-space:nowrap}' +
+      '.tag.isc{background:linear-gradient(180deg,#ffd27a,#c98a1a);color:#2a1a06}.tag.nas{background:#3a2a5a;color:#e0d0ff}.tag.cac{background:#5a1f22;color:#ffc8c0}' +
+      '.tag.g{background:#1d3d5e;color:#c0e0ff}.tag.l{background:#4a3a14;color:#ffe8a8}.tag.ok{background:#24461f;color:#c8f0c0}.tag.ko{background:#5a1f22;color:#ffc8c0}' +
+      '.tw{overflow:auto}.box .tw{margin:.7em 0 0;box-shadow:none}table{border-collapse:collapse;width:100%;font-size:.93rem}' +
+      'th{text-align:left;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.75em .7em;white-space:nowrap;' +
+      'background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}' +
+      'td{padding:.5em .7em;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}tr:nth-child(odd) td{background:var(--rowh)}tr:hover td{background:var(--line)}' +
+      'td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}td.p{color:var(--hi);font-weight:bold}td.d{white-space:nowrap;color:var(--mu);font-size:.85rem}' +
+      'tr.top1 td.p{color:var(--ember)}' +
+      '.gbtn{font:14px var(--f);color:#fff;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;padding:.45em .9em;cursor:pointer;text-decoration:none;' +
+      'box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,background .15s;display:inline-flex;align-items:center;gap:6px}' +
+      '.gbtn:hover{background:#3b4770;color:#fff}.gbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}' +
+      '.gbtn.oro{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}.gbtn.oro:hover{filter:brightness(1.08)}' +
+      '.gbtn.ko{background:#7a2226;border-color:#ff9a8a88}.gbtn.ko:hover{background:#9a2a30}' +
+      '.top .gbtn{background:#0000004d;border-color:#ffd27a88}.top .gbtn:hover{background:#00000080}' +
+      '.form{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:.6em}.form label{display:flex;align-items:center;gap:6px;color:var(--mu)}' +
+      'select{font:15px var(--f);padding:.4em .6em;border-radius:3px;border:2px solid #3a2414;background:#f4ecd6;color:#2a2010;box-shadow:inset 0 2px 0 #0002,0 2px 0 #a37a4f66;max-width:100%}' +
+      'select:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 2px #f5b94266}' +
+      'button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}' +
+      'footer{max-width:900px;margin:0 auto;padding:0 16px 28px;color:var(--mu);font:italic .85rem var(--f)}' +
+      '@media(max-width:560px){.top{padding:12px 20px}.top nav{margin-left:0}td,th{padding:.45em .5em}th{white-space:normal;letter-spacing:.06em}}</style>';
+    const pagina = (titolo, sotto, nav, corpo, ricarica) => STILE + '<title>' + titolo + '</title><header class=top><div><h1>🚨 ' + titolo + '<small>' + sotto + '</small></h1><nav>' + nav + '</nav></div></header><main>' +
+      corpo + '</main><footer>Guardie e ladri ' + module.exports.version + ' · la pagina si aggiorna da sola ogni ' + ricarica + ' secondi</footer>';
+    const quando = t => new Date(t).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
     function classifica() {
       const L = Object.values(S.g).sort((x, y) => (y.fughe + y.catture) - (x.fughe + x.catture) || y.partite - x.partite).slice(0, 25);
-      return '<h2>Classifica</h2>' + (L.length ? '<table><tr><th></th><th>Eroe</th><th>Partite</th><th>Fughe riuscite</th><th>Ladri presi</th><th>Vittorie da guardia</th></tr>' +
-        L.map((v, i) => '<tr><td>' + (i + 1) + '</td><td>' + e(v.nome) + '</td><td>' + v.partite + '</td><td>' + v.fughe + '</td><td>' + v.catture + '</td><td>' + v.vinteGuardia + '</td></tr>').join('') + '</table>' : '<p>Nessuna partita giocata finora.</p>') +
-        '<h2>Ultime partite</h2>' + (S.storico.length ? '<table>' + S.storico.slice(0, 15).map(h => '<tr><td><small>' + e(quando(h.quando)) + '</small></td><td>' + e(h.quartiere) + '</td><td>' +
-          (h.vince === 'guardie' ? '👮 vincono le guardie' : '🦹 vincono i ladri') + '</td><td><small>guardie: ' + e(h.guardie.join(', ')) + ' · ladri liberi: ' + e(h.ladri.filter(l => l.stato === 'libero').map(l => l.nome).join(', ') || 'nessuno') + '</small></td></tr>').join('') + '</table>' : '<p>Ancora nessuna partita.</p>');
+      return '<h2>Classifica</h2>' + (L.length ? '<div class=tw><table><tr><th class=n>#</th><th>Eroe</th><th class=n>Partite</th><th class=n>Fughe riuscite</th><th class=n>Ladri presi</th><th class=n>Vittorie da guardia</th></tr>' +
+        L.map((v, i) => '<tr' + (i ? '' : ' class=top1') + '><td class="n p">' + (i + 1) + '</td><td><b>' + e(v.nome) + '</b></td><td class=n>' + v.partite + '</td><td class=n>' + v.fughe + '</td><td class=n>' + v.catture + '</td><td class=n>' + v.vinteGuardia + '</td></tr>').join('') + '</table></div>'
+        : '<div class="box vuoto">Nessuna partita giocata finora.</div>') +
+        '<h2>Ultime partite</h2>' + (S.storico.length ? '<div class=tw><table><tr><th>Quando</th><th>Quartiere</th><th>Esito</th><th>Squadre</th></tr>' + S.storico.slice(0, 15).map(h => '<tr><td class=d>' + e(quando(h.quando)) + '</td><td>' + e(h.quartiere) + '</td><td>' +
+          (h.vince === 'guardie' ? '<span class="tag g">👮 Guardie</span>' : '<span class="tag l">🦹 Ladri</span>') + '</td><td><small>Guardie: ' + e(h.guardie.join(', ')) + '<br>Ladri liberi: ' + e(h.ladri.filter(l => l.stato === 'libero').map(l => l.nome).join(', ') || 'nessuno') + '</small></td></tr>').join('') + '</table></div>'
+          : '<div class="box vuoto">Ancora nessuna partita.</div>');
     }
     function inCorso(adm) {
       const L = Object.values(partite);
-      if (!L.length) return '<div class=box>Nessuna partita in corso.</div>';
-      return L.map((G, i) => {
-        const fase = G.fase === 'iscrizioni' ? 'iscrizioni' : G.fase === 'nascondi' ? 'i ladri si nascondono' : 'caccia';
-        let h = '<div class=box><b>🚨 ' + (adm ? 'Stanza ' + e(G.room) : 'Partita ' + (i + 1)) + '</b> · ' + e(G.q.nome) + ' · ' + fase + ' · mancano ' + mm(G.fine - Date.now());
-        if (G.fase === 'iscrizioni') h += '<br>Iscritti: ' + (e(G.iscritti.map(x => x.nome).join(', ')) || 'nessuno');
-        else if (adm) h += '<table>' + lista(G).map(g => { const p = online(g.id); return '<tr><td>' + (g.ruolo === 'guardia' ? '👮' : '🦹') + ' ' + e(g.nome) + '</td><td>' + e(g.stato) + (g.motivo ? ' <small>(' + e(g.motivo) + ')</small>' : '') + '</td><td><small>' + (p ? e(p.zone) + ' ' + p.x.toFixed(1) + ',' + p.y.toFixed(1) : '') + '</small></td><td>' + (g.catture ? g.catture + ' catture' : '') + (g.sospetti ? ' <small>' + g.sospetti + ' sospetti</small>' : '') + '</td></tr>'; }).join('') + '</table>';
-        else h += '<br>' + e(resto(G));
-        if (adm) h += '<button style="background:#a33;color:#fff" onclick=\'if(confirm("Annullare la partita?"))fai("annulla",{room:' + JSON.stringify(G.room).replace(/'/g, '&#39;') + '})\'>Annulla</button>';
+      if (!L.length) return '<h2>In corso</h2><div class="box vuoto">Nessuna partita in corso.</div>';
+      return '<h2>In corso</h2>' + L.map((G, i) => {
+        const fase = G.fase === 'iscrizioni' ? '<span class="tag isc">Iscrizioni</span>' : G.fase === 'nascondi' ? '<span class="tag nas">I ladri si nascondono</span>' : '<span class="tag cac">Caccia</span>';
+        let h = '<div class=box><div class=cap><b>' + (adm ? 'Stanza ' + e(G.room) : 'Partita ' + (i + 1)) + '</b><span class=mu>' + e(G.q.nome) + '</span>' + fase + '<span class=t>mancano <b>' + mm(G.fine - Date.now()) + '</b></span></div>';
+        if (G.fase === 'iscrizioni') h += '<p>Iscritti: ' + (e(G.iscritti.map(x => x.nome).join(', ')) || '<span class=mu>nessuno</span>') + '</p>';
+        else if (adm) h += '<div class=tw><table><tr><th>Eroe</th><th>Stato</th><th>Dove</th><th>Note</th></tr>' + lista(G).map(g => { const p = online(g.id); return '<tr><td>' + (g.ruolo === 'guardia' ? '<span class="tag g">👮 Guardia</span>' : '<span class="tag l">🦹 Ladro</span>') + ' ' + e(g.nome) + '</td><td>' + e(g.stato) + (g.motivo ? ' <small>(' + e(g.motivo) + ')</small>' : '') + '</td><td class=d>' + (p ? e(p.zone) + ' ' + p.x.toFixed(1) + ',' + p.y.toFixed(1) : '') + '</td><td>' + (g.catture ? g.catture + ' catture' : '') + (g.sospetti ? ' <small>' + g.sospetti + ' sospetti</small>' : '') + '</td></tr>'; }).join('') + '</table></div>';
+        else h += '<p>' + e(resto(G)) + '</p>';
+        if (adm) h += '<div class=form><button class="gbtn ko" onclick=\'if(confirm("Annullare la partita?"))fai("annulla",{room:' + JSON.stringify(G.room).replace(/'/g, '&#39;') + '})\'>✖ Annulla la partita</button></div>';
         return h + '</div>';
       }).join('');
     }
-    api.route('GET', '/', (req, res, x) => x.send(STILE + '<title>Guardie e ladri</title><h1>🚨 Guardie e ladri</h1>' + inCorso(false) + classifica() + '<script>setTimeout(()=>location.reload(),30000)</script>'));
+    api.route('GET', '/', (req, res, x) => x.send(pagina('Guardie e ladri', 'Nascondino a squadre nei quartieri di Voxelia', '', '<div class=info>Si gioca in un quartiere: i ladri si nascondono, le guardie li cercano. In gioco scrivi <b>/guardie entra</b> quando si aprono le iscrizioni.</div>' +
+      inCorso(false) + classifica() + '<script>setTimeout(()=>location.reload(),30000)</script>', 30)));
     api.route('GET', 'admin', (req, res, x) => {
       const stanze = Object.entries(api.rooms()).filter(([r]) => r && !partite[r]);
-      x.send(STILE + '<title>Guardie e ladri · admin</title><h1>🚨 Guardie e ladri · admin</h1><p>Iscrizioni ' + mm(num(C.iscrizioniSec, 90, 10, 1800) * SEC) + ', nascondino ' + mm(num(C.nascondiSec, 60, 5, 600) * SEC) +
-        ', caccia ' + mm(num(C.cacciaMin, 5, .2, 120) * MIN) + ' · si cambia in guardieladri.config.json. <a href="./">Pagina pubblica</a></p>' + inCorso(true) +
-        (stanze.length ? '<div class=box>Apri le iscrizioni nella stanza <select id=r>' + stanze.map(([r, n]) => '<option value="' + e(r) + '">' + e(r) + ' (' + n.length + ' online)</option>').join('') + '</select> quartiere <select id=q>' +
-          Object.values(Q).map(q => '<option value="' + e(q.k) + '"' + (q.k === K(C.quartiereBase) ? ' selected' : '') + '>' + e(q.nome) + '</option>').join('') + '</select> <button onclick=\'fai("apri",{room:document.getElementById("r").value,q:document.getElementById("q").value})\'>Apri</button></div>'
-          : '<div class=box><small>Nessuna stanza libera con giocatori online.</small></div>') +
-        classifica() + '<script>function fai(a,b){fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify(b)}).then(r=>r.json()).then(j=>{if(j.ok)location.reload();else alert(j.err||"Errore")})}setTimeout(()=>location.reload(),15000)</script>');
+      x.send(pagina('Guardie e ladri · admin', 'Partite in corso e iscrizioni', '<a class=gbtn href="./">Pagina pubblica</a>', '<div class=info>Iscrizioni <b>' + mm(num(C.iscrizioniSec, 90, 10, 1800) * SEC) + '</b>, nascondino <b>' + mm(num(C.nascondiSec, 60, 5, 600) * SEC) +
+        '</b>, caccia <b>' + mm(num(C.cacciaMin, 5, .2, 120) * MIN) + '</b> <small>· si cambia in guardieladri.config.json</small></div>' + inCorso(true) +
+        '<h2>Nuova partita</h2>' + (stanze.length ? '<div class=box>Apri le iscrizioni in una stanza con giocatori online.<div class=form><label>Stanza <select id=r>' + stanze.map(([r, n]) => '<option value="' + e(r) + '">' + e(r) + ' (' + n.length + ' online)</option>').join('') + '</select></label><label>Quartiere <select id=q>' +
+          Object.values(Q).map(q => '<option value="' + e(q.k) + '"' + (q.k === K(C.quartiereBase) ? ' selected' : '') + '>' + e(q.nome) + '</option>').join('') + '</select></label><button class="gbtn oro" onclick=\'fai("apri",{room:document.getElementById("r").value,q:document.getElementById("q").value})\'>🚨 Apri le iscrizioni</button></div></div>'
+          : '<div class="box vuoto">Nessuna stanza libera con giocatori online.</div>') +
+        classifica() + '<script>function fai(a,b){fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify(b)}).then(r=>r.json()).then(j=>{if(j.ok)location.reload();else alert(j.err||"Errore")})}setTimeout(()=>location.reload(),15000)</script>', 15));
     }, { admin: true });
     api.route('POST', 'admin/*', (req, res, x) => x.body(b => {
       b = b && typeof b === 'object' ? b : {};

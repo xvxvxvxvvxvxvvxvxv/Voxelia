@@ -13,7 +13,7 @@
 // fuori dal torneo, devono semplicemente combattere di nuovo.
 module.exports = {
   name: 'Torneo dell\'arena',
-  version: '1.0',
+  version: '1.1',
   author: 'Voxelia',
   description: 'Tornei a eliminazione diretta nel Colosseo, con tabellone, premi e albo d\'oro',
   defaults: {
@@ -274,40 +274,95 @@ module.exports = {
     const e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' })[c]);
     const vista = (T, pubblica) => ({ stanza: pubblica ? nomePubblico(T.room) : T.room, stato: T.stato, fine: T.fine, iscritti: T.iscritti, podio: T.podio || null,
       turni: T.turni.map((M, i) => ({ nome: T.nomi[i], incontri: M.map(m => ({ a: m.a, b: m.b, stato: m.stato, vince: m.vince || null, come: m.come || '', terzo: !!m.terzo })) })) });
-    const STILE = '<style>body{font:14px system-ui,sans-serif;background:#141822;color:#e8ecf4;margin:16px}h1,h2{font-family:Georgia,serif;color:#ffd84a}' +
-      '.tab{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px}.col{min-width:190px}.col h3{font-size:13px;color:#f5b942;margin:4px 0}' +
-      '.m{background:#fff1;border-radius:6px;padding:6px 8px;margin:6px 0;border-left:3px solid #fff3}.m.on{border-color:#ff6a3d}.m.ch{border-color:#ffd84a}.m.ok{border-color:#5fd068}' +
-      '.w{font-weight:700;color:#9ff0a0}.l{opacity:.55;text-decoration:line-through}small{opacity:.7}table{border-collapse:collapse}td,th{padding:5px 8px;border-bottom:1px solid #fff2;text-align:left}' +
-      'button,input{padding:5px 9px;border-radius:4px;border:0;margin:2px;font:inherit}button{cursor:pointer;background:#f5b942}.box{background:#0003;border-radius:8px;padding:10px 12px;margin:10px 0}</style>';
+    // Stile: lo stesso della guida e dei menu di Voxelia (Georgia, oro con l'ombra ruggine, barra di legno coi chiodi,
+    // pannelli col bordo pieno e l'ombra sotto, pulsanti blu-ardesia del gioco); chiaro o scuro come il sistema.
+    const STILE = '<style>:root{--bg:#10131a;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--lo:#c98a1a;' +
+      '--ember:#ff8a5a;--title:#f5b942;--tshadow:#8a3b12;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--rowh:#f5b9420f;--good:#4cd07a;--bad:#e8484f;' +
+      '--f:Georgia,"Times New Roman",serif;color-scheme:dark}' +
+      '@media(prefers-color-scheme:light){:root{--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;' +
+      '--ember:#b4471c;--title:#6a2a1a;--tshadow:#e0c48a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;--good:#1f8a46;--bad:#b8282f;color-scheme:light}' +
+      '}' +
+      '*{box-sizing:border-box}body{margin:0;color:var(--fg);font:400 16px/1.55 var(--f);min-height:100vh;' +
+      'background:radial-gradient(ellipse 90% 50% at 50% -10%,#24305466,transparent 70%),repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),' +
+      'repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}' +
+      'a{color:var(--ac);text-underline-offset:2px}a:hover{color:var(--hi)}' +
+      '.top{position:relative;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;padding:14px clamp(22px,4vw,48px) 15px;' +
+      'background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);' +
+      'border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,inset 0 -2px 0 #2e1d1055,0 5px 0 #00000066}' +
+      '.top::before,.top::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}' +
+      '.top::before{left:8px}.top::after{right:8px}' +
+      'h1{margin:0;display:flex;align-items:center;gap:10px;font:bold clamp(1.3rem,4vw,1.8rem)/1.1 var(--f);font-variant:small-caps;letter-spacing:.04em;color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244}' +
+      'h1 small{display:block;font:italic 400 .8rem var(--f);font-variant:normal;letter-spacing:0;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:3px}' +
+      '.top a{font:bold .72rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;text-decoration:none;border:1px solid #f5b94288;border-radius:3px;padding:.4em .8em;background:#0003}' +
+      '.top a:hover{background:#0005;color:#ffe7a8}' +
+      'main{max-width:1180px;margin:0 auto;padding:22px 16px 60px}' +
+      'h2{display:flex;align-items:center;flex-wrap:wrap;gap:.4em;font:bold clamp(1.3rem,3vw,1.7rem)/1.15 var(--f);color:var(--title);text-shadow:2px 2px 0 var(--tshadow);margin:.2em 0 .5em}' +
+      'h2 small{font:italic 400 .9rem var(--f);text-shadow:none;color:var(--mu)}' +
+      '.kick{display:flex;align-items:center;gap:10px;font:bold .74rem var(--f);text-transform:uppercase;letter-spacing:.16em;color:var(--ember);margin:30px 0 4px}' +
+      '.kick::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}' +
+      '.mu{color:var(--mu)}small{color:var(--mu);font-size:.84rem}b{color:var(--hi)}' +
+      '.box{background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005;padding:.9em 1.1em;margin:0 0 22px}' +
+      '.box>p{margin:.3em 0 .7em}' +
+      '.tab{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:thin;scrollbar-color:var(--lo) transparent}.col{min-width:200px;flex:1 0 200px;max-width:320px}' +
+      '.col h3{display:flex;align-items:center;gap:8px;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.12em;color:var(--hi);margin:2px 0 8px}' +
+      '.col h3::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}' +
+      '.m{background:var(--pan2);border:1px solid var(--line2);border-left:5px solid var(--frame);border-radius:3px;padding:.5em .7em;margin:0 0 8px;box-shadow:0 3px 0 #0006;line-height:1.4}' +
+      '.m.on{border-left-color:var(--ember);box-shadow:0 3px 0 #0006,0 0 0 1px var(--ember)}.m.ch{border-left-color:var(--ac)}.m.ok{border-left-color:var(--good)}' +
+      '.m small{font-size:.78rem}.m>small:first-child{font:bold .62rem var(--f);text-transform:uppercase;letter-spacing:.08em;color:var(--ember)}' +
+      '.w{font-weight:bold;color:var(--good)}.l{opacity:.55;text-decoration:line-through}' +
+      '.pod{display:flex;flex-wrap:wrap;gap:8px;margin:.2em 0 1em}.pod span{background:var(--pan2);border:1px solid var(--line2);border-radius:4px;padding:.25em .75em;box-shadow:0 3px 0 #0006;font-weight:bold}' +
+      '.pod span:first-child{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;text-shadow:0 1px 0 #fff5}' +
+      '.cmp{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}.cmp span{background:var(--pan);border:1px solid var(--line2);border-radius:3px;padding:.25em .65em;box-shadow:0 2px 0 #0006}' +
+      '.cmp span b{margin-left:.35em;font-variant-numeric:tabular-nums}.cmp span:first-child{border-color:var(--ac)}' +
+      '.tw{overflow:auto;border:2px solid var(--frame);border-radius:4px;background:var(--pan);box-shadow:0 5px 0 var(--drop),0 10px 20px #0005}' +
+      'table{border-collapse:collapse;width:100%;font-size:.93rem}' +
+      'th{text-align:left;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.75em .7em;white-space:nowrap;' +
+      'background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}' +
+      'td{padding:.5em .7em;border-bottom:1px solid var(--line)}tr:nth-child(even) td{background:var(--rowh)}th.n,td.n{text-align:right;font-variant-numeric:tabular-nums}' +
+      '.vuoto{color:var(--mu);font-style:italic}' +
+      '.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:.2em 0 .9em}' +
+      'button{font:14px var(--f);color:#fff;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;padding:.45em .85em;margin:6px 6px 0 0;cursor:pointer;' +
+      'box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,background .15s}.ctl button{margin:0}' +
+      'button:hover{background:#3b4770}button:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}' +
+      'button.p{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}button.p:hover{filter:brightness(1.08)}' +
+      'button.x{background:linear-gradient(180deg,#d8452c,#a8301c);border-color:#ffb0a0;color:#fff}button.x:hover{filter:brightness(1.1)}' +
+      'button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}' +
+      'input{font:15px var(--f);width:72px;padding:.4em .55em;border-radius:3px;border:2px solid #3a2414;background:#f4ecd6;color:#2a2010;box-shadow:inset 0 2px 0 #0002,0 2px 0 #a37a4f66}' +
+      'input:focus{outline:none;border-color:var(--ac)}.on1{color:var(--good)}.off1{color:var(--bad)}' +
+      '.info{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0 0 22px}.info li{background:var(--pan);border:1px solid var(--line2);border-radius:4px;padding:.3em .75em;box-shadow:0 3px 0 #0006;font-size:.92rem}' +
+      '@media(max-width:560px){.top{padding:12px 20px}.col{min-width:180px;flex-basis:180px}body{font-size:15px}}</style>';
     const DISEGNA = 'function nn(s){return String(s==null?"":s).replace(/[&<>"\']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","\'":"&#39;"})[c])}' +
-      'function tab(T,adm){if(T.stato==="iscrizioni")return"<p>Iscrizioni aperte ancora per "+Math.max(1,Math.ceil((T.fine-Date.now())/60000))+" min · iscritti ("+T.iscritti.length+"): "+(T.iscritti.map(nn).join(", ")||"nessuno")+"</p>";' +
-      'let h=T.podio?"<p>"+["🥇","🥈","🥉"].map((m,i)=>m+" "+nn(T.podio[i]||"—")).join(" &nbsp; ")+"</p>":"";h+="<div class=tab>";' +
+      'function tab(T,adm){if(T.stato==="iscrizioni")return"<p><b>Iscrizioni aperte</b> ancora per "+Math.max(1,Math.ceil((T.fine-Date.now())/60000))+" min · scrivi <b>/torneo iscrivi</b></p><div class=cmp>"+(T.iscritti.map(x=>"<span>"+nn(x)+"</span>").join("")||"<i class=vuoto>Ancora nessun iscritto.</i>")+"</div>";' +
+      'let h=T.podio?"<div class=pod>"+["🥇","🥈","🥉"].map((m,i)=>"<span>"+m+" "+nn(T.podio[i]||"—")+"</span>").join("")+"</div>":"";h+="<div class=tab>";' +
       'T.turni.forEach((R,r)=>{h+="<div class=col><h3>"+nn(R.nome)+"</h3>";R.incontri.forEach((m,i)=>{const c={"in corso":"on","chiamato":"ch","fatto":"ok"}[m.stato]||"";' +
       'const n=x=>x?"<span class="+(m.vince?(m.vince===x?"w":"l"):"")+">"+nn(x)+"</span>":"<small>—</small>";' +
       'h+="<div class=\'m "+c+"\'>"+(m.terzo?"<small>3° posto</small><br>":"")+n(m.a)+(m.b?" <small>vs</small> "+n(m.b):" <small>passa il turno</small>")+"<br><small>"+nn(m.stato==="fatto"?m.come:m.stato)+"</small>"+' +
-      '(adm&&m.b&&m.stato!=="fatto"?"<br><button onclick=\'fai(\\"vince\\",{room:"+JSON.stringify(T.stanza).replace(/\'/g,"")+",turno:"+r+",i:"+i+",chi:\\"a\\"})\'>Vince "+nn(m.a)+"</button><button onclick=\'fai(\\"vince\\",{room:"+JSON.stringify(T.stanza).replace(/\'/g,"")+",turno:"+r+",i:"+i+",chi:\\"b\\"})\'>Vince "+nn(m.b)+"</button>":"")+"</div>"});h+="</div>"});return h+"</div>"}';
+      '(adm&&m.b&&m.stato!=="fatto"?"<br><button class=p onclick=\'fai(\\"vince\\",{room:"+JSON.stringify(T.stanza).replace(/\'/g,"")+",turno:"+r+",i:"+i+",chi:\\"a\\"})\'>Vince "+nn(m.a)+"</button><button class=p onclick=\'fai(\\"vince\\",{room:"+JSON.stringify(T.stanza).replace(/\'/g,"")+",turno:"+r+",i:"+i+",chi:\\"b\\"})\'>Vince "+nn(m.b)+"</button>":"")+"</div>"});h+="</div>"});return h+"</div>"}';
 
     api.route('GET', 'stato', (req, res, x) => x.json({ tornei: Object.values(S.t).map(T => vista(T, true)),
       albo: S.albo.slice(0, 20).map(a => ({ quando: a.quando, stanza: nomePubblico(a.room), podio: a.podio, iscritti: a.iscritti })),
       campioni: Object.values(S.vittorie).sort((a, b) => b.n - a.n).slice(0, 10) }));
     api.route('GET', '/', (req, res, x) => x.send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Torneo dell\'arena</title>' + STILE +
-      '<h1>🏟 Torneo dell\'arena</h1><div id="t"></div><h2>Albo d\'oro</h2><div id="a"></div><script>' + DISEGNA +
-      'function va(){fetch("stato").then(r=>r.json()).then(j=>{document.getElementById("t").innerHTML=j.tornei.length?j.tornei.map(T=>"<div class=box><h2>"+nn(T.stanza)+"</h2>"+tab(T)+"</div>").join(""):"<p>Nessun torneo in corso.</p>";' +
-      'document.getElementById("a").innerHTML=(j.campioni.length?"<p>"+j.campioni.map(c=>nn(c.nome)+" ("+c.n+")").join(" · ")+"</p>":"<p>Ancora nessun campione.</p>")+(j.albo.length?"<table><tr><th>Data</th><th>Stanza</th><th>🥇</th><th>🥈</th><th>🥉</th><th>Iscritti</th></tr>"+j.albo.map(a=>"<tr><td>"+new Date(a.quando).toLocaleString("it-IT")+"</td><td>"+nn(a.stanza)+"</td>"+[0,1,2].map(i=>"<td>"+nn(a.podio[i]||"—")+"</td>").join("")+"<td>"+a.iscritti+"</td></tr>").join("")+"</table>":"")})}va();setInterval(va,4000)</script>'));
+      '<header class=top><h1>🏟 <span>Torneo dell\'arena<small>Il tabellone della fossa del Colosseo</small></span></h1></header><main>' +
+      '<p class=kick>Tornei in corso</p><div id="t"><p class=vuoto>Carico…</p></div><p class=kick>Albo d\'oro</p><div id="a"></div></main><script>' + DISEGNA +
+      'function va(){fetch("stato").then(r=>r.json()).then(j=>{document.getElementById("t").innerHTML=j.tornei.length?j.tornei.map(T=>"<div class=box><h2>"+nn(T.stanza)+" <small>"+nn(T.stato)+"</small></h2>"+tab(T)+"</div>").join(""):"<div class=box><p class=vuoto>Nessun torneo in corso. Quando si aprono le iscrizioni il tabellone compare qui.</p></div>";' +
+      'document.getElementById("a").innerHTML=(j.campioni.length?"<div class=cmp>"+j.campioni.map(c=>"<span>🏆 "+nn(c.nome)+"<b>"+c.n+"</b></span>").join("")+"</div>":"<p class=vuoto>Ancora nessun campione.</p>")+(j.albo.length?"<div class=tw><table><tr><th>Data</th><th>Stanza</th><th>🥇</th><th>🥈</th><th>🥉</th><th class=n>Iscritti</th></tr>"+j.albo.map(a=>"<tr><td>"+new Date(a.quando).toLocaleString("it-IT")+"</td><td>"+nn(a.stanza)+"</td>"+[0,1,2].map(i=>"<td>"+nn(a.podio[i]||"—")+"</td>").join("")+"<td class=n>"+a.iscritti+"</td></tr>").join("")+"</table></div>":"")})}va();setInterval(va,4000)</script>'));
 
     api.route('GET', 'admin', (req, res, x) => {
       const stanze = api.rooms(), tutte = [...new Set([...Object.keys(stanze), ...Object.keys(S.t)])].sort();
       x.send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Torneo · admin</title>' + STILE +
-        '<h1>🏟 Torneo dell\'arena · admin</h1><p>Un torneo per stanza. Iscrizioni: ' + Math.round(cfg.isc / MIN) + ' min · attesa ' + Math.round(cfg.attesa / MIN) + ' min · durata massima ' + Math.round(cfg.durata / MIN) + ' min (si cambiano in torneo.config.json). PvP del server: <b>' + (api.server.cfg.pvp ? 'acceso' : 'spento') + '</b>. <a href="./" style="color:#ffd84a">Pagina pubblica</a></p>' +
+        '<header class=top><h1>🏟 <span>Torneo dell\'arena<small>Pannello admin · un torneo per stanza</small></span></h1><a href="./">Pagina pubblica</a></header><main>' +
+        '<ul class=info><li>Iscrizioni <b>' + Math.round(cfg.isc / MIN) + ' min</b></li><li>Attesa <b>' + Math.round(cfg.attesa / MIN) + ' min</b></li><li>Durata massima <b>' + Math.round(cfg.durata / MIN) + ' min</b></li>' +
+        '<li>PvP del server: <b class=' + (api.server.cfg.pvp ? 'on1>acceso' : 'off1>spento') + '</b></li><li class=mu>Si cambiano in torneo.config.json</li></ul>' +
         (tutte.length ? tutte.map(room => {
           const T = S.t[room], R = JSON.stringify(room).replace(/'/g, '');
-          return '<div class=box><h2>' + e(etichetta(room)) + ' <small>(' + (stanze[room] || []).length + ' online)</small></h2>' +
-            (!T || T.stato === 'finito' ? '<input id="m' + e(room) + '" type=number min=1 max=120 value=' + Math.round(cfg.isc / MIN) + ' style="width:60px"> min <button onclick=\'fai("apri",{room:' + R + ',minuti:document.getElementById("m' + e(room) + '").value})\'>Apri le iscrizioni</button>' : '') +
-            (T && T.stato === 'iscrizioni' ? '<button onclick=\'fai("inizia",{room:' + R + '})\'>Chiudi le iscrizioni e inizia</button>' : '') +
-            (T && T.stato !== 'finito' ? '<button style="background:#a33;color:#fff" onclick=\'if(confirm("Annullare il torneo?"))fai("annulla",{room:' + R + '})\'>Annulla il torneo</button>' : '') +
+          return '<div class=box><h2>' + e(etichetta(room)) + ' <small>' + (stanze[room] || []).length + ' online' + (T ? ' · ' + e(T.stato) : '') + '</small></h2>' +
+            '<div class=ctl>' + (!T || T.stato === 'finito' ? '<input id="m' + e(room) + '" type=number min=1 max=120 value=' + Math.round(cfg.isc / MIN) + ' aria-label="Minuti di iscrizione"> min <button class=p onclick=\'fai("apri",{room:' + R + ',minuti:document.getElementById("m' + e(room) + '").value})\'>Apri le iscrizioni</button>' : '') +
+            (T && T.stato === 'iscrizioni' ? '<button class=p onclick=\'fai("inizia",{room:' + R + '})\'>Chiudi le iscrizioni e inizia</button>' : '') +
+            (T && T.stato !== 'finito' ? '<button class=x onclick=\'if(confirm("Annullare il torneo?"))fai("annulla",{room:' + R + '})\'>Annulla il torneo</button>' : '') + '</div>' +
             '<div id="v' + e(room) + '"></div></div>';
-        }).join('') : '<p>Nessuna stanza con giocatori online.</p>') +
-        '<script>' + DISEGNA + 'const D=' + JSON.stringify(Object.values(S.t).map(T => vista(T, false))).replace(/</g, '\\u003c') + ';D.forEach(T=>{const el=document.getElementById("v"+T.stanza);if(el)el.innerHTML=tab(T,1)});' +
+        }).join('') : '<div class=box><p class=vuoto>Nessuna stanza con giocatori online.</p></div>') +
+        '</main><script>' + DISEGNA + 'const D=' + JSON.stringify(Object.values(S.t).map(T => vista(T, false))).replace(/</g, '\\u003c') + ';D.forEach(T=>{const el=document.getElementById("v"+T.stanza);if(el)el.innerHTML=tab(T,1)});' +
         'function fai(a,b){fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify(b)}).then(r=>r.json()).then(j=>{if(j.ok)location.reload();else alert(j.err||"Errore")})}setTimeout(()=>location.reload(),15000)</script>');
     }, { admin: true });
     api.route('POST', 'admin/*', (req, res, x) => x.body(b => {

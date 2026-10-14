@@ -116,7 +116,7 @@ function sensore(ID, INT) {
 
 module.exports = {
   name: 'Guardiano',
-  version: '2.2',
+  version: '2.3',
   author: 'Voxelia',
   description: 'Riconosce oro, livelli, statistiche e oggetti ottenuti con trucchi o cheat esterni; pagina admin con le prove',
   defaults: {
@@ -151,6 +151,8 @@ module.exports = {
     graziaSec: 30,          // dopo VoxeliaGuardiano.grazia(nome) per quanti secondi non si guardano oro e livelli
     maxSegnalazioni: 500,
     // Automoderazione: quando è attiva prende il posto di azione/azioneDa/espelliDopo.
+    // Accesa o spenta: vale la scelta fatta con il pulsante della pagina admin, salvata nel file dei dati (resta dopo
+    // riavvii e rebuild); senza scelta vale la variabile d'ambiente GUARDIANO_AUTOMODERAZIONE (1 o 0), poi "attiva".
     // punti: quanti ne vale una segnalazione per gravità; puntiTipo: valori diversi per tipi precisi (es. "cheat menu").
     // I punti scadono dopo scadenzaOre. Ogni regola scatta una volta quando i punti la raggiungono; se i punti scendono
     // sotto la soglia (scadono o l'admin li azzera) può scattare di nuovo. Azioni: avvisa, ripristina, citta, silenzia (ore),
@@ -218,7 +220,9 @@ module.exports = {
 
     // ---------- automoderazione ----------
     const AMD = module.exports.defaults.automoderazione;
-    const AM = () => { const a = Object.assign({}, AMD, C.automoderazione || {}); a.punti = Object.assign({}, AMD.punti, a.punti || {}); a.puntiTipo = Object.assign({}, a.puntiTipo || {}); if (!Array.isArray(a.regole)) a.regole = AMD.regole; if (!Array.isArray(a.esenti)) a.esenti = []; return a; };
+    const AMENV = String(process.env.GUARDIANO_AUTOMODERAZIONE || '').trim().toLowerCase();
+    const amDa = () => typeof api.store.amAttiva === 'boolean' ? 'pagina' : /^(1|si|sì|true|on)$/.test(AMENV) ? 'env1' : /^(0|no|false|off)$/.test(AMENV) ? 'env0' : 'config';
+    const AM = () => { const a = Object.assign({}, AMD, C.automoderazione || {}), da = amDa(); a.attiva = da === 'pagina' ? api.store.amAttiva : da === 'env1' ? true : da === 'env0' ? false : !!a.attiva; a.da = da; a.punti = Object.assign({}, AMD.punti, a.punti || {}); a.puntiTipo = Object.assign({}, a.puntiTipo || {}); if (!Array.isArray(a.regole)) a.regole = AMD.regole; if (!Array.isArray(a.esenti)) a.esenti = []; return a; };
     const oreTxt = n => n === 1 ? '1 ora' : n + ' ore';
     const quando = t => new Date(t).toLocaleString('it-IT', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
     function puntiDi(nome) {
@@ -623,7 +627,8 @@ ${(() => { const a = AM(), s = st(), ora = Date.now(), M = Object.entries(s.mod)
   const mb = (a2, nome, t, c) => `<button${c ? ' class="r"' : ''} onclick="md('${a2}','${esc(String(nome).replace(/'/g, ''))}')">${t}</button>`;
   return `<h2>Automoderazione: ${a.attiva ? '<span class="ok">accesa</span>' : '<span class="no">spenta</span>'} ${a.attiva ? mb('spegni', '', 'Spegni', 1) : mb('accendi', '', 'Accendi')}</h2>
 <p>Punti per segnalazione: alta ${a.punti.alta}, media ${a.punti.media}, bassa ${a.punti.bassa}${Object.keys(a.puntiTipo).length ? ' · ' + Object.entries(a.puntiTipo).map(([t, v]) => esc(t) + ' ' + v).join(', ') : ''} · scadono dopo ${a.scadenzaOre} ore${a.esenti.length ? ' · esenti: ' + a.esenti.map(esc).join(', ') : ''}.<br>
-Regole: ${a.regole.map(r => r.punti + ' punti → ' + esc(r.azione) + (r.ore != null && (r.azione === 'sospendi' || r.azione === 'silenzia') ? (+r.ore ? ' ' + oreTxt(+r.ore) : ' per sempre') : '')).join(' · ')}. Si cambiano in guardiano.config.json (automoderazione).</p>
+Regole: ${a.regole.map(r => r.punti + ' punti → ' + esc(r.azione) + (r.ore != null && (r.azione === 'sospendi' || r.azione === 'silenzia') ? (+r.ore ? ' ' + oreTxt(+r.ore) : ' per sempre') : '')).join(' · ')}. Si cambiano in guardiano.config.json (automoderazione).<br>
+${a.da === 'pagina' ? 'Accesa o spenta con il pulsante qui sopra: la scelta resta anche dopo riavvii e rebuild.' : a.da === 'config' ? 'Stato preso da guardiano.config.json: il pulsante qui sopra lo fissa e lo fa restare dopo riavvii e rebuild.' : 'Stato preso dalla variabile GUARDIANO_AUTOMODERAZIONE: il pulsante qui sopra ha la precedenza.'}</p>
 <div class="wrap"><table><tr><th>Eroe</th><th>Punti ora</th><th>Ultime sanzioni</th><th></th></tr>
 ${M.map(({ k, m, pt }) => `<tr><td><a href="${link({ nome: m.nome })}">${esc(m.nome)}</a></td><td>${pt}</td><td>${m.storia.slice(-3).reverse().map(h => quando(h.t) + ': ' + esc(h.azione) + (h.tipo ? ' (' + esc(h.tipo) + ', ' + h.punti + ' punti)' : '')).join('<br>') || '–'}</td><td>${pt ? mb('azzera', m.nome, 'Azzera i punti') : ''}</td></tr>`).join('') || '<tr><td colspan="4">Nessun eroe con punti.</td></tr>'}
 </table></div>
@@ -644,7 +649,7 @@ function az(id,a,c){if(c&&!confirm(c))return;fetch('azione',{method:'POST',heade
     // automoderazione dalla pagina: accendere/spegnere, azzerare i punti, togliere sospensioni e silenzi
     api.route('POST', '/moderazione', (req, res, x) => x.body(j => {
       const s = st(), k = chiave(j.nome || '');
-      if (j.a === 'accendi' || j.a === 'spegni') { C.automoderazione = Object.assign({}, AM(), { attiva: j.a === 'accendi' }); api.saveConfig(); api.log('automoderazione ' + (j.a === 'accendi' ? 'accesa' : 'spenta') + ' dalla pagina admin'); return x.json({ ok: 'Automoderazione ' + (j.a === 'accendi' ? 'accesa' : 'spenta') }); }
+      if (j.a === 'accendi' || j.a === 'spegni') { s.amAttiva = j.a === 'accendi'; api.save(); api.log('automoderazione ' + (j.a === 'accendi' ? 'accesa' : 'spenta') + ' dalla pagina admin'); return x.json({ ok: 'Automoderazione ' + (j.a === 'accendi' ? 'accesa' : 'spenta') }); }
       if (j.a === 'azzera') { if (s.mod[k]) { s.mod[k].punti = []; s.mod[k].fatte = []; s.mod[k].storia.push({ t: Date.now(), azione: 'punti azzerati dall\'admin', punti: 0, tipo: '' }); } api.save(); return x.json({ ok: 'Punti azzerati' }); }
       if (j.a === 'riammetti') { delete s.sospesi[k]; api.save(); api.log('automoderazione: sospensione tolta a ' + j.nome); return x.json({ ok: 'Sospensione tolta' }); }
       if (j.a === 'parla') { delete s.silenziati[k]; api.save(); return x.json({ ok: 'Silenzio tolto' }); }

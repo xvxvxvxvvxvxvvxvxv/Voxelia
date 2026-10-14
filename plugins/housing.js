@@ -11,7 +11,7 @@
 // - Nel Borgo (portale in città, oppure /borgo) le porte portano alle case degli altri; il custode le elenca tutte.
 //   Chi visita una casa aperta può coccolare il pet, giocarci, dargli un biscotto e spazzolarlo (e ne guadagna un po'
 //   di esperienza), ma non vede né apre il deposito.
-// - Le case costano poco (dalla tenda a 50 monete alla villa a 280, pet compreso); traslochi, colori, arredi nuovi e cibo per il pet
+// - Le case si pagano (dalla tenda a 1000 monete alla villa a 8000, pet compreso); traslochi, colori, arredi nuovi e cibo per il pet
 //   hanno piccoli prezzi. Il padrone di casa può pagare anche con l'oro del deposito. prezzoPercento li scala tutti (0 = gratis).
 // Comandi: /casa · /casa chiave [codice] · /visita <nome> · /borgo · /case · /pet
 // Pagina per l'admin (codici persi, case da eliminare): /plugins/housing/admin
@@ -187,7 +187,7 @@ const DATI = {
     ['▤', 'Tappeto rosso', 1], ['▥', 'Tappeto blu', 1]],
   // prezzi di listino in monete (l'admin li può scalare con prezzoPercento)
   listino: {
-    modelli: { tenda: 50, igloo: 70, casetta: 90, cottage: 120, pescatore: 130, baita: 140, fattoria: 160, villetta: 180, torre: 220, villa: 280 },
+    modelli: { tenda: 1000, igloo: 1500, casetta: 2000, cottage: 2500, pescatore: 3000, baita: 3500, fattoria: 4000, villetta: 5000, torre: 6500, villa: 8000 },
     arredi: { T: 12, n: 8, m: 5, B: 20, S: 18, k: 8, b: 8, C: 15, p: 6, o: 8, e: 8, r: 15, a: 20, '¢': 6, 'ł': 10, l: 14, 'ċ': 6, F: 30, 'ƒ': 15, ',': 12, K: 15,
       X: 25, 6: 18, 8: 25, 9: 10, W: 30, ':': 15, y: 5, i: 5, L: 5, 'Ø': 40, '◫': 35, '▤': 12, '▥': 12 },
     colore: 8,          // ridipingere muri o pavimento
@@ -1119,7 +1119,7 @@ const LV_MAX = 30;
 
 module.exports = {
   name: 'Case',
-  version: '1.3',
+  version: '1.4',
   author: 'Voxelia',
   description: '/casa: ogni eroe ha una casa da scegliere, colorare e arredare, con un deposito che apre solo lui e un pet da accudire; nel Borgo delle Case si visitano le case degli altri',
   defaults: {

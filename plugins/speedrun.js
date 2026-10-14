@@ -14,7 +14,7 @@ const DIFF = ['Facile', 'Normale', 'Difficile', 'Incubo'], RAR = ['comune', 'non
 
 module.exports = {
   name: 'Speedrun dei dungeon',
-  version: '1.0',
+  version: '1.1',
   author: 'Voxelia',
   description: 'Cronometro dei dungeon, classifiche per stanza, record annunciati, sfida della settimana e /speedrun',
   defaults: {
@@ -25,7 +25,8 @@ module.exports = {
     sfidaDungeon: ['tana', 'cripta', 'piramide', 'cristallo', 'fucina', 'abisso'],   // fra questi si sceglie la sfida della settimana
     sfidaMinimoEroi: 2,           // la sfida di una stanza dà il premio solo se l'hanno finita almeno tanti eroi diversi
     sfidaPremioOro: 500,
-    sfidaPremioOggetto: 2         // rarità 0-3 (comune, non comune, raro, epico); -1 = nessun oggetto
+    sfidaPremioOggetto: 2,        // rarità 0-3 (comune, non comune, raro, epico); -1 = nessun oggetto
+    indirizzo: ''                 // indirizzo pubblico del server per i link in chat, es. https://voxelia.example.it (vuoto = quello da cui gioca ogni eroe)
   },
 
   setup(api) {
@@ -38,6 +39,15 @@ module.exports = {
     const nome = d => DG[d][0];
     const zona = z => { const m = /^([a-z]+)@(\d+)$/.exec(z || ''); return m && DG[m[1]] ? { d: m[1], f: +m[2] } : null; };
     const ciclo = (room, d) => ((api.server.runs(room) || {})[d] || 0) + 1;
+
+    // ---------- indirizzo completo per i link in chat (dalla 7.11.1 i link in chat si cliccano) ----------
+    // "indirizzo" nel config vince; se è vuoto si usa l'indirizzo da cui ogni eroe ha aperto il gioco
+    const origini = new Map();   // id della connessione → es. https://voxelia.example.it
+    api.client('(function(){const ID=' + JSON.stringify(api.id) + ';let u=0;const di=()=>VXP.send(ID,"origine",{o:location.origin});' +
+      'VXP.on(ID,"origine?",di);setInterval(()=>{try{if(NET.ok&&NET.id&&NET.id!==u){u=NET.id;di()}}catch(e){}},1000)})();');
+    api.onClient('origine', (p, d) => { const o = String(d && d.o || ''); if (/^https?:\/\/[A-Za-z0-9.:\[\]-]{1,200}$/.test(o)) origini.set(p.id, o); });
+    api.after(500, () => { for (const p of api.players()) p.send('origine?', {}); });   // dopo una Ricarica del plugin
+    const linkPagina = (p, resto) => (String(C.indirizzo || '').trim().replace(/\/+$/, '') || origini.get(p.id) || '') + '/plugins/' + api.id + '/' + (resto || '');
 
     // ---------- cronometro ----------
     const T = new Map();   // id della connessione → { d, room, c, t0, f, sp, salto }
@@ -58,7 +68,7 @@ module.exports = {
         if (C.tempiParziali && !t.salto) p.tell('⏱ Piano ' + z.f + ' di ' + DG[z.d][1] + ': ' + tempo(Date.now() - t.t0));
       }
     });
-    api.on('leave', p => T.delete(p.id));
+    api.on('leave', p => { T.delete(p.id); origini.delete(p.id); });
 
     api.on('dungeon', (p, d, nuovo) => {
       const ora = Date.now(), fatto = nuovo - 1, chi = [];
@@ -180,7 +190,7 @@ module.exports = {
       if (S.sfida) r.push('📅 Sfida della settimana: ' + nome(S.sfida.d) + ', finisce tra ' + resta() + ' (/speedrun sfida)');
       const miei = Object.keys(DG).map(d => { const e = ((S.r[p.room] || {})[d] || {})[K(p.name)]; return e && nome(d) + ' ' + tempo(e.ms); }).filter(Boolean);
       r.push(miei.length ? 'I tuoi record in questa stanza: ' + miei.join(' · ') : 'Nessun tempo in questa stanza: entra in un dungeon e il cronometro parte da solo.');
-      r.push('/speedrun tana per una classifica, /speedrun server per i record di tutte le stanze. Pagina web: /plugins/' + api.id + '/?stanza=' + encodeURIComponent(p.room || ''));
+      r.push('/speedrun tana per una classifica, /speedrun server per i record di tutte le stanze. Pagina web: ' + linkPagina(p, '?stanza=' + encodeURIComponent(p.room || '')));
       return r.join('\n');
     });
 

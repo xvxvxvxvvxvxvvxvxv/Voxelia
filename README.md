@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.11** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.11.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -342,7 +342,7 @@ Gli amministratori possono nascondere mondi, rispondere alle segnalazioni e bloc
 - serve il gioco (il file `voxelia*.html` più recente nella sua cartella) e il pannello admin;
 - tiene le **stanze**: chi scrive lo stesso codice gioca insieme e si vede nel mondo, con il proprio aspetto e
   l'equipaggiamento;
-- gestisce **chat**, **scambi** tra giocatori e oggetti a terra condivisi;
+- gestisce **chat** (con i link cliccabili, che si aprono in una nuova finestra), **scambi** tra giocatori e oggetti a terra condivisi;
 - gestisce l'**arena PvP** nel Colosseo, con vittorie verificate dal server, punti arena e il **negozio dell'arena**;
 - tiene la **classifica** e i **cicli dei dungeon** condivisi, e un **orologio del mondo** uguale per tutti;
 - raccoglie i **Mondi della community**: pubblicazione, recensioni, commenti e segnalazioni;
@@ -476,7 +476,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.11 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.11.1 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose

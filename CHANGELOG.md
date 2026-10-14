@@ -5,6 +5,15 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.11.1 — Link cliccabili nella chat (14 ottobre 2026)
+
+- **I link nella chat si aprono con un clic.** Gli indirizzi che iniziano con `http://`, `https://` o `www.` diventano link sottolineati e si aprono in una nuova finestra del browser, senza lasciare il gioco. Passando sopra con il mouse si vede l'indirizzo completo.
+- Funziona per i messaggi dei giocatori e per gli avvisi del server e dei plugin.
+- Un messaggio con un link può essere lungo fino a 200 caratteri (gli altri restano a 60), così gli indirizzi lunghi non vengono tagliati. Il fumetto sopra l'eroe mostra sempre solo l'inizio del messaggio.
+- Per sicurezza diventano link solo gli indirizzi web: nient'altro viene trasformato, e la pagina aperta non può controllare la finestra del gioco.
+
+---
+
 ## 7.11 — Un regno più difficile, l'Abominio in cinque fasi e tutti i filmati rifatti (14 ottobre 2026)
 
 ### Il regno è più difficile

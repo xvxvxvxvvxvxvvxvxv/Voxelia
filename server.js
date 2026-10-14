@@ -1,4 +1,4 @@
-// Server di Voxelia 7.11: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Server di Voxelia 7.11.1: serve il gioco e fa da ponte WebSocket tra i giocatori.
 // Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
 // rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
 // i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
@@ -7,7 +7,7 @@
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
 const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
-const VER = '7.11';
+const VER = '7.11.1';
 const PORT = process.env.PORT || 3000;
 const DATA = process.env.DATA_FILE || path.join(__dirname, 'voxelia-data.json');
 // il gioco può chiamarsi voxelia.html oppure voxelia_v6.3.html ecc.: si usa il file voxelia*.html più recente
@@ -587,7 +587,7 @@ function onMsg(c, j) {
     }
     // ---- chat: arriva a tutta la stanza (stesso codice), in qualunque zona si trovino ----
     case 'chat': {
-      let s = str(j.s, 60); const now = Date.now(); if (!s || !c.code || now - (c.lc || 0) < 400) return; c.lc = now;
+      let s = str(j.s, 200); if (!/\b(?:https?:\/\/|www\.)\S/i.test(s)) s = s.slice(0, 60); const now = Date.now(); if (!s || !c.code || now - (c.lc || 0) < 400) return; c.lc = now;
       if (s[0] === '/') { runCommand(c, s); return; }
       if (!CFG.chat) { send(c, { t: 'err', s: 'La chat è disattivata dall\'admin' }); return; }
       if (DB.mutes.includes(key(c.name))) { send(c, { t: 'err', s: 'Sei stato silenziato dall\'admin: gli altri non vedono i tuoi messaggi' }); return; }

@@ -62,17 +62,22 @@ function netTick(dt){if(!NET.ok)return;NET.lt+=dt;const q0=P.eq;
   for(const id in NET.pl)if(!seen[id])delete NET.pl[id];NET.list=Object.values(NET.pl)}
 /* ---- registro della chat (in basso a sinistra): messaggi di tutta la stanza e avvisi importanti ---- */
 let clT=0;
+// 7.11.1: i link nella chat (http://, https:// e www.) sono cliccabili e si aprono in una nuova finestra
+const LINKRX=/\b(?:https?:\/\/|www\.)(?:[^\s<>"'&]|&amp;)+/gi,hasLink=s=>/\b(?:https?:\/\/|www\.)\S/i.test(String(s||''));
+function linkify(h){return h.replace(LINKRX,m=>{let u=m,tail='';while(/[.,;:!?)\]»]$/.test(u)&&u.length>4){tail=u.slice(-1)+tail;u=u.slice(0,-1)}
+  const href=u.replace(/&amp;/g,'&'),full=/^https?:\/\//i.test(href)?href:'https://'+href;let ok=false;try{ok=/^https?:$/.test(new URL(full).protocol)}catch(_){}
+  if(!ok)return m;const show=u.length>48?u.slice(0,45)+'…':u;return`<a class="clink" href="${esc(full)}" target="_blank" rel="noopener noreferrer nofollow" title="${esc(full)}">${show}</a>${tail}`})}
 function clog(n,s,o={}){const box=$('cl'),d=document.createElement('div'),tm=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-  if(o.sys)d.className=o.adm?'sys adm':'sys',d.innerHTML=`<span class="zn">${tm}</span> ${esc(s)}`;
-  else{d.className=o.me?'me':o.adm?'adm':'';d.innerHTML=`<span class="zn">${tm}</span> <b>${esc(n)}</b>${o.z?` <span class="zn">(${esc(o.z)})</span>`:''}: ${esc(s)}`}
+  if(o.sys)d.className=o.adm?'sys adm':'sys',d.innerHTML=`<span class="zn">${tm}</span> ${linkify(esc(s))}`;
+  else{d.className=o.me?'me':o.adm?'adm':'';d.innerHTML=`<span class="zn">${tm}</span> <b>${esc(n)}</b>${o.z?` <span class="zn">(${esc(o.z)})</span>`:''}: ${linkify(esc(s))}`}
   const atEnd=box.scrollTop+box.clientHeight>=box.scrollHeight-8;box.appendChild(d);while(box.children.length>80)box.firstChild.remove();if(atEnd||o.me)box.scrollTop=box.scrollHeight;
   box.classList.remove('idle');clearTimeout(clT);clT=setTimeout(()=>box.classList.add('idle'),12000)}
 $('ch').onfocus=()=>{for(const q in KEYS)KEYS[q]=0;$('cl').classList.add('on');$('cl').classList.remove('idle')};
 $('ch').onblur=()=>{$('cl').classList.remove('on');clearTimeout(clT);clT=setTimeout(()=>$('cl').classList.add('idle'),6000)};
-$('ch').onkeydown=e=>{if(e.key==='Enter'){const v=e.target.value.trim().slice(0,60);
+$('ch').onkeydown=e=>{if(e.key==='Enter'){const raw=e.target.value.trim(),v=raw.slice(0,hasLink(raw)?200:60);
     // "/comando": va solo al server (i comandi li aggiungono i plugin; /aiuto li elenca), senza fumetto sopra l'eroe
     if(v&&P&&v[0]==='/'){clog(NET.name,v,{me:1});if(NET.ok)NET.send({t:'chat',s:v,z:Zk});else clog('','I comandi con / funzionano solo in multigiocatore, su un server.',{sys:1})}
-    else if(v&&P){NET.say={s:v,n:Date.now()%1000000};P.bub=v;P.bt=5;clog(NET.name,v,{me:1});NET.send({t:'chat',s:v,z:Zk})}e.target.value='';e.target.blur()}else if(e.key==='Escape')e.target.blur();e.stopPropagation()};
+    else if(v&&P){NET.say={s:v.slice(0,60),n:Date.now()%1000000};P.bub=v.slice(0,60);P.bt=5;clog(NET.name,v,{me:1});NET.send({t:'chat',s:v,z:Zk})}e.target.value='';e.target.blur()}else if(e.key==='Escape')e.target.blur();e.stopPropagation()};
 
 /* ---- comandi dell'admin del server (regali, cura, teletrasporto) ---- */
 function admCmd(m){if(!P||!started)return;const n=Math.max(1,m.n|0),r=Math.max(0,Math.min(3,m.r|0));let t='';

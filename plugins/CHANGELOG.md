@@ -3,6 +3,14 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Compatibilità con la 7.11
+
+- Controllo del 14 ottobre sul gioco 7.11 (con le novità di 7.9, 7.9.1-7.9.4 e 7.10): tutti i plugin si caricano senza errori, e nel gioco vero (computer e telefono, due eroi online) non compaiono errori. I nomi del gioco che i plugin usano ci sono tutti, con gli stessi parametri, e il ponte `VXP` è uguale riga per riga.
+- In `server.js` cambiano solo i messaggi: `p.tell` e il testo restituito dai comandi non si fermano più a 12 righe da 200 caratteri (vanno a capo, fino a 60 righe), `api.say` va a capo invece di tagliare a 120 caratteri, `api.announce` arriva a 300 caratteri, e `/plugin` elenca i plugin con la descrizione. Nessun plugin va cambiato: i messaggi lunghi (`/aiuto`, `/taglie`, `/pesca`…) ora arrivano interi.
+- Il «regno più difficile» della 7.11 vale anche sui server: nemici più forti, Campioni, branco e ultima furia dei boss passano da `mk` e `upd`, che il gioco riscrive. Il Boss del mondo nasce come boss, quindi non diventa mai un Campione; nella Modalità Storia ha più vita e colpisce più forte come gli altri boss, e sotto un quarto della vita entra nell'ultima furia. La sua vita resta quella del server.
+- Durante i filmati nuovi il gioco si mette in pausa (`started` a 0, `CN.film`): Teletrasporto e Ritorno ad Aldoria li riconoscono già come scena, il Boss del mondo sparisce e ricompare alla fine, il sensore del Guardiano aspetta.
+- Due plugin andavano adattati: **Guardiano 2.4** (benedizione della Regina Elara) e **Boss del mondo 1.1** (barra della vita sui telefoni).
+
 ## Compatibilità con la 7.8
 
 - L'API dei plugin è la stessa della 7.3.2: in `server.js` si aggiungono solo i Mondi della community (cartella `mondi/`, `/api/mondi`, pagina Mondi del pannello), e il ponte `VXP` nel gioco è uguale riga per riga. Zone, dungeon e missioni sono gli stessi della 7.3.2.
@@ -58,7 +66,11 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - Non funziona: durante uno scambio, un cambio di zona o una scena; dalla cella delle prigioni; dalla fossa del Colosseo; con mostri che ti attaccano entro 7 caselle; per `combattimentoSec` (8) secondi dopo un colpo subito; durante una partita di Guardie e ladri; dalle zone in `vietate`. Fra un `/hub` e l'altro passano almeno `attesaSec` (30) secondi.
 - Come il Teletrasporto, se un aggiornamento del gioco toglie qualcosa che usa, si spegne con un avviso invece di rompere il gioco.
 
-## Boss del mondo (`boss.js`) — 1.0
+## Boss del mondo (`boss.js`) — 1.1
+
+**1.1** — 14 ottobre 2026 (provato sulla 7.11)
+- Sui telefoni la barra della vita del boss finiva sopra l'HUD e la minimappa. Ora, quando al centro non c'è spazio, va sotto l'HUD in alto a sinistra come la scheda della Discoteca, e il riquadro dei Gruppi si mette sotto. Sul computer resta in alto al centro.
+
 
 **1.0** — 10 ottobre 2026 (scritto e provato sulla 7.8, insieme a tutti gli altri plugin)
 - Ogni `ogniMin` (60) un boss enorme compare in ogni stanza con eroi online, al centro di Foresta, Deserto o Picchi, annunciato a tutti. Se nessuno lo sconfigge in `durataMin` (15) se ne va. `/boss` dice dove si trova e quanta vita gli resta, `/boss classifica` i più valorosi.
@@ -162,7 +174,11 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 **1.0** — 8 ottobre 2026
 - Prima versione: 3 taglie al giorno uguali per tutti, premi e bonus, `/taglie` e pagina `/plugins/taglie/`.
 
-## Guardiano (`guardiano.js`) — 2.3
+## Guardiano (`guardiano.js`) — 2.4
+
+**2.4** — 14 ottobre 2026 (provato sulla 7.11)
+- Dalla 7.11, contro l'Abominio, la benedizione della Regina Elara rende i colpi più forti del 20% fino alla fine della battaglia. Il sensore segnalava come «colpi impossibili» (gravità alta) i colpi più forti di chi la aveva: ora nella stanza dell'Occhio, con la benedizione, il massimo accettato è 11,7 volte l'attacco invece di 9,7. Fuori da lì non cambia niente.
+
 
 **2.3** — 14 ottobre 2026 (provato sulla 7.3.2)
 - Il pulsante Accendi/Spegni dell'automoderazione salva la scelta nel file dei dati (`voxelia-data.json`) invece che in `guardiano.config.json`: su suga.app i dati stanno nel volume `/data` e la scelta resta dopo riavvii e rebuild, mentre la cartella dei plugin torna com'è nel repository.

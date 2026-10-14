@@ -48,10 +48,11 @@ function sensore(ID, INT) {
   let ref = null, colpi = 0, colpiMax = 0, muri = 0, raffica = 0, k0 = null, kt = 0, zk0 = null, zt = 0, ultimo = '';
   const vivo = () => typeof P !== 'undefined' && P && typeof started !== 'undefined' && started && (typeof MODE === 'undefined' || MODE !== 'dim');
   function cattura() {
-    // i colpi sui mostri passano da qui: il più forte possibile è l'Ombra (2,5 × 1,8 × critico 1,8 × tiro 1,2 = 9,72 volte l'attacco)
+    // i colpi sui mostri passano da qui: il più forte possibile è l'Ombra (2,5 × 1,8 × critico 1,8 × tiro 1,2 = 9,72 volte l'attacco);
+    // dalla 7.11, nella stanza dell'Occhio, la benedizione della Regina Elara (P.elb) dà un altro +20% ai colpi
     const o = window.hurtE;
     if (typeof o === 'function') window.hurtE = function (e, d, rem) {
-      try { if (!rem && e && e.k === 'en' && vivo() && typeof atk === 'function') { const a = Math.max(1, atk()); if (d > a * 9.72 * 1.05 + 2) { colpi++; colpiMax = Math.max(colpiMax, d / a); } } } catch (x) {}
+      try { if (!rem && e && e.k === 'en' && vivo() && typeof atk === 'function') { const a = Math.max(1, atk()), bn = P.elb && typeof Zk !== 'undefined' && Zk === 'occhio' ? 1.2 : 1; if (d > a * 9.72 * bn * 1.05 + 2) { colpi++; colpiMax = Math.max(colpiMax, d / a); } } } catch (x) {}
       return o.apply(this, arguments);
     };
     ref = {}; for (const n of WATCH) ref[n] = window[n];
@@ -116,7 +117,7 @@ function sensore(ID, INT) {
 
 module.exports = {
   name: 'Guardiano',
-  version: '2.3',
+  version: '2.4',
   author: 'Voxelia',
   description: 'Riconosce oro, livelli, statistiche e oggetti ottenuti con trucchi o cheat esterni; pagina admin con le prove',
   defaults: {
@@ -542,7 +543,7 @@ module.exports = {
         { g: 'alta', chiave: 'ogg:' + nuovi.map(b => b.u).join(','), prove: { oggetti: nuovi.slice(0, 8) }, rip: { u: nuovi.map(b => b.u) } });
       for (const b of nuovi) x.chiavi.add('ogg:' + b.u);
 
-      if (num(f.colpi) > 0) segnala(p, 'colpi impossibili', f.colpi + ' colpi sui mostri fino a ' + num(f.colpiMax) + ' volte l\'attacco (il massimo possibile è 9,7)', { g: 'alta', chiave: 'colpi:' + Math.floor(ora / 300000), prove: { colpi: f.colpi, voltePiuDellAttacco: f.colpiMax } });
+      if (num(f.colpi) > 0) segnala(p, 'colpi impossibili', f.colpi + ' colpi sui mostri fino a ' + num(f.colpiMax) + ' volte l\'attacco (il massimo possibile è 9,7, o 11,7 con la benedizione della Regina Elara)', { g: 'alta', chiave: 'colpi:' + Math.floor(ora / 300000), prove: { colpi: f.colpi, voltePiuDellAttacco: f.colpiMax } });
       if (num(f.muri) >= 8) segnala(p, 'dentro i muri', 'eroe dentro un muro per ' + (num(f.muri) / 4).toFixed(1) + ' s in ' + String(f.z || p.zone), { g: 'media', chiave: 'muri:' + Math.floor(ora / 300000), prove: { secondi: num(f.muri) / 4, zona: f.z } });
       if (num(f.raffica) > 12) segnala(p, 'mostri a raffica', num(f.raffica) + ' mostri sconfitti in un secondo', { g: 'media', chiave: 'raffica:' + Math.floor(ora / 300000), prove: { mostri: f.raffica, zona: f.z } });
     });

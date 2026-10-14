@@ -136,7 +136,7 @@ function nelGioco(ID) {
 
 module.exports = {
   name: 'Boss del mondo',
-  version: '1.1',
+  version: '1.2',
   author: 'Voxelia',
   description: 'Un boss enorme compare in una zona selvaggia: si affronta tutti insieme e il premio va in base al contributo (/boss)',
   defaults: {
@@ -305,37 +305,69 @@ module.exports = {
     };
     api.on('stop', () => { for (const A of ATT.values()) api.broadcast('fine', { k: A.k, vinto: false }, A.room); ATT.clear(); if (globalThis.VoxeliaBoss) delete globalThis.VoxeliaBoss; });
 
-    // pagine web: pubblica con i boss in corso e la classifica, admin con i pulsanti
+    // pagine web: pubblica con i boss in corso e la classifica, admin con i pulsanti.
+    // Stesso aspetto dei menu di Voxelia e della guida: Georgia, oro con l'ombra ruggine, barra di legno coi chiodi, pannelli con l'ombra piena sotto
     const e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-    const STILE = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:14px system-ui,sans-serif;background:#141822;color:#e8ecf4;margin:16px;max-width:760px}' +
-      'h1,h2{font-family:Georgia,serif;color:#ffd84a}table{border-collapse:collapse;width:100%}td,th{padding:5px 8px;border-bottom:1px solid #fff2;text-align:left}small{opacity:.7}' +
-      '.box{background:#0003;border-radius:8px;padding:10px 12px;margin:10px 0}.bar{height:10px;background:#0006;border-radius:5px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,#c0392b,#ff8a3a)}' +
-      'button,select{padding:5px 9px;border-radius:4px;border:0;margin:2px;font:inherit}button{cursor:pointer;background:#f5b942}a{color:#ffd84a}</style>';
+    const CHIARO = '--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--title:#6a2a1a;--tshadow:#e0c48a;--ember:#a8401a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;--glow:#fff0;color-scheme:light';
+    const STILE = '<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>' +
+      ':root{--bg:#10131a;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--title:#f5b942;--tshadow:#8a3b12;--ember:#ff8a5a;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--rowh:#f5b9420f;--glow:#24305466;--good:#4cd07a;--bad:#e8484f;--f:Georgia,"Times New Roman",serif;color-scheme:dark}' +
+      '@media(prefers-color-scheme:light){:root{' + CHIARO + '}}' +
+      '*{box-sizing:border-box}body{margin:0;color:var(--fg);font:400 16px/1.55 var(--f);background:radial-gradient(ellipse 90% 50% at 50% -10%,var(--glow),transparent 70%),repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg);min-height:100vh}' +
+      'a{color:var(--ac);text-underline-offset:2px}a:hover{color:var(--hi)}' +
+      '.brand{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px max(28px,calc(50% - 400px));font:bold 1.3rem/1.15 var(--f);font-variant:small-caps;letter-spacing:.04em;color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244;' +
+      'background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,inset 0 -2px 0 #2e1d1055,0 5px 0 #00000066}' +
+      '.brand::before,.brand::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}.brand::before{left:8px}.brand::after{right:8px}' +
+      '.brand small{display:block;font:italic 400 .78rem var(--f);letter-spacing:0;font-variant:normal;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:3px}.brand a{color:#ffd27a;font:.85rem var(--f);font-variant:normal;letter-spacing:0;text-shadow:1px 1px 0 #0008}.brand a:hover{color:#ffe7a8}' +
+      'main{max-width:860px;margin:0 auto;padding:22px 16px 50px}' +
+      'h1{margin:0;font:inherit}h2{font:bold 1.6rem/1.15 var(--f);color:var(--title);text-shadow:2px 2px 0 var(--tshadow);margin:1.4em 0 .5em}' +
+      '.kick{display:flex;align-items:center;gap:10px;font:bold .72rem var(--f);text-transform:uppercase;letter-spacing:.14em;color:var(--hi);margin:0 0 .6em}.kick::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}' +
+      '.mu{color:var(--mu)}small{color:var(--mu);font-size:.85rem}' +
+      '.card{background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005;padding:.85em 1.05em;margin:0 0 16px}' +
+      '.boss{border-left:6px solid var(--bad)}.boss b.n{font-size:1.2rem;color:var(--ember)}.riga{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}.riga .mu{font-size:.92rem}' +
+      '.tag{display:inline-block;font:bold .62rem var(--f);text-transform:uppercase;letter-spacing:.08em;color:#2a1a06;background:linear-gradient(180deg,#ffd27a,#c98a1a);border:1px solid #0005;border-radius:2px;box-shadow:0 2px 0 #0007;padding:.15em .5em}' +
+      '.vita{position:relative;height:18px;margin:.65em 0 .4em;background:#0008;border:2px solid #3a2414;border-radius:3px;overflow:hidden;box-shadow:0 3px 0 #0006}.vita i{display:block;height:100%;background:linear-gradient(180deg,#ff7a5a,#c0392b 60%,#8a1f1a)}' +
+      '.vita span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:bold .78rem var(--f);color:#fff;text-shadow:1px 1px 0 #000}' +
+      '.top{display:flex;flex-wrap:wrap;gap:6px;margin-top:.5em}.top span{background:var(--pan2);border:1px solid var(--line2);border-radius:3px;padding:.15em .55em;font-size:.88rem;box-shadow:0 2px 0 #0006}.top b{color:var(--hi);margin-left:.3em}' +
+      '.tw{overflow:auto;border:2px solid var(--frame);border-radius:4px;background:var(--pan);box-shadow:0 5px 0 var(--drop),0 10px 20px #0005;margin:0 0 16px}' +
+      'table{border-collapse:collapse;width:100%;font-size:.94rem}th{text-align:left;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.75em .7em;white-space:nowrap;background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}' +
+      'td{padding:.5em .7em;border-bottom:1px solid var(--line);vertical-align:top}tbody tr:nth-child(even){background:var(--rowh)}tbody tr:hover{background:var(--line)}th.n,td.n{text-align:right;width:7em;font-variant-numeric:tabular-nums;white-space:nowrap}td.p{font:bold 1.05rem var(--f);color:var(--ac);width:2.5em;text-align:right}td small{display:block}' +
+      '.vuoto{color:var(--mu);font-style:italic}' +
+      'button,select{font:15px var(--f);border-radius:3px;padding:.45em .85em;margin:2px}' +
+      'button{color:#fff;background:#2a3350;border:1px solid #f5b94288;cursor:pointer;box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,background .15s}button:hover{background:#3b4770}button:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}' +
+      'button.oro{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}button.oro:hover{background:linear-gradient(180deg,#ffe29a,#ecb444 55%,#d9962a)}' +
+      'button.via{background:linear-gradient(180deg,#d8452c,#a8301c);border-color:#ffb0a0}button.via:hover{background:linear-gradient(180deg,#e85a3c,#b83a24)}' +
+      'select{border:2px solid #3a2414;background:#f4ecd6;color:#2a2010;box-shadow:inset 0 2px 0 #0002,0 2px 0 #a37a4f66;max-width:100%}select:focus{outline:none;border-color:var(--ac)}' +
+      'button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}' +
+      '.form{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.form label{font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.08em;color:var(--mu)}' +
+      '.agg{text-align:center;font:italic .82rem var(--f);color:var(--mu);margin-top:26px}' +
+      '@media(max-width:560px){.brand{padding:12px 24px}h2{font-size:1.35rem}}</style>';
+    const testa = (titolo, sotto, link) => '<header class=brand><div><h1>🐉 ' + titolo + '</h1><small>' + sotto + '</small></div>' + (link || '') + '</header><main>';
+    const PIEDE = '<p class=agg>La pagina si aggiorna da sola ogni 15 secondi.</p></main>';
     const quando = t => new Date(t).toLocaleString('it-IT');
     function inCorso(adm) {
-      if (!ATT.size) { const m = Math.ceil((S.prossima - Date.now()) / MIN); return '<div class=box>Nessun boss in giro. ' + (m > 0 ? 'Il prossimo tra circa ' + m + ' min.' : 'Il prossimo appena ci sono abbastanza eroi online.') + '</div>'; }
+      if (!ATT.size) { const m = Math.ceil((S.prossima - Date.now()) / MIN); return '<div class=card><span class=vuoto>Nessun boss in giro.</span> ' + (m > 0 ? 'Il prossimo tra circa <b>' + m + ' min</b>.' : 'Il prossimo appena ci sono abbastanza eroi online.') + '</div>'; }
       return [...ATT.values()].map(A => {
         const top = classifica(A), tot = top.reduce((a, x) => a + x.v, 0) || 1;
-        return '<div class=box><b>🐉 ' + e(A.nome) + '</b> · ' + e(ZONE[A.zk]) + (adm ? ' · stanza <b>' + e(A.room) + '</b> · ' + A.max.toFixed(1) + ' vite' : '') + ' · se ne va tra ' + minuti(A.fine - Date.now()) + ' min' +
-          '<div class=bar><i style="width:' + pct(A) + '%"></i></div>' + pct(A) + '% di vita' +
-          (top.length ? '<br><small>' + top.slice(0, adm ? 20 : 5).map(x => e(x.nome) + ' ' + Math.round(x.v / tot * 100) + '%' + (adm && x.scarti > .01 ? ' (scartati ' + x.scarti.toFixed(2) + ' vite oltre il tetto)' : '')).join(' · ') + '</small>' : '') +
-          (adm ? '<br><button style="background:#a33;color:#fff" onclick=\'if(confirm("Mandare via il boss?"))fai("annulla",{stanza:' + e(JSON.stringify(A.room)) + '})\'>Mandalo via</button>' : '') + '</div>';
+        return '<div class="card boss"><div class=riga><b class=n>' + e(A.nome) + '</b><span class=tag>' + e(ZONE[A.zk]) + '</span>' + (adm ? '<span class=mu>stanza <b>' + e(A.room) + '</b> · ' + A.max.toFixed(1) + ' vite</span>' : '') + '<span class=mu>se ne va tra ' + minuti(A.fine - Date.now()) + ' min</span></div>' +
+          '<div class=vita><i style="width:' + pct(A) + '%"></i><span>' + pct(A) + '% di vita</span></div>' +
+          (top.length ? '<div class=top>' + top.slice(0, adm ? 20 : 5).map(x => '<span>' + e(x.nome) + '<b>' + Math.round(x.v / tot * 100) + '%</b>' + (adm && x.scarti > .01 ? ' <small>(scartati ' + x.scarti.toFixed(2) + ' vite oltre il tetto)</small>' : '') + '</span>').join('') + '</div>' : '<small>Nessuno l\'ha ancora colpito.</small>') +
+          (adm ? '<div style="margin-top:.7em"><button class=via onclick=\'if(confirm("Mandare via il boss?"))fai("annulla",{stanza:' + e(JSON.stringify(A.room)) + '})\'>Mandalo via</button></div>' : '') + '</div>';
       }).join('');
     }
     function albo() {
       const L = Object.values(S.eroi).sort((a, b) => b.vittorie - a.vittorie || b.danni - a.danni).slice(0, 20);
-      return '<h2>Cacciatori di boss</h2>' + (L.length ? '<table><tr><th></th><th>Eroe</th><th>Boss</th><th>Più valoroso</th></tr>' + L.map((v, k) => '<tr><td>' + (k + 1) + '</td><td>' + e(v.nome) + '</td><td>' + v.vittorie + '</td><td>' + v.primi + '</td></tr>').join('') + '</table>' : '<p>Nessun boss del mondo è ancora stato sconfitto.</p>') +
-        '<h2>Ultimi boss</h2>' + (S.storico.length ? '<table>' + S.storico.slice(0, 15).map(h => '<tr><td><small>' + e(quando(h.quando)) + '</small></td><td>' + e(h.nome) + '<br><small>' + e(ZONE[h.zona] || h.zona) + '</small></td><td>' + (h.vinto ? '🏆 ' + e(h.top.join(', ')) : '<small>se n\'è andato</small>') + '</td></tr>').join('') + '</table>' : '<p>Ancora nessun boss.</p>');
+      return '<h2>Cacciatori di boss</h2>' + (L.length ? '<div class=tw><table><thead><tr><th></th><th>Eroe</th><th class=n>Boss</th><th class=n>Più valoroso</th></tr></thead><tbody>' + L.map((v, k) => '<tr><td class=p>' + (k + 1) + '</td><td>' + e(v.nome) + '</td><td class=n>' + v.vittorie + '</td><td class=n>' + v.primi + '</td></tr>').join('') + '</tbody></table></div>' : '<div class=card><span class=vuoto>Nessun boss del mondo è ancora stato sconfitto.</span></div>') +
+        '<h2>Ultimi boss</h2>' + (S.storico.length ? '<div class=tw><table><thead><tr><th>Quando</th><th>Boss</th><th>Esito</th></tr></thead><tbody>' + S.storico.slice(0, 15).map(h => '<tr><td><small>' + e(quando(h.quando)) + '</small></td><td>' + e(h.nome) + '<small>' + e(ZONE[h.zona] || h.zona) + '</small></td><td>' + (h.vinto ? '🏆 ' + e(h.top.join(', ')) : '<span class=vuoto>se n\'è andato</span>') + '</td></tr>').join('') + '</tbody></table></div>' : '<div class=card><span class=vuoto>Ancora nessun boss.</span></div>');
     }
-    api.route('GET', '/', (req, res, x) => x.send(STILE + '<title>Boss del mondo</title><h1>🐉 Boss del mondo</h1>' + inCorso(false) + albo() + '<script>setTimeout(()=>location.reload(),15000)</script>'));
+    api.route('GET', '/', (req, res, x) => x.send(STILE + '<title>Boss del mondo · Voxelia</title>' + testa('Boss del mondo', 'Si affronta tutti insieme: il premio va in base ai danni') + '<p class=kick>In corso</p>' + inCorso(false) + albo() + PIEDE + '<script>setTimeout(()=>location.reload(),15000)</script>'));
     api.route('GET', 'admin', (req, res, x) => {
       const stanze = Object.keys(api.rooms());
-      x.send(STILE + '<title>Boss del mondo · admin</title><h1>🐉 Boss del mondo · admin</h1>' +
-        '<p>Un boss ogni ' + num(C.ogniMin, 60, .2, 1440) + ' min, resta ' + num(C.durataMin, 15, 1, 600) + ' min · ' + lista.length + ' boss validi (si cambiano in boss.config.json). <a href="./">Pagina pubblica</a></p>' +
-        inCorso(true) +
-        (stanze.length ? '<div class=box>Evoca ora: <select id=r>' + stanze.map(r => '<option>' + e(r) + '</option>').join('') + '</select> <select id=b><option value="">a caso</option>' +
-          lista.map((b, i) => '<option value="' + i + '">' + e(b.nome) + ' (' + e(ZONE[b.zona]) + ')</option>').join('') + '</select> <button onclick=\'fai("evoca",{stanza:r.value,i:b.value})\'>Evoca</button></div>' : '<p><small>Nessuna stanza con eroi online.</small></p>') +
-        albo() +
+      x.send(STILE + '<title>Boss del mondo · admin</title>' + testa('Boss del mondo · admin', 'Un boss ogni ' + num(C.ogniMin, 60, .2, 1440) + ' min, resta ' + num(C.durataMin, 15, 1, 600) + ' min · ' + lista.length + ' boss validi (si cambiano in boss.config.json)', '<a href="./">Pagina pubblica</a>') +
+        '<p class=kick>In corso</p>' + inCorso(true) +
+        '<p class=kick>Evoca ora</p>' +
+        (stanze.length ? '<div class="card form"><label for=r>Stanza</label><select id=r>' + stanze.map(r => '<option>' + e(r) + '</option>').join('') + '</select><label for=b>Boss</label><select id=b><option value="">a caso</option>' +
+          lista.map((b, i) => '<option value="' + i + '">' + e(b.nome) + ' (' + e(ZONE[b.zona]) + ')</option>').join('') + '</select><button class=oro onclick=\'fai("evoca",{stanza:r.value,i:b.value})\'>Evoca</button></div>' : '<div class=card><span class=vuoto>Nessuna stanza con eroi online.</span></div>') +
+        albo() + PIEDE +
         '<script>function fai(a,b){fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify(b)}).then(r=>r.json()).then(j=>{if(j.ok)location.reload();else alert(j.err||"Errore")})}setTimeout(()=>location.reload(),15000)</script>');
     }, { admin: true });
     api.route('POST', 'admin/*', (req, res, x) => x.body(b => {

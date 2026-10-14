@@ -12,9 +12,93 @@ const DG = { tana: ['Tana dei Goblin', 2], cripta: ['Cripta Dimenticata', 3], pi
   fucina: ['Fucina Infernale', 3], abisso: ['Abisso Sommerso', 3], cittadella: ['Cittadella del Vuoto', 4] };   // nome e piani, come DG nel gioco
 const DIFF = ['Facile', 'Normale', 'Difficile', 'Incubo'], RAR = ['comune', 'non comune', 'raro', 'epico'];
 
+// pagina web: stesso aspetto dei menu del gioco e della guida (Georgia, oro con l'ombra ruggine, barre di legno, pannelli con l'ombra piena)
+const PAGINA = String.raw`<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Speedrun dei dungeon</title>
+<style>
+:root{--bg:#10131a;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--lo:#c98a1a;
+  --title:#f5b942;--tshadow:#8a3b12;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--wd3:#4a301b;--ember:#ff8a5a;--rowh:#f5b9420f;
+  --f:Georgia,'Times New Roman',serif;color-scheme:dark}
+@media(prefers-color-scheme:light){:root{--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;
+  --title:#6a2a1a;--tshadow:#e0c48a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;--ember:#b4461c;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;color:var(--fg);font:400 16px/1.55 var(--f);min-height:100vh;
+  background:radial-gradient(ellipse 90% 50% at 50% -10%,#24305466,transparent 70%),repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),
+  repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}
+.top{position:relative;display:flex;align-items:center;gap:12px;padding:14px clamp(22px,4vw,56px) 15px;font:bold 1.2rem/1.1 var(--f);font-variant:small-caps;letter-spacing:.04em;
+  color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244;background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);
+  border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,inset 0 -2px 0 #2e1d1055,0 5px 0 #00000066}
+.top::before,.top::after{content:'';position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}
+.top::before{left:8px}.top::after{right:8px}
+.top small{display:block;font:italic 400 .74rem var(--f);font-variant:normal;letter-spacing:0;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:3px}
+main{max-width:1080px;margin:0 auto;padding:22px clamp(16px,4vw,56px) 50px}
+h1{font:bold clamp(1.9rem,5.5vw,3.2rem)/1 var(--f);letter-spacing:.08em;text-transform:uppercase;color:var(--title);text-shadow:3px 3px 0 var(--tshadow);margin:.2em 0 .25em;text-wrap:balance}
+.sub{color:var(--mu);margin:0 0 18px;max-width:70ch}
+h2{display:flex;align-items:center;gap:8px;font:bold .95rem/1.25 var(--f);text-transform:uppercase;letter-spacing:.1em;color:var(--hi);margin:0 0 .6em}
+h2::after{content:'';flex:1;min-width:30px;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}
+.callout{background:var(--pan2);border:3px solid var(--lo);border-radius:6px;box-shadow:0 0 0 3px var(--wd3),0 7px 0 3px var(--drop),0 16px 30px #0007;padding:.9em 1.15em;margin:6px 3px 26px}
+.callout>b:first-child{color:var(--hi)}
+.callout .tw{margin-bottom:.2em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.chips button{font:15px var(--f);color:#fff;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;padding:.45em .85em;cursor:pointer;box-shadow:0 3px 0 #00000080;
+  transition:transform .08s,box-shadow .08s,background .15s;display:inline-flex;align-items:center;gap:6px}
+.chips button:hover{background:#3b4770}.chips button:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}
+.chips button small{opacity:.75;font-size:.8em}
+.chips button.on{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}
+@media(prefers-color-scheme:light){.chips button:not(.on){background:var(--btn);color:var(--fg);border-color:var(--frame);box-shadow:0 3px 0 var(--drop)}.chips button:not(.on):hover{background:var(--btnh)}}
+button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:22px;align-items:start}.cols>*{min-width:0}
+.card{background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005;padding:.85em 1em 1em}
+.tw{overflow:auto;border:2px solid var(--frame);border-radius:4px;background:var(--pan);margin:.6em 0 0;box-shadow:0 4px 0 var(--drop)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th{text-align:left;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.7em .7em;white-space:nowrap;
+  background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}
+td{padding:.5em .7em;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:var(--rowh)}tbody tr:hover{background:var(--line)}tbody tr:last-child td{border-bottom:0}
+td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{width:2.6em;text-align:center}
+@media(max-width:520px){th,td{padding:.5em .45em}th{letter-spacing:.05em}.card{padding:.75em .7em .8em}.callout{padding:.8em .8em}}
+td.t{font-weight:bold;color:var(--ac);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.p1 td.t{color:var(--hi)}
+td small{display:block;color:var(--mu);font-size:.8rem;line-height:1.3}
+.tag{display:inline-block;font:bold .6rem var(--f);text-transform:uppercase;letter-spacing:.06em;border-radius:2px;padding:.15em .45em;box-shadow:0 2px 0 #0006;white-space:nowrap;background:#2a3452;color:#e8ecf4}
+.tag.d0{background:#24461f;color:#c8f0c0}.tag.d1{background:#1d3d5e;color:#c0e0ff}.tag.d2{background:#5a3a14;color:#ffd8a8}.tag.d3{background:#5a1f22;color:#ffc8c0}
+.vuoto{color:var(--mu);font-style:italic;margin:.5em 0 0}
+.vinte{list-style:none;margin:0;padding:0}.vinte li{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:.45em 0;border-bottom:1px solid var(--line)}.vinte li:last-child{border-bottom:0}
+.vinte b{color:var(--hi)}.vinte .t{color:var(--ac);font-weight:bold;font-variant-numeric:tabular-nums}.vinte small{color:var(--mu);margin-left:auto}
+.foot{margin-top:28px;color:var(--mu);font-size:.92rem}
+kbd{font:bold .78rem var(--f);background:var(--btn);border:1px solid var(--line2);border-radius:3px;box-shadow:0 2px 0 #0009;padding:.1em .5em;color:var(--fg);white-space:nowrap}
+.sec{margin-top:26px}
+@media(prefers-color-scheme:light){body{background:repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}}
+</style></head><body>
+<header class="top"><span aria-hidden="true">⏱</span><div>Speedrun dei dungeon<small>Classifiche dei dungeon di Voxelia</small></div></header>
+<main><h1>Speedrun</h1><p class="sub" id="su">Caricamento delle classifiche…</p>
+<div class="callout" id="sf" hidden></div>
+<div class="chips" id="tb" role="tablist" aria-label="Dungeon"></div>
+<div class="cols" id="cl"></div>
+<section class="card sec"><h2>Sfide vinte</h2><div id="vi" class="vuoto"></div></section>
+<p class="foot">In gioco: <kbd>/speedrun</kbd> · il cronometro parte entrando nel primo piano e si ferma sconfiggendo il boss.</p></main>
+<script>
+function nn(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c])}
+function tm(ms){const s=ms/1000,m=Math.floor(s/60);return(m>=60?Math.floor(m/60)+":"+String(m%60).padStart(2,"0"):m)+":"+(s%60).toFixed(1).padStart(4,"0")}
+const DF=["Facile","Normale","Difficile","Incubo"],MED=["🥇","🥈","🥉"],Q=new URLSearchParams(location.search).get("stanza")||"";let D=null,sel="tana";
+try{sel=localStorage.getItem("sr_d")||"tana"}catch(e){}
+const $=id=>document.getElementById(id);
+function tab(L){if(!L||!L.length)return'<p class="vuoto">Nessun tempo, per ora.</p>';
+  return'<div class="tw"><table><thead><tr><th>#</th><th>Eroe</th><th>Tempo</th><th>Ciclo</th><th>Difficoltà</th></tr></thead><tbody>'+L.map((e,i)=>'<tr class="p'+(i+1)+'"><td class="n">'+(MED[i]||i+1)+'</td><td>'+nn(e.n)+(e.con.length?"<small>con "+e.con.map(nn).join(", ")+"</small>":"")+'</td><td class="t">'+tm(e.ms)+'</td><td class="n">'+nn(e.c)+'</td><td><span class="tag d'+(DF[e.df]?e.df:"")+'">'+(DF[e.df]||"?")+"</span></td></tr>").join("")+"</tbody></table></div>"}
+function mostra(){const d=D.dungeon.find(x=>x.id===sel)||D.dungeon[0];sel=d.id;
+  $("tb").innerHTML=D.dungeon.map(x=>'<button role="tab" aria-selected="'+(x.id===sel)+'" class="'+(x.id===sel?"on":"")+'" data-d="'+nn(x.id)+'">'+nn(x.n)+" <small>"+x.piani+" piani</small></button>").join("");
+  document.querySelectorAll("#tb button").forEach(b=>b.onclick=()=>{sel=b.dataset.d;try{localStorage.setItem("sr_d",sel)}catch(e){}mostra()});
+  $("cl").innerHTML=(D.stanza?'<section class="card"><h2>Nella tua stanza</h2>'+tab(d.stanza)+"</section>":"")+'<section class="card"><h2>Tutte le stanze</h2>'+tab(d.server)+"</section>";
+  const s=D.sfida;$("sf").hidden=false;$("sf").innerHTML=s?"📅 <b>Sfida della settimana:</b> "+nn(s.n)+", fino al "+new Date(s.fine).toLocaleString("it-IT",{weekday:"long",day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"})+(s.tempi?tab(s.tempi):'<p class="vuoto">Apri questa pagina con /speedrun in gioco per vedere i tempi della tua stanza.</p>'):"📅 Nessuna sfida questa settimana.";
+  $("su").textContent=D.stanza?"Classifiche della tua stanza e di tutto il server. I piani cambiano da una stanza all'altra.":"Record di tutto il server. I piani cambiano da una stanza all'altra: per la tua stanza apri il link di /speedrun.";
+  $("vi").className=D.vinte.length?"":"vuoto";
+  $("vi").innerHTML=D.vinte.length?'<ul class="vinte">'+D.vinte.map(v=>"<li><b>"+nn(v.n)+"</b> "+nn(v.d)+' <span class="t">'+tm(v.ms)+"</span><small>settimana fino al "+new Date(v.fine).toLocaleDateString("it-IT")+"</small></li>").join("")+"</ul>":"Nessuna, per ora."}
+function va(){fetch("dati?stanza="+encodeURIComponent(Q)).then(r=>r.json()).then(j=>{D=j;mostra()}).catch(()=>{})}va();setInterval(va,30000);
+</script></body></html>`;
+
 module.exports = {
   name: 'Speedrun dei dungeon',
-  version: '1.1',
+  version: '1.2',
   author: 'Voxelia',
   description: 'Cronometro dei dungeon, classifiche per stanza, record annunciati, sfida della settimana e /speedrun',
   defaults: {
@@ -203,25 +287,6 @@ module.exports = {
       o.vinte = S.vinte.slice(0, 10).map(v => ({ n: v.n, d: nome(v.d), ms: v.ms, fine: fineSett(v.s) }));
       o.stanza = !!R; x.json(o);
     });
-    api.route('GET', '/', (req, res, x) => x.send('<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Speedrun dei dungeon</title>' +
-      '<style>body{font:14px system-ui,sans-serif;background:#141822;color:#e8ecf4;margin:16px}h1{font-family:Georgia,serif;color:#ffd84a;margin:0 0 4px}h2{font:600 16px Georgia,serif;color:#ffd84a;margin:16px 0 6px}' +
-      '.su{opacity:.7;margin:0 0 12px}.box{background:#1d2330;border:1px solid #fff1;border-radius:10px;padding:10px 12px;margin:0 0 10px}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}' +
-      'button{font:inherit;border:0;border-radius:6px;padding:6px 10px;background:#232a38;color:#e8ecf4;cursor:pointer}button.on{background:#ffd84a;color:#141822}' +
-      'table{border-collapse:collapse;width:100%;max-width:720px}td,th{text-align:left;padding:4px 8px;border-bottom:1px solid #fff1}th{opacity:.7;font-weight:600}td.t{font-variant-numeric:tabular-nums;color:#ffd84a}' +
-      '.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}</style>' +
-      '<h1>⏱ Speedrun dei dungeon</h1><p class="su" id="su"></p><div class="box" id="sf"></div><div class="tabs" id="tb"></div><div class="g" id="cl"></div><h2>Sfide vinte</h2><div id="vi" class="su"></div>' +
-      '<p class="su">In gioco: /speedrun · il cronometro parte entrando nel primo piano e si ferma sconfiggendo il boss.</p><script>' +
-      'function nn(s){return String(s==null?"":s).replace(/[&<>"\']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;","\'":"&#39;"})[c])}' +
-      'function tm(ms){const s=ms/1000,m=Math.floor(s/60);return(m>=60?Math.floor(m/60)+":"+String(m%60).padStart(2,"0"):m)+":"+(s%60).toFixed(1).padStart(4,"0")}' +
-      'const DF=["Facile","Normale","Difficile","Incubo"],Q=new URLSearchParams(location.search).get("stanza")||"";let D=null,sel=localStorage.getItem("sr_d")||"tana";' +
-      'function tab(L,v){if(!L||!L.length)return"<p class=su>Nessun tempo, per ora.</p>";return"<table><tr><th>#</th><th>Eroe</th><th>Tempo</th><th>Ciclo</th><th>Difficoltà</th></tr>"+L.map((e,i)=>"<tr><td>"+(i+1)+"</td><td>"+nn(e.n)+(e.con.length?" <small class=su>con "+e.con.map(nn).join(", ")+"</small>":"")+"</td><td class=t>"+tm(e.ms)+"</td><td>"+e.c+"</td><td>"+(DF[e.df]||"?")+"</td></tr>").join("")+"</table>"}' +
-      'function mostra(){const d=D.dungeon.find(x=>x.id===sel)||D.dungeon[0];sel=d.id;' +
-      'document.getElementById("tb").innerHTML=D.dungeon.map(x=>"<button class=\\""+(x.id===sel?"on":"")+"\\" data-d=\\""+x.id+"\\">"+nn(x.n)+"</button>").join("");' +
-      'document.querySelectorAll("#tb button").forEach(b=>b.onclick=()=>{sel=b.dataset.d;try{localStorage.setItem("sr_d",sel)}catch(e){}mostra()});' +
-      'document.getElementById("cl").innerHTML=(D.stanza?"<div><h2>Nella tua stanza</h2>"+tab(d.stanza)+"</div>":"")+"<div><h2>Tutte le stanze</h2>"+tab(d.server)+"</div>";' +
-      'const s=D.sfida;document.getElementById("sf").innerHTML=s?"📅 <b>Sfida della settimana:</b> "+nn(s.n)+", fino al "+new Date(s.fine).toLocaleString("it-IT",{weekday:"long",day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"})+(s.tempi?tab(s.tempi):"<br><small class=su>Apri questa pagina con /speedrun in gioco per vedere i tempi della tua stanza.</small>"):"Nessuna sfida questa settimana.";' +
-      'document.getElementById("su").textContent=D.stanza?"Classifiche della tua stanza e di tutto il server. I piani cambiano da una stanza all\'altra.":"Record di tutto il server. I piani cambiano da una stanza all\'altra: per la tua stanza apri il link di /speedrun.";' +
-      'document.getElementById("vi").innerHTML=D.vinte.length?D.vinte.map(v=>nn(v.n)+" · "+nn(v.d)+" "+tm(v.ms)+" · settimana fino al "+new Date(v.fine).toLocaleDateString("it-IT")).join("<br>"):"Nessuna, per ora."}' +
-      'function va(){fetch("dati?stanza="+encodeURIComponent(Q)).then(r=>r.json()).then(j=>{D=j;mostra()}).catch(()=>{})}va();setInterval(va,30000);</script></html>'));
+    api.route('GET', '/', (req, res, x) => x.send(PAGINA));
   }
 };

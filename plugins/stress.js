@@ -109,7 +109,7 @@ const inizia = (b, p) => b.length >= p.length && b.compare(p, 0, p.length, 0, p.
 
 module.exports = {
   name: 'Stress test',
-  version: '1.2',
+  version: '1.3',
   author: 'Voxelia',
   description: 'Bot finti che giocano su questo server, anche su più stanze (dungeon, boss, arena, scambi, comandi), per misurare latenza, tick, memoria ed errori. Pagina admin /plugins/stress/',
   defaults: {
@@ -650,30 +650,92 @@ module.exports = {
   stop() { if (fermaCorrente) fermaCorrente(); fermaCorrente = null; }
 };
 
-const PAGINA = `<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stress test</title>
+const PAGINA = `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stress test · Voxelia</title>
 <style>
-body{font:14px system-ui,sans-serif;margin:0;padding:16px;background:#14161c;color:#e8e6e1;max-width:1100px}
-h1{font-size:20px;margin:0 0 4px}h2{font-size:16px;margin:22px 0 8px}p{color:#9aa0ab;margin:6px 0}
-.box{background:#1c1f27;border:1px solid #2c303a;border-radius:10px;padding:12px 14px;margin:10px 0}
-label{display:inline-flex;flex-direction:column;gap:3px;margin:0 12px 10px 0;color:#9aa0ab;font-size:12px}
-input,select{background:#101218;color:#e8e6e1;border:1px solid #3a3f4b;border-radius:6px;padding:6px 8px;width:110px;font:inherit}
-select{width:auto}
-button{background:#2a6a3a;color:#fff;border:0;border-radius:6px;padding:8px 16px;cursor:pointer;font:inherit;font-weight:600}
-button.no{background:#8a2f2f}button:disabled{opacity:.4;cursor:default}
-.kpi{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.k{background:#1c1f27;border:1px solid #2c303a;border-radius:10px;padding:10px}.k b{display:block;font-size:22px;color:#fff}.k span{color:#9aa0ab;font-size:12px}
-.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
-.c{background:#1c1f27;border:1px solid #2c303a;border-radius:10px;padding:8px 10px}.c div{color:#9aa0ab;font-size:12px;display:flex;justify-content:space-between}
-svg{width:100%;height:70px;display:block}
-table{border-collapse:collapse;width:100%}td,th{padding:5px 8px;border-bottom:1px solid #2c303a;text-align:left;vertical-align:top}th{color:#9aa0ab;font-weight:600}
-.pr{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.pr button{background:#262a34;color:#e8e6e1;font-weight:500;padding:7px 12px;border:1px solid #3a3f4b}.pr button:hover{border-color:#6ab0ff}.pr button.on{border-color:#6ab0ff;background:#1d3550}
-.ok{color:#7ad48a}.mid{color:#f2b84b}.bad{color:#ff8080}.wrap{overflow-x:auto}.pill{display:inline-block;background:#262a34;border-radius:12px;padding:3px 10px;margin:2px 4px 2px 0;color:#e8e6e1}
-</style>
-<h1>🧪 Stress test del server</h1>
-<p>I bot si collegano a questo server come giocatori veri, in una stanza a parte. In modalità partita entrano nei dungeon, combattono mostri e boss, fanno duelli al Colosseo, si scambiano oggetti e usano i comandi dei plugin.
+:root{--bg:#10131a;--bg2:#0b0e18;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--lo:#c98a1a;--ember:#ff8a5a;
+ --title:#f5b942;--tshadow:#8a3b12;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--good:#4cd07a;--mid:#f5b942;--bad:#e8484f;--rowh:#f5b9420f;--inp:#0b0e18;
+ --f:Georgia,'Times New Roman',serif;color-scheme:dark}
+@media(prefers-color-scheme:light){:root{--bg:#e8dfc8;--bg2:#ddd2b6;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;--ember:#a8560a;
+ --title:#6a2a1a;--tshadow:#e0c48a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--good:#1f7a3a;--mid:#9a5a00;--bad:#b3261e;--rowh:#8a5a0a12;--inp:#fffaf0;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--fg);font:15px/1.55 var(--f);
+ background:radial-gradient(ellipse 90% 50% at 50% -10%,#24305455,transparent 70%),repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}
+::selection{background:var(--lo);color:#1a1004}
+/* barra di legno con i chiodi, come l'intestazione della guida */
+.legno{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px max(16px,calc(50% - 560px));
+ background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);
+ border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,inset 0 -2px 0 #2e1d1055,0 5px 0 #00000066}
+.legno::before,.legno::after{content:'';position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}
+.legno::before{left:6px}.legno::after{right:6px}
+.marca{font:bold 1.2rem/1.1 var(--f);font-variant:small-caps;letter-spacing:.05em;color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244}
+.marca small{display:block;font:italic 400 .75rem var(--f);font-variant:normal;letter-spacing:0;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:2px}
+.stato{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#f4e2b8;background:#0b0e18aa;border:1px solid #f5b94266;border-radius:3px;padding:.35em .8em;box-shadow:0 2px 0 #0007}
+.stato i{width:8px;height:8px;border-radius:50%;background:#9aa4b8}.stato.on i{background:#4cd07a;box-shadow:0 0 8px #4cd07a;animation:pul 1.2s ease-in-out infinite}
+@keyframes pul{50%{opacity:.35}}
+main{max-width:1120px;margin:0 auto;padding:22px 16px 60px}
+.kick{display:flex;align-items:center;gap:10px;margin:6px 0 0;font:bold .74rem var(--f);text-transform:uppercase;letter-spacing:.16em;color:var(--ember)}
+.kick::after{content:'';width:60px;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}
+h1{margin:.1em 0 .25em;font:bold clamp(1.9rem,5.5vw,3rem)/1.05 var(--f);letter-spacing:.07em;text-transform:uppercase;color:var(--title);text-shadow:3px 3px 0 var(--tshadow);text-wrap:balance}
+h2{margin:1.6em 0 .55em;font:bold clamp(1.3rem,3vw,1.7rem)/1.15 var(--f);color:var(--title);text-shadow:2px 2px 0 var(--tshadow)}
+h4{display:flex;align-items:center;gap:8px;margin:0 0 .6em;font:bold .8rem var(--f);text-transform:uppercase;letter-spacing:.12em;color:var(--hi)}
+h4::after{content:'';flex:1;min-width:30px;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}
+p{color:var(--mu);margin:6px 0}.lede{max-width:80ch;font-size:1.02rem}
+b{color:var(--fg)}
+/* pannelli con il bordo e l'ombra piena sotto */
+.box,.k,.c{background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005}
+.box{padding:14px 16px 16px;margin:14px 0 18px}
+.box>b:first-child{font-size:1.15rem}
+.campi{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:4px 14px;margin-top:14px}
+label{display:flex;flex-direction:column;gap:4px;margin:0 0 10px;color:var(--mu);font-size:.8rem;font-weight:bold;letter-spacing:.02em}
+input,select{width:100%;min-width:0;font:15px var(--f);color:var(--fg);background:var(--inp);border:1px solid var(--line2);border-radius:3px;padding:7px 9px;box-shadow:inset 0 2px 0 #0003}
+input:focus,select:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 2px #f5b94255}
+/* pulsanti come quelli del gioco */
+button{font:15px var(--f);color:#fff;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;padding:.5em 1.1em;cursor:pointer;box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,background .15s}
+button:hover{background:#3b4770}button:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}
+button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button:disabled{opacity:.4;cursor:default;transform:none}
+#via{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}
+#via:hover:not(:disabled){filter:brightness(1.08)}
+button.no{background:#5a2228;border-color:#e8484f}button.no:hover:not(:disabled){background:#74303a}
+.azioni{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--line)}
+#msg{color:var(--bad)}
+.pr{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.pr button{font-size:14px;padding:.4em .85em}
+.pr button.on{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}
+@media(prefers-color-scheme:light){button:not(#via):not(.no):not(.on){background:var(--btn);color:var(--fg);border-color:var(--frame);box-shadow:0 3px 0 var(--drop)}button:not(#via):not(.no):not(.on):hover{background:var(--btnh)}}
+#nota{font-style:italic}#nota:empty{display:none}
+/* numeri del test */
+.kpi{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:12px}
+.k{padding:10px 12px;border-top:4px solid var(--lo)}
+.k b{display:block;font:bold 1.55rem/1.15 var(--f);color:var(--hi);font-variant-numeric:tabular-nums}
+.k span{color:var(--mu);font-size:.8rem}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px}
+.c{padding:8px 10px 6px}.c div{display:flex;justify-content:space-between;gap:8px;color:var(--mu);font-size:.8rem}
+.c div span:last-child{font-weight:bold;font-variant-numeric:tabular-nums;color:var(--fg)}
+svg{width:100%;height:70px;display:block;margin-top:4px;background:repeating-linear-gradient(180deg,transparent 0 17px,var(--line) 17px 18px)}
+.c polyline{stroke:var(--ac);stroke-width:2}
+/* tavole con l'intestazione di legno */
+.wrap{overflow-x:auto;border:2px solid var(--frame);border-radius:4px;background:var(--pan);box-shadow:0 5px 0 var(--drop),0 10px 20px #0005}
+.box table{margin:10px 0;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th{text-align:left;font:bold .68rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.7em .7em;white-space:nowrap;
+ background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}
+td{padding:.45em .7em;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+tr:nth-child(odd) td{background:var(--rowh)}tr:hover td{background:var(--line)}
+.wrap>p{margin:0;padding:14px 16px;font-style:italic}
+.ok,.k b.ok,.c div span.ok{color:var(--good)}.mid,.k b.mid,.c div span.mid{color:var(--mid)}.bad,.k b.bad,.c div span.bad{color:var(--bad)}
+.pill{display:inline-block;background:var(--pan2);border:1px solid var(--line2);border-radius:3px;padding:.15em .6em;margin:2px 4px 2px 0;color:var(--fg);font-size:.88rem;box-shadow:0 2px 0 #0006}
+.pulisci{margin-left:8px;padding:.3em .8em;font-size:13px}
+</style></head><body>
+<header class="legno"><div class="marca">🧪 Stress test<small>Pannello del server di Voxelia</small></div><span class="stato" id="stato"><i></i><span>Pronto</span></span></header>
+<main>
+<p class="kick">Plugin admin</p>
+<h1>Stress test del server</h1>
+<p class="lede">I bot si collegano a questo server come giocatori veri, in una stanza a parte. In modalità partita entrano nei dungeon, combattono mostri e boss, fanno duelli al Colosseo, si scambiano oggetti e usano i comandi dei plugin.
 Non restano nei dati dei giocatori: alla fine escono dalla classifica dell'arena e i cicli dei dungeon della stanza tornano com'erano.</p>
 <div class="box" id="form">
-<div style="color:#9aa0ab;font-size:12px;margin-bottom:6px">Preset pronti (riempiono il modulo, poi premi Avvia)</div><div class="pr" id="preset"></div><p id="nota" style="margin:-4px 0 10px"></p>
+<h4>Preset pronti</h4><p style="margin:-4px 0 8px;font-size:.85rem">Riempiono il modulo, poi premi Avvia.</p><div class="pr" id="preset"></div><p id="nota"></p>
+<div class="campi">
 <label>Modalità<select id="modo"><option value="partita">Partita completa</option><option value="leggera">Leggera (camminano e chattano)</option></select></label>
 <label>Bot<input id="bot" type="number" min="1"></label>
 <label>Durata (secondi)<input id="durata" type="number" min="10"></label>
@@ -684,10 +746,12 @@ Non restano nei dati dei giocatori: alla fine escono dalla classifica dell'arena
 <label>Stanza<input id="stanza"></label>
 <label>Stanze all'inizio<input id="stanze" type="number" min="1"></label>
 <label>Cambio stanza ogni (s, 0 = mai)<input id="cambioStanza" type="number" min="0" step="any"></label>
-<div><button id="via" onclick="via()">Avvia il test</button> <button id="stop" class="no" onclick="ferma()" disabled>Ferma</button> <span id="msg"></span></div>
+</div>
+<div class="azioni"><button id="via" onclick="via()">▶ Avvia il test</button> <button id="stop" class="no" onclick="ferma()" disabled>■ Ferma</button> <span id="msg"></span></div>
 </div>
 <div id="live"></div>
 <h2>Test precedenti</h2><div class="wrap" id="storico"></div>
+</main>
 <script>
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const D=__DEF__,$=id=>document.getElementById(id),F=['modo','bot','durata','chat','comandi','scambio','who','stanza','stanze','cambioStanza'];
@@ -705,7 +769,7 @@ const v=(x,u)=>x==null?'—':x+(u||'');
 const col=(x,a,b)=>x==null?'':x<=a?'ok':x<=b?'mid':'bad';
 function spark(S,k,u,a,b){const P=S.map(p=>p[k]).filter(x=>x!=null);if(!P.length)return '<div class="c"><div><span>'+u+'</span><span>—</span></div><svg></svg></div>';
  const mx=Math.max(...P,1),n=S.length,pts=S.map((p,i)=>p[k]==null?null:[(n<2?0:i/(n-1))*300,68-(p[k]/mx)*64]).filter(Boolean).map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
- const last=P[P.length-1];return '<div class="c"><div><span>'+u+'</span><span class="'+col(last,a,b)+'">'+last+' · max '+Math.round(mx*10)/10+'</span></div><svg viewBox="0 0 300 70" preserveAspectRatio="none"><polyline fill="none" stroke="#6ab0ff" stroke-width="1.5" vector-effect="non-scaling-stroke" points="'+pts+'"/></svg></div>'}
+ const last=P[P.length-1];return '<div class="c"><div><span>'+u+'</span><span class="'+col(last,a,b)+'">'+last+' · max '+Math.round(mx*10)/10+'</span></div><svg viewBox="0 0 300 70" preserveAspectRatio="none"><polyline fill="none" vector-effect="non-scaling-stroke" points="'+pts+'"/></svg></div>'}
 function lista(o){const e=Object.entries(o||{});return e.length?e.sort((a,b)=>b[1]-a[1]).map(([s,n])=>esc(s)+' ×'+n).join('<br>'):'nessuno'}
 function pills(o){return Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).map(([s,n])=>'<span class="pill">'+esc(s)+': '+n+'</span>').join('')}
 function gioco(g){if(!g)return '';return '<p>'+g.mostri+' mostri sconfitti · '+g.boss+' boss · '+g.dungeon+' dungeon iniziati, '+g.dgdone+' boss segnalati al server, '+g.cicli+' cicli avanzati · '+g.morti+' morti · '+g.pozioni+' pozioni · '+g.livelli+' livelli</p>'+
@@ -723,7 +787,7 @@ function riass(R){if(!R)return '';const g=R.giudizio.startsWith('Regge')?'ok':R.
  '<p>Chat: '+R.chatInviate+' inviate, '+R.chatArrivate+' arrivate, '+R.chatPerse+' perse · Connessioni non riuscite: '+R.falliti+' · cadute: '+R.cadute+'</p>'+
  '<p>Espulsioni: '+lista(R.espulsi)+'</p><p>Errori: '+lista(R.errori)+'</p>'+(R.rifiuti?'<p>Risposte negative del server (normali durante il gioco): '+lista(R.rifiuti)+'</p>':'')+'</div>'}
 function agg(){fetch('stato').then(r=>r.json()).then(s=>{
- $('via').disabled=!!s.attivo;$('stop').disabled=!s.attivo;let h='';
+ $('via').disabled=!!s.attivo;$('stop').disabled=!s.attivo;$('stato').classList.toggle('on',!!s.attivo);$('stato').lastChild.textContent=s.attivo?'Test in corso':'Pronto';let h='';
  if(s.serie){const S=s.serie,L=S[S.length-1]||{};
   h+='<h2>'+(s.attivo?'Test in corso: '+s.passati+' / '+s.durata+' s':'Ultimo test')+'</h2><div class="kpi">'+
    '<div class="k"><b>'+s.conn+' / '+s.bot+'</b><span>bot collegati (picco '+s.picco+')</span></div>'+
@@ -740,9 +804,9 @@ function agg(){fetch('stato').then(r=>r.json()).then(s=>{
    spark(S,'rss','Memoria RSS (MB)',1e9,1e9)+spark(S,'cpu','CPU (%)',60,90)+spark(S,'inKB','Ricevuti dai bot (KB/s)',1e9,1e9)+'</div>';
   if(s.attivo&&Object.keys(s.errori||{}).length)h+='<p>Errori: '+lista(s.errori)+'</p>'}
  if(!s.attivo&&s.ultimo)h+=riass(s.ultimo);
- if(s.daPulire)h+='<p class="mid">Un test interrotto ha lasciato dati dei bot (classifica dell\\'arena o cicli dei dungeon). <button onclick="post(\\'pulisci\\').then(agg)">Pulisci</button></p>';
+ if(s.daPulire)h+='<p class="mid">Un test interrotto ha lasciato dati dei bot (classifica dell\\'arena o cicli dei dungeon). <button class="pulisci" onclick="post(\\'pulisci\\').then(agg)">Pulisci</button></p>';
  $('live').innerHTML=h;
  $('storico').innerHTML=(s.storico||[]).length?'<table><tr><th>Quando</th><th>Bot</th><th>Stanze</th><th>Durata</th><th>Chat p95</th><th>Comandi p95</th><th>Stato p95</th><th>Ciclo p99 max</th><th>RSS picco</th><th>Esito</th></tr>'+s.storico.map(R=>'<tr><td>'+new Date(R.quando).toLocaleString('it-IT')+'</td><td>'+R.picco+'/'+R.bot+'</td><td>'+(R.stanze||1)+'</td><td>'+R.durata+' s</td><td>'+v(R.chat.p95,' ms')+'</td><td>'+v(R.cmd?R.cmd.p95:null,' ms')+'</td><td>'+v(R.tick.p95,' ms')+'</td><td>'+v(R.loop.p99max,' ms')+'</td><td>'+R.memoria.rssPicco+' MB</td><td>'+esc(R.giudizio)+'</td></tr>').join('')+'</table>':'<p>Nessun test ancora.</p>';
 }).catch(()=>{})}
 agg();setInterval(agg,1000);
-</script></html>`;
+</script></body></html>`;

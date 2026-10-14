@@ -235,7 +235,7 @@ const descr = it => it.n + (it.up ? ' +' + it.up : '');
 
 module.exports = {
   name: 'Mercatino di Aldoria',
-  version: '1.1',
+  version: '1.2',
   author: 'Voxelia',
   description: '/mercato: metti in vendita gli oggetti dello zaino e compra quelli degli altri, anche quando il venditore non è online',
   defaults: {
@@ -497,35 +497,162 @@ module.exports = {
     });
 
     // ---------- pagine web ----------
+    // Stesso aspetto della guida e dei menu di Voxelia: Georgia, oro con l'ombra ruggine, barra di legno coi chiodi,
+    // pannelli col bordo e l'ombra piena sotto, icone voxel disegnate dal gioco (edIcoURL), tema chiaro/scuro.
     const e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-    const COL = ['#c8ccd4', '#4aa3ff', '#b866ff', '#ffae2b'];
-    const STILE = '<style>body{font:15px Georgia,serif;background:#1b1610;color:#f1e6cf;margin:0;padding:16px;max-width:980px;margin:auto}h1{font-size:26px;margin:4px 0 2px}' +
-      'table{border-collapse:collapse;width:100%}td,th{padding:6px 8px;border-bottom:1px solid #f5b94233;text-align:left;vertical-align:top}th{color:#f5b942;font-weight:normal;font-size:13px}' +
-      '.mu{opacity:.7;font-size:13px}.oro{color:#ffd84a;white-space:nowrap}button{padding:4px 8px;border-radius:4px;border:0;cursor:pointer;margin:1px}.wrap{overflow-x:auto}</style>';
+    const ICONE = {stall: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAADn0lEQVR4AeyZS0hVURSG1z3Rg8Swlwa9jEAUDRpEUKk4qEGjSBTDohcIDYKQsEEohGkDuTloGAVBKIhikyhEjBApMKLUzMq6pfl+5NsU05P/xi3nHNc+0uDmPnKF7+7HWuue/z/rso96DbL8ZO7aY7qRnpFpuuFWi5hbLWLIcQM5biyayY9LMGPDN5GKfZeyKCYmTsmBxkZlLd4z2PXoiTADI1iomE7LUIXE/vqKMjGqXoJdL69rmGlnzbzDR4kjZVsk5X5sooL8XJbE5BQqaPnE1uL9/ke9NILRwMtgfx9xIAZ+dA4RB2KAq8UeYoCrxR5iALkciAHkciBmRZixbnh5HjKja/dWTWfKy0p9q8JM4e08Hz4tRnnbd3oxf5pxIOFxSQXVvqxhQXyl66URaDE2z5gU61vHUtfZTVXXswUPr16hC+fSfVZOnkjyrXQ9TEjEx6xxfJQ4ZBLG2uFB0UrMnXC12LPmBaM+KT7KtCLMWC/KzUt7O5RGuHznXjDqzyTvM3du3UgSXNOo/tXPdkXe2eWErEQ9jEC8EyPlcjRlZMcJwpPDqT16VvA6fIxuBlqW7UhR+1efimDUP7t13Mw5nUAgfk+EzY+BVVPbEAHMvQC0AqdWYca56dV1yIyOnYMm185Yz3Bd5hCtQmlGnt+6jSoj2FeaQdBr2Mzs3hYmzm+c4brSNzylvMc2M8jC+a0z0KhiiRlVohf2l5jRuSvQ5nZTbWZ+DkyQvySO/JWHWM5f3EL+NQfJv+kYy6mBKOp7kEWTlTdY3mcmkv9aFPnv7GVJPbKWRnI+0FwxT3PyI4qM2KD0YzOzmPW5n4hjIYH7Hxf2FsLU2/CNRcZHGoaJQ8a7300Th4yrRt6MKlvz/SVmqkrbqKqunwVelvubP1D2hnpfzXeGAfWVVT1UM98ZDsRbnz+d70o1C+Ju2MzgObN9bAep+BOIoP2ZW5WEpYbRvelRJUUdXRQduV/JhrW7qXjLfSWFlE+h54xbO3WNGU5hOMt1xqnXuraZwXOmc3CSQP2XAbr7pNmnG5H//Jyx2vXQ3NYZD+lmpYbMsLdlBTflpUOdkXdCtzHUGd06IvUoO9MzOC5zPDFCL2sm0DHsCQNSpNRr1DR0i28A8PsYgjKAuY646TVmJ3/TxrkZwduWHh312zS56RUfs86hKQLWqtaeCZ91rdMcWoFVE/QKM9ZNzOsDQ9oagT4nUq/R0jUuuiKdyoCzQJe1m96/AAAA///iebxnAAAABklEQVQDADMLTS1Yob79AAAAAElFTkSuQmCC', coin: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB40lEQVR4AexWoU7EQBAdCIogz2MRJDhA4bGgji+4L0HwGQhQaDwGkCSEYBEoKskpEphtM81ruxOW3ZZub/fSdzO3N53umzeddp0m/skExhYwSIHZ1sZ3HwgpQhCBkAv3dW4aBLQ2+Xg/IV+83RyRQMvvolIaCrhUYqwYVQGUVWuT5UNBvkDCmF/ayljcA8ajrxLAoJj99Ahgyzw/vVIfwJy3jwUJWsrP+beA3epIT4GKdzzfDQXwrsfJgBJjy+wvzsmG3b0d+g1YAsx5fDAjgZlEAt7blQDPbRDAP6biZwK+SmGLaTlkGhnbipFpNM8KtCrz7z//oEB3b8v7S7KhGzncShCB4bblnjkTcK/VMJFZgWHq6p41K+Beq2EiV1cBfIXWaoevwVqMth5yLuZcXQWQZcx+Q4Hi82tNsH16R4LNwxkJtNdgbAkXH4uCOc2rs2Bx8UIC3teZAM9tEMA/puKnQQAnkshrLEof4ptcAkflrzmuRBoKMNtoD1UBvuOtE0mmgrHISlrAx5pcNvAerJMHr6sSwKCY/TQIsJR1O7FfyyoPOmMbLQAPIJd1zIl+S/ly6vCasWyqIw0FKq5xfvsoYCQswXJbW4vX6zZz8VulKXPzWtvyUvfwIdDNMuLK5An8AAAA//+Wh7xaAAAABklEQVQDANLAbcGXoGvwAAAAAElFTkSuQmCC', sword: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACZklEQVR4AeyZvU7cUBCFJ6uUSUcRKVLSJUqVF4jyCCmSKmnSRkqKVHmEFDxIUtFAQY8ooKCgQQhEARJQsCWiQoI5a76rWdZXWDL+gfXKx2c8Hl97Zo7u9cqjhWdPr8DuwckVwCe2Hv9GPX62So/28BNY3z4yEFPGJ5aMQIzpg/3wO9CHKtZ5htGH968MWOYnGQGkJM6Et+oeJNRquUtuNhqfXz4BSElcEjtxISWxZAQmJzvYDRLqoOhTt5zqAFISS0Zg6opwIBkBpCQOIY2bUwk0frcGbvB4E5CMAFIS54qIlMSSEcjFRz+x4uivYj/eDlTJvg8xlTqAlMSSEcglIBkByQLEeHziw6WPBnQMYnzOrpRA7uI++OcpgaLekhFASuLi7OweKYmRhvjs+LOBeBVSEisOxJhoz18HYvZ9sGt1ACmJJSOQSwzJiC82xgZWN8cGXn9ZM+DjfgM+5tcAN4utVgLFEN3uhwSov7e69J/d24XfBpCM+NfffQM/FncM+DhRNgwv/u874GaxDR0o6tDd/t46wIIj1iwDJBeAZMTvXj438OfTGwN+/T/gZUEyYj+c3e4tgdmh2/HMdwLe6vRxRO8uAMmIWaDEK1unBnL9QUriOH4ufr47kKtKm/5aHfBFJy1evL+IYwIsUGKPT4vU4vKegRj/8/sLA0hSnJNTrQTijbuyhwSovMujVE7uT7IhVuz+FI+UxDoHNHMBfDecXq2HDtxUpDNqpAPj8NHkVmZ6pwHpVJSTZjGgmQt4TKkUG0kgPVkLxpBAhSIjGfGd4S6VNDu5XSobH0RjTTB0wKvR6XYNAAD//0xOBbYAAAAGSURBVAMAEQzrhu6MrsIAAAAASUVORK5CYII=', helmet: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAADWUlEQVR4AeyYy2tTQRTGTwKCS7OQWmstURBFxUpXbhRcKf4D4kZREBQXPlDRhQtd+Vi7F1FcCG4EpcUHhS4URLEWU+sjbY2xovWBInST9gs5l5O5c+fObTO5k5LAx5zcOXPm/O6ck+QmS4vo1Ybx9TDbJ8Mns33n7opL8T6247xPZt/+o5VV3XlyJVsA6TcvGIDIIL7YiWH6h8YqZy9cIxfatKVvQfclEQz6A7u9fvWcXAixWR3Lc4T9pHguarSGQWmhP6ICNfJ6fnUnLVm6rK4fbeJbwQCEgw08vOfkVHDS2AMgnybKMBMrFkb2CGr68sXTdMWRtm5eRzt27Q36EfslITLCoF4RDHcNgg0VSz/JhRAbwl4QbJZND0XCoLSa1SOccNSI0rPpIS0MQDiw7BG+5nJU9wOIbQ+FYEw9cu7EQRqfKzFXMOs3bKzrx6Q9FIJBoqhXCDYk+wPvXUq3F3KB4vbVwsQt8nW+DePjySCnupPh7xVMtIKQr1QAg49jX75XbG4kcpXCmioMQPBGp5u37tLg00epSJeP6VpWfq/gGWXqaynw7+5ZS73b9qSmlWv6SM0HObLU327Vk8FnOCsgqRl8Pa2xlkYwyDyCizWjClOzW34IwUhyH23THa+DmRz/QP9naO4pL+elRguj1LGiK5Inq5spTX4kH6XLVV7TwkiHVrJDMIU3L7w8FVRK3I0NwfTfv0MDNZ06fozKX8r04/u0lcYKIyTXcxweFxrvyOEDRp4QDLz5mQI29O/vb7IRfCFer46Yg2xiwQe+EMeBbZIWxrTA57lYmF/TU1anIu+kCbjR8eReRhg8k38uFshWxffDxv8IGh1PgsA2wsCB69V2xBqTbOOwnymWnBt8/CATCyMX+GrfvnE9g9yy6v9U6vMLnNKUfJZCHmq+DIK57NVLZzKs8ycPZTrzvcHzS+nbH+rpysEvFRXejpDM5+XwOypNFKt6NvSEkC8SY2nLjH8ts1Paoy4f9IialxZGdfLtvSwtmVsIRq1JtYdkDbu2kaiaTxQIfEMw3D8YUZOyZpv9f0BcjwBAKgQjJ9nmmm32yPtj1PUIrktZwcgFadim0pL5xMLImk3jZGxBABULg95JS+hZJGmrWBjbQD74tWF8OAVdDrMAAAD//2o1OyAAAAAGSURBVAMA7tK/wYHx/GoAAAAASUVORK5CYII=', armor: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAC4klEQVR4AeyYsWsVQRDGN5J/QRENgljZWAmKNtb2djbWNiIiiGCR5lWCKSzt7Cy0Emw0jQhqYyER9CGokWBrYfnkdzAy7u3t7rzZy0v0Bb7s7s3sN/Pt3t68uwPhH/pbitmrm/n/7sz5CxdnOXh3LMeNrcRfvTOXLl+dHVk7HoZQClSyt+CvEkOgUjIeeyv+opgnm9PZtdt3QwonT532aOjmtuTPipH79P271yGFLhv1D38NZUp28cWQ4uYaNg38NbSN/qAYtp7zgVMN8NUozRmDPymGQKVkPPax+Hti4nv4x872YN5rx078dZZqztCY/D0xZM79KmCcg/jRxn76/pY+PvgKGOcgfrQ5P2xJMRi80OdH9728uflFMayIRo6shU3Hom/hzIr59mUafv5aDbPVgx0+bH0Mhw4fHeSPz1CqNuXOoDVenEhWjDjvbE8DkHGuZTVzyM0VG7GAjGvbKjG1ZIv2W4pZ9A6k4nNt3+7My82nKwjQ2JdiHj283xOCqJ6YF88e//mFjMOnrTfdk2yepwvzrYjjxfkMCSFOT8zG5MaKYP3mlZXrt9bD5N6DDncmGyFXJyD0gDolsWjPnDsbvn/93OHtq+eBfHL8PTEpZ103UvaW1zyxqsS0THZMLrMYvXL0vcnBoeHhM4nx/naKE23NZxIjyfBkAzL2tnABL89cYrxBx5pvFhPXAW9iLflMYuI64K07rflMYtgF/eShzzUP4NDwcJnFeIKNPdcsRq8ifW+CcGh4+ExiWteF1nwmMbJq1AQgY28LF/DyzCXGG3Ss+WYxLesColrymcS0rgut+FgUYBLDBP3koc81D+DQGOJKvfPHvmYxMcFujHOvyjp+UYx+B2cF9eQx+sQQwF8rBN+iGPkeIG3uWzOEHlB3LO/8cayimHjCbo1rzkicy54UY7m1tCCzmPgMyf3doiWxeYUw1yxGzs4Ybem7GAnnYBaTI1u0bSlm0TswFP83AAAA//8F/Z7IAAAABklEQVQDAKITxYVkP/NtAAAAAElFTkSuQmCC', shield: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABxklEQVR4AexXoU4EMRAdCBJJEHiCAYs9gcWugD+ABDSfgIYABo/gA5DkLBYMOYO+IHGQwEw2D3qkk85lr9vubi/3dnq9dmbfvJdmd5k6/ikEUguoKrC2uvKdGpbmqAQsm3NY0y8CrmX2Lz8pBXZPXwhw70dTu18KaCxznjcpMJ280jy42tgjH2w5HrlWjX+NO+DfAA/rr4lAvTTPayGQWpeiQOcUuB8dUwgaqdA++V/bq80XC2mdaWvepIBIC8S+sbOdGwIstUwELIlSrekvAfe5pRpfUzW2Q1PDkuf8+YgALY87318FXJY5j2cUeP/4WgKeLrYJ6AyBnG9Uu7cZBbRFOc+rBGAlibCSxBhkppP6DUzi28MJAVz7ENDqqgS0DbnND4MAy+g9ndY3twiYVxmxCwDLSORamm3uuAbAw/o7DAVqrnleGyngPi9FogfLSPSWaETAm7HlyeER4FPCeyJZGo9TR6KcOADn1E6eYNrhKRBsScsLGinA0nvt5L55jW4rAmAZibxXs42cOECwHY0IBLO3sKAQQJPZEn92ct7mxC4Ar1mIbVBTYlFAupASURRgq/zaiccLt43bsCgE3AKxx50n8AMAAP//jFKZ6AAAAAZJREFUAwAfcd+G6VDRBQAAAABJRU5ErkJggg==', scroll: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAB1klEQVR4AexZsUoDQRAdDyuxEfwAS/9A8Ass7AVrsbIWO7ELFlZiIdaKvYgfIEKa1FZir2AjVoLOQmZ5u7lN7ti922x2Qx47d7m9mTfvcYG5ihyf9dXlv3mCo0xyEnBtmLfzi0UALfMxuqDYeLg5IgHWhi5YLAWQWSpxhdKgZYajN4oNbKJYSa1Yc7EQdilGbCiAlnlmCwn6LExy2uvuwSUJPr9/9wUGgT4LDZUrfQIsxZJAJFLr4OqRBFt7pyTY3N6h0Hj/WSOB5LRXrlHbBtVLXwFkk2JsKMAyaTs1IXM9OKcQcOXiemptw9ffCQwCfDK5byHQo2TaNpizKIDdiBG3UGCyvMOTYwqByTs3P+NFoHma7q7Mj0CIPy77Hj765KeAT7e62NtagRBPHfsePsRaE/BJ1sXevAnYT5NZx0WBmg7kbSH7aTLruKaBU0/xCPEWoF+44Ka8FcBOxIoNBVguLZMxqb4/o+EYry9PFBobK18kwLwYq6m0AOs0CMTqok/e9AmgHCKRWnFS7dOhtnsxL8Y4rcZ7pq8Askkxrnh8p8eJaiotQDIoX6MYXo6Euh6n1VyzHjkWC6FSMWJDAZam1k4oX6yYa9O2wUYZBPCHVOLkCfwDAAD//zwYj+YAAAAGSURBVAMAvBVAkPtdJ5YAAAAASUVORK5CYII=', warn: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAACiklEQVR4AeyZv0oDQRDG13QKAQtLsRMRwUYQsfcFxBew8gEiiE+ggq2VhZ2lfXqfwEYCFlHSSEAUNZYn38rJ3GZu/2RnvTOcMJvb3ZnZ+d3KfrlLSyX8299dzGwmvXQymPOj1Wxtua3KTBoE+ZLAAATJ/9rEYbLRXtY53VSc7WwvJOUTh9HV9oZKcaYn0zVpYNLVa83cwFhvT4WTojsDTQlhgT+1kFjOVwwGxzE0hVuEG4MvNc4ndEwEBiChC6fwj4YxdUU9jUrrXF9pF/RHWneiYXTlVFP0gKUJ8bWk4aZkYLjMFYyJw3Rvh8pmKRlFYe5676pzMauOL+dZOzj5UmppLhlPFAw0gqvs8+NNccb50jHko0bnfK4nhsFxDJ3wWcTHB7mo+cSYPhPBAMRMVId+MEyIrrgAJXUHawXDIKjwrKIHIhpB3ZkMJqL2lKENTMq7G5M7aGegATGLhcZiPWqueG8YHMfQAVdCqXmsRc0nrxcMQHySVe3jhJHUFRdsrO44YXQBglqg89maiLX8YGyL12iuganRZhRKse4MzviCd8Ud1EPNLKcUBscxznkzoKo+aqHG1cHCAIRz9hl7fXlmnzLx5OkTH+MzBhOjK9CJQX9LlVn/YUPZ3quZIMhHf+dxvWcbg9EJI876wrMOzZNf6wUCmjwOn44wHsYRVNdpcRjbOzPMpbwRojBVvTfLb1ABBmd4PhHziZOLs5icXCzqpfYLg+MY5zgXVMcx1EoNNWoYgKAjYZXqTIyumPDQhTKNwXioznD5bbqjd6agDWaG0D70wGah+Ux/mtuY+4ExBv9rt4Gp685Nzc5c3QxmpgLm8Ox+Bv8tre71o/U3SHyfqqsBIAfB9TcAAAD//4FLTQcAAAAGSURBVAMAWlsvO9EslLAAAAAASUVORK5CYII=', lock: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAADIklEQVR4AeyZPWgUQRTH3wqKCsGAGCwSURDFU85ChEBANI2kjV0ULCwES4VIjNooBtRK0MZK0HRqFz1FPcQUCkIMKAQtzqAQDUgOPxuz2f/CHJPZ2dnZnZmbC1zIf2d23sx77zcfye7dKrL4c6B/IDSRaSrWYIaOnwq7e7ZRUZmCYLwVGIDAmW8ZwzyZ/BievXidimjP3n1W+Y1gcD6QzfTUGyoijGV6+fxRAH+8mE23LAyDrYXzoRtI1W/8zq2A+YNPSNU/zVYIBoGZw6ePHxZaFawkfDAQ1E2VG4Y/I9jzX2drBL2efEHXLg0HeXTu9IlA9GcClAsG+xnBMKsQ6kzY86yet4QviB8Hf4jHi7fL6tow2FppexlbRea8aBv8sXiICen40oKBY+aMPyNoQ2CURSXzx8fL4zcTRtzTOB8Qzgj2fJ5gsr78GYM/MZ5sTFpbJgwGYj9DqDdDiAXljaUFk9epr/5tGF8znxVXuTJHD3aFaQ56Ft8S7LaVJ57YNxXm8rGt4a7u9WL/+L70f4Jgc6E4gHCRxRO6xLdSGIDE1ugi/h+A46jZ2a9JvARMWO0PR0dLxHR1qEpMIwP3G+3MbrtksVCK8Q6VO1MnEYYEDBrr7xaoFYXcVJLCqAa0si0T5lm0Sj6VZ/KUMO9n/9DghRINXtnvRdt7N9KGzWu1eZQwDS8z80Q+1EhAr6IHo+fLey/rMJVX86SSS2KrMNMzP+nMzXU0crtTqpNjf4m2yJ8qbEBahWEJ/f5VJ5mY3VXpBMZVsll+2zBZM+TL3l4ZXzOfFdf6yiz8+LbsL1lWAjbtVmHKOzvoS623oYkbXbR6jf6zlSmYVZg4Gf4ZLm5o3sU+TPNyT0RyDsOfoUR0yw1OYcQzVPsUfYcZvSNZZiDmzylMHIQ/Q6jHjW4u7mHc5C31mglTGf+sfD9RvbuY2qQZKxqVMLujd4/DfZvIl8o7Oqg+90+R/nKTEgZdfX9+hhxkulf9HojtmTDigFa4P3+3lgBBXgmYB5U58vk5mSo2Ek4DgS0Bc2TsQ9Cq6huekq4IQKAEDBpXqtowrbpySwAAAP//tBIWygAAAAZJREFUAwBf33qjOdZluQAAAABJRU5ErkJggg==', key: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAC9klEQVR4AexWTWsUQRCtWSTExUUxKIpBBCNiAgHBL8hFvaxe16NeBP9BwMvqTdTf4FkFLzkKexByEDx4URElePEDUYwExRAlHib7htSkpme6u3Y2O5kss/Do7ql61f26quit0RD9KjFlTWaVmSozBdxAVWYFXHKuLXrKzNXz+8NekOtEfZDUYu5cOxKeGK+TFn2cKTdVJQZCcu9QINErJpy/GLbbk6TBhek9BR49vZVTDPoDlN+vf5EG8GWM7B0h8CXYNqjRKgalhf7Is/HooZ10tL4j0V954vTKyRQDIRxorvOdnnUzowE4EPLv619MC0dKjOwR9EDr9iS17p5WYdfxBs1ePhj3F/hFKkqIQX1jc+4PzCMsLBJpEDlT3F/ry3hA/EEiFoPSytsj8WkdE8QeJLB1JAZCsABkj2DdefyJOs8XrYBPWVBz9Qh64O2HZQKePP1Gl268DEzQ4bpVy1TXpnmf8vrInsQhosxYewQefYJjD2I0jxaJMT9u1/Wmi5E9p3mbevVxXfSmipnuvjPaNymP38S5Mdp9YNSqRy1mdWmVrrfGQxOpyJr3KK9ParPkB5UY/D05eXaMpo41UkiG29pVTdY4jiLfFawhBP+3MNfA9SZl2cyYpo9pd61rV+69CxgzN18FzYkGNWf2RVhe+EPtB6do9v4ZK+jzShz/Tddf8pvrcWxjY+k/yXfK5Jv2eCPLJLPM+E2IOa4aj502Jsz3jRuM5Ix5ya/u1aP5H0GmGDetfNZbDz8GOFVKjKuHzHo21wgo+b43BP5mj0q+xs5C4JsSw/2D0ewhW+3zd/TY+y8rBMy9+EmI4YIZ3+Rr7BDBSIlhgxy5hn2j5KCG5do157jSR/J9duapxLCzdpSp13Kkn49vs3vFyBrW9IBtI3lYOZfx8d3k++zgMLxiXDVv2lDjHFg7yhhZfJ9d7uMVI53LPq/ElDVDQ5EZvtxKDN9E2cYqM2XLCJ+nygzfRNnGKjNlywifp8oM30TZxqHKzBoAAAD//yYlVPMAAAAGSURBVAMApTGzlNH0p9gAAAAASUVORK5CYII=', users: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACO0lEQVR4AexYPUsDQRAdRTtLwR9ga2GlYC1W+gOUlHaihdjY+Qss1NJStLFXRBBBBEUkYBBEBCvxqzJ2Cjqb8x3vwu65Cfm4vSTcu5nMzn68fcPmLr0S+KdLoN0C1qzA4EDfjw0+RGz90mI+Y9ZMwGfQVuZ0BgGW+a18K8DD+Y4AnOPy38pX2jcdpeNtAXgcl6qdoYCLfRbiTgVYPpSMsR831wIwAdMGoKyM5Rz2Xy6KYgPnoJSM5fVwjpMAJ2XZzxcBlgnlYCxKxliXGqYN4BwjP8Alwzku/+isKEBVzqx+ryBfCiir4K6mKHB4ei3AyOS8AEPjowI0aqeaQqBRi/MZJ78EcKIY67MTPjl8CuF0SbPLa1sCvH9+zwE8V34VYJZZ9hMKqEQ9wPBEQYCIQHTH6ZJmF1bXBdDxYulxGhmL0kiz3DeaPb7vqVdBgoAGg7vyS0Dls5YTSiPNat+4bHwk3Z+cEoDz9dlsF9B4pWT+rJroyq8CEb/s3xMKqFz//uczvfklNowtlQTQcWLp2X8qFMQG3iZuR1kZq+PEa+P8BAFuCMUPnwBLYyuN6tjr/Z3YwIpV98H38+dXsYH7cjvHTRkBvObwFWCWIfpOBWxlYmI+JE2eDT59XTmu0nIScA2UtXiXQLsV6SrQsQrwqeLjuzaqW0KunWlVPKFA8sfnRJ956sS9vd9K/4wA66Wi1At+40sQaNWuNXKe8AmoHPHL++XGiACPB4vSTOi88Yt/rT4rGL4CzCZE/xcAAP//23c96QAAAAZJREFUAwDd1gqBiwgYlAAAAABJRU5ErkJggg=='};
+    const ICO_TIPO = { w: 'sword', h: 'helmet', c: 'armor', s: 'shield' };
+    const vi = n => '<i class="vi v-' + n + '" aria-hidden="true"></i>';
+    const STILE = '<style>' + Object.entries(ICONE).map(([k, u]) => '.v-' + k + '{background-image:url(' + u + ')}').join('') + `
+:root{--bg:#10131a;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--lo:#c98a1a;
+  --ember:#ff8a5a;--title:#f5b942;--tshadow:#8a3b12;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--rowh:#f5b9420f;--wd3:#4a301b;
+  --good:#4cd07a;--bad:#e8484f;--r0:#c8ccd4;--r1:#4aa3ff;--r2:#b866ff;--r3:#ffae2b;--oro:#ffd84a;--f:Georgia,'Times New Roman',serif;color-scheme:dark}
+:root[data-theme=light]{--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;
+  --title:#6a2a1a;--tshadow:#e0c48a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;
+  --r0:#5a5e68;--r1:#1f6ab8;--r2:#7a2ec0;--r3:#a8560a;--oro:#8a5a0a;color-scheme:light}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]):not([data-theme=light]){--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;
+  --title:#6a2a1a;--tshadow:#e0c48a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;
+  --r0:#5a5e68;--r1:#1f6ab8;--r2:#7a2ec0;--r3:#a8560a;--oro:#8a5a0a;color-scheme:light}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--fg);font:400 16px/1.55 var(--f);display:flex;flex-direction:column;
+  background:radial-gradient(ellipse 90% 50% at 50% -10%,#24305466,transparent 70%),repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),
+  repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}
+a{color:var(--ac)}a:hover{color:var(--hi)}
+.vi{display:inline-block;width:1.25em;height:1.25em;vertical-align:-.25em;background-position:center;background-size:contain;background-repeat:no-repeat;flex-shrink:0;image-rendering:pixelated;filter:drop-shadow(0 1px 0 #0008)}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;padding:12px clamp(16px,4vw,40px) 13px;
+  background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);
+  border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,inset 0 -2px 0 #2e1d1055,0 5px 0 #00000066}
+.top::before,.top::after{content:'';position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}
+.top::before{left:6px}.top::after{right:6px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;text-decoration:none;font:bold 1.3rem/1.1 var(--f);font-variant:small-caps;letter-spacing:.04em;
+  color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244}
+.brand:hover{color:#ffe7a8}.brand .vi{width:38px;height:38px}
+.brand small{display:block;font:italic 400 .74rem var(--f);font-variant:normal;letter-spacing:0;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:3px}
+.top .sp{flex:1}
+.gbtn{font:14px var(--f);color:#fff;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;padding:.45em .85em;cursor:pointer;text-decoration:none;
+  box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,background .15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.gbtn:hover{background:#3b4770;color:#fff}.gbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}
+.gbtn.on{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}
+.gbtn.no{background:#5a1f22;border-color:#e8484f99;color:#ffd8d4}.gbtn.no:hover{background:#7a2a2e}
+.gbtn[disabled]{opacity:.55;cursor:wait}.gbtn small{opacity:.75;font:inherit}
+:root[data-theme=light] .gbtn:not(.on):not(.no){background:var(--btn);color:var(--fg);border-color:var(--frame);box-shadow:0 3px 0 var(--drop)}
+:root[data-theme=light] .gbtn:not(.on):not(.no):hover{background:var(--btnh)}
+@media(prefers-color-scheme:light){:root:not([data-theme=dark]) .gbtn:not(.on):not(.no){background:var(--btn);color:var(--fg);border-color:var(--frame);box-shadow:0 3px 0 var(--drop)}
+  :root:not([data-theme=dark]) .gbtn:not(.on):not(.no):hover{background:var(--btnh)}}
+.top .gbtn{background:#2a3350;color:#fff;border-color:#f5b94288;box-shadow:0 3px 0 #00000080}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+main{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:22px clamp(16px,4vw,40px) 48px}
+.kick{display:flex;align-items:center;gap:10px;font:bold .74rem var(--f);text-transform:uppercase;letter-spacing:.16em;color:var(--ember);margin:0}
+.kick::after{content:'';width:60px;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}
+h1{font:bold clamp(1.9rem,5vw,2.8rem)/1.05 var(--f);letter-spacing:.06em;text-transform:uppercase;color:var(--title);text-shadow:3px 3px 0 var(--tshadow);margin:.2em 0 .35em;text-wrap:balance}
+h2{display:flex;align-items:center;gap:.4em;font:bold clamp(1.35rem,3vw,1.75rem)/1.15 var(--f);color:var(--title);text-shadow:2px 2px 0 var(--tshadow);margin:0 0 .35em}
+h2 .vi{width:1.1em;height:1.1em}
+h2 .n{font-size:.6em;color:var(--mu);text-shadow:none;font-weight:normal}
+.ch{position:relative;padding-top:26px;margin-top:26px}
+.ch::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--lo),var(--line2) 40%,transparent);border-radius:2px}
+.mu{color:var(--mu)}p{margin:.4em 0 .8em;max-width:74ch}
+.stats{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0 0 16px;padding:0}
+.stats li{display:flex;align-items:center;gap:7px;color:var(--mu);font-size:.92rem;background:var(--pan);border:2px solid var(--frame);border-radius:4px;padding:.3em .75em;box-shadow:0 4px 0 var(--drop)}
+.stats b{font:bold 1.3rem var(--f);color:var(--hi);font-variant-numeric:tabular-nums}
+.callout{display:flex;align-items:center;gap:12px;background:var(--pan2);border:3px solid var(--lo);border-radius:6px;box-shadow:0 0 0 3px var(--wd3),0 7px 0 3px var(--drop),0 16px 30px #0006;
+  padding:.8em 1.1em;margin:6px 3px 22px;max-width:74ch}
+.callout .vi{width:34px;height:34px}.callout p{margin:0}
+kbd,code{font:bold .82rem var(--f);background:var(--btn);border:1px solid var(--line2);border-radius:3px;box-shadow:0 2px 0 #0009;padding:.1em .5em;color:var(--fg);white-space:nowrap}
+.filt{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 12px}
+.filt input{flex:1 1 220px;max-width:360px;font:15px var(--f);margin:0;padding:.55em .8em;border-radius:3px;border:2px solid #3a2414;background:#f4ecd6;color:#2a2010;box-shadow:inset 0 2px 0 #0002,0 2px 0 #a37a4f66}
+.filt input::placeholder{color:#8a7a5a}.filt input:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 2px #f5b94266}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.tw{overflow:auto;border:2px solid var(--frame);border-radius:4px;background:var(--pan);margin:.4em 0 1em;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th{position:sticky;top:0;text-align:left;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.75em .7em;white-space:nowrap;
+  background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}
+td{padding:.55em .7em;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr:nth-child(even){background:var(--rowh)}tbody tr:hover{background:var(--line)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.b{text-align:right;white-space:nowrap;width:1%}
+.it{display:flex;align-items:center;gap:10px;min-width:210px}.it .vi{width:30px;height:30px}
+.it b{font-size:1.02rem}.it small{display:block;color:var(--mu);font-size:.83rem;line-height:1.35}
+.r0{color:var(--r0)}.r1{color:var(--r1)}.r2{color:var(--r2)}.r3{color:var(--r3)}
+.tag{display:inline-block;margin-left:.45em;font:bold .6rem var(--f);text-transform:uppercase;letter-spacing:.08em;border:1px solid currentColor;border-radius:2px;padding:.08em .4em;vertical-align:.15em;background:var(--pan2)}
+.oro{color:var(--oro);font-weight:bold;white-space:nowrap}.oro .vi{width:1.1em;height:1.1em;margin-right:.3em}
+.ip{font-size:.83rem;color:var(--mu)}
+.empty{display:flex;align-items:center;gap:10px;background:var(--pan);border:2px dashed var(--line2);border-radius:4px;padding:.8em 1em;color:var(--mu);font-style:italic;margin:.4em 0 1em}
+.keys{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:.4em 0 1em}
+.keys li{display:flex;align-items:center;gap:10px;background:var(--pan);border:2px solid var(--frame);border-radius:4px;padding:.3em .4em .3em .75em;box-shadow:0 4px 0 var(--drop)}
+.keys b{color:var(--hi)}
+.foot{text-align:center;color:var(--mu);font:italic .82rem var(--f);padding:14px 16px 22px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:20;max-width:calc(100% - 32px);background:#5a1f22;color:#ffe0dc;border:2px solid #e8484f;border-radius:4px;
+  box-shadow:0 5px 0 #2e1010,0 12px 24px #0008;padding:.6em 1em;font-size:.95rem;display:none}.toast.on{display:block}
+tr.via{display:none}
+@media(max-width:640px){.brand{font-size:1.1rem}.brand .vi{width:30px;height:30px}.brand small{display:none}.thm span{display:none}.it{min-width:180px}}
+@media(prefers-reduced-motion:reduce){.gbtn{transition:none}}
+</style>`;
+    // tema come nella guida: automatico → scuro → chiaro, ricordato nel browser
+    const TEMA = '<script>(function(){var R=document.documentElement,b=document.getElementById("thm"),N={auto:"automatico",dark:"scuro",light:"chiaro"},m="auto";' +
+      'try{m=localStorage.getItem("codice_tema")||"auto"}catch(x){}' +
+      'function set(v){m=N[v]?v:"auto";if(m==="auto")R.removeAttribute("data-theme");else R.setAttribute("data-theme",m);b.innerHTML="◐ <span>Tema: "+N[m]+"</span>";b.title="Tema: "+N[m];try{localStorage.setItem("codice_tema",m)}catch(x){}}' +
+      'set(m);b.addEventListener("click",function(){set(m==="auto"?"dark":m==="dark"?"light":"auto")})})()</script>';
+    const pagina = (titolo, sotto, corpo, script) => '<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+      '<title>' + e(titolo) + '</title><link rel="icon" href="' + ICONE.stall + '">' + STILE + '</head><body>' +
+      '<header class="top"><a class="brand" href="./">' + vi('stall') + '<span>' + e(C.nome) + '<small>' + e(sotto) + '</small></span></a><span class="sp"></span>' +
+      '<button class="gbtn thm" id="thm" type="button" aria-label="Cambia tema">◐ <span>Tema: automatico</span></button></header>' +
+      '<main>' + corpo + '</main><footer class="foot">' + e(C.nome) + ' ' + module.exports.version + ' · un plugin di Voxelia</footer><div class="toast" id="toast" role="alert"></div>' + TEMA + (script || '') + '</body></html>';
+    const vuoto = (ico, t) => '<div class="empty">' + vi(ico) + '<span>' + t + '</span></div>';
     const stat = it => (it.s === 'w' ? 'ATT ' : 'DIF ') + it.v + (it.cr ? ' · crit +' + it.cr + '%' : '') + (it.hp ? ' · PV +' + it.hp : '');
-    const riga = b => '<tr><td><b style="color:' + COL[b.it.r] + '">' + e(descr(b.it)) + '</b><br><span class="mu">' + TIPO[b.it.s] + ' ' + RARITA[b.it.r] + ' · ' + stat(b.it) + '</span></td><td class="oro">' + b.prezzo.toLocaleString('it-IT') + ' oro</td><td>' + e(b.nome) + '</td><td class="mu">' + Math.max(0, Math.ceil(scade(b) / GIORNO)) + ' g</td>';
+    const oro = n => '<span class="oro">' + vi('coin') + Number(n || 0).toLocaleString('it-IT') + '</span>';
+    const oggetto = it => '<div class="it">' + vi(ICO_TIPO[it.s] || 'stall') + '<span><b class="r' + it.r + '">' + e(descr(it)) + '</b><span class="tag r' + it.r + '">' + RARITA[it.r] + '</span>' +
+      '<small>' + TIPO[it.s] + ' · ' + stat(it) + '</small></span></div>';
+    const giorni = b => { const g = Math.max(0, Math.ceil(scade(b) / GIORNO)); return g + (g === 1 ? ' giorno' : ' giorni'); };
+    const riga = b => '<tr data-s="' + b.it.s + '" data-n="' + e(K(descr(b.it) + ' ' + b.nome)) + '"><td>' + oggetto(b.it) + '</td><td class="n">' + oro(b.prezzo) + '</td><td>' + e(b.nome) + '</td><td class="n mu">' + giorni(b) + '</td>';
+    const testa = extra => '<thead><tr><th>Oggetto</th><th class="n">Prezzo</th><th>Venditore</th><th class="n">Scade fra</th>' + (extra || '') + '</tr></thead>';
+    const tabella = (righe, extra) => '<div class="tw"><table>' + testa(extra) + '<tbody>' + righe + '</tbody></table></div>';
+
     api.route('GET', '/', (req, res, x) => {
-      const L = S.banchi.slice().sort((a, b) => b.t - a.t);
-      x.send('<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + e(C.nome) + '</title>' + STILE +
-        '<h1>🪙 ' + e(C.nome) + '</h1><p class="mu">' + L.length + (L.length === 1 ? ' oggetto in vendita' : ' oggetti in vendita') + '. Per comprare, nel gioco scrivi /mercato.</p>' +
-        (L.length ? '<div class="wrap"><table><tr><th>Oggetto</th><th>Prezzo</th><th>Venditore</th><th>Scade</th></tr>' + L.map(b => riga(b) + '</tr>').join('') + '</table></div>' : '<p>Il mercatino è vuoto.</p>') +
-        '<script>setTimeout(()=>location.reload(),60000)</script>');
+      const L = S.banchi.slice().sort((a, b) => b.t - a.t), vend = new Set(L.map(b => b.nome)).size;
+      const quanti = s => L.filter(b => b.it.s === s).length;
+      const chips = '<div class="chips" role="group" aria-label="Tipo"><button class="gbtn on" type="button" data-f="">Tutto <small>' + L.length + '</small></button>' +
+        [['w', 'Armi'], ['h', 'Elmi'], ['c', 'Corazze'], ['s', 'Scudi']].map(([s, n]) => '<button class="gbtn" type="button" data-f="' + s + '">' + vi(ICO_TIPO[s]) + n + ' <small>' + quanti(s) + '</small></button>').join('') + '</div>';
+      x.send(pagina(C.nome, 'Le bancarelle degli eroi', '<p class="kick">Aldoria · bancarelle aperte</p><h1>Al mercatino</h1>' +
+        '<ul class="stats"><li>' + vi('stall') + '<b>' + L.length + '</b>' + (L.length === 1 ? 'oggetto in vendita' : 'oggetti in vendita') + '</li><li>' + vi('users') + '<b>' + vend + '</b>' + (vend === 1 ? 'venditore' : 'venditori') + '</li></ul>' +
+        '<div class="callout">' + vi('coin') + '<p>Per comprare, nel gioco scrivi <kbd>/mercato</kbd>. Per cercare un oggetto: <kbd>/mercato cerca spada</kbd>.</p></div>' +
+        (L.length ? '<div class="filt"><input id="q" type="search" placeholder="Cerca un oggetto o un venditore…" aria-label="Cerca">' + chips + '</div>' +
+          tabella(L.map(b => riga(b) + '</tr>').join('')) + '<div class="empty" id="nessuno" hidden>' + vi('stall') + '<span>Nessun oggetto corrisponde alla ricerca.</span></div>'
+          : vuoto('stall', 'Il mercatino è vuoto: nessuno ha ancora messo in vendita qualcosa.')),
+      '<script>(function(){var q=document.getElementById("q");if(!q)return;var f="",B=document.querySelectorAll("[data-f]"),R=document.querySelectorAll("tbody tr"),z=document.getElementById("nessuno");' +
+        'function K(s){return s.toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").trim()}' +
+        'function go(){var t=K(q.value),n=0;R.forEach(function(r){var ok=(!f||r.dataset.s===f)&&(!t||K(r.dataset.n).indexOf(t)>=0);r.classList.toggle("via",!ok);if(ok)n++});z.hidden=n>0;' +
+        'B.forEach(function(b){b.classList.toggle("on",b.dataset.f===f)});try{sessionStorage.setItem("mercato_filtro",JSON.stringify([q.value,f]))}catch(x){}}' +
+        'try{var s=JSON.parse(sessionStorage.getItem("mercato_filtro")||"null");if(s){q.value=s[0]||"";f=s[1]||""}}catch(x){}' +
+        'q.addEventListener("input",go);B.forEach(function(b){b.addEventListener("click",function(){f=b.dataset.f;go()})});go()})();' +
+        // si aggiorna da solo ogni minuto, ma non mentre stai scrivendo nella ricerca
+        'setInterval(function(){if(document.activeElement&&document.activeElement.id==="q")return;location.reload()},60000)</script>'));
     });
     api.route('GET', 'dati', (req, res, x) => x.json({ banchi: S.banchi.map(b => ({ id: b.id, oggetto: b.it, prezzo: b.prezzo, venditore: b.nome, scade: b.t + durata() })) }));
 
     api.route('GET', 'admin', (req, res, x) => {
       const L = S.banchi.slice().sort((a, b) => b.t - a.t), d = t => new Date(t).toLocaleString('it-IT');
       const bl = Object.entries(S.bloccati), ch = Object.keys(S.chiavi).sort();
-      x.send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mercatino · admin</title>' + STILE +
-        '<h1>Mercatino · admin</h1><p class="mu">' + L.length + ' in vendita · ' + S.storia.length + ' vendite registrate · ' + S.tasse.toLocaleString('it-IT') + ' monete di tasse tolte dal gioco</p>' +
-        '<h2>Sospetti (' + S.sospetti.length + ')</h2><p class="mu">Eroi che hanno ricevuto un oggetto comprato senza che il loro oro scendesse del prezzo: di solito un trucco che salta il pagamento.</p>' +
-        (S.sospetti.length ? '<div class="wrap"><table><tr><th>Quando</th><th>Eroe</th><th>Oggetto</th><th>Oro prima → dopo</th></tr>' + S.sospetti.slice().reverse().map(s => '<tr><td>' + d(s.t) + '</td><td>' + e(s.nome) + '<br><span class="mu">' + e(s.ip) + '</span></td><td>' + e(s.oggetto) + ' (' + s.prezzo + ' oro)</td><td>' + s.prima + ' → ' + s.dopo + '</td></tr>').join('') + '</table></div><button onclick="fai(\'svuota\',{})">Svuota la lista</button>' : '<p>Nessuno.</p>') +
-        '<h2>Bloccati (' + bl.length + ')</h2>' + (bl.length ? '<table>' + bl.map(([k, v]) => '<tr><td>' + e(k) + '</td><td class="mu">' + e(v.perche || '') + ' · ' + d(v.t) + '</td><td><button onclick="fai(\'sblocca\',{k:' + e(JSON.stringify(k)) + '})">Sblocca</button></td></tr>').join('') + '</table>' : '<p>Nessuno.</p>') +
-        '<h2>In vendita</h2>' + (L.length ? '<div class="wrap"><table><tr><th>Oggetto</th><th>Prezzo</th><th>Venditore</th><th>Scade</th><th></th></tr>' + L.map(b => riga(b) + '<td><button onclick="fai(\'togli\',{id:\'' + e(b.id) + '\'})">Togli</button></td></tr>').join('') + '</table></div><p class="mu">«Togli» rimanda l\'oggetto al venditore, che lo ritira dal pannello.</p>' : '<p>Niente.</p>') +
-        '<h2>Ultime vendite</h2>' + (S.storia.length ? '<div class="wrap"><table><tr><th>Quando</th><th>Oggetto</th><th>Da → a</th><th>Prezzo</th><th>Tassa</th></tr>' + S.storia.slice(-100).reverse().map(v => '<tr><td>' + d(v.t) + '</td><td>' + e(v.n) + '</td><td>' + e(v.da) + ' → ' + e(v.a) + '</td><td class="oro">' + v.prezzo + '</td><td>' + v.tassa + '</td></tr>').join('') + '</table></div>' : '<p>Nessuna.</p>') +
-        '<h2>Chiavi dei banchi</h2><p class="mu">Se un eroe ha perso il browser con cui vendeva, togli la sua chiave: il primo browser con cui rivende diventa il suo.</p>' +
-        (ch.length ? '<p>' + ch.map(k => e(k) + ' <button onclick="fai(\'chiave\',{k:' + e(JSON.stringify(k)) + '})">Togli chiave</button>').join(' · ') + '</p>' : '<p>Nessuna.</p>') +
-        '<script>function fai(a,b){fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify(b)}).then(r=>r.json()).then(j=>{if(j.ok)location.reload();else alert(j.err||"Errore")})}</script>');
+      const btn = (az, dati, testo, cls) => '<button class="gbtn' + (cls ? ' ' + cls : '') + '" type="button" onclick="fai(this,\'' + az + '\',' + e(JSON.stringify(dati)) + ')">' + testo + '</button>';
+      const sez = (ico, titolo, n, corpo) => '<section class="ch"><h2>' + vi(ico) + titolo + (n == null ? '' : ' <span class="n">(' + n + ')</span>') + '</h2>' + corpo + '</section>';
+      x.send(pagina(C.nome + ' · admin', 'Pannello dell\'admin', '<p class="kick">Pannello dell\'admin</p><h1>Il mercatino</h1>' +
+        '<ul class="stats"><li>' + vi('stall') + '<b>' + L.length + '</b>in vendita</li><li>' + vi('scroll') + '<b>' + S.storia.length.toLocaleString('it-IT') + '</b>' + (S.storia.length === 1 ? 'vendita registrata' : 'vendite registrate') + '</li>' +
+        '<li>' + vi('coin') + '<b>' + S.tasse.toLocaleString('it-IT') + '</b>monete di tasse tolte dal gioco</li>' + (S.sospetti.length ? '<li>' + vi('warn') + '<b>' + S.sospetti.length + '</b>' + (S.sospetti.length === 1 ? 'sospetto' : 'sospetti') + '</li>' : '') + '</ul>' +
+        sez('warn', 'Sospetti', S.sospetti.length, '<p class="mu">Eroi che hanno ricevuto un oggetto comprato senza che il loro oro scendesse del prezzo: di solito un trucco che salta il pagamento.</p>' +
+          (S.sospetti.length ? '<div class="tw"><table><thead><tr><th>Quando</th><th>Eroe</th><th>Oggetto</th><th class="n">Oro prima → dopo</th></tr></thead><tbody>' +
+            S.sospetti.slice().reverse().map(s => '<tr><td class="mu">' + d(s.t) + '</td><td><b>' + e(s.nome) + '</b><br><span class="ip">' + e(s.ip) + '</span></td><td>' + e(s.oggetto) + '<br>' + oro(s.prezzo) + '</td><td class="n">' + oro(s.prima) + ' → ' + oro(s.dopo) + '</td></tr>').join('') +
+            '</tbody></table></div>' + btn('svuota', {}, 'Svuota la lista') : vuoto('warn', 'Nessuno.'))) +
+        sez('lock', 'Bloccati', bl.length, bl.length ? '<div class="tw"><table><thead><tr><th>Eroe</th><th>Perché</th><th>Da quando</th><th></th></tr></thead><tbody>' +
+          bl.map(([k, v]) => '<tr><td><b>' + e(k) + '</b></td><td>' + e(v.perche || '') + '</td><td class="mu">' + d(v.t) + '</td><td class="b">' + btn('sblocca', { k }, 'Sblocca') + '</td></tr>').join('') + '</tbody></table></div>' : vuoto('lock', 'Nessuno.')) +
+        sez('stall', 'In vendita', L.length, L.length ? tabella(L.map(b => riga(b) + '<td class="b">' + btn('togli', { id: b.id }, 'Togli', 'no') + '</td></tr>').join(''), '<th></th>') +
+          '<p class="mu">«Togli» rimanda l\'oggetto al venditore, che lo ritira dal pannello.</p>' : vuoto('stall', 'Niente.')) +
+        sez('scroll', 'Ultime vendite', null, S.storia.length ? '<div class="tw"><table><thead><tr><th>Quando</th><th>Oggetto</th><th>Da → a</th><th class="n">Prezzo</th><th class="n">Tassa</th></tr></thead><tbody>' +
+          S.storia.slice(-100).reverse().map(v => '<tr><td class="mu">' + d(v.t) + '</td><td>' + e(v.n) + '</td><td>' + e(v.da) + ' → ' + e(v.a) + '</td><td class="n">' + oro(v.prezzo) + '</td><td class="n mu">' + Number(v.tassa || 0).toLocaleString('it-IT') + '</td></tr>').join('') +
+          '</tbody></table></div>' : vuoto('scroll', 'Nessuna.')) +
+        sez('key', 'Chiavi dei banchi', ch.length, '<p class="mu">Se un eroe ha perso il browser con cui vendeva, togli la sua chiave: il primo browser con cui rivende diventa il suo.</p>' +
+          (ch.length ? '<ul class="keys">' + ch.map(k => '<li>' + vi('key') + '<b>' + e(k) + '</b>' + btn('chiave', { k }, 'Togli chiave', 'no') + '</li>').join('') + '</ul>' : vuoto('key', 'Nessuna.'))),
+      '<script>function fai(el,a,b){el.disabled=true;fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify(b)})' +
+        '.then(function(r){return r.json()}).then(function(j){if(j.ok)location.reload();else no(j.err||"Errore")}).catch(function(){no("Il server non risponde")});' +
+        'function no(t){el.disabled=false;var m=document.getElementById("toast");m.textContent=t;m.classList.add("on");clearTimeout(no.t);no.t=setTimeout(function(){m.classList.remove("on")},4000)}}</script>'));
     }, { admin: true });
     api.route('POST', 'admin/*', (req, res, x) => x.body(b => {
       let j = {}; try { j = typeof b === 'string' ? JSON.parse(b) : b || {}; } catch (er) {}

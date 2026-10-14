@@ -1119,7 +1119,7 @@ const LV_MAX = 30;
 
 module.exports = {
   name: 'Case',
-  version: '1.4',
+  version: '1.5',
   author: 'Voxelia',
   description: '/casa: ogni eroe ha una casa da scegliere, colorare e arredare, con un deposito che apre solo lui e un pet da accudire; nel Borgo delle Case si visitano le case degli altri',
   defaults: {
@@ -1488,15 +1488,66 @@ module.exports = {
     });
 
     // ---------- pagina per l'admin: /plugins/<id>/admin ----------
+    // Stesso aspetto della guida e dei menu di Voxelia: Georgia, oro con l'ombra ruggine, barra di legno coi chiodi,
+    // pannelli col bordo a cubetti e l'ombra piena sotto. Segue il tema chiaro o scuro del sistema.
+    const ADMIN_CSS = ':root{--bg:#10131a;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--lo:#c98a1a;--ember:#ff8a5a;' +
+      '--title:#f5b942;--tshadow:#8a3b12;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--rowh:#f5b9420f;--code:#ffd98a;--bad:#e8484f;--f:Georgia,"Times New Roman",serif;color-scheme:dark}' +
+      '@media(prefers-color-scheme:light){:root{--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;' +
+      '--title:#6a2a1a;--tshadow:#e0c48a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;--code:#6a2a1a;color-scheme:light}}' +
+      '*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--fg);font:400 16px/1.55 var(--f);' +
+      'background:radial-gradient(ellipse 90% 50% at 50% -10%,#24305466,transparent 70%),repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}' +
+      '.bar{position:relative;display:flex;align-items:center;gap:12px;padding:14px 28px 15px;font:bold 1.16rem/1.1 var(--f);font-variant:small-caps;letter-spacing:.04em;color:#ffd27a;text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244;' +
+      'background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,inset 0 -2px 0 #2e1d1055,0 5px 0 #00000066}' +
+      '.bar::before,.bar::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}.bar::before{left:8px}.bar::after{right:8px}' +
+      '.bar .ic{font-size:1.7rem;text-shadow:2px 2px 0 #3a2414}.bar small{display:block;font:italic 400 .72rem var(--f);font-variant:normal;letter-spacing:0;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:3px}' +
+      'main{max-width:1180px;margin:0 auto;padding:26px clamp(16px,4vw,48px) 60px}' +
+      '.kick{display:flex;align-items:center;gap:10px;font:bold .74rem var(--f);text-transform:uppercase;letter-spacing:.16em;color:var(--ember);margin:0}.kick::after{content:"";width:60px;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}' +
+      'h1{font:bold clamp(1.7rem,3.4vw,2.35rem)/1.1 var(--f);color:var(--title);text-shadow:2px 2px 0 var(--tshadow);margin:.2em 0 .5em;text-wrap:balance}' +
+      '.stats{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0 0 18px;padding:0}.stats li{display:flex;align-items:baseline;gap:6px;color:var(--mu);font-size:.92rem;background:var(--pan);border:1px solid var(--line2);border-radius:4px;padding:.25em .7em;box-shadow:0 3px 0 var(--drop)}' +
+      '.stats b{font:bold 1.35rem var(--f);color:var(--hi);font-variant-numeric:tabular-nums}' +
+      '.callout{background:var(--pan2);border:3px solid var(--lo);border-radius:6px;box-shadow:0 0 0 3px #4a301b,0 7px 0 3px var(--drop),0 16px 30px #0007;padding:.9em 1.15em;margin:6px 3px 22px;max-width:82ch}.callout b:first-child{color:var(--hi)}' +
+      'code{font:.86rem ui-monospace,Menlo,Consolas,monospace;background:var(--pan2);border:1px solid var(--line);padding:.08em .35em;border-radius:3px;color:var(--code);white-space:nowrap}' +
+      '#out:empty{display:none}#out{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--pan);border:2px solid var(--frame);border-left:6px solid var(--ac);border-radius:4px;box-shadow:0 5px 0 var(--drop);padding:.7em 1em;margin:0 0 18px}#out.err{border-left-color:var(--bad)}' +
+      '.k{font:700 1.05rem ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;color:var(--code);background:#0006;border:1px solid var(--line2);padding:.35em .7em;border-radius:3px;user-select:all}' +
+      '.filt{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 4px}.filt input{width:100%;max-width:360px;font:15px var(--f);padding:.55em .8em;border-radius:3px;border:2px solid #3a2414;background:#f4ecd6;color:#2a2010;box-shadow:inset 0 2px 0 #0002,0 2px 0 #a37a4f66}' +
+      '.filt input::placeholder{color:#8a7a5a}.filt input:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 2px #f5b94266}.filt span{color:var(--mu);font-size:.9rem}' +
+      '.tw{overflow:auto;border:2px solid var(--frame);border-radius:4px;background:var(--pan);margin:.7em 0 1em;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005}' +
+      'table{border-collapse:collapse;width:100%;font-size:.93rem}th{position:sticky;top:0;z-index:1;text-align:left;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.75em .7em;white-space:nowrap;' +
+      'background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}' +
+      'td{padding:.55em .7em;border-bottom:1px solid var(--line);vertical-align:top}tbody tr:nth-child(even){background:var(--rowh)}tbody tr:hover{background:var(--line)}td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}' +
+      'td b{color:var(--hi)}small{display:block;color:var(--mu);font-size:.83rem;line-height:1.4}td.az{white-space:nowrap;text-align:right}' +
+      '.tag{display:inline-block;margin-left:.45em;font:bold .6rem var(--f);text-transform:uppercase;letter-spacing:.08em;color:#ffe0dc;background:#5a1f22;border:1px solid #0005;border-radius:2px;box-shadow:0 2px 0 #0007;padding:.12em .45em;vertical-align:.1em}' +
+      '.gbtn{font:14px var(--f);color:#fff;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;padding:.45em .85em;margin:2px;cursor:pointer;box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,background .15s}' +
+      '.gbtn:hover{background:#3b4770}.gbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}.gbtn:disabled{opacity:.55;cursor:wait}' +
+      '.gbtn.oro{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}' +
+      '.gbtn.bad{background:linear-gradient(180deg,#d8452c,#a8301c);border-color:#ffb0a0}.gbtn.bad:hover{background:#e0533a}' +
+      'button:focus-visible,input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}' +
+      '.vuoto{background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 5px 0 var(--drop);padding:1em 1.2em;color:var(--mu);font-style:italic}' +
+      '@media(max-width:640px){.bar{padding-inline:22px}td,th{padding:.5em}}';
     api.route('GET', 'admin', (req, res, x) => {
       const L = Object.values(S.case).sort((a, b) => a.hid - b.hid), e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-      x.send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Case · admin</title>' +
-        '<style>body{font:14px system-ui,sans-serif;background:#141822;color:#e8ecf4;margin:16px}table{border-collapse:collapse;width:100%}td,th{padding:6px 8px;border-bottom:1px solid #fff2;text-align:left}button{padding:4px 8px;border-radius:4px;border:0;cursor:pointer;margin:1px}.k{font:700 15px monospace;background:#0006;padding:8px;border-radius:4px;display:inline-block;margin-top:6px}</style>' +
-        '<h2>Case del ' + e(C.nomeBorgo) + ' (' + L.length + ')</h2><p>Se un giocatore perde il codice della sua casa, generane uno nuovo e daglielo: lo scrive in chat con /casa chiave &lt;codice&gt;.</p><div id="out"></div>' +
-        '<table><tr><th>#</th><th>Eroe</th><th>Casa</th><th>Pet</th><th>Deposito</th><th>Visite</th><th>Costruita</th><th></th></tr>' +
-        L.map(h => '<tr><td>' + h.hid + '</td><td>' + e(h.owner) + '</td><td>' + e(h.nome || '—') + '<br><small>' + e((DATI.modelli[h.model] || {}).n) + (h.aperta ? '' : ' · chiusa') + '</small></td><td>' + e(h.pet.nome) + ' <small>(' + e(DATI.specie[h.pet.specie].n) + ', liv ' + h.pet.lv + ')</small></td><td>' + h.dep.items.length + ' oggetti · ' + h.dep.oro + ' oro</td><td>' + (h.visite || 0) + '</td><td>' + new Date(h.creata).toLocaleDateString('it-IT') + '</td>' +
-          '<td><button onclick="fai(\'chiave\',' + h.hid + ')">Nuovo codice</button><button onclick="if(confirm(\'Eliminare la casa di ' + e(h.owner).replace(/'/g, '') + ' con deposito e pet?\'))fai(\'elimina\',' + h.hid + ')" style="background:#a33;color:#fff">Elimina</button></td></tr>').join('') + '</table>' +
-        '<script>function fai(a,hid){fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify({hid})}).then(r=>r.json()).then(j=>{if(j.k)document.getElementById("out").innerHTML="Nuovo codice per "+j.owner+": <span class=k>"+j.k+"</span>";else if(j.ok)location.reload();else alert(j.err||"Errore")})}</script>');
+      const num = n => (+n || 0).toLocaleString('it-IT'), tot = f => L.reduce((s, h) => s + f(h), 0);
+      x.send('<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Case · admin</title><style>' + ADMIN_CSS + '</style>' +
+        '<header class="bar"><span class="ic" aria-hidden="true">⌂</span><div>Case · admin<small>Voxelia · plugin Case ' + e(module.exports.version) + '</small></div></header><main>' +
+        '<p class="kick">Pannello dell\'admin</p><h1>Case del ' + e(C.nomeBorgo) + '</h1>' +
+        '<ul class="stats"><li><b>' + num(L.length) + '</b> case su ' + num(C.maxCase) + '</li><li><b>' + num(tot(h => h.dep.oro)) + '</b> oro nei depositi</li>' +
+        '<li><b>' + num(tot(h => h.dep.items.length)) + '</b> oggetti nei depositi</li><li><b>' + num(tot(h => h.visite || 0)) + '</b> visite</li></ul>' +
+        '<div class="callout"><b>Codice perso?</b> Genera un nuovo codice e dallo al giocatore: lo scrive in chat con <code>/casa chiave &lt;codice&gt;</code>. Il codice vecchio smette di funzionare.</div>' +
+        '<div id="out" role="status" aria-live="polite"></div>' +
+        (L.length ? '<div class="filt"><input id="q" type="search" placeholder="Cerca un eroe, una casa o un pet…" aria-label="Cerca"><span id="nq"></span></div>' +
+        '<div class="tw"><table><thead><tr><th>#</th><th>Eroe</th><th>Casa</th><th>Pet</th><th>Deposito</th><th>Visite</th><th>Costruita</th><th></th></tr></thead><tbody>' +
+        L.map(h => '<tr><td class="n">' + h.hid + '</td><td><b>' + e(h.owner) + '</b></td><td>' + e(h.nome || '—') + (h.aperta ? '' : '<span class="tag">chiusa</span>') + '<small>' + e((DATI.modelli[h.model] || {}).n) + '</small></td>' +
+          '<td>' + e(h.pet.nome) + '<small>' + e((DATI.specie[h.pet.specie] || {}).n) + ', liv ' + h.pet.lv + '</small></td><td>' + num(h.dep.items.length) + ' oggetti<small>' + num(h.dep.oro) + ' oro</small></td>' +
+          '<td class="n">' + num(h.visite || 0) + '</td><td>' + new Date(h.creata).toLocaleDateString('it-IT') + '</td>' +
+          '<td class="az"><button class="gbtn oro" data-a="chiave" data-hid="' + h.hid + '">Nuovo codice</button><button class="gbtn bad" data-a="elimina" data-hid="' + h.hid + '" data-n="' + e(h.owner) + '">Elimina</button></td></tr>').join('') +
+        '</tbody></table></div>' : '<p class="vuoto">Nel borgo non c\'è ancora nessuna casa.</p>') + '</main>' +
+        '<script>const out=document.getElementById("out"),es=s=>String(s).replace(/[&<>"\']/g,c=>"&#"+c.charCodeAt(0)+";");' +
+        'function msg(h,ok){out.className=ok?"":"err";out.innerHTML=h}' +
+        'function fai(a,hid,b){b.disabled=true;fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify({hid})}).then(r=>r.json())' +
+        '.then(j=>{if(j.k){msg("<span>Nuovo codice per <b>"+es(j.owner)+"</b>:</span><span class=k>"+es(j.k)+"</span>"+(navigator.clipboard?"<button class=gbtn id=cp>Copia</button>":""),1);const c=document.getElementById("cp");if(c)c.onclick=()=>navigator.clipboard.writeText(j.k).then(()=>c.textContent="Copiato")}' +
+        'else if(j.ok)location.reload();else msg(es(j.err||"Errore"))}).catch(()=>msg("Il server non risponde.")).finally(()=>b.disabled=false)}' +
+        'document.addEventListener("click",ev=>{const b=ev.target.closest("button[data-a]");if(!b)return;if(b.dataset.a==="elimina"&&!confirm("Eliminare la casa di "+b.dataset.n+" con deposito e pet?"))return;fai(b.dataset.a,+b.dataset.hid,b)});' +
+        'const q=document.getElementById("q");if(q)q.oninput=()=>{const t=q.value.trim().toLowerCase();let n=0;for(const r of document.querySelectorAll("tbody tr")){const s=!t||r.textContent.toLowerCase().includes(t);r.hidden=!s;n+=s}document.getElementById("nq").textContent=t?n+" trovate":""}</script>');
     }, { admin: true });
     api.route('POST', 'admin/*', (req, res, x) => x.body(b => {
       let j = {}; try { j = typeof b === 'string' ? JSON.parse(b) : b || {}; } catch (e) {}

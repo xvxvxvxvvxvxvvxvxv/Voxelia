@@ -68,7 +68,7 @@ const NASCONDIGLI = [
 
 module.exports = {
   name: 'Caccia al tesoro',
-  version: '1.0',
+  version: '1.1',
   author: 'Voxelia',
   description: 'Un tesoro nascosto in città, indizi a tappe e un premio al primo che lo trova (/tesoro)',
   defaults: {
@@ -212,34 +212,124 @@ module.exports = {
     });
 
     // pagine web: pubblica con gli indizi usciti e la classifica, admin con il nascondiglio e i pulsanti
+    // aspetto dei menu di Voxelia e della guida: Georgia, oro con l'ombra ruggine, barra di legno coi chiodi,
+    // pannelli col bordo a cubetti e l'ombra piena sotto, icone voxel del gioco; chiaro o scuro come il sistema
     const e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-    const STILE = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:14px system-ui,sans-serif;background:#141822;color:#e8ecf4;margin:16px;max-width:760px}' +
-      'h1,h2{font-family:Georgia,serif;color:#ffd84a}table{border-collapse:collapse;width:100%}td,th{padding:5px 8px;border-bottom:1px solid #fff2;text-align:left}small{opacity:.7}' +
-      '.box{background:#0003;border-radius:8px;padding:10px 12px;margin:10px 0}button,select{padding:5px 9px;border-radius:4px;border:0;margin:2px;font:inherit}button{cursor:pointer;background:#f5b942}.no{color:#ff8a7a}a{color:#ffd84a}</style>';
+    const ICO = {
+      key: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAC9klEQVR4AexWTWsUQRCtWSTExUUxKIpBBCNiAgHBL8hFvaxe16NeBP9BwMvqTdTf4FkFLzkKexByEDx4URElePEDUYwExRAlHib7htSkpme6u3Y2O5kss/Do7ql61f26quit0RD9KjFlTWaVmSozBdxAVWYFXHKuLXrKzNXz+8NekOtEfZDUYu5cOxKeGK+TFn2cKTdVJQZCcu9QINErJpy/GLbbk6TBhek9BR49vZVTDPoDlN+vf5EG8GWM7B0h8CXYNqjRKgalhf7Is/HooZ10tL4j0V954vTKyRQDIRxorvOdnnUzowE4EPLv619MC0dKjOwR9EDr9iS17p5WYdfxBs1ePhj3F/hFKkqIQX1jc+4PzCMsLBJpEDlT3F/ry3hA/EEiFoPSytsj8WkdE8QeJLB1JAZCsABkj2DdefyJOs8XrYBPWVBz9Qh64O2HZQKePP1Gl268DEzQ4bpVy1TXpnmf8vrInsQhosxYewQefYJjD2I0jxaJMT9u1/Wmi5E9p3mbevVxXfSmipnuvjPaNymP38S5Mdp9YNSqRy1mdWmVrrfGQxOpyJr3KK9ParPkB5UY/D05eXaMpo41UkiG29pVTdY4jiLfFawhBP+3MNfA9SZl2cyYpo9pd61rV+69CxgzN18FzYkGNWf2RVhe+EPtB6do9v4ZK+jzShz/Tddf8pvrcWxjY+k/yXfK5Jv2eCPLJLPM+E2IOa4aj502Jsz3jRuM5Ix5ya/u1aP5H0GmGDetfNZbDz8GOFVKjKuHzHo21wgo+b43BP5mj0q+xs5C4JsSw/2D0ewhW+3zd/TY+y8rBMy9+EmI4YIZ3+Rr7BDBSIlhgxy5hn2j5KCG5do157jSR/J9duapxLCzdpSp13Kkn49vs3vFyBrW9IBtI3lYOZfx8d3k++zgMLxiXDVv2lDjHFg7yhhZfJ9d7uMVI53LPq/ElDVDQ5EZvtxKDN9E2cYqM2XLCJ+nygzfRNnGKjNlywifp8oM30TZxqHKzBoAAAD//yYlVPMAAAAGSURBVAMApTGzlNH0p9gAAAAASUVORK5CYII=',
+      trophy: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAD7ElEQVR4AexYW0tUURReZyiwgQHBMkQTwy6YMRF0gaSoKKaeostDUC9R/8AuD/bQQ1BB9AMi6CErevEphHkQhILACrKkQQRL0xyaUisbRclT34F13LNnz7kf52QKn3udvdZe+/vcZ7vXPjFaQj/LYqK6mP/vypw7UaeXE3ZvhOOVuX2lSW/emKBywU4I/I7EQAiCow5bMXr+lN56cxeVA4f3rHb19ysQc2Z/tS4C+8PI1p8jKgeMyRd+gY8IkStsU8z1sw16U12cGNt3Vxn7YyFVeS15rzbGV5hcwRnsDDEQggdGRe0qNiPZzoxOK3nF9O6DelvbFgIOJCup7e6Ogv1Bw3nlwMXoTG5OFHDBHmo9WmNwZb4iD2NlvvdOEmA6xP1hdpbJUHABV0BmZIiRO//V5yIx6UdDlH6eMyELE32wZX/Qz5iDYZe7SMyr7hwBD9qH6MiFlxrVx80cb/t/Uup8j4manfdI9JuBARmYr29gioAnnWO07dgzzSp1kRir4Kj7lsVEdYWWzMrgD1xSzMPuLxrqHQRFBVZ8wFcp5mr7Rw0lDtc8URDDtZiKC/iiP9aRzlLX3woAQAccEAJbhXQ6TQyVP4w+sRZT8eU5YydvvNcYLZffaHKtxoFoUSulUo+JkUzeobBrN7kWy3zKE9Dx4iuBL3gxlK8Z6h6AgwpasVaCXeAM5wFcADE79oj4DFspBo4oA1tBxa9IjPxO2tVqqqR++rgOQ4s8Mp9SQhBbJIb3D1q8k6jPRCx2LQYeDPAB6VIoElMqcLH773eMWBaVKj6RFHPxVsa1EIhzLUbeQ3i3RSCpFcRY2cY4r0Iw1rUYcf/ATm1IUKpljYHE+Jzl/Qb3EzkedycA9ye7+woIW8G1GFUynAGAyqfqQywg+lTnhuh3YgcixslEVjFW/26txsk+32Lkc0CeQH6W44MSgnl8i+EzAK3dOYAJP8zrBDzt/1FUW8HvB77FiJNb3TfEONiz47OEeBHo94PAxODa4PT+g5IesSL8iOCxgYiBEE5odQ4hBkLQhgHfYsT7D77/8pmjapObEuZ3YsTi23YQojiHLzF7m9fqSIQzwwswljGc0wj5RLDPaetZzOl96/XaqoWvnU4nVMX1DWuEXCJUcXZ9nsRACCcWzw18R3AD5IAQtEHAtZjOa4f0S8e3EqOhupG8omLlOjMP8jXXV/rS5FoMZns3NEFhALkZ2W9TbDpuPYlxnN1j4ODIpKeRrsV09Y6FsipYaSjwKgRjXYv5nZ+m+PxcKHidyYKTZ7gWg5lGJ2YoDCA3YyD7y/XV2ZMYnjCstmdwwrUQcHEtJvN5KpRVwUqDkFchGPsHAAD//6OKR+kAAAAGSURBVAMADSwTjYe5sjgAAAAASUVORK5CYII=',
+      map: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAADv0lEQVR4AexYTUgVURQ+vkUtTKWgrEUYoVCboiAMpN2DIjdFiYtw8YoW5S5q4cJVUKv2tWgVCVabKBHRSkJcZD9YLQx7lrSwp/1Q1EKEbL5HZzhz3517586MMU8UP+65956f+znnc967OVpFP2tksvowV++TOZnfu1zN8J9Mz5n8ckvTZqpWoPXLZEAEk2pHbunFteUrl09RNaJt387A37/8ZIovi1SNCDDxJmUy3rgqfivIPPWekgkrzdpUG3um+gEyUx/n6Ul3K030HtHi9u56atq20ZQv0R7qj+f76E2XHnfqLhjrB8jwSUqTRdKB91d6nHu1SDrY6mrJ2IKyuu9M5tbAc0LvMpIS4zwYk+ZyItPQ0hjQUlINTXkalRp51H6Dfn1ejM3JiQyqSC1hngakPpLkcyaTpNhKx1aQmemfoNK499/sH9QDmPZUX8yhBQmsSUwPPvT+cw2HQvra7ACZXTu20NixvI+eP7VUu32Tn+PHdIlGW/f7+yNtB2l27ru/rxrQROF1jgrFujKah0uB9wTqjZ77QmG41PiANmxdr6bVzrEYIIMF+RkNcx2i+Mi4rwvzBMg1tmUu1WafqGMFmaiBWfSzkpkRGopCQNXH3dkP9Nh7MgDiXd9TUlOIN8FIBj09JjTkqpH6/vd0/PoJ6rh/toyfnc1k0pB6UNSXehrsfGvUqJEMksfpY+gDQDzAOWAD2ANg28CxPJr8rWRMwVnbS0zGphGVcFINqfnkPBEZ9T2iauRQf1egx6EB1g9GVw3Jg+vsRGQ4Ifof4Dn3N0Ze4xFrDF5DLMDzuGMqZOIWTzvOmYyrRmwHTlNDTmRcNWIjkraGnMjw4dDfAM9ZAxh5LeqIGAbHIDfA86hjLDJRk/9vPyuZpBqR8TpbJaxqSN03zY1kkmoE8S73cKqG1PeUiQj2jGTgAKB/AdgA9zhGzG2Q9wbS1sUhp4TOJ2wtEpmw4KytV5CRfY3DuvawGo8cJrh+vzHlCpBBjxcuLlGhd10Z7d2L1PGsxUeDt2dKhnipkYHuNvr96VtoSFr3cFwgQIYX6d0CaeE7mA2bLmS0i6+M09l6MjrPKlhLnYy8M8Adm/o3wFoYVF/Xeapk8J6Qdwa2ezfpC9t2x2AjlyoZFIvyjpA+qo0ccZE6mbgHSSOugsxQ3ywNjS1oEaeg1FCceJeYABn0/OGj5ykMew6cDnyntxVCPmiBkVQTtnoBMnBWe1idw8cFSeOj1ro3MllTQSZqcJb8rt4cqcF5cupnI/nZKus2CDAR2H8BAAD//5ZUKl4AAAAGSURBVAMAigw0Z1Vgw1kAAAAASUVORK5CYII=',
+      scroll: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAC1klEQVR4AeyZy2oUQRSGTyS4EAQvYDKIlyCCEEFcCG7iyhdw59pn0J2CK1HQpU+gC3dBRdGFIBHBSy4kISQkDJNZJCE3BpIQQhaZ5A+cUKnunu5TdaprIAn8VHe66pzzVXXNP0OdIMFfX29XM6bySi0M8/BeT/Pi+VMUS3kgeF4IBiDo3O7Khfn6/H7zyYObFEO9l8+I5q8lDPYHoo3XGxRDyM3qqnQT6jHFz7jNhMGrhf3BHWO2PdevUef22qH9mlZPKgxAuPOP0YUoq4I3ATUApDZTxWWuEjDmHsE7+/LpI3r99nEU3b57h/ou0cF+RT2tiBIw6IxZgXANVYerFEPIDaEWCNesXxOLHXzNbSoMP2zX9sNALQGCWhMw5h5Bh9iy68kCQZ0JmDf9Ex2sZ+9HUmcAA8vSyXMVgurrnZRXTwKmrCJD5DnaMAN7n2wh5bNiopWZml2isd9/qTY0FESfPv6kK5WzzjwiGM4y19iiEOL4rq0TjGuy0OPEMJPzG0FWBSvtCyuCuXH1An37/iqY+j+/oPpCw4kJg0QwGBD6OxpyuEoM45qojHFiGG2P0YQUwWj7jK+v2BMhguHB+OTREMfTap1gtJJrxxHDaPpMVBhtn/H1FXsyxCuj7TN2QT73YhifZKHHimG0fcaO5wMsgtH2Gft3ka/viGB41jQ8Ji0Gx3dtnWBck4UeJ4bR9Bl7dXxhRTDaPmP/NvL1HREMZk7bZ+x4yOEqMYxrojLGiWFsX5Deh4QSwfj6jK+PZE0E/78lDM4PuaPZ2p9CRe/NGC7XqMeUHSMTBkeB7XKmiaJVzjQRyJSPz5hxJNdqZ5pmUl+fcfER9TNNE8j2Bem9GavoNc4zIbP/8Znmuy+DJPUSrf5YCdUzze6dZbp1eiOKRv78p7nVzX39m17ROdPE+xpDWBlW2h7hZ9xm+gx3aIe21XG5WV8ujPnOlr06KLQoCPruAgAA//9yf29DAAAABklEQVQDAFnCA8AiBfgbAAAAAElFTkSuQmCC',
+      hglass: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAES0lEQVR4Aexaz0tUURQ+U9DCEAIDA8VoESGKtggXQlGU4KIfKEIu3Ej+A6IWZEEbzcCW7goXDZYb3QkDBaJBWoRoikiLUAMVF0GGq+Ll9+TonfPufe/d9940IyR+c3+cc8+538z5uL7xHiOfn8tVpU4hQ27dSKb1yjmnrKSIChWSCMZaMiAC41GDh8zEkxtOT1M1FSKqKk75vr8eMvD+svqDChHYG2N6aSvFfW61ZNhYqO2bqW8eItirh8y7+Y2C/FRQKdiwiQhsHjLPx5dSKm6NLVJHnlDaM0Jbl9pdfD5ZR4/Tc9pPBEQADxlMSszvEOUDch9B41BkgoIUit2azPzbDOUScd4YKzJriwu0vrzo4sPYKD1tbkz1N76g/qbXkdB6vI9KZjtdbKY73HhniqPTsSKjpplMD6eutrU77tzKNlEUuIv3X4bHvh/G25/KekW+rAnNIBKZdG93qq1v0CmvrNKEtJ/qfrbsGw/5wkQNJJMZP9QIAiIwiKAPZEZWKfN++wCY84P0ZSK8RpePbUFtIBnognG/vjY16ThO78MuAmquNVB6666Lgclqauz4lKKKImPOhZUdWvz6y8XoxAbV3pn2xFtXNIl8xmAaQyAZzZqDM0e1oaYPNKQaDH1VI3yGqa6Ip47D9CORkYG59MJqiEvL5I94MkeYsTUZXU37aSiXGpEErcmwftCipoM0BB0xktaISgZ9azJYJGGqeWhIAmtN/rDFQSJk5AZQ8yg9aEJC+mIMf7RxEZtMkIbkBnX+0ifqODYZaIchNYSzSAXOpTjnSBDJ2GTUBNAHxqwJ2cLGwDkCfxVsi9omRoY1EmYj0Aj7s6bCrAvySYQMNsaJVE3I5x74MBH0k0ZsMvKcUTXBWuJWagoaSpJQLDKod2yGtYE+A5poby53JGA3+SOeCvjaIDIZlBbqXZcMpTT4oNKpOl9MEiZ/joeYgM4vaC4SGSTmwKpGMMdE0NdB56/G060JO2dNxk8j0ISz2+J0DdSRDg31p93nfTz345kf/jJe2I3r/KzIoJ4RxFTz0Afsxu8DXOPhC/ub4iGfisOV+l5oMigFUy1zaUEf+jTeWfgCXgsR4nE+5AR0fnIuFBkE5oW6mofY2W7b6uKp+WziBZKRNa2eI6h5qRFa2zXmr7lQnKWlpDUUSAY709U05rnmszQCgx/U79eEH8cz5RPunmEoMp5VexM3y2bcM2Svm8gv9APECRaJzMWfL+PkzNlaazKvOmey6t5PI0G71mkoaI3OznPWZNyFPnXv2m1eEowVjYzNZv+hrzUZ+d2y+r1Y3H5c3lZkKqpr6Oy9jznDidtTtLn3L8eopHzJ4N6MDMxnQK5amY/Hf+YmCPtRwTZujWRw5QT3Ztgxn+3vzJDnDo9uP1oyIMLO6t9O8pk+12PsAUTQhoGHjLw707I6RPnC9dlHWXd4/t+dCfOR5tPHdOXEU2ZH+e7MXwAAAP//WGtSdQAAAAZJREFUAwC/2qASLtNI5QAAAABJRU5ErkJggg=='
+    };
+    const CHIARO = '--bg:#e8dfc8;--pan:#fbf3df;--pan2:#f3e8cc;--btn:#fff8e6;--btnh:#f6e7c2;--fg:#2a1a0a;--mu:#6a5a3a;--ac:#8a5a0a;--hi:#6a2a1a;--lo:#b9832a;' +
+      '--title:#6a2a1a;--tshadow:#e0c48a;--frame:#b89a62;--drop:#a37a4f;--line:#8a6a3a33;--line2:#8a6a3a77;--rowh:#8a5a0a12;--ember:#a8401a;--glow:#fff0;color-scheme:light';
+    const STILE = '<!doctype html><html lang="it"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><style>' +
+      ':root{--bg:#10131a;--pan:#1b2030;--pan2:#232a40;--btn:#2a3350;--btnh:#3b4770;--fg:#e8ecf4;--mu:#9aa4b8;--ac:#f5b942;--hi:#ffd27a;--lo:#c98a1a;--ember:#ff8a5a;' +
+      '--title:#f5b942;--tshadow:#8a3b12;--frame:#8a6a3a;--drop:#2e1d10;--line:#f5b94230;--line2:#f5b94266;--rowh:#f5b9420f;--good:#4cd07a;--bad:#e8484f;--glow:#24305466;' +
+      '--f:Georgia,"Times New Roman",serif;color-scheme:dark}' +
+      '@media(prefers-color-scheme:light){:root{' + CHIARO + '}}' +
+      '*{box-sizing:border-box}' +
+      'body{margin:0;color:var(--fg);font:400 16px/1.55 var(--f);min-height:100vh;background:radial-gradient(ellipse 90% 50% at 50% -10%,var(--glow),transparent 70%),' +
+      'repeating-linear-gradient(26.565deg,transparent 0 46px,var(--line) 46px 47px),repeating-linear-gradient(-26.565deg,transparent 0 46px,var(--line) 46px 47px),var(--bg)}' +
+      'a{color:var(--ac);text-underline-offset:2px}a:hover{color:var(--hi)}' +
+      '.vi{display:inline-block;width:1.25em;height:1.25em;vertical-align:-.25em;background:center/contain no-repeat;flex-shrink:0;filter:drop-shadow(0 1px 0 #0008)}' +
+      Object.keys(ICO).map(k => '.v-' + k + '{background-image:url(' + ICO[k] + ')}').join('') +
+      // barra di legno in alto, come il titolo dei menu del gioco
+      '.top{position:relative;display:flex;align-items:center;gap:12px;padding:14px max(16px,calc(50% - 430px));font:bold 1.3rem/1.1 var(--f);font-variant:small-caps;letter-spacing:.04em;color:#ffd27a;' +
+      'text-shadow:2px 2px 0 #8a3b12,0 0 14px #f5b94244;background:repeating-linear-gradient(180deg,#0000 0 17px,#0000002a 17px 19px),linear-gradient(180deg,#86603b,#5e3f25 55%,#4a301b);' +
+      'border-bottom:3px solid #3a2414;box-shadow:inset 0 2px 0 #a37a4f,0 5px 0 #00000066}' +
+      '.top::before,.top::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;background:#d9b36a;box-shadow:inset -2px -2px 0 #8a6420;border-radius:1px}' +
+      '.top::before{left:6px}.top::after{right:6px}.top .vi{width:36px;height:36px}' +
+      '.top small{display:block;font:italic 400 .72rem var(--f);font-variant:normal;letter-spacing:0;color:#f4e2b8;text-shadow:1px 1px 0 #0008;margin-top:3px}' +
+      '.top .gbtn{margin-left:auto}' +
+      'main{max-width:892px;margin:0 auto;padding:22px 16px 48px}' +
+      'h1{font:bold clamp(1.9rem,6vw,2.9rem)/1.05 var(--f);letter-spacing:.07em;text-transform:uppercase;color:var(--title);text-shadow:3px 3px 0 var(--tshadow);margin:.2em 0 .15em;text-wrap:balance}' +
+      'h2{display:flex;align-items:center;gap:.45em;font:bold 1.45rem/1.15 var(--f);color:var(--title);text-shadow:2px 2px 0 var(--tshadow);margin:0 0 .5em}h2 .vi{width:1.1em;height:1.1em}' +
+      '.kick{display:flex;align-items:center;gap:10px;font:bold .72rem var(--f);text-transform:uppercase;letter-spacing:.16em;color:var(--ember);margin:0}' +
+      '.kick::after{content:"";width:60px;height:2px;background:linear-gradient(90deg,var(--line2),transparent)}' +
+      '.lede{color:var(--mu);margin:.2em 0 1.2em;max-width:62ch}' +
+      // pannelli con il bordo a cubetti e l'ombra piena sotto
+      '.card{background:var(--pan);border:2px solid var(--frame);border-radius:4px;box-shadow:0 5px 0 var(--drop),0 10px 20px #0005;padding:.9em 1.1em;margin:0 0 22px}' +
+      '.call{background:var(--pan2);border:3px solid var(--lo);border-radius:6px;box-shadow:0 0 0 3px #4a301b,0 7px 0 3px var(--drop),0 16px 30px #0007;padding:1em 1.2em;margin:6px 3px 30px}' +
+      '.call header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;border-bottom:2px solid var(--line2);padding-bottom:.5em;margin-bottom:.4em}' +
+      '.call header b{display:flex;align-items:center;gap:.45em;font-size:1.2rem;color:var(--hi)}.call header .vi{width:30px;height:30px}' +
+      '.call.off{border-color:var(--frame)}.call.off p{margin:0;display:flex;gap:.6em;align-items:center}.call.off .vi{width:30px;height:30px}' +
+      '.chip{display:inline-flex;align-items:baseline;gap:6px;font-size:.9rem;color:var(--mu);background:var(--btn);border:1px solid var(--line2);border-radius:4px;padding:.2em .7em;box-shadow:0 3px 0 #0008}' +
+      '.chip b{font:bold 1.2rem var(--f);color:var(--hi);font-variant-numeric:tabular-nums}' +
+      '.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}' +
+      // indizi: la linea delle tappe della guida
+      '.tl{list-style:none;padding:0;margin:.8em 0 .2em 6px;border-left:3px solid var(--lo)}' +
+      '.tl li{position:relative;padding:.05em 0 .85em 1.4em}.tl li:last-child{padding-bottom:.1em}' +
+      '.tl li::before{content:"";position:absolute;left:-8px;top:.4em;width:13px;height:13px;background:var(--ac);transform:rotate(45deg);box-shadow:2px 2px 0 var(--tshadow)}' +
+      '.tl span{display:block;font:bold .66rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:var(--ember)}' +
+      '.tl li.no{color:var(--mu);font-style:italic}.tl li.no::before{background:transparent;border:2px solid var(--line2);box-shadow:none}' +
+      '.dove{margin:.6em 0 0;padding:.5em .8em;background:var(--rowh);border-left:5px solid var(--good);border-radius:3px}.dove b{color:var(--hi)}' +
+      '.mu{color:var(--mu)}small{color:var(--mu);font-size:.85rem}' +
+      '.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:22px;align-items:start}.cols>*{min-width:0}' +
+      // tavole con l'intestazione di legno
+      '.tw{overflow:auto;border:2px solid var(--frame);border-radius:4px;background:var(--pan);box-shadow:0 5px 0 var(--drop),0 10px 20px #0005;margin:0 0 22px}' +
+      'table{border-collapse:collapse;width:100%;font-size:.95rem}' +
+      'th{text-align:left;font:bold .7rem var(--f);text-transform:uppercase;letter-spacing:.1em;color:#ffd27a;text-shadow:1px 1px 0 #0008;padding:.75em .8em;white-space:nowrap;' +
+      'background:repeating-linear-gradient(180deg,#0000 0 13px,#00000022 13px 14px),linear-gradient(180deg,#86603b,#5e3f25);border-bottom:2px solid #3a2414}' +
+      'td{padding:.5em .8em;border-bottom:1px solid var(--line);vertical-align:top}tbody tr:last-child td{border-bottom:0}' +
+      'tbody tr:nth-child(even){background:var(--rowh)}tbody tr:hover{background:var(--line)}' +
+      'td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:1%}td.pos{font-weight:bold;color:var(--ac)}tr.p1 td.pos,tr.p1 b{color:var(--hi)}' +
+      'td.w{white-space:nowrap}.vuoto{padding:1em;margin:0;color:var(--mu);font-style:italic}' +
+      // pulsanti come quelli del gioco
+      '.gbtn{font:15px var(--f);color:#fff;background:#2a3350;border:1px solid #f5b94288;border-radius:3px;padding:.5em .95em;cursor:pointer;text-decoration:none;' +
+      'box-shadow:0 3px 0 #00000080;transition:transform .08s,box-shadow .08s,background .15s;display:inline-flex;align-items:center;gap:6px;margin:3px 4px 3px 0}' +
+      '.gbtn:hover{background:#3b4770;color:#fff}.gbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #00000080}' +
+      '.gbtn.oro{background:linear-gradient(180deg,#ffd27a,#e0a634 55%,#c98a1a);border-color:#fff0c0;color:#2a1a06;font-weight:bold;text-shadow:0 1px 0 #fff5}' +
+      '.gbtn.oro:hover{background:linear-gradient(180deg,#ffe7a8,#f0b844 55%,#d99a2a)}' +
+      '.gbtn.ko{background:linear-gradient(180deg,#d8452c,#a8301c);border-color:#ffb8a8}.gbtn.ko:hover{background:linear-gradient(180deg,#e85a40,#b83a24)}' +
+      '.top .gbtn{font-size:13px;font-variant:normal;letter-spacing:0;text-shadow:none;font-weight:normal}' +
+      'select{font:15px var(--f);margin:3px 4px 3px 0;padding:.5em .7em;border-radius:3px;border:2px solid #3a2414;background:#f4ecd6;color:#2a2010;box-shadow:inset 0 2px 0 #0002,0 2px 0 #a37a4f66;max-width:100%}' +
+      'select:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 2px #f5b94266}' +
+      'button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}' +
+      '.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:4px}' +
+      '.bad{border-left:5px solid var(--bad)}.bad b{color:var(--bad)}.bad ul{margin:.4em 0 0;padding-left:1.2em}' +
+      'footer{margin-top:26px;padding-top:12px;border-top:3px solid #4a301b;color:var(--mu);font-size:.85rem;font-style:italic}' +
+      '@media(prefers-color-scheme:light){.call{box-shadow:0 0 0 3px #b89a62,0 7px 0 3px var(--drop),0 16px 30px #0003}.card,.tw{box-shadow:0 5px 0 var(--drop),0 10px 20px #0002}}' +
+      '@media(max-width:560px){.top{font-size:1.1rem;padding:10px 16px}.top small{display:none}.top .vi{width:28px;height:28px}td,th{padding-inline:.55em}}' +
+      '@media(prefers-reduced-motion:reduce){.gbtn{transition:none}}' +
+      '</style>';
+    const vi = k => '<i class="vi v-' + k + '" aria-hidden="true"></i>';
+    const testa = (titolo, adm) => STILE + '<title>' + titolo + '</title><header class="top">' + vi('key') + '<div>Caccia al tesoro<small>' + (adm ? 'Pannello admin del plugin' : 'Un plugin del server di Voxelia') + '</small></div>' +
+      (adm ? '<a class="gbtn" href="./">Pagina pubblica</a>' : '') + '</header><main>';
+    const piede = s => '<footer>' + s + '</footer></main>';
     const quando = t => new Date(t).toLocaleString('it-IT');
     function albo() {
       const L = Object.values(S.vinti).sort((a, b) => b.n - a.n).slice(0, 20);
-      return '<h2>Migliori cercatori</h2>' + (L.length ? '<table>' + L.map((v, k) => '<tr><td>' + (k + 1) + '</td><td>' + e(v.nome) + '</td><td>' + v.n + '</td></tr>').join('') + '</table>' : '<p>Nessuno ha ancora trovato un tesoro.</p>') +
-        '<h2>Ultime cacce</h2>' + (S.storico.length ? '<table>' + S.storico.slice(0, 15).map(h => '<tr><td><small>' + e(quando(h.quando)) + '</small></td><td>' + e(h.dove) + '</td><td>' + (h.chi ? '🏆 ' + e(h.chi) : '<small>nessuno</small>') + '</td></tr>').join('') + '</table>' : '<p>Ancora nessuna caccia.</p>');
+      return '<div class="cols"><section><h2>' + vi('trophy') + 'Migliori cercatori</h2>' + (L.length ? '<div class="tw"><table><thead><tr><th>#</th><th>Eroe</th><th>Tesori</th></tr></thead><tbody>' +
+        L.map((v, k) => '<tr' + (k ? '' : ' class="p1"') + '><td class="n pos">' + (k + 1) + '</td><td>' + (k ? '' : '🏆 ') + '<b>' + e(v.nome) + '</b></td><td class="n">' + v.n + '</td></tr>').join('') + '</tbody></table></div>'
+        : '<div class="tw"><p class="vuoto">Nessuno ha ancora trovato un tesoro.</p></div>') + '</section>' +
+        '<section><h2>' + vi('scroll') + 'Ultime cacce</h2>' + (S.storico.length ? '<div class="tw"><table><thead><tr><th>Quando</th><th>Nascondiglio</th><th>Trovato da</th></tr></thead><tbody>' +
+        S.storico.slice(0, 15).map(h => '<tr><td class="w"><small>' + e(quando(h.quando)) + '</small></td><td>' + e(h.dove) + '</td><td>' + (h.chi ? '🏆 ' + e(h.chi) : '<small>nessuno</small>') + '</td></tr>').join('') + '</tbody></table></div>'
+        : '<div class="tw"><p class="vuoto">Ancora nessuna caccia.</p></div>') + '</section></div>';
     }
     function inCorso(adm) {
-      const A = caccia(); if (!A) return '<div class=box>' + e(stato()) + '</div>';
+      const A = caccia(); if (!A) return '<div class="call off"><p>' + vi('hglass') + '<span>' + e(stato()) + '</span></p></div>';
       const s = lista[A.i];
-      return '<div class=box><b>🗝 Caccia in corso</b> · sparisce tra ' + Math.max(1, Math.ceil((A.fine - Date.now()) / MIN)) + ' min' +
-        (adm ? '<br>Nascondiglio: <b>' + e(nomeDi(s)) + '</b> <small>(' + e(s.zona) + ' ' + s.x + ',' + s.y + ')</small>' : '') +
-        '<ol>' + indizi(s).map((t, k) => k < A.dati ? '<li>' + e(t) + '</li>' : adm ? '<li><small>' + e(t) + ' (non ancora uscito)</small></li>' : '').join('') + '</ol></div>';
+      return '<div class="call"><header><b>' + vi('map') + 'Caccia in corso</b><span class="chip">sparisce tra <b>' + Math.max(1, Math.ceil((A.fine - Date.now()) / MIN)) + '</b> min</span></header>' +
+        (adm ? '<p class="dove">Nascondiglio: <b>' + e(nomeDi(s)) + '</b> <small>(' + e(s.zona) + ' ' + s.x + ',' + s.y + ')</small></p>' : '') +
+        '<ol class="tl">' + indizi(s).map((t, k) => k < A.dati ? '<li><span>Indizio ' + (k + 1) + '</span>' + e(t) + '</li>' : adm ? '<li class="no"><span>Indizio ' + (k + 1) + ' · non ancora uscito</span>' + e(t) + '</li>' : '').join('') + '</ol></div>';
     }
-    api.route('GET', '/', (req, res, x) => x.send(STILE + '<title>Caccia al tesoro</title><h1>🗝 Caccia al tesoro</h1>' + inCorso(false) + albo() + '<script>setTimeout(()=>location.reload(),30000)</script>'));
+    api.route('GET', '/', (req, res, x) => x.send(testa('Caccia al tesoro', false) + '<p class="kick">Aldoria</p><h1>Caccia al tesoro</h1>' +
+      '<p class="lede">Ogni tanto un tesoro viene nascosto in città o nei dintorni. Leggi gli indizi, cerca le scintille dorate e arriva per primo. In gioco: <b>/tesoro</b>.</p>' +
+      inCorso(false) + albo() + piede('La pagina si aggiorna da sola ogni 30 secondi.') + '<script>setTimeout(()=>location.reload(),30000)</script>'));
     api.route('GET', 'admin', (req, res, x) => {
       const opz = validi.map(i => '<option value="' + i + '">' + e(nomeDi(lista[i])) + ' (' + e(lista[i].zona) + ')</option>').join('');
       const scarti = lista.map((s, i) => [i, problema(s)]).filter(z => z[1]);
-      x.send(STILE + '<title>Caccia al tesoro · admin</title><h1>🗝 Caccia al tesoro · admin</h1>' +
-        '<p>Una caccia ogni ' + Math.round(ogni() / MIN) + ' min, dura ' + Math.round(durata() / MIN) + ' min · ' + validi.length + ' nascondigli validi (si cambiano in tesoro.config.json). <a href="./">Pagina pubblica</a></p>' +
+      x.send(testa('Caccia al tesoro · admin', true) + '<p class="kick">Pannello admin</p><h1>Caccia al tesoro</h1>' +
+        '<div class="chips"><span class="chip">una caccia ogni <b>' + Math.round(ogni() / MIN) + '</b> min</span><span class="chip">dura <b>' + Math.round(durata() / MIN) + '</b> min</span>' +
+        '<span class="chip"><b>' + validi.length + '</b> nascondigli validi</span></div>' +
         inCorso(true) +
-        (caccia() ? '<button style="background:#a33;color:#fff" onclick=\'if(confirm("Annullare la caccia?"))fai("annulla",{})\'>Annulla la caccia</button>'
-          : '<select id=s><option value="">a caso</option>' + opz + '</select> <button onclick=\'fai("nascondi",{i:document.getElementById("s").value})\'>Nascondi il tesoro ora</button>') +
-        (scarti.length ? '<div class=box><b class=no>Nascondigli ignorati</b><ul>' + scarti.map(z => '<li>' + (z[0] + 1) + '. ' + e(z[1]) + '</li>').join('') + '</ul></div>' : '') +
-        albo() +
+        '<div class="card"><div class="ctl">' + (caccia() ? '<button class="gbtn ko" onclick=\'if(confirm("Annullare la caccia?"))fai("annulla",{})\'>Annulla la caccia</button>'
+          : '<select id=s aria-label="Nascondiglio"><option value="">Nascondiglio a caso</option>' + opz + '</select><button class="gbtn oro" onclick=\'fai("nascondi",{i:document.getElementById("s").value})\'>Nascondi il tesoro ora</button>') +
+        '</div><small>I nascondigli si cambiano in tesoro.config.json.</small></div>' +
+        (scarti.length ? '<div class="card bad"><b>Nascondigli ignorati</b><ul>' + scarti.map(z => '<li>' + (z[0] + 1) + '. ' + e(z[1]) + '</li>').join('') + '</ul></div>' : '') +
+        albo() + piede('La pagina si aggiorna da sola ogni 20 secondi.') +
         '<script>function fai(a,b){fetch("admin/"+a,{method:"POST",headers:{"x-voxelia":"1","Content-Type":"application/json"},body:JSON.stringify(b)}).then(r=>r.json()).then(j=>{if(j.ok)location.reload();else alert(j.err||"Errore")})}setTimeout(()=>location.reload(),20000)</script>');
     }, { admin: true });
     api.route('POST', 'admin/*', (req, res, x) => x.body(b => {

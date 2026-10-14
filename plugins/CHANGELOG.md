@@ -3,6 +3,12 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Pagine web col tema di Voxelia
+
+- Il 14 ottobre le pagine web dei plugin hanno preso l'aspetto dei menu del gioco e della guida 7.10: Georgia, titoli oro con l'ombra ruggine, barra di legno coi chiodi in alto, pannelli col bordo e l'ombra piena sotto, tabelle con l'intestazione di legno, pulsanti come quelli del gioco, colori pergamena col tema chiaro. Si leggono anche sul telefono.
+- Plugin aggiornati: Albo 1.2, Boss del mondo 1.2, Guardiano 2.5, Guardie e ladri 1.2, Case 1.5, Mercatino 1.2, Gara di pesca 1.1, Sindaco 1.1, Speedrun 1.2, Stress test 1.3, Taglie 1.2, Caccia al tesoro 1.1, Torneo 1.1. Percorsi, dati e comandi non cambiano. Esempio resta com'era.
+- Albo, Guardiano, Gara di pesca e Mercatino hanno anche un pulsante per scegliere il tema; le altre pagine seguono il tema del sistema.
+
 ## Link interi in chat
 
 - Controllo del 14 ottobre, per la 7.11.1, che rende cliccabili i link nella chat (provato: i link dei due plugin diventano cliccabili): solo due plugin scrivevano in chat un link a metà (`/plugins/…` senza indirizzo), **Albo degli eroi** (`/albo` col tuo nome) e **Speedrun dei dungeon** (`/speedrun`). Ora scrivono il link intero, es. `https://voxelia.esempio.it/plugins/albo/`. Gli altri plugin in chat non scrivono link: le pagine admin si aprono dal pannello.
@@ -37,7 +43,12 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 
 ---
 
-## Il Sindaco di Aldoria (`sindaco.js`) — 1.0
+## Il Sindaco di Aldoria (`sindaco.js`) — 1.1
+
+**1.1** — 14 ottobre 2026
+- Le pagine web `/plugins/sindaco/` e `/plugins/sindaco/admin` hanno l'aspetto dei menu di Voxelia e della guida: Georgia, titoli oro con l'ombra ruggine, barra di legno con i chiodi in alto, pannelli col bordo a cubetti e l'ombra piena sotto, tavole con l'intestazione di legno, pulsanti come quelli del gioco e le icone voxel del gioco al posto delle emoji (cappello a cilindro, clessidra, eroi, corona, lente, ingranaggio, libro). Con il telefono o il computer in tema chiaro usano i colori pergamena della guida.
+- Il sindaco in carica è in un riquadro in evidenza; sotto, prossimo spoglio, elettori finora e i decreti in vigore con i minuti che mancano (gli stessi che dice `/sindaco`). Nei voti della settimana una barra mostra quanto è avanti ogni candidato.
+- Nella pagina admin i pulsanti scrivono l'esito sotto di loro invece di aprire una finestra, poi la pagina si ricarica; chiedono ancora conferma prima di agire. Percorsi, dati e comandi sono gli stessi della 1.0.
 
 **1.0** — 14 ottobre 2026 (scritto e provato sulla 7.8, insieme a tutti gli altri plugin)
 - Ogni settimana si elegge il sindaco con `/vota nome`: un voto a testa, si può cambiare fino allo spoglio (`giornoElezione` e `oraElezione`, di base domenica alle 21 ora del server). Vota solo chi ha giocato almeno `minutiPerVotare` (30) minuti nella settimana; niente voto per sé (`votoPerSe`), un voto per IP facoltativo (`unVotoPerIp`). A pari voti vince chi ci è arrivato prima; senza voti il sindaco resta in carica.
@@ -54,7 +65,13 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - I messaggi di chat compaiono come fumetto sopra chi li scrive, al posto della scritta gialla del gioco (`fumettiChat`). Il fumetto compare solo se il server ha consegnato il messaggio: chi è silenziato dall'admin o dal Guardiano non ha più la scritta sopra la testa, che il gioco mostrava lo stesso.
 - Funziona insieme ai Gruppi d'avventura (nome verde e barra della vita restano) e col «rendering veloce». Chi non ha ricaricato la pagina dopo l'installazione non vede i fumetti e `/saluta` glielo dice.
 
-## Speedrun dei dungeon (`speedrun.js`) — 1.1
+## Speedrun dei dungeon (`speedrun.js`) — 1.2
+
+**1.2** — 14 ottobre 2026
+- Pagina `/plugins/speedrun/` col tema di Voxelia, come i menu del gioco e la guida: Georgia, titolo oro con l'ombra ruggine, barra di legno con i chiodi in alto, pannelli col bordo e l'ombra piena, intestazioni delle tabelle in legno, dungeon come pulsanti del gioco (quello scelto in oro) con il numero di piani.
+- Sfida della settimana in un riquadro in evidenza, medaglie ai primi tre, difficoltà come etichette colorate (Facile verde, Normale blu, Difficile arancio, Incubo rosso), sfide vinte in elenco.
+- Tema chiaro se il dispositivo è in modalità chiara; sul telefono le tabelle stanno nella larghezza dello schermo.
+- Stessi dati, stessi indirizzi (`/plugins/speedrun/`, `dati`, `?stanza=`), aggiornamento ogni 30 secondi e dungeon scelto ricordato come prima. Provato sul server 7.11.1: nessun errore nella pagina, computer e telefono.
 
 **1.1** — 14 ottobre 2026
 - Link interi in chat: `/speedrun` scrive l'indirizzo completo della pagina (es. `https://voxelia.esempio.it/plugins/speedrun/?stanza=…`), così dalla 7.11.1 si apre con un clic dalla chat. L'indirizzo è quello da cui l'eroe gioca, oppure `indirizzo` nel config.
@@ -74,7 +91,12 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - Non funziona: durante uno scambio, un cambio di zona o una scena; dalla cella delle prigioni; dalla fossa del Colosseo; con mostri che ti attaccano entro 7 caselle; per `combattimentoSec` (8) secondi dopo un colpo subito; durante una partita di Guardie e ladri; dalle zone in `vietate`. Fra un `/hub` e l'altro passano almeno `attesaSec` (30) secondi.
 - Come il Teletrasporto, se un aggiornamento del gioco toglie qualcosa che usa, si spegne con un avviso invece di rompere il gioco.
 
-## Boss del mondo (`boss.js`) — 1.1
+## Boss del mondo (`boss.js`) — 1.2
+
+**1.2** — 14 ottobre 2026 (provato sulla 7.11.1)
+- Pagine web rifatte con l'aspetto di Voxelia e della guida: Georgia, titoli oro con l'ombra ruggine, intestazione su una barra di legno coi chiodi, pannelli col bordo dorato e l'ombra piena sotto, tabelle con l'intestazione di legno, pulsanti come quelli del gioco (oro per «Evoca», rosso per «Mandalo via»). Con il tema chiaro del dispositivo diventano color pergamena come la guida.
+- Il boss in corso ha una barra della vita più grande con la percentuale scritta dentro, la zona come etichetta e i più valorosi in riquadri. Nelle tabelle i numeri sono allineati a destra, negli ultimi boss c'è la colonna «Quando».
+- Si leggono bene anche sul telefono. Percorsi, dati, aggiornamento ogni 15 secondi e pulsanti dell'admin restano gli stessi.
 
 **1.1** — 14 ottobre 2026 (provato sulla 7.11)
 - Sui telefoni la barra della vita del boss finiva sopra l'HUD e la minimappa. Ora, quando al centro non c'è spazio, va sotto l'HUD in alto a sinistra come la scheda della Discoteca, e il riquadro dei Gruppi si mette sotto. Sul computer resta in alto al centro.
@@ -89,7 +111,15 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - Per gli altri plugin: `globalThis.VoxeliaBoss.attivi()` e `globalThis.VoxeliaBoss.onSconfitto(fn)`, con i nomi e la parte di danni di ogni eroe.
 - Il comando `/boss` di `esempio.js` viene ignorato, perché quello del Boss del mondo si carica prima.
 
-## Mercatino di Aldoria (`mercato.js`) — 1.1
+## Mercatino di Aldoria (`mercato.js`) — 1.2
+
+**1.2** — 14 ottobre 2026
+- La pagina pubblica (`/plugins/mercato/`) e il pannello admin (`/plugins/mercato/admin`) hanno lo stesso aspetto della guida e dei menu del gioco: barra di legno coi chiodi, titoli oro con l'ombra ruggine, pannelli col bordo e l'ombra piena, tabelle con l'intestazione di legno, pulsanti come quelli del gioco.
+- Icone voxel disegnate dal gioco stesso (bancarella, moneta, spada, elmo, corazza, scudo, pergamena, avviso, lucchetto, chiave, gente) al posto delle emoji.
+- Tema automatico, scuro o chiaro, col pulsante in alto (ricordato nel browser come nella guida); i colori delle rarità restano leggibili anche sul chiaro.
+- Pagina pubblica: ricerca per nome dell'oggetto o del venditore (anche senza accenti) e filtri per tipo; la ricerca resta quando la pagina si aggiorna da sola ogni minuto, e l'aggiornamento aspetta se stai scrivendo.
+- Pannello admin: riepilogo in cima, una sezione per ogni lista; gli errori delle azioni compaiono in un avviso nella pagina invece che in una finestra del browser.
+- Percorsi, dati (`/plugins/mercato/dati`) e azioni dell'admin sono invariati. Pagine provate su schermo largo e telefono.
 
 **1.1** — 14 ottobre 2026 (provato sulla 7.8)
 - Aggancio per il decreto «Sconto al Mercatino» del Sindaco di Aldoria (`globalThis.VoxeliaMercato.sconto`): per la durata del decreto la tassa sulle vendite scende, e il mercatino mostra subito quella nuova. Lo sconto è salvato nel file dei dati, quindi resta dopo un riavvio. Senza il Sindaco non cambia niente.
@@ -111,7 +141,14 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - Nel gioco: riquadro del gruppo sotto l'HUD (sotto quello della Discoteca, se c'è) con vita, livello, zona e pulsante «Raggiungi» (`/tpa`); invito con Accetta e Rifiuta; nome verde e barra della vita sopra i compagni anche con i nomi spenti, sia col disegno classico sia col «rendering veloce»; compagni in verde sulla minimappa.
 - Chi chiude il gioco resta nel gruppo per 5 minuti (`assenzaMin`); i gruppi restano anche dopo un riavvio. Pagina admin `/plugins/gruppi/` con i gruppi attivi.
 
-## Case (`housing.js`) — 1.4
+## Case (`housing.js`) — 1.5
+
+**1.5** — 14 ottobre 2026 (provato sulla 7.11.1)
+- La pagina admin `/plugins/housing/admin` ha l'aspetto di Voxelia e della guida: Georgia, titolo oro con l'ombra ruggine, barra di legno coi chiodi, tabella con l'intestazione di legno, pulsanti come quelli del gioco (oro per «Nuovo codice», rosso per «Elimina»). Segue il tema chiaro o scuro del sistema e si legge anche sul telefono.
+- In cima ci sono i totali del borgo (case occupate sul massimo, oro e oggetti nei depositi, visite) e una casella per cercare un eroe, una casa o un pet.
+- Il nuovo codice compare in un riquadro con il pulsante «Copia»; gli errori compaiono nella pagina invece che in una finestra.
+- Corretto: un nome con l'apostrofo (per esempio «Lia d'Aldoria») rompeva il pulsante «Elimina», e il nome dell'eroe nel riquadro del codice ora è protetto come nel resto della pagina.
+- Percorsi, dati e azioni della pagina sono quelli di prima.
 
 **1.4** — 14 ottobre 2026
 - Case molto più care: dalla tenda a 1000 monete alla villa a 8000 (prima da 50 a 280). Il trasloco resta a metà prezzo del nuovo modello; colori, arredi e cibo del pet costano come prima.
@@ -172,7 +209,13 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 **1.0** — 8 ottobre 2026
 - `/tpa`, `/tpaccetta`, `/tparifiuta`, `/tpannulla`, `/tpblocco`, riquadro con Accetta e Rifiuta, scadenza dopo 60 secondi, controllo di accesso alla zona alla richiesta e all'accettazione.
 
-## Taglie del giorno (`taglie.js`) — 1.1
+## Taglie del giorno (`taglie.js`) — 1.2
+
+**1.2** — 14 ottobre 2026 (provato sulla 7.11.1)
+- La pagina pubblica `/plugins/taglie/` ha l'aspetto dei menu di Voxelia e della guida: Georgia, titolo oro con l'ombra ruggine, barra di legno con i chiodi in alto, pannelli col bordo dorato e l'ombra piena sotto. Con il tema chiaro del dispositivo diventa color pergamena come la guida.
+- In cima la data di oggi e un riepilogo: quante taglie, quanti eroi sono a caccia oggi, quanti le hanno fatte tutte. Ogni taglia è un riquadro con il tipo come etichetta colorata (Dungeon rosso, Colosseo arancio, Scambio viola, Esplorazione verde acqua), «Difficile» per quelle più lunghe, il premio e una barra con quanti eroi l'hanno completata.
+- La taglia sostitutiva della Cripta (per chi non ha aperto il Borgo delle Ceneri) sta nello stesso riquadro; il bonus per chi le completa tutte è in un riquadro in evidenza, e chi ci è riuscito compare con 🏆.
+- Si legge anche sul telefono. Percorso, taglie e conteggi sono quelli di prima: cambia solo l'aspetto.
 
 **1.1** — 9 ottobre 2026
 - La taglia «Libera la Cripta Dimenticata» esce solo a chi ha aperto il Borgo delle Ceneri; agli altri ne arriva un'altra, uguale per tutti nella stessa situazione. La scelta vale per tutta la giornata.
@@ -182,7 +225,13 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 **1.0** — 8 ottobre 2026
 - Prima versione: 3 taglie al giorno uguali per tutti, premi e bonus, `/taglie` e pagina `/plugins/taglie/`.
 
-## Guardiano (`guardiano.js`) — 2.4
+## Guardiano (`guardiano.js`) — 2.5
+
+**2.5** — 14 ottobre 2026 (provato sulla 7.11.1)
+- La pagina admin `/plugins/guardiano/` ha l'aspetto dei menu di Voxelia e della guida: scritte in Georgia, titolo d'oro con l'ombra ruggine su una barra di legno con i chiodi, pannelli col bordo color legno e l'ombra piena sotto, intestazioni delle tabelle in legno, pulsanti come quelli del gioco (rossi per Espelli, Spegni, Togli la sospensione e Cancella).
+- In cima un riepilogo: eroi in gioco, segnalazioni salvate, quante di gravità alta, automoderazione e sensore accesi o spenti. I filtri delle segnalazioni (Tutte, Media e alta, Solo alta) sono pulsanti, con quello scelto in oro; sospesi e silenziati sono in un elenco a parte.
+- Tema chiaro e scuro: segue quello del sistema, e il pulsante ◐ Tema in alto lo cambia e lo ricorda. Su telefono le tabelle scorrono di lato.
+- Dati, filtri, pulsanti e percorsi sono gli stessi di prima: cambia solo l'aspetto.
 
 **2.4** — 14 ottobre 2026 (provato sulla 7.11)
 - Dalla 7.11, contro l'Abominio, la benedizione della Regina Elara rende i colpi più forti del 20% fino alla fine della battaglia. Il sensore segnalava come «colpi impossibili» (gravità alta) i colpi più forti di chi la aveva: ora nella stanza dell'Occhio, con la benedizione, il massimo accettato è 11,7 volte l'attacco invece di 9,7. Fuori da lì non cambia niente.
@@ -216,7 +265,12 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 **1.0** — 8 ottobre 2026
 - Segnala salti di oro e livello, velocità impossibili, boss di dungeon fuori dal dungeon o troppo ravvicinati (questi li blocca), colpi PvP esagerati. Pagina admin `/plugins/guardiano/`. Di base segnala e basta; `azione` in config per riportare in città o espellere. `VoxeliaGuardiano.grazia(nome)` per i regali degli altri plugin.
 
-## Stress test (`stress.js`) — 1.2
+## Stress test (`stress.js`) — 1.3
+
+**1.3** — 14 ottobre 2026
+- La pagina admin `/plugins/stress/` ha l'aspetto dei menu di Voxelia e della guida: Georgia, titoli d'oro con l'ombra ruggine, barra di legno con i chiodi in alto, pannelli col bordo e l'ombra piena, tavole con l'intestazione di legno, pulsanti come quelli del gioco (Avvia d'oro, Ferma rosso, preset scelto in oro). Tema chiaro pergamena se il sistema è in modalità chiara.
+- In alto un'etichetta dice se c'è un test in corso. I campi del modulo stanno in una griglia ordinata, anche sul telefono (due per riga, senza scorrimento di lato).
+- Comportamento, indirizzi, preset e dati invariati. Provato sul server 7.11.1 con un test vero (6 bot, 20 s): nessun errore nella pagina.
 
 **1.2** — 9 ottobre 2026
 - Più stanze: i bot si dividono all'inizio tra più stanze (stresstest1, stresstest2…). Con «cambio stanza» escono dalla loro stanza e, come nel gioco, si ricollegano in un'altra o ne creano una nuova (`nuoveStanze`, `maxStanze`). La pagina mostra i bot per stanza, quante volte hanno cambiato stanza e quanto ci mettono a rientrare.
@@ -252,17 +306,34 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 **1.0** — 8 ottobre 2026
 - Una notte del mondo ogni 3 con XP ×2 e gara a punti tra boss e Colosseo, premio all'alba. `/evento`.
 
-## Gara di pesca (`pesca.js`) — 1.0
+## Gara di pesca (`pesca.js`) — 1.1
+
+**1.1** — 14 ottobre 2026
+- Le pagine `/plugins/pesca/` e `/plugins/pesca/admin` hanno l'aspetto della Guida e dei menu di Voxelia: Georgia, titolo oro con l'ombra ruggine, barra di legno con i chiodi, pannelli col bordo e l'ombra piena, tabelle con l'intestazione di legno, pulsanti del gioco e icone voxel (pesce, clessidra, corona, trofeo, eroi).
+- Tema chiaro e scuro come nella Guida: segue il sistema, il pulsante ◐ lo cambia e lo ricorda.
+- Rarità come etichette colorate, podio dell'ultima gara a schede, conteggi in alto (specie nell'albo, leggendari, pescatori, tempo che manca) e conto alla rovescia che si aggiorna da solo. Sul telefono la colonna «Quando» si nasconde.
+- Percorsi, dati JSON, comandi e funzionamento della gara non cambiano.
 
 **1.0** — 9 ottobre 2026
 - Albo dei record per specie, gare a tempo (pagina admin, `/pesca via`, o a orari fissi), annunci dei leggendari, `/pesca io`. Il server scarta pesi impossibili, pesci presi nel mare sbagliato e catture troppo ravvicinate.
 
-## Torneo dell'arena (`torneo.js`) — 1.0
+## Torneo dell'arena (`torneo.js`) — 1.1
+
+**1.1** — 14 ottobre 2026
+- Le pagine `/plugins/torneo/` (pubblica) e `/plugins/torneo/admin` hanno l'aspetto della guida e dei menu di Voxelia: Georgia, titolo oro con l'ombra ruggine su una barra di legno coi chiodi, pannelli col bordo pieno e l'ombra sotto, pulsanti blu-ardesia del gioco (dorati per le azioni, rossi per annullare), tabella dell'albo d'oro con l'intestazione di legno, sfondo a rombi. Si legge chiaro o scuro come il sistema e sta tutto nello schermo del telefono.
+- Il tabellone mostra gli incontri come schede con il colore dello stato (oro chiamato, brace in corso, verde concluso), il podio come targhette e gli iscritti e i campioni come gettoni. Nella pagina admin le impostazioni (iscrizioni, attesa, durata, PvP) stanno in una riga di etichette e accanto a ogni stanza c'è lo stato del torneo.
+- Comportamento, percorsi, dati e config invariati (provato sul server 7.11.1: pagina pubblica, pagina admin e il pulsante «Vince…» dell'admin).
 
 **1.0** — 9 ottobre 2026
 - Tabellone a eliminazione diretta per stanza, iscrizioni da pagina admin o a orario, passaggio del turno con iscritti dispari, finale per il terzo posto, sconfitta a tavolino, colpi degli spettatori scartati, albo d'oro.
 
-## Caccia al tesoro (`tesoro.js`) — 1.0
+## Caccia al tesoro (`tesoro.js`) — 1.1
+
+**1.1** — 14 ottobre 2026
+- Pagine web con l'aspetto di Voxelia e della guida: barra di legno coi chiodi in alto, titoli in Georgia oro con l'ombra ruggine, pannelli col bordo a cubetti e l'ombra piena, tabelle con l'intestazione di legno, pulsanti come quelli del gioco e icone voxel del gioco (chiave, mappa, coppa, pergamena, clessidra). Segue il tema chiaro o scuro del sistema e si legge bene anche sul telefono.
+- Pagina pubblica `/plugins/tesoro/`: la caccia in corso è un riquadro con i minuti che mancano e gli indizi usciti in fila come tappe; sotto, Migliori cercatori e Ultime cacce affiancati. Una riga spiega il gioco e ricorda `/tesoro`.
+- Pagina admin `/plugins/tesoro/admin`: impostazioni in tre etichette (ogni quanto, quanto dura, nascondigli validi), nascondiglio e indizi non ancora usciti nel riquadro della caccia, pulsanti Nascondi il tesoro ora (oro) e Annulla la caccia (rosso), nascondigli ignorati in un riquadro a parte, link alla pagina pubblica in alto.
+- Percorsi, dati, comandi e comportamento nel gioco non cambiano; le pagine si aggiornano da sole come prima (30 secondi la pubblica, 20 l'admin).
 
 **1.0** — 9 ottobre 2026
 - Un tesoro ogni 40 minuti in 21 nascondigli, indizi a tappe, scintille quando si è vicini, premio al primo che arriva. Solo zone aperte dall'inizio e con mappa uguale in ogni stanza (verificate sulla 7.3.2).
@@ -272,7 +343,13 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 **1.0** — 8 ottobre 2026
 - `/giornaliero` e `/serie`: 7 premi crescenti nei giorni di fila, un premio al giorno per connessione, promemoria all'ingresso.
 
-## Albo degli eroi (`albo.js`) — 1.1
+## Albo degli eroi (`albo.js`) — 1.2
+
+**1.2** — 14 ottobre 2026
+- La pagina `/plugins/albo/` ha l'aspetto dei menu di Voxelia e della guida: barra di legno con i chiodi in alto, titolo oro con l'ombra ruggine, schede col bordo e l'ombra piena sotto, Georgia come nel gioco e le icone voxel del gioco al posto delle emoji (arena, tornei, tesori, premio giornaliero, pesca, casa, pet).
+- I primi tre eroi dell'ordinamento per livello, ore o arena hanno la medaglia d'oro, d'argento e di bronzo. In cima il conto degli eroi, di chi è online, il livello più alto e le ore di gioco in tutto.
+- L'ordinamento si sceglie con dei pulsanti invece del menu a tendina e la pagina se lo ricorda. Tema chiaro e scuro automatico, con il pulsante «Tema» per sceglierlo.
+- «1 giorni fa» diventa «1 giorno fa», sulla pagina e in `/albo`. Comandi, dati, indirizzi e privacy restano quelli della 1.1.
 
 **1.1** — 14 ottobre 2026
 - Link interi in chat: `/albo` con il tuo nome scrive l'indirizzo completo della pagina (es. `https://voxelia.esempio.it/plugins/albo/`), così dalla 7.11.1 si apre con un clic dalla chat. L'indirizzo è quello da cui l'eroe gioca, oppure `indirizzo` nel config.
@@ -283,7 +360,13 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - `/albo nome` in gioco mostra la scheda in breve. `/albo nascondi` toglie la propria scheda dalla pagina web (`/albo mostra` la rimette); l'admin può nascondere dei nomi con `nascosti` nel config.
 - I bot dello stress test e chi si chiama ancora «Eroe» non compaiono. Provato sulla 7.3.2 insieme a tutti gli altri plugin, anche con Ricarica e uno stress test in corso.
 
-## Guardie e ladri (`guardieladri.js`) — 1.1
+## Guardie e ladri (`guardieladri.js`) — 1.2
+
+**1.2** — 14 ottobre 2026 (provato sul server 7.11.1)
+- Le pagine web (`/plugins/guardieladri/` e `/plugins/guardieladri/admin`) hanno l'aspetto dei menu di Voxelia e della guida: Georgia, titoli oro con l'ombra ruggine, barra di legno coi chiodi in alto, pannelli col bordo e l'ombra piena sotto, intestazioni delle tabelle in legno, pulsanti come quelli del gioco. Con il sistema in tema chiaro usano i colori pergamena della guida.
+- Fase della partita, ruoli ed esito sono etichette colorate (iscrizioni, i ladri si nascondono, caccia; guardia, ladro); la tabella delle ultime partite ha le intestazioni; la pagina pubblica spiega in una riga come entrare (`/guardie entra`).
+- Sui telefoni le tabelle scorrono dentro il loro riquadro e la pagina non scorre di lato.
+- Stessi indirizzi, stessi dati, stesse azioni dell'admin (apri le iscrizioni, annulla la partita) e stessi aggiornamenti automatici (30 secondi la pubblica, 15 l'admin).
 
 **1.1** — 10 ottobre 2026
 - Durante la partita blocca anche `/hub`, pure su un server che ha già `guardieladri.config.json` con la lista vecchia di `comandiBloccati`.

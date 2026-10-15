@@ -1,4 +1,4 @@
-# Voxelia 7.9.3: server di gioco + pannello admin + plugin in un container.
+# Voxelia: server di gioco + pannello admin + plugin in un container.
 # Nessuna dipendenza npm: serve solo Node.js 16+.
 FROM node:20-alpine
 

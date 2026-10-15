@@ -431,15 +431,15 @@ docker run -d -p 3000:3000 \
 ```
 
 ### Docker Compose
-`docker-compose.yml` avvia l'immagine pubblicata su GitHub Container Registry (`ghcr.io/teamvoxelia/voxelia`), con il
+`docker-compose.yml` avvia l'immagine pubblicata su GitHub Container Registry (`ghcr.io/xvxvxvxvvxvxvvxvxv/voxelia`), con il
 volume `voxelia-data` per i dati:
 
 ```sh
 ADMIN_PASSWORD='la-tua-password' docker compose up -d
 ```
 
-L'immagine la pubblica il workflow `.github/workflows/docker.yml` a ogni push su `main`, se le GitHub Actions sono attive
-per l'organizzazione.
+L'immagine la pubblica il workflow `.github/workflows/docker.yml` a ogni push su `main`: il nome segue il proprietario del
+repository e l'etichetta è la versione del gioco (`GAME_VER`), più `latest`.
 
 ### Suga
 Il server ufficiale gira su [Suga](https://suga.app):

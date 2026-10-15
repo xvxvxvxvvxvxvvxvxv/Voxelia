@@ -1,9 +1,9 @@
-# Voxelia 7.9.3 per Suga (docker-compose importato dal canvas o dal MCP di Suga).
+# Voxelia per Suga (docker-compose importato dal canvas o dal MCP di Suga).
 # Suga salta i servizi con "build:": l'immagine va pubblicata prima (vedi .github/workflows/docker.yml).
 # Dopo l'import: imposta ADMIN_PASSWORD come variabile sensibile, aggiungi un endpoint HTTPS sulla porta 3000.
 services:
   voxelia:
-    image: ghcr.io/teamvoxelia/voxelia:7.9.3
+    image: ghcr.io/xvxvxvxvvxvxvvxvxv/voxelia:latest
     restart: unless-stopped
     ports:
       - "3000:3000"

@@ -5,6 +5,52 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.12 — Biomi più grandi, il Colosseo vero, la mappa della zona e il ricordo di Aldoria Vecchia (15 ottobre 2026)
+
+### Foresta, deserto e picchi rifatti
+Le tre zone fuori dalle mura passano da 40×40 a **64×64 caselle** e hanno una pianta fissa: i luoghi restano al loro posto da una visita all'altra (cambiano solo nemici e forzieri). Dalla porta della città partono i sentieri che portano ai luoghi da visitare, con ponti di legno sull'acqua.
+- **Foresta di Elmwood:** la radura delle lucciole, il cerchio di pietre con l'altare, la capanna del cacciatore, la torre di guardia in rovina, il lago con il ruscello, l'accampamento dei goblin con la palizzata davanti alla Tana, il cerchio delle fate e la **Grande Quercia** dove si nasconde il Troll. Querce, pini, betulle, cespugli, funghi e tronchi caduti.
+- **Deserto di Khem:** l'oasi con le palme, l'accampamento della carovana con i cammelli, la **Piramide a gradoni** con la cima d'oro e la **Sfinge** di guardia, la città sepolta, la necropoli del Faraone con obelischi e sarcofagi, le ossa di una bestia gigante. Rupi di arenaria a terrazze, saguari, fichi d'india e alberi secchi.
+- **Picchi Gelidi:** il rifugio degli esploratori, il **villaggio congelato dal Drago** con gli abitanti diventati statue di ghiaccio, il lago ghiacciato, le grotte di cristallo, la bocca della Fucina tra le rocce vulcaniche, il santuario con le bandierine e il covo del Drago di Brina con il suo tesoro. Pareti di roccia con la neve, abeti innevati e punte di ghiaccio che brillano di notte.
+- **Tre interni nuovi con personaggi nuovi:** la capanna del **Cacciatore Ulrico** e la tenda del **Mercante Amir** (comprano i raccolti), il rifugio dell'**Esploratrice Ilva** (cura gratis).
+- **Sei missioni nuove** e **tre raccolte nuove:** Erba Lunare, Scarabei dorati e Fiori di ghiaccio.
+- Sotto alberi, cactus e rocce ora c'è il terreno (prima si vedevano caselle vuote), in tutte le zone aperte e nei muri «aperti» di Voxelia Studio.
+
+### Il Colosseo
+- **Fuori** è un vero anfiteatro: un'ellisse con tre ordini di arcate, le lesene, l'attico e le antenne con le bandiere, la piazza con le statue e i bracieri. Dall'alto si vedono le gradinate piene di spettatori e due gladiatori nella sabbia.
+- **Dentro** è più grande (40×40): la sala d'ingresso con il Maestro Kael, il banditore, il tabellone e i gladiatori, il tunnel, la fossa dell'arena con le gradinate, la tribuna e le torce.
+
+### La mappa della zona (tasto M)
+- Fuori dalla città il tasto M apre la **pianta della zona in cui ti trovi**, con uscite, porte, personaggi, boss, forzieri e raccolte, e una legenda. Dentro una capanna o una tenda mostra la zona intorno con l'edificio evidenziato. In città resta la mappa di Aldoria.
+- Anche la minimappa dei biomi mostra alberi, rocce e sentieri con i loro colori.
+
+### Il ricordo del Moreau
+La prima volta che entri in **Aldoria Vecchia** il Moreau ricorda il suo quartiere com'era **prima della nebbia**, in un filmato color seppia: il mercato del mattino, la piazza del pozzo, il campanile con la campana, la bottega del fabbricante di candele e gli incappucciati, la nebbia verde che sale dal pozzo, il fuoco e la fuga. Il quartiere intatto ha la stessa pianta delle rovine. Si rivede dalle Scene della storia.
+
+### Il Borgo delle Ceneri e il Porto
+- La porta rossa ovest della città è diventata un **cancello di ferro** come quelli degli altri lati, annerito dal fuoco, con le catene finché il Moreau non lo apre.
+- Il **pozzo dell'Abisso Sommerso** è sulla banchina del Porto, in fondo alla strada che scende dalla città: più grande, con la luce verde-azzurra, la tettoia, le lanterne e un cartello.
+
+### Filmati
+- **La Corona di Voxel** è una corona vera: la fascia d'oro, le punte a giglio con le perle, il velluto rosso con il globo e la croce e le sei gemme incastonate.
+- **Sotto la città** (prologo) è rifatta da zero: gli strati della terra, le cantine, il pozzo, il cerchio delle rune e l'Occhio.
+- I personaggi **non affondano più nell'erba**: prima si disegna il pavimento, poi i personaggi.
+- I capelli **non spuntano più dai cappelli**, anche nel gioco.
+- Chi sta fermo è **girato dritto** e non più in diagonale.
+- La Corona sta **sopra il piedistallo** e non dentro.
+- Quando il Re si posa sul capo la Corona di Voxel non ha più la sua coroncina sotto, e gli occhi rossi si accendono sul suo viso.
+- Davanti alla porta ovest il muro di mattoni **sale fila dopo fila** mentre i muratori lavorano.
+
+### Pannello sviluppatore
+- **Prova delle boss fight:** nella scheda «👑 Boss» si può affrontare qualsiasi boss del gioco, anche l'Abominio segreto, al livello e con la difficoltà che vuoi. È una partita a parte: niente viene salvato e niente arriva al server o alle classifiche.
+
+### Correzioni
+- **Camminata:** andando verso l'alto o in diagonale le gambe si muovevano al rallentatore. Ora il passo dipende dal tempo e non dalla posizione.
+- Dal menu, i filmati girati nei dungeon a volte non partivano.
+- L'immagine Docker del server prende il nome dal proprietario del repository e la versione dal gioco.
+
+---
+
 ## 7.11.1 — Link cliccabili nella chat (14 ottobre 2026)
 
 - **I link nella chat si aprono con un clic.** Gli indirizzi che iniziano con `http://`, `https://` o `www.` diventano link sottolineati e si aprono in una nuova finestra del browser, senza lasciare il gioco. Passando sopra con il mouse si vede l'indirizzo completo.

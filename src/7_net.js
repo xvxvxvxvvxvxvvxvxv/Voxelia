@@ -89,7 +89,7 @@ function admCmd(m){if(!P||!started)return;const n=Math.max(1,m.n|0),r=Math.max(0
 /* ---- arena PvP ---- */
 function pvpHit(o,d,cr){if(!NET.cfg.pvp){msg('Il PvP è disattivato dall\'admin');return}NET.send({t:'hit',to:o.id,d,cr});o.fl=.12;flt(o,(cr?'💥':'')+d,cr?'#ffd84a':'#ffaaaa');tone(cr?330:240,.05)}
 function pvpHurt(m){if(Zk!=='arena'||!inPit(P.px,P.py)||P.hp<=0)return;if(P.iv>0){flt(P,'Schivata!','#8ce7ff');P.pf=3;return}const d=Math.max(1,Math.round(m.d*100/(100+def()*2.5)));P.hp-=d;P.fl=.15;flt(P,(m.cr?'💥':'')+d,'#ff6666');tone(110,.08);
-  if(P.hp<=0){NET.send({t:'ko',by:m.from});P.hp=P.mx;P.px=15.5;P.py=4.5;P.path=[];P.tg=null;camX=PX(P.px,P.py);camY=PY(P.px,P.py,10);msg('Sei stato sconfitto da '+m.n+'! Torni nella sala d\'attesa.')}hud()}
+  if(P.hp<=0){NET.send({t:'ko',by:m.from});P.hp=P.mx;P.px=19.5;P.py=4.5;P.path=[];P.tg=null;camX=PX(P.px,P.py);camY=PY(P.px,P.py,10);msg('Sei stato sconfitto da '+m.n+'! Torni nella sala d\'attesa.')}hud()}
 
 /* ---- scambi tra giocatori ---- */
 function trReq(){const o=PA;if(!o||!NET.ok)return;NET.send({t:'tr',a:'req',to:o.id});PM=0;$('pn').style.display='none';msg('Richiesta di scambio inviata a '+o.n)}

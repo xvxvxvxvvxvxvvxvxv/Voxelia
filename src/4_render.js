@@ -8,7 +8,7 @@ function floor(x,y,c,h){const z=ZZ;if(z&&z.boat&&BOATA.has(y*N+x)){deckTile(x,y,
     if((Zk==='town'&&x===35&&y===35)||DEC[y][x]==='U'){box(x+.6,y+.6,-3,.8,.8,10,'#a8a8b0');box(x+.8,y+.8,7,.4,.4,16,'#c8c8d0');box(x+.75,y+.75,23,.5,.5,6,'#d4af37')}return}
   if(c===8){box(x,y,-6,1,1,6,'#a8303a',.95+h*.08);return}
   if(c===4){const pier=(Zk==='town'&&y>=64)||DEC[y][x]==='~',rc=z.rd;if(pier){pierTile(x,y,h);return}box(x,y,-6,1,1,6,pier?((x+y)&1?'#8a6a42':'#7e6040'):rc?((x+y)&1?rc[0]:rc[1]):((x+y)&1?'#a89a84':'#9e917c'),.92+h*.12);if(pier&&z.dist&&(x+y)%5===0)box(x+.05,y+.05,-12,.12,.12,8,'#5a4a32');return}
-  let a=z.a,b=z.b;if(z.int){a=z.fl;b=z.fl2}else if(Zk==='arena'){a=y>7?'#e0c890':'#b8b0a0';b=y>7?'#d8c088':'#b0a898'}
+  let a=z.a,b=z.b;if(z.int){a=z.fl;b=z.fl2}else if(Zk==='arena'){const c2=arFloorC(x,y);a=c2[0];b=c2[1]}
   box(x,y,-6,1,1,6,(x+y)&1?a:b,.92+h*.16);
   if(Zk==='town'&&h>.93)box(x+.3,y+.3,0,.1,.1,3,h>.965?'#ffd84a':'#e86a8a');
   else if(z.dg&&h>.95)box(x+.2,y+.5,0,.3,.12,2,'#d8d4c8');
@@ -19,10 +19,7 @@ function wall(x,y,h){const z=ZZ;
   if(Zk==='town'){const gate=(y===0&&x>=34&&x<=37)||((x===N-1||x===0)&&y>=34&&y<=37)||(y===0&&x>=16&&x<=17)||(x===N-1&&y>=16&&y<=17)||(x===0&&y>=52&&y<=53)||(y===N-1&&x>=53&&x<=56),tw=(y===0&&(x===33||x===38||x===15||x===18))||((x===N-1||x===0)&&(y===33||y===38))||(x===N-1&&(y===15||y===18))||(x===0&&(y===51||y===54))||(y===N-1&&(x===52||x===57));
     if(gate){box(x,y,-6,1,1,6,(x+y)&1?'#a89a84':'#9e917c',.92+h*.12);box(x,y,26,1,1,10,'#7b7f89');return}if(tw){box(x-.1,y-.1,0,1.2,1.2,46,'#7b7f89');box(x-.15,y-.15,46,1.3,1.3,5,'#6b6f79');return}
     box(x,y,0,1,1,30,'#8b8f99',.9+h*.1);if((x+y)%2===0)box(x+.2,y+.2,30,.6,.6,6,'#8b8f99',.95);return}
-  if(Zk==='arena'){if(!x||!y||x===N-1||y===N-1){box(x,y,0,1,1,36,z.o,.9+h*.1);if((x+y)%2===0)box(x+.2,y+.2,36,.6,.6,6,z.o);return}
-    if(y===8){box(x,y,0,1,1,18,'#8a7a60');return}
-    const d=Math.hypot(x+.5-15.5,y+.5-19.5)-9,ht=8+Math.min(5,Math.floor(d))*7;box(x,y,0,1,1,ht,'#c8b890',.85+h*.1);
-    if(h>.4){const bb=Math.abs(Math.sin(t*5+x*1.7+y*2.3))*3;box(x+.3,y+.3,ht,.4,.4,7,['#c0392b','#2980b9','#27ae60','#8e44ad','#f39c12'][(h*50|0)%5]);box(x+.33,y+.33,ht+7+bb,.34,.34,6,SKIN)}return}
+  if(Zk==='arena'){arWall(x,y,h);return}
   if(z.th==='forest'){box(x+.35,y+.35,0,.3,.3,14,'#6b4a2b');box(x+.05,y+.05,12,.9,.9,12,z.o,.85+h*.3);box(x+.25,y+.25,24,.5,.5,8,z.o,1.1);return}
   if(z.th==='desert'){h<.5?(box(x+.38,y+.38,0,.24,.24,18+h*30,z.o),box(x+.15,y+.42,10,.25,.14,6,z.o)):box(x+.1,y+.1,0,.8,.8,8+h*14,'#a88c5a');return}
   if(z.th==='peaks'){if(h<.55){box(x+.4,y+.4,0,.2,.2,8,'#5a3a2a');box(x+.1,y+.1,8,.8,.8,10,z.o);box(x+.2,y+.2,18,.6,.6,9,z.o,1.1);box(x+.3,y+.3,27,.4,.4,8,z.o,1.2);box(x+.38,y+.38,35,.24,.24,4,'#f4f8fc')}
@@ -158,15 +155,19 @@ function dec(x,y,c,h){if(ZZ&&ZZ.int&&DUP52.includes(c)&&decInt52(x,y,c,h))return
   case '|':box(x+.3,y+.35,0,.4,.3,36,'#5a3a1a');box(x+.34,y+.64,24,.32,.02,9,'#f4f0e0');box(x+.48,y+.65,8,.04,.02,12+Math.sin(t*3)*3,'#d4af37');break;
   case '_':box(x+.05,y+.2,0,.9,.6,16,'#7a5a3a');box(x+.1,y+.79,4,.8,.02,4,'#5a3a1a');box(x+.1,y+.79,10,.8,.02,4,'#5a3a1a');box(x+.3,y+.3,16,.2,.2,6,'#3a7ab8');break;
   case 'w':box(x+.1,y+.4,0,.8,.15,22,'#6b4a2b');box(x+.2,y+.56,4,.05,.05,24,'#cccccc');box(x+.5,y+.56,4,.05,.05,24,'#cccccc');box(x+.75,y+.56,4,.05,.05,22,'#b8a088');break}}
+// 7.12: alberi, cactus, rocce e abeti delle zone aperte (e i muri "aperti" di Voxelia Studio) non riempiono tutta la casella:
+// sotto ci va il prato (o la sabbia, o la neve), altrimenti tra il tronco e la chioma si vedeva il cielo
+function openW(x,y){const z=ZZ;if(!z)return false;if(z.ed){const m=z.edm,st=m&&m.w&&typeof EWAL!=='undefined'?EWAL[m.w[y*N+x]]:null;return!!(st&&st.open)}
+  return!z.dg&&!z.int&&!z.dist&&(z.th==='forest'||z.th==='desert'||z.th==='peaks')}
 // Il pavimento (statico) viene disegnato una volta sola in una tela fuori schermo per zona; l'acqua resta animata
 function buildFC(){const w=N*64+64,h=N*32+80,cs=Math.min(DPR,Math.sqrt(1.6e7/(w*h)),2),c=document.createElement('canvas');c.width=Math.ceil(w*cs);c.height=Math.ceil(h*cs);
   g=c.getContext('2d');g.setTransform(cs,0,0,cs,(N*32+32)*cs,40*cs);
-  for(let d=0;d<2*N-1;d++)for(let x=Math.max(0,d-N+1);x<=Math.min(d,N-1);x++){const y=d-x,m=M[y][x];if(m===0||m===4||m===8||m===6)floor(x,y,m===6?0:m,hh(x,y))}
+  for(let d=0;d<2*N-1;d++)for(let x=Math.max(0,d-N+1);x<=Math.min(d,N-1);x++){const y=d-x,m=M[y][x];if(m===0||m===4||m===8||m===6||(m===1&&openW(x,y)))floor(x,y,m===6?(RDF.has(y*N+x)?4:0):m===1?0:m,hh(x,y))}
   g=G0;FC={cv:c,cs,ox:N*32+32,oy:40,w,h};
   const m=document.createElement('canvas');m.width=m.height=130;const q=m.getContext('2d'),s=130/N;q.fillStyle='#000a';q.fillRect(0,0,130,130);
   for(let y=0;y<N;y++)for(let x=0;x<N;x++){const c2=M[y][x];if(c2&&c2!==9){q.fillStyle=c2===2?(ZZ.pool||'#3388cc'):c2===3?'#a0705a':c2===4?'#8a8070':c2===6?'#4a6a3a':c2===8?'#a8303a':'#667788';q.fillRect(x*s,y*s,s+.3,s+.3)}}MC=m}
 function tile(x,y){const c=M[y][x];if(c===9)return;const h=HHc&&HHc.length===N*N?HHc[y*N+x]:hh(x,y);
-  if(c===2||(!FC&&c!==1&&c!==3))floor(x,y,c===6?0:c,h);
+  if(c===2||(!FC&&(c!==1||openW(x,y))&&c!==3))floor(x,y,c===6?(RDF.has(y*N+x)?4:0):c===1?0:c,h);
   if(c===0&&DEC[y][x]){dec(x,y,DEC[y][x],h);return}if(c===0||c===2||c===4||c===8)return;
   let a=0;const ch=c===6?DEC[y][x]:'';if(c!==6||'rlSsWwFK'.includes(ch)){const d=(x+y)-(P.px+P.py);if(d>0&&d<5.5&&Math.abs((x-y)-(P.px-P.py))<3.5){g.globalAlpha=.35;a=1}}
   if(c===1)wall(x,y,h);else if(c===3)bld(x,y,h);else dec(x,y,ch,h);
@@ -300,12 +301,13 @@ rovine:{n:'Borgo delle Ceneri · periferia di Aldoria Vecchia',lv:5,N:56,a:'#5e6
 porto:{n:'Porto di Aldoria',lv:3,N:56,a:'#8aa060',b:'#839a5c',bg:'#86c0ea',mus:'town',pt:'mote',gen:genPorto,rd:['#aaa294','#a0988a'],wl:'#8b8f99',wh:26,dist:1}});
 
 /* ---- costruttore dei quartieri ---- */
-let GT=new Set();
-function genDist(z){const n=N;GT=new Set();BM=grid(-1);TB=[];
+// 7.12: RDF ricorda le caselle di strada su cui è stato messo un arredo, così sotto l'arredo resta la strada (prima c'era l'erba)
+let GT=new Set(),RDF=new Set();
+function genDist(z){const n=N;GT=new Set();RDF=new Set();BM=grid(-1);TB=[];
   const ok=(x,y)=>x>0&&y>0&&x<n-1&&y<n-1;
   const R4=(x0,y0,w,h,v)=>{for(let y=y0;y<y0+h;y++)for(let x=x0;x<x0+w;x++)if(ok(x,y)){M[y][x]=v;if(v!==6)DEC[y][x]=''}};
   const D=(x,y,c)=>{if(ok(x,y)&&M[y][x]===0&&!DEC[y][x]){M[y][x]=6;DEC[y][x]=c}};
-  const F=(x,y,c)=>{if(ok(x,y)){M[y][x]=6;DEC[y][x]=c}};
+  const F=(x,y,c)=>{if(ok(x,y)){if(M[y][x]===4)RDF.add(y*n+x);M[y][x]=6;DEC[y][x]=c}};
   const W=(x,y,c)=>{if(ok(x,y)&&M[y][x]===0)DEC[y][x]=c};
   const H=b=>{const i=TB.push(b)-1;for(let y=b.y;y<b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++){M[y][x]=3;DEC[y][x]='';BM[y][x]=i}if(b.to){M[b.y+b.h][b.dx]=4;DEC[b.y+b.h][b.dx]='';ents.push(po(b.dx,b.y+b.h,b.to,{st:'door'}))}};
   const gate=(x,y,to,o)=>{const e=po(x,y,to,Object.assign({st:'gate'},o||{}));ents.push(e);for(let k=-1;k<=1;k++){if(y===1)GT.add((x+k)+',0');if(y===n-2)GT.add((x+k)+','+(n-1));if(x===1)GT.add('0,'+(y+k));if(x===n-2)GT.add((n-1)+','+(y+k))}return e};
@@ -402,7 +404,7 @@ function genRovine({R4,D,F,H,gate,N2,RS,EN,scat,n}){
   for(const[t,c]of[['ratto',12],['bandito',9],['spettro',9],['ghoul',7]])for(let i=0;i<c;i++){const p=free();if(p)EN(t,p[0],p[1])}
   for(const[x,y,c]of[[32,46,';'],[35,46,';'],[32,50,';'],[34,48,','],[36,49,'k'],[31,48,'b'],[35,51,'x']])F(x,y,c);
   F(26,24,'Y');F(25,24,'u');F(27,25,'u');scat(2,2,52,52,'{',.008);for(const[x,y]of[[8,40],[50,13]])D(x,y,'W');
-  gate(54,28,'town');N2('ada',8,28);N2('sentinella',51,29);
+  Object.assign(gate(54,28,'town'),{st:'cancello',dir:'y',span:3,off:-1.5,eo:1,sw:-1,sty:'ceneri'});N2('ada',8,28);N2('sentinella',51,29);
   return[52,28]}
 
 
@@ -556,7 +558,10 @@ function genPorto({R4,D,F,H,gate,N2,AN,RS,FS,scat,n}){
   fisher(38,38,1,0,'Pescatore Mimmo','#6a5a3a');fisher(46,33,-1,0,'Pescatore Orazio','#2a4a6a');fisher(15,29,0,1,'Pescatore Ciro','#5a3a3a');fisher(44,44,-1,0,'Pescatore Leone','#3a3a5a');
   for(const s of[[3,46,0,1],[11,46,0,1],[6,42,-1,0],[18,50,0,1],[30,50,0,1],[22,40,-1,0],[38,44,0,1],[36,41,-1,0],[47,35,1,0],[52,42,1,0],[44,41,-1,0],[14,29,0,1],[33,29,0,1],[51,29,0,1]])FS(...s);
   for(const[x,y]of[[10,27],[36,28],[48,26],[24,27]])AN('gabbiano',x,y,ANM.gabbiano());
-  N2('ammiraglio',36,33);ents.push(po(45,41,'abisso@1',{st:'pozzo',n:'Pozzo delle alghe · Abisso Sommerso'}));for(const[x,y,c]of[[44,40,'Ю'],[44,42,'Ю'],[46,40,'Я'],[45,43,'Ь'],[44,41,'Э'],[46,42,'Ю']])F(x,y,c);R4(21,1,12,2,4);for(const[x,y,c]of[[21,2,'Y'],[32,2,'Y'],[23,1,'l'],[31,1,'l'],[24,2,'§'],[30,2,'§'],[21,1,'o'],[32,1,'o']])F(x,y,c);Object.assign(gate(27,1,'town'),{st:'cancello',dir:'x',span:3,off:-1.5,eo:-1,sw:1,sty:'mare'});
+  N2('ammiraglio',36,33);for(const[x,y,c]of[[44,40,'Ю'],[44,42,'Ю'],[46,40,'Я'],[45,43,'Ь'],[46,42,'Ю']])F(x,y,c);
+  // 7.12: il pozzo delle alghe sta sulla banchina, in fondo alla strada che scende dalla città: lo si vede appena si arriva al porto
+  // (prima era sull'isolotto del faro, nascosto dietro la torre). Intorno una lanterna, scogli con le alghe e il cartello.
+  ents.push(po(27,27,'abisso@1',{st:'pozzo',n:'Pozzo delle alghe · Abisso Sommerso'}));for(const[x,y,c]of[[26,26,'Ю'],[28,26,'Ю'],[28,28,'Э'],[26,28,'₪c']])F(x,y,c);R4(21,1,12,2,4);for(const[x,y,c]of[[21,2,'Y'],[32,2,'Y'],[23,1,'l'],[31,1,'l'],[24,2,'§'],[30,2,'§'],[21,1,'o'],[32,1,'o']])F(x,y,c);Object.assign(gate(27,1,'town'),{st:'cancello',dir:'x',span:3,off:-1.5,eo:-1,sw:1,sty:'mare'});
   N2('gino',23,28);{const s73=N2('stefano',10,45);s73.fc0=faceOf(1,0)}N2('nella',21,24);N2('doganiere',33,27);N2('rocco',37,30);N2('pippo',11,28);N2('ernesto',51,13);
   N2('marinaio',27,10,{n:'Marinaio Tito',wd:1});N2('marinaio',15,27,{n:'Marinaia Sara',c:'#6a3a3a',wd:1});N2('marinaio',38,13,{n:'Nostromo Lupo',c:'#3a3a3a',wd:1});
   return[27,3]}
@@ -811,18 +816,32 @@ const GSTY={legno:{p:'#6a6a62',c:'#5a5a52',l:'#6b4a2b',l2:'#5a3a20',h:'#3a3a3a',
 function gateL(e){const op=e.op||0,sp=e.span||3,o=e.off!=null?e.off:-sp/2,eo=e.eo||0,sw=e.sw||1,S=GSTY[e.sty]||GSTY.ferro,L=[];
   const Q=(a,b,z,w,d,h,c)=>{if(e.dir==='y')L.push([b,a,z,d,w,h,c]);else L.push([a,b,z,w,d,h,c])};
   Q(o-.35,eo-.35,0,.7,.7,52,S.p);Q(o+sp-.35,eo-.35,0,.7,.7,52,S.p);Q(o-.45,eo-.45,52,.9,.9,6,S.c);Q(o+sp-.45,eo-.45,52,.9,.9,6,S.c);Q(o,eo-.2,42,sp,.4,8,S.p);
-  const lw=sp/2,ang=op*Math.PI/2*.92,seg=6;
-  for(const side of[0,1]){const ax=side?o+sp:o,da=side?-1:1;for(let i=0;i<seg;i++){const r0=(i+.5)/seg*lw;Q(ax+Math.cos(ang)*r0*da-lw/seg/2,eo+Math.sin(ang)*r0*sw-.06,2,lw/seg+.02,.12,36,i%2?S.l:S.l2)}
+  const lw=sp/2,ang=op*Math.PI/2*.92,seg=S.bars?7:6;
+  for(const side of[0,1]){const ax=side?o+sp:o,da=side?-1:1;for(let i=0;i<seg;i++){const r0=(i+.5)/seg*lw,X=ax+Math.cos(ang)*r0*da,Y=eo+Math.sin(ang)*r0*sw;
+      // 7.12: cancelli a sbarre di ferro (sbarre sottili con la punta, e tre traverse), oltre a quelli di assi
+      if(S.bars){const bw=lw/seg*.36;Q(X-bw/2,Y-.05,2,bw,.1,34,i%2?S.l:S.l2);Q(X-bw*.3,Y-.035,36,bw*.6,.07,3,S.h);for(const z of[5,19,31])Q(X-lw/seg/2,Y-.04,z,lw/seg+.02,.08,2.2,S.l2)}
+      else Q(X-lw/seg/2,Y-.06,2,lw/seg+.02,.12,36,i%2?S.l:S.l2)}
     Q(ax+Math.cos(ang)*lw*.5*da-.05,eo+Math.sin(ang)*lw*.5*sw-.07,18,.1,.14,4,S.h);Q(ax+Math.cos(ang)*lw*.9*da-.04,eo+Math.sin(ang)*lw*.9*sw-.07,30,.08,.14,3,S.h)}
-  if(S.v)for(let i=0;i<4;i++)Q(o-.42+i*.04,eo+.36,4+i*12,.07,.07,10,S.v);if(S.ex)S.ex(Q,o,sp,eo);
+  if(S.v)for(let i=0;i<4;i++)Q(o-.42+i*.04,eo+.36,4+i*12,.07,.07,10,S.v);if(S.ex)S.ex(Q,o,sp,eo,e);
+  // 7.12: un cancello sbarrato ha le catene incrociate davanti alle ante e un grosso lucchetto
+  if(gateLocked(e)&&op<.05){const n=12;for(let k=0;k<=n;k++){const a=o+.3+(sp-.6)*k/n,c=k%2?'#9a8a7a':'#7a5a44';Q(a-.08,eo+.08,7+26*k/n,.16,.08,3.4,c);Q(a-.08,eo+.08,33-26*k/n,.16,.08,3.4,c)}
+    Q(o+sp/2-.18,eo+.1,13,.36,.1,8,'#b8902a');Q(o+sp/2-.12,eo+.1,21,.24,.06,4,'#7a7068');Q(o+sp/2-.04,eo+.2,15,.08,.02,3,'#2a1a10')}
   return L}
-function wellL(e){const L=[];for(let i=0;i<8;i++){const a=i*Math.PI/4;L.push([Math.cos(a)*.42-.12,Math.sin(a)*.42-.12,0,.24,.24,12,i%2?'#7a7a80':'#6a6a70'])}
-  L.push([-.32,-.32,2,.64,.64,7,'#1f5a4a']);
-  for(let i=0;i<8;i++){const a=i*.8+.3,s=Math.sin(t*1.8+i)*.05;L.push([Math.cos(a)*.4-.04+s,Math.sin(a)*.4-.04,6,.08,.08,10+(i%3)*5,i%2?'#2f8a4a':'#3fa05a'])}
-  for(let i=0;i<4;i++){const a=i*1.6;L.push([Math.cos(a)*.18-.04,Math.sin(a)*.18-.04,9+((t*.8+i*.25)%1)*10,.07,.07,2,'#8ff0ff'])}
-  L.push([-.5,-.06,12,.1,.12,26,'#6b4a2b'],[.4,-.06,12,.1,.12,26,'#6b4a2b'],[-.55,-.1,38,1.1,.2,3,'#5a3a1a'],[-.08,-.04,20,.16,.08,18,'#c8b890'],[-.6,-.6,41,1.2,1.2,4,'#2a6a5a'],[-.5,-.5,45,1,1,3,'#3a7a6a']);
+// nei filmati il cancello del vecchio quartiere è sempre sbarrato, come nella storia
+const gateLocked=e=>!!(e.lock&&((typeof CN!=='undefined'&&CN&&CN.film)||!(P&&P.unl&&P.unl[e.lock])));
+// 7.12: il pozzo delle alghe è più grande e si fa notare: bordo di pietra col muschio, acqua che brilla di verde acqua
+// (anche di notte, da lontano), alghe che pendono, bolle, carrucola con il secchio e un tetto a due falde
+function wellL(e){const L=[],T=6.2832,pu=.5+.5*Math.sin(t*2.2);
+  for(let i=0;i<12;i++){const a=i/12*T;L.push([Math.cos(a)*.52-.14,Math.sin(a)*.52-.14,0,.28,.28,13,i%2?'#7a7a82':'#6a6a72'])}
+  for(let i=0;i<12;i++){const a=i/12*T+.26;L.push([Math.cos(a)*.52-.13,Math.sin(a)*.52-.13,13,.26,.26,2,i%3?'#3f7a4a':'#4f8a52'])}
+  L.push([-.4,-.4,3,.8,.8,9,'#1e6a66',1.15+pu*.15]);
+  for(let i=0;i<10;i++){const a=i*.63+.3,s=Math.sin(t*1.8+i)*.04;L.push([Math.cos(a)*.62-.04+s,Math.sin(a)*.62-.04,3+(i%3)*2,.08,.08,10+(i%3)*4,i%2?'#2f8a4a':'#3fa05a'])}
+  for(let i=0;i<5;i++){const a=i*1.3,u=(t*.7+i*.2)%1;L.push([Math.cos(a)*.2-.035,Math.sin(a)*.2-.035,12+u*18,.07,.07,2,'#8ff0ff',1.3])}
+  L.push([-.6,-.07,15,.12,.14,30,'#6b4a2b'],[.48,-.07,15,.12,.14,30,'#6b4a2b'],[-.64,-.11,44,1.28,.22,3,'#5a3a1a'],[-.05,-.05,28,.1,.1,16,'#c8b890'],[-.13,-.13,22,.26,.26,6,'#7a5a3a'],[-.15,-.15,27.5,.3,.3,1,'#5a3a1a']);
+  for(let k=0;k<4;k++)L.push([-.78+k*.1,-.58+k*.13,47+k*3,1.56-k*.2,1.16-k*.26,3,k%2?'#2a6a5a':'#3a7a6a']);
+  nlight(e.px,e.py,14,130,'110,255,225',.55+pu*.25);if(SET.ultra)GLOW.push([e.px,e.py,14,46,'110,255,225',.22+pu*.12]);
   return L}
-function gateTick(dt){for(const e of ents){if(e.st!=='cancello')continue;const tg=dist(P,e)<3.6?1:0;if(tg&&!e.lt&&AU.ac&&SET.sf)try{vtone(AU.ac.currentTime+.02,38,.8,'sawtooth',1.5,.03);vtone(AU.ac.currentTime+.05,45,.6,'square',.7,.015)}catch(_){}
+function gateTick(dt){for(const e of ents){if(e.st!=='cancello')continue;const tg=dist(P,e)<3.6&&!gateLocked(e)?1:0;if(tg&&!e.lt&&AU.ac&&SET.sf)try{vtone(AU.ac.currentTime+.02,38,.8,'sawtooth',1.5,.03);vtone(AU.ac.currentTime+.05,45,.6,'square',.7,.015)}catch(_){}
   e.lt=tg;e.op=(e.op||0)+(tg-(e.op||0))*Math.min(1,dt*2.4)}}
 
 /* ================= 6.2: maestria delle armi, zaini, abilità dei boss, falò, motel con due scale ================= */
@@ -1611,13 +1630,17 @@ MNODE.vecchia=[-.98,.95];
 let SHS=null;
 function shSpr(){if(SHS)return SHS;SHS=document.createElement('canvas');SHS.width=SHS.height=64;const q=SHS.getContext('2d'),gr=q.createRadialGradient(32,32,0,32,32,32);
   gr.addColorStop(0,'rgba(0,0,0,.42)');gr.addColorStop(.6,'rgba(0,0,0,.2)');gr.addColorStop(1,'rgba(0,0,0,0)');q.fillStyle=gr;q.fillRect(0,0,64,64);return SHS}
+// 7.12: il passo dipende solo dal tempo, con uno sfasamento fisso per ognuno. Prima la fase era t*10+px*2+py: andando in giù
+// px e py crescono e le gambe correvano, andando in su (o in diagonale verso l'alto) calano e le gambe quasi si fermavano
+const WPH=new WeakMap();
+function walkPh(e,k){let o=WPH.get(e);if(o==null){o=e===P?0:Math.random()*6.283;WPH.set(e,o)}return t*k+o}
 function ent(e){if(e.k==='abo'){aboDraw(e);return}if(e.k==='resx'||(e===P&&Zk==='mare'))return;if(e.k==='dead'){const k=(t-e.t0)/.7;g.globalAlpha=Math.max(0,1-k);if(e.fc!=null)drawHero(e.m,e.px,e.py,-k*16,k<.15,e.fc);else drawL(e.m,e.px,e.py,-k*16,k<.15);g.globalAlpha=1;return}const sx=PX(e.px,e.py),sy=PY(e.px,e.py,0);
   if(SET.ultra){if(e.k==='tc')GLOW.push([e.px,e.py,28,66,rgbOf(ZZ.tc||'#ffb04a'),.26]);else if(e.k==='po'&&e.st!=='door'&&e.st!=='exit')GLOW.push([e.px,e.py,20,56,rgbOf(e.col),.22]);else if(e.k==='shard')GLOW.push([e.px,e.py,30,72,'255,220,90',.34]);else if(e.k==='dr'&&e.it.r>=2)GLOW.push([e.px,e.py,10,26,rgbOf(RC[e.it.r]),.22])}
   if(e.k==='tc'){box(e.px-.05,e.py-.05,10,.1,.1,14,'#4a3a2a');const fl=1+Math.sin(t*12+e.px*5)*.15;box(e.px-.09,e.py-.09,24,.18,.18,6*fl,ZZ.tc||'#ffb04a',1.2);return}
   if(SET.shad&&e.k!=='ship'){if(SET.ultra&&e.k!=='dr'){const r=(e.boss?30:16)*1.25;g.drawImage(shSpr(),sx-4-r,sy+1-r*.48,2*r,2*r*.48)}
     else{g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(sx,sy,e.k==='dr'?8:e.boss?28:15,e.boss?13:7,0,0,6.3);g.fill()}}
   let L=[],top=36;const wh=e.fl>0,mov=(e===P&&(P.path.length||P.km))||e.k==='en'||(e.k==='npc'&&e.path&&e.path.length)||(e.k==='pl'&&e.mv>0);
-  const bob=mov?Math.abs(Math.sin(t*9+e.px*3))*2:0;
+  const hro=e===P||e.k==='pl',wp=walkPh(e,hro?17:10),bob=mov?Math.abs(Math.sin(hro?wp:wp*.9))*2:0;
   let fc=-1;if(e===P)fc=heroFace(P.fc|0),L=heroL(P.ap,P.eq.c?P.eq.c.r:-1,P.eq.h?P.eq.h.r:-1,P.eq.w?P.eq.w.r:0,P.eq.w?iv(P.eq.w):3,P.eq.s?P.eq.s.r:-1,P.sw,eqTy(P.eq)).concat(bagL(P.bag||0),FSH&&PM==='fish'?rodL2():[]);
   else if(e.k==='pl')fc=e.fc|0,L=heroL(e.ap,e.c,e.h,e.w,e.wv,e.s,e.sw,e.ty);
   else if(e.k==='po'&&e.st==='hole'){L=HOLEL(e);top=30}else if(e.k==='secret'){L=secretL(e);top=14}else if(e.k==='shard7'){L=SH7L();top=24}else if(e.k==='portac'){L=PORTCL();top=52}else if(e.k==='po'&&e.st==='tap'){L=TAPL(e);top=40}else if(e.k==='reliq'){L=RELL(e);top=16}else if(e.k==='botola'){L=BOTL();top=10}else if(e.k==='portap'){L=PORTL();top=52}
@@ -1636,7 +1659,7 @@ function ent(e){if(e.k==='abo'){aboDraw(e);return}if(e.k==='resx'||(e===P&&Zk===
     // 7.10: armi, elmi, corazze e scudi a terra mostrano il loro modello (lo stesso dello zaino), piccolo e fluttuante
     if(md){L=md.map(b=>[b[0],b[1],b[2]+z0+u,b[3],b[4],b[5],b[6]]);top=z0+30}else{L=[[-.15,-.15,z0+1+u,.3,.3,10,RC[it?it.r|0:0]]];top=z0+18}
     if(e.gid)L=[[-.12,-.1,0,.24,.2,6,'#8a6a3a'],[-.07,-.06,6,.14,.12,3,'#6a4a2a']].concat(L)}
-  let aox=0,aoy=0;if(e===P||e.k==='pl'){L=heroAnim(L,e,mov);if(mov&&!(e===P&&HA))L=walkLegs(L,t*10+e.px*2+e.py);if(e===P)L=heroPose(L)}else if(mov&&L.length>=5&&L.hm)L=walkA(L,t*10+e.px*2+e.py);else if(e.k==='npc'&&L.hm&&!e.wg){L=e===PA&&PM==='npc'?talkA(L):idleA(L,e)}
+  let aox=0,aoy=0;if(e===P||e.k==='pl'){L=heroAnim(L,e,mov);if(mov&&!(e===P&&HA))L=walkLegs(L,wp);if(e===P)L=heroPose(L)}else if(mov&&L.length>=5&&L.hm)L=walkA(L,wp);else if(e.k==='npc'&&L.hm&&!e.wg){L=e===PA&&PM==='npc'?talkA(L):idleA(L,e)}
   if(e.k==='en'&&L.hm&&e.atkT&&t-e.atkT<.3)L=L.map((q,i)=>i===3||i===4?[q[0],q[1],q[2]+5,q[3],q[4],q[5],q[6]]:q);
   if(e.pry&&t-e.pry<.35&&L.hm)L=L.map((q,i)=>i===3||i===4?[q[0],q[1]+.12,q[2]+6,q[3],q[4],q[5],q[6]]:q);
   if(e.atkT&&t-e.atkT<.25){const k=Math.sin((t-e.atkT)/.25*Math.PI)*.35;aox=e.atkD[0]*k;aoy=e.atkD[1]*k}

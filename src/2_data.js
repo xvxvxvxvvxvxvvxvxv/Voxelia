@@ -82,7 +82,7 @@ town:{n:'Aldoria, la Città',lv:0,N:72,a:'#7d9a5b',b:'#76925a',bg:'#7fb6e6',mus:
 forest:{n:'Foresta di Elmwood',lv:1,N:40,th:'forest',a:'#4f8a3c',b:'#478034',o:'#2f6b2a',bg:'#9fd0f0',en:['slime','lupo','goblin'],boss:'troll',c:28,mus:'forest',pt:'leaf'},
 desert:{n:'Deserto di Khem',lv:4,N:40,th:'desert',a:'#d9b56b',b:'#cfab62',o:'#4e9a47',bg:'#f0d9a0',en:['scorpione','sciacallo','mummia'],boss:'faraone',c:28,mus:'desert',pt:'dust'},
 peaks:{n:'Picchi Gelidi',lv:7,N:40,th:'peaks',a:'#e6edf4',b:'#dbe4ee',o:'#2f5a4a',bg:'#b8cde0',en:['lupo_gelo','yeti','elem_ghiaccio'],boss:'drago_brina',c:28,mus:'peaks',pt:'snow'},
-arena:{n:'Colosseo di Aldoria',lv:0,N:30,a:'#d8c08a',b:'#cfb680',o:'#9a8a70',bg:'#7fb6e6',mus:'arena',pt:'confetti'}
+arena:{n:'Colosseo di Aldoria',lv:0,N:40,a:'#d8c08a',b:'#cfb680',o:'#9a8a70',bg:'#7fb6e6',mus:'arena',pt:'confetti'}
 };
 const TH={cave:{a:'#6b5a48',b:'#635342',o:'#4a3c30',bg:'#0a0806',tc:'#ffb04a',pt:'dust'},crypt:{a:'#5b5f6e',b:'#53576a',o:'#3a3d4a',bg:'#07080c',tc:'#9fd0ff',pt:'dust'},
   pyr:{a:'#c9a860',b:'#bf9f58',o:'#8f7a48',bg:'#0c0a05',tc:'#ffd060',pt:'dust'},ice:{a:'#a8c8e0',b:'#9cbcd6',o:'#6f9ab8',bg:'#05080d',tc:'#b0f0ff',pt:'snow'},

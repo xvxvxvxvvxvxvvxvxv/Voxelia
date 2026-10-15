@@ -4,8 +4,39 @@
    (in_smith), la stiva della Vedova Nera (stiva). I ricordi hanno una patina seppia; le visioni sono scene disegnate apposta. */
 
 /* ---- oggetti di scena ---- */
-// la Corona di Voxel: otto punte, le gemme dei colori dei sei frammenti (o rosse, quando è maledetta)
-function fCrownL(sp,cols,s=1,z0=0){const L=[];for(let i=0;i<8;i++){const a=sp+i*Math.PI/4;L.push([Math.cos(a)*.75*s-.1*s,Math.sin(a)*.75*s-.1*s,z0,.2*s,.2*s,(i%2?6:9)*s,i%2?'#d4af37':cols[(i>>1)%cols.length],1.25])}L.push([-.62*s,-.62*s,z0-1.5*s,1.24*s,1.24*s,1.5*s,'#b8932a']);return L}
+// la Corona di Voxel (7.12): una corona vera, non un cerchio di cubetti. La fascia d'oro con le cornici, le punte (alte agli
+// angoli e al centro di ogni lato, con la perla; basse in mezzo), il berretto di velluto rosso con il globo e la croce, e le sei
+// gemme dei frammenti incastonate sulle due facce che si vedono (tre davanti, tre a destra). È quadrata, come tutto nel mondo di
+// Voxel, e non gira (sp resta per compatibilità): i pezzi sono già in ordine di disegno, da dietro in avanti.
+function fCrownL(sp,cols,s=1,z0=0){const L=[],H=.5*s,t=.11*s,bh=3.4*s,G='#d4af37',G2='#a8862a',G3='#f0cc54',gem=i=>cols[i%cols.length];
+  const wall=(x,y,w,d)=>L.push([x-.02*s,y-.02*s,z0,w+.04*s,d+.04*s,.8*s,G2,1.15],[x,y,z0+.8*s,w,d,bh-1.4*s,G,1.2],[x-.02*s,y-.02*s,z0+bh-.6*s,w+.04*s,d+.04*s,.6*s,G3,1.3]);
+  // punta a giglio: stelo che si stringe, le due foglie, la perla in cima (le basse sono solo un piccolo dente)
+  const pt=(x,y,tall)=>{if(!tall){L.push([x-.05*s,y-.05*s,z0+bh,.1*s,.1*s,1.1*s,G3,1.3]);return}
+    L.push([x-.09*s,y-.09*s,z0+bh,.18*s,.18*s,1.6*s,G,1.25],[x-.15*s,y-.04*s,z0+bh+1.2*s,.3*s,.08*s,.9*s,G3,1.3],[x-.04*s,y-.15*s,z0+bh+1.2*s,.08*s,.3*s,.9*s,G3,1.3],
+      [x-.055*s,y-.055*s,z0+bh+1.6*s,.11*s,.11*s,2.2*s,G,1.3],[x-.035*s,y-.035*s,z0+bh+3.8*s,.07*s,.07*s,.9*s,'#f4ead0',1.35])};
+  const gy=(i,x,y,fx)=>{const c=gem(i);if(fx)L.push([x-.01*s,y-.12*s,z0+bh*.24,.04*s,.24*s,bh*.52,G3,1.3],[x+.02*s,y-.085*s,z0+bh*.3,.05*s,.17*s,bh*.4,c,1.4]);
+    else L.push([x-.12*s,y-.01*s,z0+bh*.24,.24*s,.04*s,bh*.52,G3,1.3],[x-.085*s,y+.02*s,z0+bh*.3,.17*s,.05*s,bh*.4,c,1.4])};
+  const a=H-t/2,cz=z0+bh*1.15;
+  pt(-a,-a,1);wall(-H,-H,2*H,t);pt(-H/2,-a,0);pt(0,-a,1);pt(H/2,-a,0);wall(-H,-H+t,t,2*H-t);pt(-a,-H/2,0);pt(-a,0,1);pt(-a,H/2,0);pt(a,-a,1);pt(-a,a,1);
+  L.push([-H+t,-H+t,z0,2*H-2*t,2*H-2*t,bh*1.15,'#8a1a2a',1.05],[-H*.62,-H*.62,cz,H*1.24,H*1.24,1.3*s,'#7a1424',1.05],[-H*.3,-H*.3,cz+1.3*s,H*.6,H*.6,.8*s,'#7a1424',1.05],
+    [-.08*s,-.08*s,cz+2.1*s,.16*s,.16*s,1.4*s,G,1.3],[-.03*s,-.03*s,cz+3.5*s,.06*s,.06*s,2.2*s,G3,1.3],[-.1*s,-.03*s,cz+4.5*s,.2*s,.06*s,.6*s,G3,1.3]);
+  wall(H-t,-H+t,t,2*H-t);for(let k=0;k<3;k++)gy(3+k,H,(-.55+.55*k)*H,1);pt(a,-H/2,0);pt(a,0,1);pt(a,H/2,0);
+  wall(-H,H-t,2*H-t,t);for(let k=0;k<3;k++)gy(k,(-.55+.55*k)*H,H,0);pt(-H/2,a,0);pt(0,a,1);pt(H/2,a,0);pt(a,a,1);
+  return L}
+// il cancello del vecchio quartiere murato mattone dopo mattone: il muro sale mentre il muratore lavora
+// (le coordinate sono relative all'attore, che sta all'estremità sud del muro perché sia disegnato dopo il cancello)
+function fWallUp(lt){const L=[],rows=1.5+6.5*fSmooth(lt/7.6),C=['#a8503a','#9a4632','#b05a42','#8e4030'],y0=-3,len=2.8,bl=.56;
+  for(let r=0;r<Math.ceil(rows);r++){const part=Math.min(1,rows-r),off=r%2?bl/2:0,n=Math.ceil((len+off)/bl);let k=0;
+    for(let i=0;i<n;i++){const a=Math.max(0,i*bl-off),b=Math.min(len,(i+1)*bl-off);if(b-a<.05)continue;if(k++>=Math.floor(part*n+.001)&&part<1)break;
+      L.push([-.2,y0+a+.015,r*3.2,.4,b-a-.03,3.05,C[(r*3+i)%4]])}}
+  return L}
+function fBrickPile(){return[[-.3,-.25,0,.32,.5,2.2,'#a8503a'],[-.28,-.23,2.2,.28,.46,2.2,'#9a4632'],[.06,-.2,0,.3,.42,2.6,'#b05a42'],[.1,.25,0,.3,.3,3,'#6a6a64'],[.12,.27,3,.26,.26,.4,'#c8c0b0']]}
+// il Re senza la sua corona di tutti i giorni: nella scena in cui si posa sul capo la Corona di Voxel (nel gioco, quando la
+// Corona è in pezzi, il Re porta la sua corona piccola, e quella resta)
+Object.assign(NPCS,{re_capo:Object.assign({},NPCS.re)});NPS.re_capo=NPS.re.split('|').map((v,i)=>i===3?'none':v).join('|');
+const RECZ=34;
+// dove sta la gemma i (0-5) della corona fCrownL(sp,..,s,z0): serve per farci arrivare le gemme in volo (tre davanti, tre a destra)
+const fCrownGem=(i,sp,s,z0)=>{const H=.5*s,u=(-.55+.55*(i%3))*H,z=z0+3.4*s*.5;return i<3?[u,H+.04*s,z]:[H+.04*s,u,z]};
 // un frammento che brilla
 const fShardL=(c,u)=>[[-.12,-.12,u,.24,.24,9,c,1.5],[-.06,-.06,u+9,.12,.12,3,'#ffffff',1.6]];
 // il settimo cuore: più scuro, rosso, caldo come qualcosa di vivo
@@ -19,8 +50,13 @@ const fA=(id,o)=>Object.assign({id},o);
 /* ---- scene disegnate apposta ---- */
 function fFloor(x0,y0,w,h,a,b){for(let y=y0;y<y0+h;y++)for(let x=x0;x<x0+w;x++)box(x,y,-6,1,1,6,(x+y)&1?a:b,.94+hh(x+40,y+40)*.12)}
 // il cerchio di pietra dove Aldric il Primo forgiò la Corona
-FSET.altare=(S2,lt)=>{fFloor(-5,-5,10,10,'#5a5248','#544c42');for(let i=0;i<12;i++){const a=i/12*6.283;box(Math.cos(a)*4.2-.3,Math.sin(a)*4.2-.3,0,.6,.6,10+((i*7)%4)*4,'#7a746a')}
-  box(-.6,-.5,0,1.2,1,7,'#3a3a42');box(-.7,-.6,7,1.4,1.2,2,'#4a4a52')};
+FSET.altare=(S2,lt)=>{fFloor(-5,-5,10,10,'#5a5248','#544c42');const k=fSmooth(lt/4.2);
+  // un cerchio di rune intorno all'altare, che si accende mentre arrivano le gemme
+  for(let i=0;i<16;i++){const a=i/16*6.283,on=fClamp(k*1.25-i/16*.2,0,1);box(Math.cos(a)*1.7-.12,Math.sin(a)*1.7-.12,-.2,.24,.24,.4,on>.5?'#ffd77a':'#6a6050',1+on*.4)}
+  for(let i=0;i<12;i++){const a=i/12*6.283,x=Math.cos(a)*4.2,y=Math.sin(a)*4.2,h=10+((i*7)%4)*4;box(x-.3,y-.3,0,.6,.6,h,'#7a746a');box(x-.34,y-.34,h,.68,.68,1.2,'#8a847a');
+    const on=fClamp(k*1.4-i/12*.3,0,1);if(on>.05)box(x-.08,y+.31,h*.45,.16,.02,3,FCOL[i%6],1+on*.5)}
+  // l'altare: una pietra a gradini con il bordo d'oro
+  box(-.75,-.65,0,1.5,1.3,3,'#3a3a42');box(-.55,-.45,3,1.1,.9,6,'#4a4a54');box(-.68,-.58,8.6,1.36,1.16,.7,'#b8963a');box(-.65,-.55,9.3,1.3,1.1,1.8,'#5a5a66');box(-.2,-.15,11.1,.4,.3,.4,'#ffd77a',1.3)};
 // la mappa del regno con i sei frammenti
 FSET.mappa=(S2,lt)=>{const n=6;for(let i=0;i<n;i++){const id=SHARDS[i],a=i*Math.PI/3-Math.PI/2,x=Math.cos(a)*5,y=Math.sin(a)*5,c=TH[DG[id].th].tc,k=fSmooth((lt-.3-i*.55)/.9);if(k<=0)continue;
     g.globalAlpha=k;box(x-.6,y-.6,0,1.2,1.2,8,'#3a3a44');box(x-.25,y-.25,8,.5,.5,10,c,1.35);g.globalAlpha=1;fGlow(x,y,14,rgbOf(c),40*k,.45*k)}
@@ -28,13 +64,7 @@ FSET.mappa=(S2,lt)=>{const n=6;for(let i=0;i<n;i++){const id=SHARDS[i],a=i*Math.
 // il Vuoto: piattaforme sospese
 FSET.vuoto=(S2,lt)=>{for(let i=0;i<9;i++){const w2=Math.sin(lt*1.2+i)*4;box(-3+(i%3)*2,-3+Math.floor(i/3)*2,-6+w2,1.8,1.8,6,'#2a1a3a',.9+(i%3)*.1)}box(-1.5,-1.5,-2,3,3,2,'#3a2450');
   for(let i=0;i<14;i++){const a=lt*.4+i*.45;box(Math.cos(a)*7-.15,Math.sin(a)*7-.15,40+Math.sin(lt*2+i)*14,.3,.3,6,'#c46bff',1.3)}};
-// sotto la città: l'Occhio che si apre (disegno piatto, come una visione)
-FSET.sotto=(S2,lt)=>{g.setTransform(DPR,0,0,DPR,0,0);const op=fSmooth(lt/2.5)*(S2.chiuso?.15:.95),gy=H*.38,ex=W/2,ey=gy+(H-gy)*.55,ew=Math.min(W*.32,260),eh=ew*.38*op;
-  g.fillStyle='#1a1410';g.fillRect(0,gy,W,H-gy);for(let i=0;i<5;i++){g.fillStyle=`rgba(${40+i*8},${24+i*4},${16+i*3},.6)`;g.fillRect(0,gy+i*(H-gy)/5,W,2)}
-  for(let i=0;i<14;i++){const x=W*(.08+i*.065),h=18+(i*37%30);g.fillStyle=i%3?'#2a2a34':'#3a3440';g.fillRect(x,gy-h,W*.05,h);g.fillStyle='#ffd27a';if((i+Math.floor(lt))%4)g.fillRect(x+W*.018,gy-h*.6,4,5)}
-  g.fillStyle=`rgba(120,10,10,${.25*op})`;g.beginPath();g.ellipse(ex,ey,ew*1.4,ew*.6,0,0,6.3);g.fill();g.fillStyle='#e8d8c8';g.beginPath();g.ellipse(ex,ey,ew,Math.max(1,eh),0,0,6.3);g.fill();
-  const px=ex+Math.sin(lt*.7)*ew*.25;g.fillStyle='#8a0a0a';g.beginPath();g.arc(px,ey,Math.max(1,eh*.85),0,6.3);g.fill();g.fillStyle='#000';g.beginPath();g.ellipse(px,ey,Math.max(1,eh*.18),Math.max(1,eh*.75),0,0,6.3);g.fill();
-  g.strokeStyle='#4a4a52';g.lineWidth=4;for(let i=-3;i<=3;i++){g.beginPath();g.moveTo(ex+i*ew*.45,gy+4);g.lineTo(ex+i*ew*.2,ey-eh*.5);g.stroke()}};
+// sotto la città: lo spaccato con l'Occhio che dorme è in 8y_film3.js (FSET.sotto)
 // la Corona che va in pezzi: sei frammenti che volano lontano
 FSET.schegge=(S2,lt)=>{const k=fSmooth(lt/3.8);for(let i=0;i<6;i++){const a=i*Math.PI/3+.3,r=k*9,x=Math.cos(a)*r,y=Math.sin(a)*r,z=70+Math.sin(k*Math.PI)*60;
     box(x-.25,y-.25,z,.5,.5,10,FCOL[i],1.3);for(let j=1;j<6;j++){const r2=Math.max(0,r-j*.6);box(Math.cos(a)*r2-.08,Math.sin(a)*r2-.08,z-j*3,.16,.16,4,FCOL[i],1.1)}}
@@ -62,7 +92,7 @@ const FRBOSS={tana:'re_goblin',cripta:'necromante',piramide:'sfinge',cristallo:'
 const FRMEM=[
   {d:8.5,st:'in_castle',drop:['*'],night:.9,tint:'rgba(40,10,60,.38)',rain:1,flash:lt=>Math.sin(lt*1.3)>.97?.5:0,cam:[[7.5,5.5,1.5],[7.5,4,1.85]],
     tx:'Il frammento ricorda la notte della tempesta. Malakar, solo, davanti alla Corona: «Non sono io a volerla spezzare», sussurra a qualcuno che non si vede.',
-    act:[fA('mal',{n:'malakar_p',go:[[7.5,8.5],[7.5,4.4]],v:.9,t0:.4,f:'N',talk:[5,8]}),fA('cor',{L:lt=>fCrownL(lt*.6,FCOL,.75,18),p:[7.5,2.6],free:1,noshadow:1}),fA('ped',{L:()=>[[-.4,-.4,0,.8,.8,16,'#6a4a2a'],[-.5,-.5,16,1,1,1.5,'#8a6a3a']],p:[7.5,2.6],free:1})],
+    act:[fA('mal',{n:'malakar_p',go:[[7.5,8.5],[7.5,4.4]],v:.9,t0:.4,f:'N',talk:[5,8]}),fA('ped',{L:()=>[[-.4,-.4,0,.8,.8,16,'#6a4a2a'],[-.5,-.5,16,1,1,1.5,'#8a6a3a']],p:[7.5,2.6],free:1}),fA('cor',{L:lt=>fCrownL(lt*.6,FCOL,.75,17.5),p:[7.5,2.6],free:1,noshadow:1})],
     fx:lt=>fGlow(7.5,1,4,'255,40,40',90,.18+.12*Math.sin(lt*3))},
   {d:8,st:'culto',drop:['*'],night:.7,tint:lt=>`rgba(60,0,0,${.16+.1*Math.sin(lt*1.6)})`,cam:[[11,15,1.1],[11,11.5,1.45]],tx:'Questo frammento ricorda una voce sotto le strade di Aldoria Vecchia: lenta, profonda, come un respiro di pietra.',act:[],
     shake:lt=>lt>5?.3:0},
@@ -75,7 +105,7 @@ const FRMEM=[
     act:[fA('mal',{n:'malakar_p',go:[[-2.2,2.2],[2.2,-2.2]],pf:0,v:.8,t0:.3,free:1})],
     fx:lt=>{for(let i=0;i<6;i++){const k=fClamp((lt-1-i*.8)/2,0,1);if(k<=0)continue;const a=i*1.05,x0=fLerp(-2.2,2.2,fClamp((lt-.3)/6,0,1)),y0=-x0;box(x0+Math.cos(a)*6*k-.15,y0+Math.sin(a)*6*k-.15,30+60*Math.sin(k*Math.PI),.3,.3,6,FCOL[i],1.4)}}},
   {d:8,st:'in_castle',drop:['*'],night:.9,tint:'rgba(30,0,0,.35)',cam:[[7.5,4.5,1.7],[7.5,3.6,2.1]],tx:'L\'ultimo ricordo è il più breve: la mano del Re Aldric si posa sulla Corona intera... e trema.',
-    act:[fA('ald',{n:'aldric_y',p:[7.5,4.2],f:'N',talk:[2.5,8]}),fA('cor',{L:lt=>fCrownL(lt*.3,FCOL,.75,18),p:[7.5,2.9],free:1,noshadow:1}),fA('ped',{L:()=>[[-.4,-.4,0,.8,.8,16,'#6a4a2a'],[-.5,-.5,16,1,1,1.5,'#8a6a3a']],p:[7.5,2.9],free:1})],
+    act:[fA('ald',{n:'aldric_y',p:[7.5,4.2],f:'N',talk:[2.5,8]}),fA('ped',{L:()=>[[-.4,-.4,0,.8,.8,16,'#6a4a2a'],[-.5,-.5,16,1,1,1.5,'#8a6a3a']],p:[7.5,2.9],free:1}),fA('cor',{L:lt=>fCrownL(lt*.3,FCOL,.75,17.5),p:[7.5,2.9],free:1,noshadow:1})],
     fx:lt=>fGlow(7.5,2.9,20,'255,40,40',80,.2+.2*Math.sin(lt*4))}];
 function frFilm(id){const n=Math.max(1,Math.min(6,(P&&P.sh?Math.max(1,P.sh.indexOf(id)+1||P.sh.length):1))),boss=FRBOSS[id]||'re_goblin',d=DG[id]||DG.tana,th=TH[d.th]||TH.cave,M0=FRMEM[n-1];
   const st=stgBuild('dg:'+id),bp=st&&st.boss?st.boss:[0,0],hp=st&&st.heroAt?st.heroAt:[bp[0],bp[1]+3];
@@ -94,9 +124,15 @@ const FILMS={
       act:[fA('pri',{n:'aldric_primo',go:[[17.5,62.5],[27.5,62.6]],v:.85,t0:.5}),fA('m1',{n:'muratore',go:[[15.8,63.4],[25.8,63.4]],v:.85,t0:.5}),fA('m2',{n:'muratore',go:[[14.6,62.4],[24.6,62.4]],v:.85,t0:.5})]},
     {d:8,set:'altare',bg:['#1a1030','#4a2a5a'],mus:'intro',cam:[[0,0,1.3],[0,0,1.6]],tx:'Per tenere unito il regno forgiò la Corona di Voxel: sei gemme, sei terre, un solo cuore.',
       act:[fA('pri',{n:'aldric_primo',p:[0,1.6],f:'N',talk:[3,8]})],
-      fx:lt=>{const k=fSmooth(lt/4.2);if(k<1)for(let i=0;i<6;i++){const a=i*Math.PI/3+lt*.5,r=7*(1-k)+.7,al=fSmooth(lt/1.2);g.globalAlpha=al;box(Math.cos(a)*r-.2,Math.sin(a)*r-.2,40+(1-k)*30,.4,.4,8,FCOL[i],1.35);g.globalAlpha=1}
-        else{for(const b of fCrownL(lt*.8,FCOL,1,40+Math.sin(lt*2)*2))box(b[0],b[1],b[2],b[3],b[4],b[5],b[6],b[7]);fGlow(0,0,44,'255,230,140',160,.35+.15*Math.sin(lt*3))}}},
-    {d:8.5,set:'sotto',bg:['#05040a','#1a0a10'],mus:'vecchia',cam:[[0,0,1],[0,0,1]],tx:'Ma sotto le strade della città qualcosa dormiva. Aldric il Primo lo chiuse nella pietra, e giurò che nessuno dei suoi eredi lo avrebbe mai svegliato.',act:[]},
+      flash:fFlash(4.2,.7),
+      // 7.12: le sei gemme volano verso la corona e si posano ognuna sulla sua punta; intanto il cerchio d'oro prende forma sopra l'altare
+      fx:lt=>{const k=fSmooth(lt/4.2),sp=lt*.5,cs=1.35,zc=40+Math.sin(lt*2)*2,beam=fSmooth((lt-.6)/1.5);
+        if(beam>0)for(let j=0;j<5;j++)fGlow(0,0,13+j*6,'255,220,140',22+j*3,.07*beam);
+        fGlow(0,0,zc+4,'255,225,140',50+50*k,.1+.14*k+.05*Math.sin(lt*3));
+        const ca=k<1?fSmooth((k-.55)/.45):1;if(ca>0){g.globalAlpha=ca;for(const b of fCrownL(sp,k<1?['#d4af37']:FCOL,cs,zc))box(b[0],b[1],b[2],b[3],b[4],b[5],b[6],b[7]);g.globalAlpha=1}
+        if(k<1)for(let i=0;i<6;i++){const[gx,gy,gz]=fCrownGem(i,sp,cs,zc),a=Math.atan2(gy,gx)+(1-k)*1.6,r=fLerp(7,Math.hypot(gx,gy),k),z=fLerp(70,gz,k),q=.27+(1-k)*.12;
+          g.globalAlpha=fSmooth(lt/1.2);box(Math.cos(a)*r-q/2,Math.sin(a)*r-q/2,z,q,q,q*12,FCOL[i],1.3);g.globalAlpha=1;fGlow(Math.cos(a)*r,Math.sin(a)*r,z+3,rgbOf(FCOL[i]),22,.22)}}},
+    {d:10,set:'sotto',bg:['#0c1024','#04030a'],stars:1,mus:'vecchia',cam:[[-2.4,-2.4,1.2],[5.9,5.9,1.2]],ease:u=>fSmooth((u-.14)/.6),tx:'Ma sotto le strade della città qualcosa dormiva. Aldric il Primo lo chiuse nella pietra, e giurò che nessuno dei suoi eredi lo avrebbe mai svegliato.',act:[]},
     {d:8.5,st:'town',mus:'town',drop:['v2','araldo'],cam:[[35.5,43,1.05],[35.5,37,1.15]],tx:'Per secoli Aldoria prosperò. I mercati erano pieni, le campane suonavano, e i figli del re crescevano insieme.',
       act:[fA('k1',{n:'aldric_k',go:[[35.5,45.5],[35.5,39.6],[31.4,39.5],[31.4,32.5]],v:1.9,t0:.4}),fA('k2',{n:'malakar_k',go:[[36.5,46],[36.5,39.6],[40.5,39.5],[40.4,32.4]],v:1.9,t0:.6}),
         fA('c1',{n:'giardiniere',go:[[42.5,31.5],[40.5,31.5],[38.5,30.5]],v:.9,t0:1}),fA('c2',{n:'mv_fiori',go:[[31.5,32.5],[33.5,32.5]],v:.7,t0:2})]},
@@ -112,7 +148,8 @@ const FILMS={
       act:[fA('lich',{boss:'lich',p:[0,0],f:'cam',s:1.2,free:1,zf:lt=>Math.sin(lt*1.4)*3})],
       over:lt=>{const ea=.5+.5*Math.sin(lt*2);g.fillStyle=`rgba(255,40,60,${.35+ea*.4})`;g.beginPath();g.ellipse(W*.44,H*.16,26,9,0,0,6.3);g.ellipse(W*.56,H*.16,26,9,0,0,6.3);g.fill()}},
     {d:8.5,st:'town',dusk:.6,mus:'notte',cam:[[5,53,1.25],[4,52,1.45]],drop:['moreau'],tx:'Il Re fece murare il vecchio quartiere e diede la colpa al fratello. Ma ad Aldoria i segreti non dormono mai a lungo.',
-      act:[fA('re',{n:'aldric_y',p:[6.5,54.5],f:[-1,-.6]}),fA('g1',{n:'ronda',go:[[7.5,50.5],[3.4,51.3]],v:1.1,t0:.4,f:[-1,0]}),fA('g2',{n:'ronda',go:[[8.5,51.5],[3.4,53.3]],v:1.1,t0:.8,f:[-1,0]}),fA('mu',{n:'muratore',p:[2.4,52.4],f:[-1,0],an:'hammer'})]},
+      act:[fA('re',{n:'aldric_y',p:[6.5,54.5],f:[-1,-.6]}),fA('g1',{n:'ronda',go:[[7.5,50.5],[3.4,51.3]],v:1.1,t0:.4,f:[-1,0]}),fA('g2',{n:'ronda',go:[[8.5,51.5],[3.4,53.3]],v:1.1,t0:.8,f:[-1,0]}),fA('muro',{L:lt=>fWallUp(lt),p:[1.3,53.6],free:1,noshadow:1}),fA('mu',{n:'muratore',p:[3.02,52.15],f:[-1,0],an:'hammer'}),
+        fA('mu2',{n:'muratore',go:[[7.5,55.5],[3.3,54.2]],v:.8,t0:.6,f:[-1,-.6]}),fA('mat',{L:()=>fBrickPile(),p:[3.6,53.7],free:1,noshadow:1})]},
     {d:9.5,st:'town',mus:'intro',drop:['v2','araldo'],cam:[[36,44,1.2],[32,37.5,1]],tx:'Il Re Aldric cerca un eroe capace di riunire la Corona. Quell\'eroe sei tu.',title:'VOXELIA',big:1,tt:3.4,
       act:[fA('hero',{hero:1,go:[[35.5,46.5],[35.5,39.7],[31.6,39.4],[31.4,35.6],[28.5,35.5]],v:1.45,t0:.3})]}]},
 
@@ -136,8 +173,8 @@ const FILMS={
       fx:lt=>{const k=fSmooth(lt/6.2);for(let i=0;i<6;i++){const a=i*Math.PI/3+lt*(1+k*3),r=fLerp(.4,2.4,fSmooth(lt/1.5))*(1-k)+.5*k,cx=fLerp(7.5,7.5,k),cy=fLerp(6.2,3.4,fSmooth(lt/2)),al=fSmooth(lt/.9);g.globalAlpha=al;box(cx+Math.cos(a)*r-.2,cy+Math.sin(a)*r-.2,22+k*30,.4,.4,8,FCOL[i],1.4);g.globalAlpha=1}},
       flash:lt=>lt>6.4?fSmooth((lt-6.4)/.8):0},TRONO),
     Object.assign({d:7.5,cam:[[7.5,3.6,2],[7.5,3.4,2.3]],dropPo:1,tx:'La Corona è di nuovo intera. Il Re la posa sul capo... e per un attimo i suoi occhi si accendono di rosso.',
-      act:[fA('re',{n:'re',p:[7.5,3.4],f:'cam'}),fA('cor',{L:lt=>fCrownL(lt*.5,FCOL,.5,fLerp(70,37,fSmooth((lt-.5)/2.5))),p:[7.5,3.4],free:1,noshadow:1})],
-      tint:lt=>lt>3.6&&lt<4.8?'rgba(160,0,0,.22)':'rgba(0,0,0,0)',fx:lt=>{if(lt>3.6&&lt<4.8){box(7.28,3.78,40,.12,.04,3,'#ff2a2a',1.6);box(7.6,3.78,40,.12,.04,3,'#ff2a2a',1.6)}}},TRONO),
+      act:[fA('re',{n:'re_capo',p:[7.5,3.4],f:'cam'}),fA('occhi',{L:()=>[[-.125,.125,24.9,.09,.03,3,'#ff2a2a',1.7],[.025,.125,24.9,.09,.03,3,'#ff2a2a',1.7]],p:[7.5,3.4],free:1,noshadow:1,al:lt=>lt>3.6&&lt<4.8?1:0}),fA('cor',{L:lt=>fCrownL(lt*.5,FCOL,.5,fLerp(70,RECZ,fSmooth((lt-.5)/2.5))),p:[7.5,3.4],free:1,noshadow:1})],
+      tint:lt=>lt>3.6&&lt<4.8?'rgba(160,0,0,.22)':'rgba(0,0,0,0)',fx:lt=>{if(lt>3.6&&lt<4.8)fGlow(7.5,3.55,26,'255,40,40',40,.35)}},TRONO),
     Object.assign({d:7.5,cam:[[9.5,9,1.15],[11,10.5,1.3]],dropPo:1,title:'LA CORONA DI VOXEL',tx:'Nella sala si apre un varco viola: la via per la Cittadella del Vuoto, dove Malakar aspetta.',
       act:[fA('re',{n:'re',p:[7.5,3.4],f:[1,1]}),fA('hero',{hero:1,go:[[7.5,6.4],[10.5,10.5]],v:1.1,t0:2.5,f:[1,.6]})],
       fx:lt=>{const k=fSmooth((lt-.5)/2.2),x=14.5,y=12.5;box(x-.45,y-.1,0,.12,.2,40*k,'#2a1a3a');box(x+.33,y-.1,0,.12,.2,40*k,'#2a1a3a');g.globalAlpha=k;box(x-.33,y-.05,4,.66,.1,32*k,'#c46bff',1.2+Math.sin(t*4)*.1);g.globalAlpha=1;fGlow(x,y,20,'196,107,255',90*k,.45*k)}},TRONO)]},
@@ -164,7 +201,7 @@ const FILMS={
       over:lt=>fConfetti(lt,.6)},
     Object.assign({d:7.5,night:.9,cam:[[7.5,4.5,1.6],[7.5,3.4,2]],tint:'rgba(10,6,30,.4)',tx:'Ma quando la festa finisce, il Re resta solo nella sala del trono. E la Corona brilla di una luce che non è la sua.',
       act:[reSuTrono({an:'sad'}),fA('cor',{L:lt=>fCrownL(lt*.4,['#ff3a3a'],.6,47),p:[7.5,2.6],free:1,noshadow:1})],fx:lt=>fGlow(7.5,2.6,50,'255,40,40',70,.3+.2*Math.sin(lt*2.5))},TRONO),
-    {d:7.5,set:'sotto',bg:['#030203','#160606'],cam:[[0,0,1],[0,0,1]],title:'FINE DEL PRIMO ATTO',tx:'Sotto la città, nel buio, qualcosa apre gli occhi. E respira.',act:[]}]},
+    {d:8,set:'sotto',apre:1,bg:['#080a16','#0c0306'],stars:1,cam:[[5.9,5.9,1.2],[5.6,5.6,1.65]],shake:lt=>lt>2.6&&lt<5.5?.18:0,title:'FINE DEL PRIMO ATTO',tx:'Sotto la città, nel buio, qualcosa apre gli occhi. E respira.',act:[]}]},
 
   /* il settimo cuore della Corona, nel pozzo della vecchia piazza */
   settimo:{n:'Il settimo cuore',mus:'vecchia',L:[
@@ -295,7 +332,7 @@ Object.assign(FILMS,{
       act:[fCab({p:[20.5,17.5],al:lt=>1-fMat(lt,1.4,4)}),fDoor(20.5,17.5,lt=>1-fSmooth((lt-.2)/.8)),fA('hero',{hero:1,go:[[19.5,19.6],[24.5,20.6]],v:.9,t0:5.6,f:'cab'})]},
     {d:6.5,st:'forest',night:.15,dusk:.45,tint:'rgba(255,170,100,.06)',cam:[[24.3,21.6,1.25],[23.8,23.6,.95]],tx:'Fine. Grazie per aver viaggiato con Voxelia Dimension.',title:'VOXELIA DIMENSION',big:1,tt:3.6,
       act:[fA('hero',{hero:1,go:[[24.5,20.6],[24.5,22.5],[27.5,26.5]],v:.9,t0:0})],fx:lt=>fFireflies(25,23,lt,6,4)}]}});
-const FLIST=()=>['giuramento',...SHARDS.map(s=>'fr_'+s),'forgia','caduta','campione','settimo','verita','arresto','verofinale','tempesta','arrembaggio','tesoro'];
+const FLIST=()=>['giuramento',...SHARDS.map(s=>'fr_'+s),'forgia','caduta','campione','ricordo','settimo','verita','arresto','verofinale','tempesta','arrembaggio','tesoro'];
 
 /* ---- dove partono nella storia ---- */
 const _storyF=story;story=function(s){const st0=P?P.st:-1;_storyF(s);const back=()=>{if(PA&&PA.ti)pn('txt')};

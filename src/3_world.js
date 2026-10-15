@@ -22,7 +22,7 @@ const grid=v=>Array.from({length:N},()=>new Array(N).fill(v));
 function load(k,from){LFROM=from;if(from==='arrembaggio'||from==='mare'||from==='stiva')from='in_galeone';if(k!=='mare'&&NAV){NAV=null;navUI(0)}if(k==='arrembaggio'||k==='stiva')ARRW=0;if(k==='stiva'&&!SKY.stiva)SKY.stiva=['#0a0604','#140a06','#1e120a'];load0(k,from);if(ZZ&&Zk===k){loadPost(k);heroFix(from)}}
 function load0(k,from){if(PM&&PM!=='trade')cl();if(!P)return;const REL=[P.px/(N||1),P.py/(N||1)];const z=zd(k);Zk=k;ZZ=z;N=z.N;
   R=(NET.code||z.dg||!z.th)?sd(hs((NET.code||'solo')+k+(z.dg?'#'+z.run:''))):Math.random;eid=0;
-  M=grid(0);DEC=grid('');BM=null;FC=null;ents=[];fx=[];pop=[];PJ=[];let sp;LFP=0;
+  M=grid(0);DEC=grid('');BM=null;FC=null;RDF=new Set();ents=[];fx=[];pop=[];PJ=[];let sp;LFP=0;
   if(z.ed)sp=edGen(z);else if(k==='town')sp=genTown();else if(k==='arena')sp=genArena();else if(z.lay)sp=genInterior(z);else if(z.dg)sp=genDungeon(z);else if(z.gen)sp=genDist(z);else sp=genWild(z);
   if(from){const ps=ents.filter(e=>e.k==='po'&&e.to===from);let p=ps[0];if(ps.length>1)p=ps.reduce((a,b)=>Math.hypot(b.px/N-REL[0],b.py/N-REL[1])<Math.hypot(a.px/N-REL[0],a.py/N-REL[1])?b:a);if(p){sp=nearFree(p.px|0,p.py|0);LFP=1}}
   R=Math.random;gndRestore();P.px=sp[0]+.5;P.py=sp[1]+.5;P.path=[];P.tg=null;camX=PX(P.px,P.py);camY=PY(P.px,P.py,10);parts=[];
@@ -40,7 +40,7 @@ function genTown(){const n=N,R4=(x0,y0,w,h,v)=>{for(let y=y0;y<y0+h;y++)for(let 
   BM=grid(-1);
   TB=[{x:2,y:2,w:12,h:10,st:'cas',wall:'#9a9aa6',ht:46,to:'in_castle',dx:8},
     {x:20,y:3,w:8,h:6,wall:'#c8b89a',roof:'#3a5a8a',ht:30,to:'in_library',dx:23},
-    {x:39,y:2,w:15,h:10,st:'col',wall:'#d8c8a0',ht:40,to:'arena',dx:46},
+    {x:38,y:2,w:16,h:11,st:'col',wall:'#d8c8a0',ht:58,to:'arena',dx:46},
     {x:2,y:19,w:10,h:7,wall:'#c8a878',roof:'#7a3a2a',ht:28,to:'in_tavern',dx:6},
     {x:19,y:19,w:4,h:4,wall:'#e0d0b0',roof:'#a8402f',ht:24,to:'in_house1',dx:20},
     {x:24,y:19,w:5,h:4,wall:'#b8c8a0',roof:'#6a3a8a',ht:24,to:'in_alch',dx:26},
@@ -83,7 +83,7 @@ function genTown(){const n=N,R4=(x0,y0,w,h,v)=>{for(let y=y0;y<y0+h;y++)for(let 
   DL('k',[[2,60],[3,60],[12,57],[27,58],[33,60],[52,60],[69,60]]);DL('b',[[2,61],[13,57],[28,58],[53,60],[69,59]]);DL('N',[[11,60],[29,60],[39,60],[51,58]]);DL('&',[[8,61],[45,61]]);DL('@',[[14,61],[57,61],[66,61]]);
   DL('l',[[33,62],[38,62],[53,62],[56,62]]);
   M[66][20]=2;DEC[66][20]='O';DEC[67][47]='O';DEC[68][10]='O';DEC[66][63]='O';DEC[69][28]='O';
-  ents.push(Object.assign(po(35,1,'forest',{st:'cancello'}),{dir:'x',span:4,off:-1.5,eo:-1,sw:1,sty:'legno'}),Object.assign(po(70,35,'desert',{st:'cancello'}),{dir:'y',span:4,off:-1.5,eo:1,sw:-1,sty:'sabbia'}),Object.assign(po(1,35,'peaks',{st:'cancello'}),{dir:'y',span:4,off:-1.5,eo:-1,sw:1,sty:'gelo'}),Object.assign(po(16,1,'nord',{st:'cancello'}),{dir:'x',span:3,off:-1.5,eo:-1,sw:1,sty:'nobile'}),Object.assign(po(70,16,'campi',{st:'cancello'}),{dir:'y',span:3,off:-1.5,eo:1,sw:-1,sty:'campi'}),Object.assign(po(1,52,'rovine',{st:'gate'}),{lock:'rovine',col:'#8a2a2a',lockMsg:'Il cancello del Borgo delle Ceneri è sbarrato da catene arrugginite. Il Moreau, qui accanto, sa come aprirlo.'}),Object.assign(po(54,70,'porto',{st:'cancello'}),{dir:'x',span:4,off:-1.5,eo:1,sw:-1,sty:'mare'}));
+  ents.push(Object.assign(po(35,1,'forest',{st:'cancello'}),{dir:'x',span:4,off:-1.5,eo:-1,sw:1,sty:'legno'}),Object.assign(po(70,35,'desert',{st:'cancello'}),{dir:'y',span:4,off:-1.5,eo:1,sw:-1,sty:'sabbia'}),Object.assign(po(1,35,'peaks',{st:'cancello'}),{dir:'y',span:4,off:-1.5,eo:-1,sw:1,sty:'gelo'}),Object.assign(po(16,1,'nord',{st:'cancello'}),{dir:'x',span:3,off:-1.5,eo:-1,sw:1,sty:'nobile'}),Object.assign(po(70,16,'campi',{st:'cancello'}),{dir:'y',span:3,off:-1.5,eo:1,sw:-1,sty:'campi'}),Object.assign(po(1,52,'rovine',{st:'cancello'}),{dir:'y',span:3,off:-1.5,eo:-1,sw:1,sty:'ceneri',lock:'rovine',lockMsg:'Il cancello del Borgo delle Ceneri è sbarrato da catene arrugginite. Il Moreau, qui accanto, sa come aprirlo.'}),Object.assign(po(54,70,'porto',{st:'cancello'}),{dir:'x',span:4,off:-1.5,eo:1,sw:-1,sty:'mare'}));
   const cav=mkNpc('cavallo',63,49);cav.m=ANM.cavallo();
   ents.push(mkNpc('marcus',37,3),mkNpc('guardia_porta',33,3),mkNpc('tommaso',32,27),mkNpc('araldo',39,39),mkNpc('ugo',47,30),mkNpc('nino',37,61),mkNpc('guardia',8,14,{n:'Guardia del Castello'}),mkNpc('moreau',3,51),
     mkNpc('recluta',10,34,{n:'Recluta di ronda',wd:1}),cav,{k:'board',px:44.5,py:14.5,n:'Tabellone dell\'Arena'});
@@ -99,13 +99,24 @@ function genTown(){const n=N,R4=(x0,y0,w,h,v)=>{for(let y=y0;y<y0+h;y++)for(let 
   const dd=bfs(35,43);for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(M[y][x]===0&&dd[y*n+x]<0)for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]])if(M[y+b][x+a]===6&&'rh'.includes(DEC[y+b][x+a])){M[y+b][x+a]=0;DEC[y+b][x+a]=''}
   return[35,43]}
 
-/* ---- Colosseo: sala d'attesa sicura a nord, fossa di sabbia circolare per il PvP ---- */
-const inPit=(x,y)=>Zk==='arena'&&Math.hypot(x-15.5,y-19.5)<8.6;
-function genArena(){for(let y=0;y<N;y++)for(let x=0;x<N;x++){
-    if(!x||!y||x===N-1||y===N-1)M[y][x]=1;else if(y<=7)M[y][x]=0;else if((x===15||x===16)&&y<=12)M[y][x]=0;else if(y===8)M[y][x]=1;else M[y][x]=Math.hypot(x+.5-15.5,y+.5-19.5)<9?0:1}
-  for(const[x,y,c]of[[2,6,'l'],[27,6,'l'],[2,2,'w'],[3,2,'w'],[26,2,'w'],[27,2,'b'],[27,3,'k']]){M[y][x]=6;DEC[y][x]=c}
-  ents.push(po(15,1,'town',{st:'gate',n:'Aldoria'}),mkNpc('kael',7,4),mkNpc('banditore',11,3),{k:'board',px:22.5,py:3.5,n:'Tabellone dell\'Arena'},{k:'tc',px:14.2,py:7.6},{k:'tc',px:17.8,py:7.6});
-  return[15,4]}
+/* ---- 7.12: il Colosseo, più grande (40×40). A nord la galleria dei gladiatori (zona sicura) con il Maestro d'Arena, il
+   banditore, il tabellone, le statue dei campioni e l'angolo per allenarsi; il tunnel scende nella fossa di sabbia, ellittica e
+   più ampia, dove si combatte; tutto intorno le gradinate piene di spettatori, la tribuna d'onore a est e la porta a ovest.
+   I punti dove il plugin dello stress test fa duellare i suoi bot, (12.5,19.5) e (18.5,19.5), restano dentro la fossa. ---- */
+const ARC={cx:19.5,cy:23.5,rx:12,ry:9};
+const arD=(x,y)=>Math.hypot((x-ARC.cx)/ARC.rx,(y-ARC.cy)/ARC.ry);
+const inPit=(x,y)=>Zk==='arena'&&arD(x,y)<.96;
+function genArena(){const n=N;for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+    if(!x||!y||x===n-1||y===n-1)M[y][x]=1;else if(y<=8)M[y][x]=0;else if(x>=18&&x<=21&&y<=15)M[y][x]=0;else if(y===9)M[y][x]=1;else M[y][x]=arD(x+.5,y+.5)<1?0:1}
+  const D=(x,y,c)=>{M[y][x]=6;DEC[y][x]=c};
+  // la galleria: colonne, statue dei campioni, armeria del Maestro, bracieri, panche, l'angolo degli allenamenti
+  for(const x of[3,9,15,24,30,36])for(const y of[2,7])D(x,y,'₪C');
+  for(const[x,y]of[[2,1],[3,1],[4,1]])D(x,y,'w');for(const[x,y]of[[5,1],[6,1]])D(x,y,'₪A');D(5,3,'C');D(6,3,'C');
+  D(11,1,'₪S');D(27,1,'₪S');D(16,1,'0');D(23,1,'0');D(33,1,'₪T');D(34,1,'₪T');D(37,1,'b');D(37,2,'k');D(37,8,'k');D(2,8,'b');
+  for(const[x,y]of[[32,4],[34,5],[36,4]])D(x,y,'₪D');D(29,5,'W');for(const x of[12,13,26,27])D(x,6,'n');
+  ents.push(po(19,1,'town',{st:'gate',n:'Aldoria'}),mkNpc('kael',7,3),mkNpc('banditore',12,3),{k:'board',px:24.5,py:3.5,n:'Tabellone dell\'Arena'},
+    mkNpc('gladiatore',33,6),mkNpc('gladiatrice',35,3),{k:'tc',px:17.7,py:8.6},{k:'tc',px:22.3,py:8.6},{k:'tc',px:17.7,py:15.4},{k:'tc',px:22.3,py:15.4});
+  return[19,4]}
 
 /* ---- interni da mappe ASCII ---- */
 function genInterior(z){let sp=null;const L=z.lay;

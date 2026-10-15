@@ -44,7 +44,7 @@ gioco, nel menu **Novità**).
   e qualità regolabile da «leggera» a «Ultra».
 - **Musica procedurale e scritta nota per nota**: 57 brani scritti a mano, fra cui uno diverso per ogni edificio di
   Aldoria, suonati in tempo reale dal sintetizzatore del gioco (Web Audio).
-- **Un regno grande**: 99 zone (67 interni da esplorare), 7 dungeon a più piani, 162 personaggi, 124 missioni,
+- **Un regno grande**: 102 zone (70 interni da esplorare), 7 dungeon a più piani, 173 personaggi, 130 missioni,
   71 tipi di nemici di cui 13 boss.
 - **Una storia raccontata da filmati** girati nei luoghi veri del gioco, con i suoi personaggi e l'eroe vestito con il
   suo equipaggiamento.
@@ -183,7 +183,7 @@ I mondi di Voxelia Studio tengono l'equilibrio scelto dal loro autore.
 - **Aldoria Est, Campi e Mestieri**: fattorie, mulino, fienile, segheria, scuderia e campi da raccogliere.
 - **Porto di Aldoria**: il molo, la pescheria, il cantiere navale, il faro, i magazzini e le barche.
 - **Borgo delle Ceneri**: la periferia bruciata di **Aldoria Vecchia**, con banditi, spettri e il cimitero.
-- **Il Colosseo**: l'arena PvP con la classifica.
+- **Il Colosseo**: un vero anfiteatro con tre ordini di arcate; dentro, la sala d'ingresso e la fossa dell'arena PvP con le gradinate e la classifica.
 
 ![La Taverna del Drago Ubriaco](docs/taverna.jpg)
 
@@ -198,6 +198,14 @@ in più.
 | Foresta di Elmwood | 1 | Troll della Foresta |
 | Deserto di Khem | 4 | Faraone Eterno |
 | Picchi Gelidi | 7 | Drago di Brina |
+
+Le tre zone sono grandi 64×64 caselle e hanno una pianta fissa, con i sentieri che dalla porta portano ai luoghi da visitare:
+- **Foresta di Elmwood**: la radura delle lucciole, il cerchio di pietre con l'Erba Lunare, la capanna del Cacciatore Ulrico,
+  la torre di guardia in rovina, il lago con il ruscello, l'accampamento dei goblin davanti alla Tana e la Grande Quercia del Troll.
+- **Deserto di Khem**: l'oasi con la tenda del Mercante Amir, la Piramide a gradoni con la Sfinge, la città sepolta con gli
+  Scarabei dorati, l'accampamento della carovana e la necropoli del Faraone.
+- **Picchi Gelidi**: il rifugio dell'Esploratrice Ilva, il villaggio congelato dal Drago, il lago ghiacciato, le grotte di
+  cristallo, la bocca della Fucina, il santuario con le bandierine e il covo del Drago di Brina.
 
 ### I sette dungeon
 I dungeon cambiano forma a ogni discesa e **rinascono a ogni vittoria**: ogni nuovo ciclo è più forte e più ricco, e con
@@ -272,14 +280,14 @@ più e usa un'abilità ogni tre o quattro secondi.
 
 ## Cose da fare ad Aldoria
 
-- **124 missioni** di molti tipi: caccia, raccolta, boss, consegne, pesca, raccolto, battaglie. I punti esclamativi
+- **130 missioni** di molti tipi: caccia, raccolta, boss, consegne, pesca, raccolto, battaglie. I punti esclamativi
   gialli indicano chi ne ha una.
 - **Pesca**: 25 specie, dal molo e dalla barca. Le prede si vendono o servono per le missioni.
-- **Raccolta**: grano, legna, mele, uova, rose, cimeli antichi e conchiglie, che ricrescono col tempo.
+- **Raccolta**: grano, legna, mele, uova, rose, cimeli antichi, conchiglie, Erba Lunare, Scarabei dorati e Fiori di ghiaccio, che ricrescono col tempo.
 - **Casinò Fortuna d'Oro**: slot machine, dadi, roulette e blackjack.
 - **Motel della Rosa dei Venti**: una stanza in affitto con il baule e il letto per dormire fino al mattino… e per sognare.
 - **Diario** (tasto K): le pagine ritrovate, la storia, i luoghi e le missioni completate.
-- **Mappa di Aldoria** (tasto M): una guida ai luoghi, con temi chiaro e scuro.
+- **Mappa** (tasto M): in città la mappa di Aldoria, fuori la pianta della zona in cui ti trovi (con uscite, personaggi, boss e forzieri); una guida ai luoghi, con temi chiaro e scuro.
 - **Prezzi del giorno**: nei negozi cambiano a ogni mezzanotte del gioco.
 
 ---
@@ -514,7 +522,14 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8x_dev.js` | Pannello sviluppatore |
 | `8y_film.js` | Il motore dei filmati: luoghi veri costruiti a parte, attori che camminano lungo le strade, telecamera, sottotitoli |
 | `8y_film2.js` | I filmati della storia, della battaglia navale e di Voxelia Dimension, e le scene disegnate apposta |
+| `8y_film3.js` | La scena del prologo sotto la città: gli strati della terra, il pozzo, l'Occhio |
 | `8z_mondi.js` | Mondi della community: browser, schede e pubblicazione |
+| `8za_mondo.js` | Arredi nuovi, il Colosseo vero (fuori e dentro) |
+| `8zb_mappa.js` | La mappa della zona in cui ti trovi (tasto M) |
+| `8zc_prova.js` | Pannello sviluppatore: prova di tutte le boss fight, senza salvare e senza toccare le statistiche |
+| `8zd_biomi.js` | Foresta, deserto e picchi più grandi: la pianta, i luoghi, le raccolte |
+| `8zd_biomi2.js` | Come si disegnano i biomi (alberi, rocce, piramide, arredi, edifici), gli interni e i loro personaggi |
+| `8ze_ricordo.js` | Il ricordo del Moreau: Aldoria Vecchia intatta, prima della nebbia (filmato flashback) |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

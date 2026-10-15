@@ -27,25 +27,27 @@ function fHeroModel(){const q=P&&P.eq||{},c=q.c?q.c.r:-1,h=q.h?q.h.r:-1,w=q.w?q.
 
 /* ---- i luoghi: una zona vera del gioco, costruita a parte senza toccare quella in cui si gioca ---- */
 const STG={};
-function stgSave(){return{M,DEC,N,ZZ,Zk,BM,TB,ents,fx,pop,PJ,FC,MC,HHc,R,eid,GT,PIERD,camX,camY,S,P,NK,DK,PA,PM,LFP,BOATA,nm:SET.names,dm:SET.dmg,nl:NET.list}}
-function stgRestore(s){if(s.nl0)nlight=s.nl0;M=s.M;DEC=s.DEC;N=s.N;ZZ=s.ZZ;Zk=s.Zk;BM=s.BM;TB=s.TB;ents=s.ents;fx=s.fx;pop=s.pop;PJ=s.PJ;FC=s.FC;MC=s.MC;HHc=s.HHc;R=s.R;eid=s.eid;GT=s.GT;PIERD=s.PIERD;
+function stgSave(){return{M,DEC,N,ZZ,Zk,BM,TB,ents,fx,pop,PJ,FC,MC,HHc,R,eid,GT,RDF,PIERD,camX,camY,S,P,NK,DK,PA,PM,LFP,BOATA,nm:SET.names,dm:SET.dmg,nl:NET.list}}
+function stgRestore(s){if(s.nl0)nlight=s.nl0;M=s.M;DEC=s.DEC;N=s.N;ZZ=s.ZZ;Zk=s.Zk;BM=s.BM;TB=s.TB;ents=s.ents;fx=s.fx;pop=s.pop;PJ=s.PJ;FC=s.FC;MC=s.MC;HHc=s.HHc;R=s.R;eid=s.eid;GT=s.GT;RDF=s.RDF;PIERD=s.PIERD;
   camX=s.camX;camY=s.camY;S=s.S;P=s.P;NK=s.NK;DK=s.DK;PA=s.PA;PM=s.PM;LFP=s.LFP;BOATA=s.BOATA;SET.names=s.nm;SET.dmg=s.dm;NET.list=s.nl}
 const FKEEP=new Set(['console','npc','po','tc','board','ship','cho','c100','letto','stash','vaso','botola','portap','reliq','figura','abo']);
-function stgBuild(k){if(STG[k])return STG[k];const dg=k.startsWith('dg:')?k.slice(3):null,z0=dg?(DG[dg]?zd(dg+'@'+(DG[dg].fls||3)):null):Z[k];if(!z0)return null;const SV=stgSave();let st=null;
-  try{const z=Object.assign({},z0);Zk=dg?dg+'@'+(DG[dg].fls||3):k;ZZ=z;N=z.N;R=sd(hs('film|'+k));eid=900000;M=grid(0);DEC=grid('');BM=null;TB=[];FC=null;ents=[];fx=[];pop=[];PJ=[];GT=new Set();PIERD=new Set();BOATA=new Set();
+function stgBuild(k){if(STG[k])return STG[k];const dg=k.startsWith('dg:')?k.slice(3):null,z0=dg?(DG[dg]?zd(dg+'@'+(DG[dg].fls||3)):null):Z[k];if(!z0)return null;const SV=stgSave(),DF0=DF;let st=null;
+  // 7.12: dal menu, prima di cominciare una partita, la difficoltà non c'è ancora: i nemici dei dungeon dei filmati usano «Normale»
+  if(!DF)DF=DFS[1];
+  try{const z=Object.assign({},z0);Zk=dg?dg+'@'+(DG[dg].fls||3):k;ZZ=z;N=z.N;R=sd(hs('film|'+k));eid=900000;M=grid(0);DEC=grid('');BM=null;TB=[];FC=null;ents=[];fx=[];pop=[];PJ=[];GT=new Set();RDF=new Set();PIERD=new Set();BOATA=new Set();
     if(!P)P=newP();let sp=null;
     if(dg){sp=genDungeon(z);try{decorDG(z,sp)}catch(_){}try{campfires(sp)}catch(_){}}else if(k==='town')genTown();else if(z.lay)genInterior(z);else if(z.gen)genDist(z);else genWild(z);
     if(k==='porto'&&typeof portDecor==='function')try{portDecor()}catch(_){}
     if(k==='occhio')for(const e of ents)if(e.k==='abo')e.film=1;
     // Aldoria Vecchia: il pozzo prosciugato della vecchia piazza, come lo trova l'eroe
     if(k==='vecchia'&&typeof WELL!=='undefined'){const[wx,wy]=WELL;for(let y=wy-2;y<=wy+2;y++)for(let x=wx-2;x<=wx+2;x++){M[y][x]=0;DEC[y][x]=''}M[wy][wx]=6;DEC[wy][wx]='ʬ';for(const[x,y]of[[wx-2,wy-2],[wx+2,wy-2],[wx-2,wy+2]]){M[y][x]=6;DEC[y][x]='Ŗ'}}
-    st={k:Zk,key:k,z,N,M,DEC,BM:BM||grid(-1),TB,GT,PIERD,BOATA,ents:ents.filter(e=>FKEEP.has(e.k)&&!(dg&&e.k==='po'))};
+    st={k:Zk,key:k,z,N,M,DEC,BM:BM||grid(-1),TB,GT,RDF,PIERD,BOATA,ents:ents.filter(e=>FKEEP.has(e.k)&&!(dg&&e.k==='po'))};
     if(dg){const b=ents.find(e=>e.k==='en'&&e.boss)||{px:sp[0]+.5,py:sp[1]+.5};let bx=b.px,by=b.py;const fr=(x,y)=>{const u=x|0,v=y|0;return u>0&&v>0&&u<N-1&&v<N-1&&WK(M[v][u])};
       // il boss in un punto con spazio intorno, e l'eroe tre passi davanti a lui (verso lo spettatore)
       let best=null,bs=-1;for(let v=(by|0)-4;v<=(by|0)+4;v++)for(let u=(bx|0)-4;u<=(bx|0)+4;u++){if(!fr(u+.5,v+.5))continue;let n=0;for(let b2=-2;b2<=3;b2++)for(let a2=-2;a2<=2;a2++)if(fr(u+a2+.5,v+b2+.5))n++;const sc=n*3-Math.hypot(u+.5-bx,v+.5-by);if(sc>bs){bs=sc;best=[u+.5,v+.5]}}
       if(best){bx=best[0];by=best[1]}st.boss=[bx,by];let h=null;for(const d2 of[3,2.5,3.5,2,4])for(const[a2,b2]of[[0,d2],[d2*.7,d2*.7],[-d2*.7,d2*.7],[d2,0],[-d2,0]])if(!h&&fr(bx+a2,by+b2))h=[bx+a2,by+b2];st.heroAt=h||[bx,by+2]}
-    for(const e of st.ents)if(e.k==='npc'){e.qm='';e.path=[];e.wd=0;e.go=0;e.slp=0;e.fc0=e.fc0==null?7:e.fc0}}
-  catch(err){console.warn('stage',k,err);st=null}finally{stgRestore(SV)}
+    for(const e of st.ents)if(e.k==='npc'){e.qm='';e.path=[];e.wd=0;e.go=0;e.slp=0;e.fc0=e.fc0==null?0:e.fc0}}
+  catch(err){console.warn('stage',k,err);st=null}finally{stgRestore(SV);DF=DF0}
   if(st)STG[k]=st;return st}
 // le scene disegnate apposta (ricordi, visioni, il mare): un pavimento e una funzione che disegna
 const FSET={};
@@ -56,7 +58,10 @@ const FSET={};
    f: verso cui guarda (numero 0-7, [dx,dy], 'id' di un altro attore, o 'cam' verso lo spettatore)
    in:[t,durata] / out:[t,durata] dissolvenze · talk:[t0,t1] gesti mentre parla · z altezza · s scala · ghost:1 trasparente
    an:'pray'|'sad'... posa · kneel:1 in ginocchio · al opacità fissa · glow:'r,g,b' luce */
-const FACE={S:0,N:4,E:6,W:2,cam:7};
+// 7.12: «verso lo spettatore» è dritto (0), come i personaggi fermi del gioco: in diagonale i modelli si vedevano storti
+const FACE={S:0,N:4,E:6,W:2,cam:0};
+// chi sta fermo non resta mai in diagonale: si gira verso il lato dritto più vicino (7→0, 1→0, 3→2, 5→4)
+const fStraight=fc=>(fc&1)?(fc===7?0:fc-1):fc;
 function fPathPts(st,pts){if(!st||!st.M)return pts.map(p=>p.slice());const out=[pts[0].slice()];
   for(let i=1;i<pts.length;i++){const a=out[out.length-1],b=pts[i];let seg=null;const SV=stgSave();
     try{M=st.M;N=st.N;const ok=(x,y)=>x>=0&&y>=0&&x<N&&y<N&&WK(M[y][x]);if(ok(a[0]|0,a[1]|0)&&ok(b[0]|0,b[1]|0)){const p=path(a[0]|0,a[1]|0,b[0]|0,b[1]|0);if(p.length)seg=p.map(q=>[q.x+.5,q.y+.5])}
@@ -73,14 +78,14 @@ function fActAt(a,lt,acts){const r={id:a.id,px:0,py:0,mov:0,fc:0,al:1,z:a.z||0};
     const s=Lt<=0?0:u<=0?0:u>=Tt?Lt:u<acc?v*u*u/(2*acc):u>Tt-acc?Lt-v*(Tt-u)*(Tt-u)/(2*acc):v*(u-acc/2);
     let i=1;while(i<P2.length-1&&a._len[i]<s)i++;const s0=a._len[i-1]||0,s1=a._len[i]||0,k=s1>s0?(s-s0)/(s1-s0):1,A=P2[i-1]||P2[0],B=P2[i]||P2[0];r.px=fLerp(A[0],B[0],k);r.py=fLerp(A[1],B[1],k);
     r.mov=Lt>0&&u>0&&u<Tt;const dx=B[0]-A[0],dy=B[1]-A[1];if(r.mov&&(dx||dy))r.fc=faceOf(dx,dy);else r.fc=fFace(a,r,lt,acts,faceOf(dx||0,dy||1))}
-  else{const p=typeof a.p==='function'?a.p(lt):a.p||[0,0];r.px=p[0];r.py=p[1];r.fc=fFace(a,r,lt,acts,7)}
+  else{const p=typeof a.p==='function'?a.p(lt):a.p||[0,0];r.px=p[0];r.py=p[1];r.fc=fFace(a,r,lt,acts,0)}
   let al=a.al==null?1:typeof a.al==='function'?a.al(lt):a.al;if(a.in){const k=(lt-a.in[0])/a.in[1];al*=fSmooth(k)}if(a.out){const k=(lt-a.out[0])/a.out[1];al*=1-fSmooth(k)}r.al=al;
   if(typeof a.zf==='function')r.z+=a.zf(lt);return r}
 function fFace(a,r,lt,acts,def){let f=typeof a.f==='function'?a.f(lt):a.f;if(f==null)return def;if(typeof f==='number')return f&7;if(typeof f==='string'){if(FACE[f]!=null)return FACE[f];const o=acts&&acts[f];if(o)return faceOf(o.px-r.px,o.py-r.py)||0;return def}
   if(Array.isArray(f))return faceOf(f[0],f[1]);return def}
 const FPE={};// "entità" finte per le pose (camminata, gesti, respiro)
 function fActDraw(a,r,lt){if(r.al<=.01)return;const pe=FPE[a.id]||(FPE[a.id]={id:hs(a.id)%997,nph:(hs(a.id)%628)/100,px:0,py:0,path:[],mvT:-9,atkT:-9,cdt:1,sp:1.6});pe.px=r.px;pe.py=r.py;
-  pe.path=r.mov?[1]:[];pe.nmv=r.mov?t:-9;pe.mvT=r.mov?t:-9;let L=null,rig=false,fc=r.fc;
+  pe.path=r.mov?[1]:[];pe.nmv=r.mov?t:-9;pe.mvT=r.mov?t:-9;let L=null,rig=false,fc=r.mov?r.fc:fStraight(r.fc);
   const kn=typeof a.kneel==='function'?a.kneel(lt):a.kneel;
   if(a.hero){L=a._L||(a._L=fHeroModel());if(r.mov)L=walkLegs(L,t*10);else if(kn)L=L.map(q=>q[2]<6?q:[q[0],q[1],q[2]-4,q[3],q[4],q[5],q[6]]);rig=true}
   else if(a.n){let M0=fNpcModel(a.n);if(a.an&&M0.an!==a.an){const k=a.n+'|'+a.an;M0=FMC[k]||(FMC[k]=Object.assign(M0.slice(),{an:a.an,g:M0.g,rg:M0.rg,kind:M0.kind,top:M0.top,fem:M0.fem}))}
@@ -103,8 +108,10 @@ function fBase(){return H>W?Math.max(.5,Math.min(W/700,H/600)):Math.max(.45,Math
 function fSky(o){const c=o.sky||(SKY[o.st]||SKY.town),gr=g.createLinearGradient(0,0,0,H),n=o.night||0,d=o.dusk||0,mix=(a,b,k)=>mixC(a,b,k);
   gr.addColorStop(0,mix(mix(c[0],'#3a2a5a',d),'#05060f',n));gr.addColorStop(.55,mix(mix(c[1],'#d0705a',d),'#101830',n));gr.addColorStop(1,mix(mix(c[2],'#f0b070',d),'#1a2038',n));g.fillStyle=gr;g.fillRect(0,0,W,H);
   if(n>.3)for(let i=0;i<70;i++){g.fillStyle=`rgba(255,255,240,${(.2+.2*Math.sin(t*2+i))*n})`;g.fillRect((i*173.3+t*3)%W,(i*97.7)%(H*.5),1.5,1.5)}}
+// pavimento già disegnato: tile() salta il pavimento quando c'è il «foglio» del pavimento (qui finto, non si disegna mai)
+const FSTFC={film:1};
 function fRenderStage(S2,lt,cam,acts,AR){const st=stgBuild(S2.st);if(!st)return;const SV=stgSave();
-  try{M=st.M;DEC=st.DEC;N=st.N;ZZ=st.z;Zk=st.k;BM=st.BM;TB=st.TB;GT=st.GT;PIERD=st.PIERD;BOATA=st.BOATA;FC=null;HHc=null;fx=[];pop=[];PJ=[];SET.names=0;SET.dmg=0;NET.list=[];
+  try{M=st.M;DEC=st.DEC;N=st.N;ZZ=st.z;Zk=st.k;BM=st.BM;TB=st.TB;GT=st.GT;RDF=st.RDF||new Set();PIERD=st.PIERD;BOATA=st.BOATA;FC=null;HHc=null;fx=[];pop=[];PJ=[];SET.names=0;SET.dmg=0;NET.list=[];
     // l'eroe "finto" sta lontano dall'inquadratura: così i muri davanti alla telecamera non diventano trasparenti come nel gioco.
     // Nei dungeon invece serve vicino, perché la luce che si porta dietro illumina la scena.
     const dgS=!!st.z.dg;P=Object.assign({},SV.P||{},{px:dgS?cam.x:cam.x-60,py:dgS?cam.y:cam.y-60,path:[],tg:null});NK=S2.night||0;DK=S2.dusk||0;PA=null;PM=0;
@@ -116,15 +123,19 @@ function fRenderStage(S2,lt,cam,acts,AR){const st=stgBuild(S2.st);if(!st)return;
     for(const e of st.ents){if(drop&&e.k==='npc'&&(drop.has(e.nid)||drop.has('*')))continue;if(e.k==='abo'&&!S2.abo)continue;if(S2.dropPo&&e.k==='po'&&e.st==='void')continue;put(e)}
     for(const a of acts){const r=AR[a.id];if(r){r._a=a;put(r);if(NK>.02&&r.al>.05&&!a.dark)NLS.push([r.px,r.py,24,a.hero?150:115,'255,236,200',.75*r.al])}}
     if(NK>.02&&S2.moon!==0)NLS.push([cam.x,cam.y,10,260,'200,210,255',.35])
-    const vx=W/2/S+100,vy0=H/2/S+60,vy1=H/2/S+160;
-    for(let d=0;d<2*N-1;d++){for(let x=Math.max(0,d-N+1);x<=Math.min(d,N-1);x++){const y=d-x,ex=PX(x,y)-camX,ey=PY(x,y,0)-camY;if(Math.abs(ex)<vx&&ey>-vy1&&ey<vy0+40)tile(x,y)}
+    const vx=W/2/S+100,vy0=H/2/S+60,vy1=H/2/S+160,vis=(x,y)=>{const ex=PX(x,y)-camX,ey=PY(x,y,0)-camY;return Math.abs(ex)<vx&&ey>-vy1&&ey<vy0+40};
+    // 7.12: prima tutto il pavimento, poi muri, arredi e personaggi (come nel gioco): così l'erba della casella dopo non copre i piedi
+    for(let d=0;d<2*N-1;d++)for(let x=Math.max(0,d-N+1);x<=Math.min(d,N-1);x++){const y=d-x,m=M[y][x];if(!vis(x,y))continue;
+      if(m===0||m===4||m===8||m===6||(m===1&&openW(x,y)))floor(x,y,m===6?(RDF.has(y*N+x)?4:0):m===1?0:m,hh(x,y))}
+    FC=FSTFC;
+    for(let d=0;d<2*N-1;d++){for(let x=Math.max(0,d-N+1);x<=Math.min(d,N-1);x++){const y=d-x;if(vis(x,y))tile(x,y)}
       if(by[d])by[d].sort((a,b)=>a.py-b.py).forEach(o=>{if(o._a)fActDraw(o._a,o,lt);else if(o.k==='npc')fStageNpc(o,S2.nf&&S2.nf[o.nid]);else if(o.k==='abo'){if(S2.abo)S2.abo(lt,o)}else ent(o)})}
     if(S2.fx)S2.fx(lt,AR);
     if(!S2.nolight){if(st.z.dg||st.z.int)lights();else if(NK>.01||DK>.01)nightDraw()}}
   finally{stgRestore(SV)}}
 // i personaggi che abitano il luogo: fermi, con il loro modo di stare (gesti, respiro), girati verso la scena
 function fStageNpc(e,fc){let L=e.m;if(!L)return;const pa=PA,pm=PM;PA=null;PM=0;try{if(L.rg&&L.g)L=npcPose(L,e)}finally{PA=pa;PM=pm}
-  g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(PX(e.px,e.py),PY(e.px,e.py,0),15,7,0,0,6.3);g.fill();if(L.rg||L.hm)drawHero(L,e.px,e.py,0,0,fc!=null?fc:e.fc0==null?7:e.fc0);else drawL(L,e.px,e.py,0)}
+  g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(PX(e.px,e.py),PY(e.px,e.py,0),15,7,0,0,6.3);g.fill();if(L.rg||L.hm)drawHero(L,e.px,e.py,0,0,fStraight(fc!=null?fc:e.fc0==null?0:e.fc0));else drawL(L,e.px,e.py,0)}
 function fRenderSet(S2,lt,cam,acts,AR){g.setTransform(DPR,0,0,DPR,0,0);const G=S2.bg||['#05060c','#1a1430'],gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,G[0]);gr.addColorStop(1,G[1]);g.fillStyle=gr;g.fillRect(0,0,W,H);
   if(S2.stars)for(let i=0;i<60;i++){g.fillStyle=`rgba(255,255,240,${.2+.2*Math.sin(t*2+i)})`;g.fillRect((i*173.3+t*3)%W,(i*97.7)%(H*.5),1.5,1.5)}
   const sc=fBase()*cam.z;fSc(sc,cam.x,cam.y);const set=FSET[S2.set];if(set)set(S2,lt,sc,cam);fSc(sc,cam.x,cam.y);

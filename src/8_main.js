@@ -1002,7 +1002,17 @@ Object.assign(GSTY,{nobile:{p:'#ece6da',c:'#d4af37',l:'#1c1c24',l2:'#2a2a34',h:'
     for(const a of[o,o+sp]){Q(a-.28,eo-.28,58,.56,.56,3,'#d8b850');Q(a-.14,eo-.14,61,.28,.28,8,'#e0c050');Q(a-.04,eo-.04,69,.08,.08,4,'#c8a040')}
     Q(o+sp/2-.48,eo-.27,47,.96,.07,10,'#a07a4a');Q(o+sp/2-.4,eo-.29,49,.8,.04,6,'#8a6a3a');Q(o+sp/2-.3,eo-.3,51,.12,.03,2,'#e8e0c8');Q(o+sp/2-.1,eo-.3,51,.2,.03,2,'#e8e0c8');Q(o+sp/2+.18,eo-.3,51,.12,.03,2,'#e8e0c8');
     Q(o-1.15,eo-.36,0,.72,.66,8,'#e0c060');Q(o-1.1,eo-.31,8,.62,.56,6,'#d8b850');Q(o-1.15,eo-.36,4,.72,.66,.8,'#a08030');
-    Q(o+sp+.42,eo-.3,0,.6,.56,7,'#e0c060');Q(o+sp+.5,eo-.06,7,.06,.08,16,'#6a4a2a');Q(o+sp+.4,eo-.08,16,.26,.06,2,'#6a4a2a');Q(o+sp+.47,eo-.1,23,.12,.1,5,'#e0c060')}}});
+    Q(o+sp+.42,eo-.3,0,.6,.56,7,'#e0c060');Q(o+sp+.5,eo-.06,7,.06,.08,16,'#6a4a2a');Q(o+sp+.4,eo-.08,16,.26,.06,2,'#6a4a2a');Q(o+sp+.47,eo-.1,23,.12,.1,5,'#e0c060')}},
+  // 7.12: il cancello del Borgo delle Ceneri, come quelli degli altri lati della città: pilastri anneriti dal fuoco, sbarre di
+  // ferro arrugginito, un arco di ferro con le punte, bracieri spenti (con qualche brace) e l'insegna bruciata
+  ceneri:{p:'#5e5854',c:'#36312e',l:'#2e2420',l2:'#3e2e26',h:'#8a4a22',v:'#4a4038',bars:1,ex:(Q,o,sp,eo)=>{
+    for(const a of[o,o+sp]){Q(a-.37,eo-.37,30,.74,.74,5,'#3e3936');Q(a-.37,eo-.37,12,.74,.74,3,'#46403c');
+      Q(a-.24,eo-.24,58,.48,.48,3,'#2a2624');Q(a-.3,eo-.3,61,.6,.6,4,'#2e2826');Q(a-.2,eo-.2,64.2,.4,.4,.8,'#4a4440');
+      for(let i=0;i<3;i++){const k=.5+.5*Math.sin(t*(2.3+i)+a*3+i*2);Q(a-.16+i*.11,eo-.12+(i%2)*.14,65,.08,.08,1+k,k>.7?'#ff8a3a':'#a8401a')}}
+    for(let k=0;k<=8;k++){const a=o+sp*k/8,z=50+Math.sin(k/8*Math.PI)*7;Q(a-.06,eo-.06,z,.12,.12,3,'#33282a');if(k%2===0&&k&&k<8)Q(a-.03,eo-.03,z+3,.06,.06,4,'#4a3a32')}
+    Q(o+sp/2-.42,eo-.1,40,.84,.08,7,'#2e221a');Q(o+sp/2-.36,eo-.12,42,.72,.04,3,'#4a3626');Q(o+sp/2-.3,eo-.13,44,.1,.03,2,'#6a5a4a');Q(o+sp/2+.06,eo-.13,43,.16,.03,2,'#6a5a4a');
+    Q(o+sp/2-.3,eo-.08,47,.04,.04,3,'#2a2420');Q(o+sp/2+.26,eo-.08,47,.04,.04,3,'#2a2420');
+    Q(o-1.15,eo-.32,0,.62,.55,2,'#6a6560');Q(o-1.05,eo-.25,2,.4,.35,1.5,'#7a7470');Q(o+sp+.5,eo-.28,0,.52,.46,1.6,'#5e5a56');Q(o+sp+.56,eo-.22,1.6,.3,.28,1.2,'#8a3a1a')}}});
 // ---- il mulino: distrutto dalla tempesta finché Pietro non lo ripara ----
 const millOK=()=>!!(P&&P.unl&&P.unl.mulino);
 function millBroken(x,y,b,ht){const zc=ht*.75;box(x+.42,y+1.02,zc-3,.16,.06,6,'#5a3a2a');
@@ -1031,7 +1041,7 @@ function decWorld(x,y,c,h){switch(c){
   case 'Л':box(x+.2,y+.2,0,.6,.6,5,'#8a6a3a');for(let i=0;i<4;i++)box(x+.24+(i%2)*.28,y+.24+(i>>1)*.28,5,.22,.22,2.4,['#e0402a','#f0a020','#4a9a3a','#e8d050'][(i+x)%4]);break;
   case 'Ф':box(x+.1,y+.45,0,.06,.06,18,'#6a4a2a');box(x+.84,y+.45,0,.06,.06,18,'#6a4a2a');for(let i=0;i<6;i++)box(x+.16+i*.12,y+.47,4+((i*5)%4),.1,.02,13-((i*5)%4),'#a89a7a');box(x+.3,y+.45,10,.08,.08,2,'#e8483a');box(x+.62,y+.45,7,.08,.08,2,'#e8b020');break;
   default:return false}return true}
-// ---- il porto: casse da pesca sui pontili, più mercato sul lungomare, il pozzo dell'Abisso in un angolo nascosto ----
+// ---- il porto: casse da pesca sui pontili, più mercato sul lungomare (il pozzo dell'Abisso, dalla 7.12, è sulla banchina) ----
 function portDecor(){if(Zk!=='porto')return;const ok=(x,y)=>M[y]&&M[y][x]===4&&!ents.some(e=>Math.abs(e.px-x-.5)<.9&&Math.abs(e.py-y-.5)<.9);
   for(const[x,y,c]of[[8,35,'Ж'],[6,44,'Щ'],[26,44,'Ж'],[22,47,'Ь'],[26,33,'Ж'],[38,42,'Щ'],[36,33,'Ж'],[8,31,'Ь'],[3,46,'Ж'],[11,45,'Щ'],[30,49,'Ж'],[18,50,'Ь'],[47,31,'Ж'],[22,35,'Щ'],[38,31,'Э'],[22,31,'Э'],[6,31,'Э']])if(ok(x,y)){M[y][x]=6;DEC[y][x]=c;PIERD.add(y*N+x)}
   FC=null}
@@ -1040,12 +1050,12 @@ function millLines(){const d=NPCS.pietro;if(!d)return;d.ln=millOK()?['Il vento g
 function millRepaired(){millLines();FC=null;BM&&0;banner('Il mulino è riparato','Le pale girano di nuovo nei Campi e Mestieri','pergamena');if(cineOK()&&Zk==='campi'){const b=TB.find(b=>b.st==='mill');if(b){burst(b.x+b.w/2,b.y+b.h,30,['#ffffff','#e0c050','#a07a4a'],{v:1.6,up:220,gr:300,d:1.4,s:4,z:40});ringFx(b.x+b.w/2,b.y+b.h,'255,230,160',1,3)}}jingle([60,64,67,72,76],.12,'triangle')}
 // ---- la cripta si sposta nel cimitero del Borgo delle Ceneri ----
 DG.cripta.ent='rovine';DGH.cripta='nel cimitero del Borgo delle Ceneri (porta ovest della città: il Moreau sa come aprire il cancello)';
-DGH.abisso='nel Porto di Aldoria: il pozzo pieno di alghe è sull\'isolotto del faro, nascosto dietro la torre';
-if(NPCS.guardia_porta)NPCS.guardia_porta.ln=['A nord la Foresta di Elmwood, a est il Deserto di Khem, a ovest i Picchi Gelidi.','La Cripta è nel cimitero del Borgo delle Ceneri, oltre il cancello ovest. Per l\'Abisso si scende dal pozzo delle alghe, dietro il faro del Porto.'];
+DGH.abisso='nel Porto di Aldoria: il pozzo pieno di alghe è sulla banchina, in fondo alla strada che scende dalla città';
+if(NPCS.guardia_porta)NPCS.guardia_porta.ln=['A nord la Foresta di Elmwood, a est il Deserto di Khem, a ovest i Picchi Gelidi.','La Cripta è nel cimitero del Borgo delle Ceneri, oltre il cancello ovest. Per l\'Abisso si scende dal pozzo delle alghe, sulla banchina del Porto.'];
 if(QA&&QA.re)for(const q of QA.re)if(q[0]==='Un consiglio per un eroe?')q[1]='Comincia dalla Tana dei Goblin, nella Foresta di Elmwood. Poi la Cripta, nel cimitero del Borgo delle Ceneri: chiedi al Moreau di aprirti il cancello. Poi la Piramide nel deserto, le Caverne di Cristallo e la Fucina sui Picchi, e per ultimo l\'Abisso, sotto il porto. Compra pozioni da Mira e torna da me con ogni frammento.';
 (function(){const tz=ZB.find(z=>z.k==='town'),rz=ZB.find(z=>z.k==='rovine'),pz=ZB.find(z=>z.k==='porto');if(tz)tz.f=tz.f.map(s=>s==='Cimitero e Cripta Dimenticata (sud-ovest)'?'Il vecchio cimitero (sud-ovest)':s);
   if(rz&&!rz.f.some(s=>/Cripta/.test(s)))rz.f.push('La Cripta Dimenticata, nel cimitero a sud-est: il secondo frammento della Corona');
-  if(pz)pz.f=pz.f.map(s=>/Pozzo delle alghe/.test(s)?'Pozzo delle alghe, dietro il faro: discesa all\'Abisso Sommerso':s)})();
+  if(pz)pz.f=pz.f.map(s=>/Pozzo delle alghe/.test(s)?'Pozzo delle alghe, sulla banchina in fondo alla strada: discesa all\'Abisso Sommerso':s)})();
 // ---- il mugnaio Pietro: due missioni per riparare il mulino ----
 Object.assign(QT,{mul1:{t:'gat',r:'legna',n:10,once:1,unl:'mul1',ti:'Le pale spezzate',tx:'La tempesta dell\'altra notte mi ha spezzato le pale del mulino. Senza mulino niente farina, e senza farina Aldoria resta senza pane! Portami 10 fasci di legna dal bosco dei taglialegna: con quella rifaccio le pale.',g:140,x:110},
   mul2:{t:'col',e:['goblin','arciere','sciamano_goblin'],it:'Ingranaggio di bronzo',n:4,ch:.4,once:1,req:'mul1',unl:'mulino',ti:'Gli ingranaggi rubati',tx:'Le pale sono pronte, ma mentre il mulino era fermo i goblin della Foresta di Elmwood mi hanno rubato gli ingranaggi di bronzo della macina. Riprendine 4 e il mulino tornerà a girare.',g:260,x:220}});
@@ -1074,7 +1084,7 @@ const TOURS=[
   {x:41,y:24.5,z:1.7,d:6,mk:[41.5,24.5],ti:'Armi e armature',tx:'Il Fabbro Borin vende e potenzia armi, elmi, corazze e scudi. In piazza il Mercante Ugo vende la merce del giorno e zaini più grandi. I prezzi cambiano ogni giorno.'},
   {x:8,y:33.5,z:1.6,d:7,mk:[8.5,33.5],ti:'Come si combatte',tx:'Clicca un nemico per attaccarlo. Spazio: colpo ad area. Shift o E: schivata. F: affondo, diverso per ogni arma. In caserma il Maestro Dino insegna quattro tecniche, da usare con i tasti da 1 a 4.'},
   {x:35,y:3,z:1.4,d:6.5,mk:[35.5,1.5],ti:'Fuori dalle mura',tx:'La grande porta nord porta alla Foresta di Elmwood e alla Tana dei Goblin, dove si trova il primo frammento della Corona. Le altre porte portano al deserto, ai picchi, ai quartieri e al porto.'},
-  {x:null,y:null,z:1.25,d:7,ti:'Pronto a partire',tx:'I: zaino · J: missioni · K: diario · M: mappa di Aldoria · V: ruota delle azioni · O: opzioni. Il primo passo è il castello del Re. Buona avventura!'}];
+  {x:null,y:null,z:1.25,d:7,ti:'Pronto a partire',tx:'I: zaino · J: missioni · K: diario · M: mappa della zona · V: ruota delle azioni · O: opzioni. Il primo passo è il castello del Re. Buona avventura!'}];
 let TOUR=null;
 function welcomeTour(force){if(!force&&(LS.get('voxelia_tour',0)||!cineOK()||Zk!=='town'))return false;LS.set('voxelia_tour',1);
   TOUR={i:0,t:0,from:[P.px,P.py,SZ],sz0:SZ};document.body.classList.add('lbx','tour');let el=$('tourb');if(!el){el=document.createElement('div');el.id='tourb';document.body.appendChild(el)}el.hidden=false;tourHTML();music('town');return true}
@@ -1383,7 +1393,7 @@ function npcModel(id,o,e){const d=NPCS[id]||{},seed=(hs?hs(id+'|'+(o.n||d.n||'')
   const hc0=pick(HAIRC.slice(0,7));let[hs_,hcol]=col(hair,hc0);let[bs_,bcol]=col(beard,hcol);
   const X=[];const A=(g,x,y,z,w,dd,h,c,b)=>X.push(b?[g,x,y,z,w,dd,h,c,b]:[g,x,y,z,w,dd,h,c]);
   // capelli
-  if(/^(helmet|hood|veil|turban)/.test(hat))hs_='none';switch(hs_){case 'short':A('hd',-.16,-.135,28.6,.32,.27,1.8,hcol);A('hd',-.16,-.145,21.5,.32,.05,7.5,hcol);A('hd',-.165,-.12,25,.02,.17,4,hcol);A('hd',.145,-.12,25,.02,.17,4,hcol);break;
+  const hair0=X.length;if(/^(helmet|hood|veil|turban)/.test(hat))hs_='none';switch(hs_){case 'short':A('hd',-.16,-.135,28.6,.32,.27,1.8,hcol);A('hd',-.16,-.145,21.5,.32,.05,7.5,hcol);A('hd',-.165,-.12,25,.02,.17,4,hcol);A('hd',.145,-.12,25,.02,.17,4,hcol);break;
     case 'bald2':A('hd',-.16,-.145,21.5,.32,.05,5,hcol);A('hd',-.165,-.12,22.5,.02,.16,4,hcol);A('hd',.145,-.12,22.5,.02,.16,4,hcol);break;
     case 'bald':break;case 'tonsure':A('hd',-.16,-.145,22,.32,.05,6,hcol);A('hd',-.165,-.12,23,.02,.2,5,hcol);A('hd',.145,-.12,23,.02,.2,5,hcol);A('hd',-.16,.1,27,.32,.03,1.5,hcol);break;
     case 'long':A('hd',-.17,-.14,28.6,.34,.28,1.9,hcol);A('hd',-.17,-.16,13.5,.34,.06,16,hcol);A('hd',-.175,-.12,17,.03,.2,12,hcol);A('hd',.145,-.12,17,.03,.2,12,hcol);A('hd',-.15,.11,27,.3,.03,2,hcol);break;
@@ -1395,6 +1405,7 @@ function npcModel(id,o,e){const d=NPCS[id]||{},seed=(hs?hs(id+'|'+(o.n||d.n||'')
     case 'mohawk':A('hd',-.035,-.15,28.6,.07,.3,4.5,hcol);break;
     case 'wild':A('hd',-.19,-.17,27.5,.38,.33,3.2,hcol);A('hd',-.23,-.08,24,.06,.12,4,hcol);A('hd',.17,-.04,25,.06,.1,3.5,hcol);A('hd',-.18,-.17,19,.36,.06,10,hcol);A('hd',-.05,.0,30.5,.08,.08,2,hcol);break;
     case 'mane':A('hd',-.18,-.16,28,.36,.31,2.6,hcol);A('hd',-.06,.06,29.5,.12,.12,2.5,hcol);A('hd',-.17,-.17,20,.34,.06,9,hcol);A('hd',-.06,-.24,13,.12,.08,16,hcol);A('hd',-.04,-.3,8,.08,.07,8,hcol);A('hd',-.2,-.1,21,.04,.16,7,hcol);A('hd',.16,-.1,21,.04,.16,7,hcol);break}
+  const hair1=X.length;
   // barba e baffi
   switch(bs_){case 'full':A('hd',-.15,.1,19.5,.3,.05,4.5,bcol);A('hd',-.155,-.03,20,.02,.15,5,bcol);A('hd',.135,-.03,20,.02,.15,5,bcol);A('hd',-.1,.13,22,.2,.02,1.1,bcol);break;
     case 'long':A('hd',-.12,.1,11.5,.24,.06,12.5,bcol);A('hd',-.1,.13,22,.2,.02,1.1,bcol);A('hd',-.155,-.03,19,.02,.15,6,bcol);A('hd',.135,-.03,19,.02,.15,6,bcol);break;
@@ -1405,6 +1416,9 @@ function npcModel(id,o,e){const d=NPCS[id]||{},seed=(hs?hs(id+'|'+(o.n||d.n||'')
   // cappelli
   const[ht,hc1,hc2]=(()=>{const p=hat.split(':');return[p[0],p[1]?hx6(p[1]):hatC,p[2]?hx6(p[2]):'']})();
   const HL=q=>{for(const b of q)X.push(b)};
+  // 7.12: sotto un cappello i capelli si tagliano all'altezza della tesa (prima la calotta dei capelli, più larga della cupola del
+  // cappello, spuntava ai lati e sopra: si vedeva nei filmati); corone, diademi, fiori, fiocchi e fasce stanno sopra i capelli
+  {const cz=ht==='scarf'?27:/^(none|crown|diadem|flower|bow|headband|bandage|R)$/.test(ht)?99:28.3;if(cz<99)for(let i=hair1-1;i>=hair0;i--){const b=X[i];if(b[3]>=cz)X.splice(i,1);else if(b[3]+b[6]>cz)b[6]=cz-b[3]}}
   switch(ht){case 'crown':HL(HT.crown());break;case 'helmet':HL(HT.helmet(hc1,hc2||null));break;case 'tricorn':HL(HT.tricorn(hc1));break;case 'cowboy':HL(HT.cowboy(hc1));break;
     case 'bowler':HL(HT.bowler());break;case 'bandana':HL(HT.bandana(hc1));break;case 'hood':HL(HT.hood(hc1));break;
     case 'cap':A('hd',-.16,-.13,28.4,.32,.27,2.2,hc1);A('hd',-.13,.12,28.4,.26,.09,.8,shx(hc1,.8));break;
@@ -2291,14 +2305,14 @@ const EWAL=[
   {id:'interno',n:'Muro di casa',c:'#d8c8a8',tint:1,f:(x,y,h,c)=>{box(x,y,0,1,1,44,c,.9+h*.08);box(x,y+.99,0,1,.02,6,shx(c,.7));box(x+.99,y,0,.02,1,6,shx(c,.7));if(h>.82)box(x+.25,y+.98,20,.5,.04,12,['#a83a3a','#3a6aa8','#3a8a4a'][(x+y)%3])}},
   {id:'roccia',n:'Roccia',c:'#5a4a3c',tint:1,f:(x,y,h,c)=>{const r=26+h*28;box(x,y,0,1,1,r,c,.8+h*.2);if(h>.4)box(x+.15,y+.2,r,.5,.5,4+h*6,c,.9);if(h>.8)box(x+.6,y+.6,r-6,.3,.3,8,shx(c,1.15))}},
   {id:'cripta',n:'Pietra di cripta',c:'#3a3d4a',tint:1,f:(x,y,h,c)=>{box(x,y,0,1,1,40,c,.9+h*.1);if(h>.6){box(x+.3,y+.97,10,.4,.04,14,'#141620');if(h>.8)box(x+.42,y+.99,13,.16,.03,5,'#e8e4d8')}}},
-  {id:'siepe',n:'Siepe',c:'#3a7a32',tint:1,f:(x,y,h,c)=>{box(x+.04,y+.04,0,.92,.92,16+h*4,c,.85+h*.25);box(x+.12,y+.12,16+h*4,.76,.76,2,shx(c,1.2))}},
-  {id:'alberi',n:'Bosco fitto',c:'#2f6b2a',tint:1,f:(x,y,h,c)=>{box(x+.35,y+.35,0,.3,.3,14,'#6b4a2b');box(x+.05,y+.05,12,.9,.9,12,c,.85+h*.3);box(x+.25,y+.25,24,.5,.5,8,c,1.1)}},
-  {id:'abeti',n:'Abeti innevati',c:'#2f5a4a',tint:1,f:(x,y,h,c)=>{box(x+.4,y+.4,0,.2,.2,8,'#5a3a2a');box(x+.1,y+.1,8,.8,.8,10,c);box(x+.2,y+.2,18,.6,.6,9,c,1.1);box(x+.3,y+.3,27,.4,.4,8,c,1.2);box(x+.38,y+.38,35,.24,.24,4,'#f4f8fc')}},
-  {id:'dune',n:'Cactus e dune',c:'#4e9a47',tint:1,f:(x,y,h,c)=>{if(h<.5){box(x+.38,y+.38,0,.24,.24,18+h*30,c);box(x+.15,y+.42,10,.25,.14,6,c)}else box(x+.1,y+.1,0,.8,.8,8+h*14,'#a88c5a')}},
-  {id:'scogli',n:'Scogli',c:'#6a6a72',tint:1,f:(x,y,h,c)=>{const ht=10+h*24;box(x+.05,y+.05,0,.9,.9,ht,c,.85+h*.1);box(x+.2,y+.15,ht,.6,.6,4+h*6,shx(c,1.1));box(x+.1,y+.1,ht*.3,.8,.8,1.5,'#3a6a3a')}},
+  {id:'siepe',open:1,n:'Siepe',c:'#3a7a32',tint:1,f:(x,y,h,c)=>{box(x+.04,y+.04,0,.92,.92,16+h*4,c,.85+h*.25);box(x+.12,y+.12,16+h*4,.76,.76,2,shx(c,1.2))}},
+  {id:'alberi',open:1,n:'Bosco fitto',c:'#2f6b2a',tint:1,f:(x,y,h,c)=>{box(x+.35,y+.35,0,.3,.3,14,'#6b4a2b');box(x+.05,y+.05,12,.9,.9,12,c,.85+h*.3);box(x+.25,y+.25,24,.5,.5,8,c,1.1)}},
+  {id:'abeti',open:1,n:'Abeti innevati',c:'#2f5a4a',tint:1,f:(x,y,h,c)=>{box(x+.4,y+.4,0,.2,.2,8,'#5a3a2a');box(x+.1,y+.1,8,.8,.8,10,c);box(x+.2,y+.2,18,.6,.6,9,c,1.1);box(x+.3,y+.3,27,.4,.4,8,c,1.2);box(x+.38,y+.38,35,.24,.24,4,'#f4f8fc')}},
+  {id:'dune',open:1,n:'Cactus e dune',c:'#4e9a47',tint:1,f:(x,y,h,c)=>{if(h<.5){box(x+.38,y+.38,0,.24,.24,18+h*30,c);box(x+.15,y+.42,10,.25,.14,6,c)}else box(x+.1,y+.1,0,.8,.8,8+h*14,'#a88c5a')}},
+  {id:'scogli',open:1,n:'Scogli',c:'#6a6a72',tint:1,f:(x,y,h,c)=>{const ht=10+h*24;box(x+.05,y+.05,0,.9,.9,ht,c,.85+h*.1);box(x+.2,y+.15,ht,.6,.6,4+h*6,shx(c,1.1));box(x+.1,y+.1,ht*.3,.8,.8,1.5,'#3a6a3a')}},
   {id:'ghiaccio',n:'Ghiaccio',c:'#bfe3f5',tint:1,f:(x,y,h,c)=>{box(x,y,0,1,1,28+h*14,c,1.02);box(x+.2,y+.2,28+h*14,.5,.5,3,'#ffffff',1.05);if(h>.6)box(x+.97,y+.3,8,.04,.3,14,'#ffffff',1.1)}},
   {id:'cristalli',n:'Cristalli',c:'#b48aff',tint:1,f:(x,y,h,c)=>{box(x,y,0,1,1,8,'#3a3048');box(x+.15,y+.2,8,.25,.25,20+h*20,c,1.15);box(x+.55,y+.5,8,.3,.3,14+h*14,shx(c,1.2),1.1);box(x+.4,y+.15,8,.18,.18,10+h*10,shx(c,.9),1.2)}},
-  {id:'palizzata',n:'Palizzata',c:'#5a3a1e',tint:1,f:(x,y,h,c)=>{for(let i=0;i<3;i++)box(x+.08+i*.3,y+.08+i*.3,0,.24,.24,22+((x*3+y+i)%3)*3,c);box(x+.1,y+.1,14,.8,.8,1.5,'#3a2a14')}},
+  {id:'palizzata',open:1,n:'Palizzata',c:'#5a3a1e',tint:1,f:(x,y,h,c)=>{for(let i=0;i<3;i++)box(x+.08+i*.3,y+.08+i*.3,0,.24,.24,22+((x*3+y+i)%3)*3,c);box(x+.1,y+.1,14,.8,.8,1.5,'#3a2a14')}},
   {id:'ossidiana',n:'Ossidiana del Vuoto',c:'#211a30',tint:1,f:(x,y,h,c)=>{box(x,y,0,1,1,38+h*10,c,.9+h*.2);if(h>.5)box(x+.3,y+.98,8,.06,.03,26,'#c46bff',1.4);if(h>.8)box(x+.98,y+.5,12,.03,.06,18,'#c46bff',1.4)}},
   {id:'oro',n:'Tempio d\'oro',c:'#c9a860',tint:1,f:(x,y,h,c)=>{box(x,y,0,1,1,40,c,.9+h*.1);box(x-.01,y-.01,22,1.02,1.02,3,'#d4af37',.9);if(h>.7)box(x+.3,y+.98,8,.4,.03,8,'#3a5aa8')}},
   {id:'lavica',n:'Roccia lavica',c:'#3a2420',tint:1,f:(x,y,h,c)=>{box(x,y,0,1,1,32+h*14,c,.85+h*.2);if(h>.45)box(x+.2,y+.98,4,.05,.03,20+h*10,'#ff6a1a',1.4);if(h>.7)box(x+.98,y+.6,6,.03,.05,16,'#ff8a2a',1.4)}},

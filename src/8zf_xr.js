@@ -83,6 +83,10 @@ function xrClick(x,y){const el=xrTarget(x,y)||cv,o={clientX:x,clientY:y,bubbles:
   if(el.tagName==='INPUT'&&el.type==='range'&&!el.disabled){const r=el.getBoundingClientRect(),a=+el.min||0,b=el.max===''?100:+el.max,st=+el.step||1,k=clamp((x-r.left)/Math.max(1,r.width),0,1);
     el.value=String(Math.round((a+(b-a)*k)/st)*st);ch(el);return}
   el.dispatchEvent(new PointerEvent('pointerdown',o));el.dispatchEvent(new PointerEvent('pointerup',Object.assign({},o,{buttons:0})));el.dispatchEvent(new MouseEvent('click',Object.assign({},o,{buttons:0})))}
+// levetta su una finestra: scorre la parte della pagina sotto il raggio (la lista, il testo, il pannello) che può scorrere
+function xrScroll(x,y,v){for(let e=xrTarget(x,y);e&&e!==document.body&&e!==document.documentElement;e=e.parentElement){
+    if(e.scrollHeight>e.clientHeight+1&&/auto|scroll/.test(getComputedStyle(e).overflowY)){const t=e.scrollTop;e.scrollTop+=v*Math.abs(v)*18;if(e.scrollTop!==t)return true}}
+  return false}
 function xrPulse(gp,k=.35,ms=20){const h=gp&&gp.hapticActuators&&gp.hapticActuators[0];if(h&&h.pulse)try{h.pulse(k,ms)}catch(e){}}
 function xrInput(fr){XR.ax=null;XR.zoom=0;
   for(const src of XR.s.inputSources){const gp=src.gamepad,hd=src.handedness,st=XR.src.get(src)||{b:[]};XR.src.set(src,st);
@@ -95,7 +99,7 @@ function xrInput(fr){XR.ax=null;XR.zoom=0;
     if(dn(0)){XR.act=src;const h=st.ray&&st.ray.h;if(h&&h.in){xrClick(h.x,h.y);xrPulse(gp)}}
     if(hd==='left'){XR.ax=ax;
       if(dn(1))area();if(dn(4))pot();if(dn(5))tog('inv');if(dn(3)){$('mappa')&&$('mappa').style.display==='flex'?closeMap():openMap()}}
-    else{if(Math.abs(ax[1])>.3)XR.zoom=-ax[1];
+    else{if(Math.abs(ax[1])>.3){const h=st.ray&&st.ray.h;if(!(h&&h.in&&xrScroll(h.x,h.y,ax[1])))XR.zoom=-ax[1]}
       if(dn(1))lunge();if(dn(4)&&IT){P.path=[];P.tg=null;act(IT)}if(dn(5)){if(PM)cl();else dodge()}if(dn(3)){XR.pan=null;xrPulse(gp,.5,40)}}
     if(dn(1)||dn(4)||dn(5))xrPulse(gp,.2,15)}
   if(XR.zoom)SZ=clamp(SZ*(1+XR.zoom*.02),.55,1.9);

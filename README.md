@@ -127,7 +127,7 @@ altrimenti il browser non offre la realtà virtuale.
 
 | Comando | Controller |
 |---|---|
-| Puntare e cliccare | Raggio del controller + grilletto |
+| Puntare e cliccare / scorrere una finestra | Raggio del controller + grilletto / levetta destra su e giù |
 | Muoversi | Levetta sinistra |
 | Zoom | Levetta destra (avanti e indietro) |
 | Interagire (R) / Schivata (o chiudi finestra) | A / B |

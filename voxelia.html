@@ -10990,6 +10990,10 @@ function xrClick(x,y){const el=xrTarget(x,y)||cv,o={clientX:x,clientY:y,bubbles:
   if(el.tagName==='INPUT'&&el.type==='range'&&!el.disabled){const r=el.getBoundingClientRect(),a=+el.min||0,b=el.max===''?100:+el.max,st=+el.step||1,k=clamp((x-r.left)/Math.max(1,r.width),0,1);
     el.value=String(Math.round((a+(b-a)*k)/st)*st);ch(el);return}
   el.dispatchEvent(new PointerEvent('pointerdown',o));el.dispatchEvent(new PointerEvent('pointerup',Object.assign({},o,{buttons:0})));el.dispatchEvent(new MouseEvent('click',Object.assign({},o,{buttons:0})))}
+// levetta su una finestra: scorre la parte della pagina sotto il raggio (la lista, il testo, il pannello) che può scorrere
+function xrScroll(x,y,v){for(let e=xrTarget(x,y);e&&e!==document.body&&e!==document.documentElement;e=e.parentElement){
+    if(e.scrollHeight>e.clientHeight+1&&/auto|scroll/.test(getComputedStyle(e).overflowY)){const t=e.scrollTop;e.scrollTop+=v*Math.abs(v)*18;if(e.scrollTop!==t)return true}}
+  return false}
 function xrPulse(gp,k=.35,ms=20){const h=gp&&gp.hapticActuators&&gp.hapticActuators[0];if(h&&h.pulse)try{h.pulse(k,ms)}catch(e){}}
 function xrInput(fr){XR.ax=null;XR.zoom=0;
   for(const src of XR.s.inputSources){const gp=src.gamepad,hd=src.handedness,st=XR.src.get(src)||{b:[]};XR.src.set(src,st);
@@ -11002,7 +11006,7 @@ function xrInput(fr){XR.ax=null;XR.zoom=0;
     if(dn(0)){XR.act=src;const h=st.ray&&st.ray.h;if(h&&h.in){xrClick(h.x,h.y);xrPulse(gp)}}
     if(hd==='left'){XR.ax=ax;
       if(dn(1))area();if(dn(4))pot();if(dn(5))tog('inv');if(dn(3)){$('mappa')&&$('mappa').style.display==='flex'?closeMap():openMap()}}
-    else{if(Math.abs(ax[1])>.3)XR.zoom=-ax[1];
+    else{if(Math.abs(ax[1])>.3){const h=st.ray&&st.ray.h;if(!(h&&h.in&&xrScroll(h.x,h.y,ax[1])))XR.zoom=-ax[1]}
       if(dn(1))lunge();if(dn(4)&&IT){P.path=[];P.tg=null;act(IT)}if(dn(5)){if(PM)cl();else dodge()}if(dn(3)){XR.pan=null;xrPulse(gp,.5,40)}}
     if(dn(1)||dn(4)||dn(5))xrPulse(gp,.2,15)}
   if(XR.zoom)SZ=clamp(SZ*(1+XR.zoom*.02),.55,1.9);
@@ -11047,10 +11051,10 @@ xrButton();
    Nel visore si vede solo il canvas del gioco: HUD, barra, finestre, dialoghi e mappa sono HTML e resterebbero fuori.
    Qui la pagina viene «fotografata» così com'è (stessi stili, stesse icone, stessa disposizione) in un'immagine SVG
    con foreignObject, e la foto è disegnata sopra il canvas prima che diventi lo schermo virtuale.
-   La foto si rifà solo quando la pagina cambia (MutationObserver, scorrimento, testo scritto, puntatore su un altro elemento),
+   La foto si rifà solo quando la pagina cambia (MutationObserver, scorrimento, testo scritto); il pulsante puntato si contorna dal vivo;
    al massimo una ogni XU.min ms; i canvas dell'interfaccia (minimappa, orologio…) invece si copiano dal vivo a ogni fotogramma.
    Coordinate: pixel CSS della pagina, le stesse che usano i clic dei controller (document.elementFromPoint). */
-const XU={mo:null,dirty:1,busy:0,t:0,min:90,img:null,c:null,w:0,h:0,live:[],hov:null,ok:new WeakMap(),src:new Map(),css:'',cssK:''};
+const XU={v:0,sc:0,rc:0,mo:null,dirty:1,busy:0,t:0,min:90,img:null,c:null,w:0,h:0,live:[],hov:null,ok:new WeakMap(),src:new Map(),css:'',cssK:''};
 
 // tutti i fogli di stile della pagina, con :hover reso anche come classe (l'elemento puntato dal controller la riceve)
 function xuCss(){const sh=[...document.styleSheets],k=sh.length+':'+[...document.querySelectorAll('style')].reduce((n,s)=>n+s.textContent.length,0);
@@ -11097,39 +11101,49 @@ function xuClone(el,hov){const t=el.tagName;
   return k}
 
 function xuSnap(){const w=W,h=H;if(!w||!h)return;XU.busy=1;XU.dirty=0;XU.t=performance.now();XU.live=[];
-  let hov=null;if(MX>=0){hov=new Set();for(let e=document.elementFromPoint(MX,MY);e;e=e.parentElement)hov.add(e)}XU.hov=hov&&[...hov][0];
+  // il pulsante puntato non entra nella foto: lo evidenzia xuHi dal vivo, così muovere il raggio non costa una foto nuova
+  const hov=null;
   const b=document.createElementNS('http://www.w3.org/1999/xhtml','body');b.className=document.body.className;
   const st=document.createElementNS('http://www.w3.org/1999/xhtml','style');st.textContent=xuCss();b.appendChild(st);
   for(let n=document.body.firstChild;n;n=n.nextSibling){if(n.nodeType===1){const c=xuClone(n,hov);if(c)b.appendChild(c)}else if(n.nodeType===3&&n.nodeValue.trim())b.appendChild(n.cloneNode(false))}
   b.setAttribute('style',`width:${w}px;height:${h}px`);
   const de=document.documentElement,at=['lang','class','data-theme','style'].map(a=>de.hasAttribute(a)?` ${a}="${de.getAttribute(a).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"`:'').join('');
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"${at}><foreignObject x="0" y="0" width="${w}" height="${h}">${new XMLSerializer().serializeToString(b)}</foreignObject></svg>`;
-  const im=new Image(),pw=Math.max(1,w*DPR|0),ph=Math.max(1,h*DPR|0);
+  // risoluzione della foto: al massimo 1,25 pixel per pixel CSS (nel visore basta e la foto costa la metà)
+  const k=Math.min(DPR,1.25),im=new Image(),pw=Math.max(1,w*k|0),ph=Math.max(1,h*k|0);XU.sc=performance.now()-XU.t;
   im.onload=()=>{XU.busy=0;if(!XU.c)XU.c=document.createElement('canvas');const c=XU.c;if(c.width!==pw||c.height!==ph){c.width=pw;c.height=ph}
-    const x=c.getContext('2d');x.clearRect(0,0,pw,ph);try{x.drawImage(im,0,0,pw,ph);XU.w=w;XU.h=h}catch(e){XU.w=0}};
+    XU.lt=performance.now()-XU.lt;const x=c.getContext('2d'),t1=performance.now();x.clearRect(0,0,pw,ph);try{x.drawImage(im,0,0,pw,ph);XU.w=w;XU.h=h;XU.v++}catch(e){XU.w=0}
+    // il disegno della foto (dove il browser la impagina davvero) è la parte che costa: più costa, più di rado si rifà
+    XU.rc=performance.now()-t1;XU.min=clamp((XU.sc+XU.rc)*4+XU.lt,90,1000)};
   im.onerror=()=>{XU.busy=0};
-  im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
-  // se la foto costa molto (visore lento, pagina piena) si rifà più di rado
-  XU.min=Math.max(90,(performance.now()-XU.t)*8)}
+  XU.lt=performance.now();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
 
 function xuWatch(){if(XU.mo)return;
-  XU.mo=new MutationObserver(()=>{XU.dirty=1});XU.mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,characterData:true});
+  XU.mo=new MutationObserver(R=>{for(const r of R)if(!xuVar(r)){XU.dirty=1;return}});XU.mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeOldValue:true,characterData:true});
   for(const e of['scroll','input','change'])document.addEventListener(e,xuMark,true)}
 function xuUnwatch(){if(!XU.mo)return;XU.mo.disconnect();XU.mo=null;for(const e of['scroll','input','change'])document.removeEventListener(e,xuMark,true);XU.c=null;XU.w=0;XU.live=[];XU.src.clear()}
 function xuMark(){XU.dirty=1}
+// è cambiata solo una variabile CSS nello stile (la ruota delle azioni la aggiorna a ogni fotogramma): non serve una foto nuova
+const xuNoVar=v=>(v||'').replace(/--[\w-]+\s*:[^;]*;?/g,'').replace(/\s+/g,'');
+const xuVar=r=>r.type==='attributes'&&r.attributeName==='style'&&xuNoVar(r.oldValue)===xuNoVar(r.target.getAttribute('style'));
+// i pulsanti puntati dai controller, contornati dal vivo (posizione vera nella pagina, quella che riceve il clic)
+function xuHiL(){const L=[];for(const st of XR.src.values()){const r=st.ray,h=r&&r.h;if(!h||!h.in)continue;const e=r.ck!==undefined?r.ck:xrClickable(xrTarget(h.x,h.y));if(e&&e.isConnected&&!L.includes(e))L.push(e)}return L}
+function xuHi(x,k,L=xuHiL()){if(!L.length)return;x.save();x.setTransform(k,0,0,k,0,0);x.globalAlpha=1;x.lineWidth=3;x.strokeStyle='#ffd84a';x.shadowColor='rgba(255,216,74,.9)';x.shadowBlur=10;
+  for(const e of L){if(!e.isConnected)continue;const b=e.getBoundingClientRect();if(b.width<1||b.height<1)continue;x.strokeRect(b.left-2,b.top-2,b.width+4,b.height+4)}
+  x.restore()}
 
 // chiamata dalla VR (src/8zf_xr.js) a ogni fotogramma disegnato, con il contesto 2D del canvas del gioco
 function xrUiDraw(g){if(!XR.s){xuUnwatch();return}xuWatch();
   const now=performance.now();
-  if(MX>=0&&document.elementFromPoint(MX,MY)!==XU.hov)XU.dirty=1;else if(MX<0&&XU.hov)XU.dirty=1;
-  if(XU.w!==W||XU.h!==H||now-XU.t>1000)XU.dirty=1;
+  if(XU.w!==W||XU.h!==H||now-XU.t>2000)XU.dirty=1;
   if(XU.dirty&&!XU.busy&&now-XU.t>=XU.min)xuSnap();
   if(!XU.c||!XU.w)return;
   g.save();g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.globalCompositeOperation='source-over';g.filter='none';g.imageSmoothingEnabled=true;
   g.drawImage(XU.c,0,0,g.canvas.width,g.canvas.height);
   g.setTransform(DPR,0,0,DPR,0,0);
   for(const l of XU.live)if(l.c.isConnected)try{g.drawImage(l.c,l.x,l.y,l.w,l.h)}catch(e){}
-  g.restore()}
+  g.restore();xuHi(g,DPR)}
 
 /* ================= realtà virtuale: diorama 3D da tavolo =================
    Nel visore, oltre allo schermo sospeso, il mondo può comparire in vero 3D su un tavolo rotondo davanti al giocatore.
@@ -11325,7 +11339,7 @@ function fpGesture(src,gp,fr,now){const sp=src.gripSpace&&fr.getPose(src.gripSpa
 
 /* ---- comandi in prima persona (per controller; rendono true così i comandi dello schermo sospeso non si applicano) ----
    grilletto: clic sull'interfaccia; nel vuoto il destro attacca e il sinistro apre il menu della VR
-   levetta sinistra: cammina (premuta: mappa) · levetta destra: gira (premuta: rimette davanti i pannelli)
+   levetta sinistra: cammina (premuta: mappa) · levetta destra: gira, su e giù su una finestra la scorre (premuta: rimette davanti i pannelli)
    impugnatura sinistra / destra: colpo ad area / affondo · X / Y: pozione / zaino · A / B: interagisci / chiudi o schiva */
 const _xrHookFP=typeof xrInputHook==='function'?xrInputHook:null;
 window.xrInputHook=function(src,gp,B,B0,ray,fr){const dn=i=>B[i]&&!B0[i],hd=src.handedness;
@@ -11334,13 +11348,13 @@ window.xrInputHook=function(src,gp,B,B0,ray,fr){const dn=i=>B[i]&&!B0[i],hd=src.
     if(XR.s&&hd==='left'&&dn(0)&&!(ray&&ray.h&&ray.h.in)&&started){fpMenu(!FP.menu);xrPulse(gp,.3,20)}
     return _xrHookFP?_xrHookFP(src,gp,B,B0,ray,fr):false}
   // l'interfaccia sotto lo sguardo si guarda soltanto (i suoi comandi sono nel menu della VR): il raggio usa solo le finestre aperte
-  if(ray){ray.h=FP.win?xrHit(ray.o,ray.d):null;const h=ray.h,on=h&&h.in;ray.ck=on&&xrClickable(xrTarget(h.x,h.y));ray.pk=on?null:fpPick(ray);
+  if(ray){ray.h=FP.win?xrHit(ray.o,ray.d):null;const h=ray.h,on=h&&h.in;ray.ck=on?xrClickable(xrTarget(h.x,h.y)):null;ray.pk=on?null:fpPick(ray);
     ray.vis=ray.ck?h.t:ray.pk?ray.pk.t:0}
   const now=performance.now(),ax=gp.axes.length>=4?[gp.axes[2],gp.axes[3]]:[gp.axes[0]||0,gp.axes[1]||0],pk=ray&&ray.pk;
   if(dn(0)){const h=ray&&ray.h;if(fpOnUI(h)){XR.act=src;xrClick(h.x,h.y);xrPulse(gp)}else if(pk&&!(pk.e.k==='en'&&hd==='right')){fpUse(pk.e);xrPulse(gp,.3,25)}else if(hd==='left'){fpMenu(!FP.menu);xrPulse(gp,.3,20)}else fpStrike(gp)}
   if(hd==='left'){FP.ax=ax;
     if(dn(1))area();if(dn(4))pot();if(dn(5)){fpMenu(0);tog('inv')}if(dn(3)){$('mappa')&&$('mappa').style.display==='flex'?closeMap():(fpMenu(0),openMap())}}
-  else{const x=ax[0];
+  else{const x=ax[0];if(Math.abs(ax[1])>.25&&fpOnUI(ray&&ray.h))xrScroll(ray.h.x,ray.h.y,ax[1]);
     if(FP.rot==='lib'){if(Math.abs(x)>.2){FP.th+=Math.sign(x)*(Math.abs(x)-.2)/.8*2.2*FP.dt;FP.turn=Math.abs(x)}}
     else if(Math.abs(x)>.7&&FP.sr){FP.sr=0;FP.th+=Math.sign(x)*(FP.rot==='s45'?Math.PI/4:Math.PI/6);FP.snapT=now;xrPulse(gp,.15,10)}else if(Math.abs(x)<.35)FP.sr=1;
     if(dn(1))lunge();if(dn(4)){const e=pk&&pk.e.k!=='en'?pk.e:FP.ait;if(e)fpUse(e)}if(dn(5))fpBack();if(dn(3)){fpRecenter();xrPulse(gp,.5,40)}}
@@ -11412,7 +11426,7 @@ function fpMenuShow(){let el=$('xrfp');
   el.innerHTML=`<h3>${ico('gamepad',20)} Realtà virtuale</h3><div class="xr">${bar}<button onclick="fpMenu(0);pot()">${ico('pozione',20)} Pozione</button></div>
 <h4>Vista e comfort</h4><div class="xr">${opt('on','Prima persona',FP.on?'sì':'no (schermo sospeso)')}${opt('rot','Rotazione',FPROT[FP.rot]||FPROT.s30)}${opt('vig','Vignetta in movimento',FPVIG[FP.vig|0]||'leggera')}${opt('vd','Distanza di visuale',FPVD[FP.vd]||'media')}${opt('spd','Velocità',FPSPD[FP.spd]||'100%')}${opt('hud','Interfaccia',FP.hud?'sotto lo sguardo':'nascosta')}
 <button onclick="fpOpt('cal')">Ricalibra l'altezza degli occhi</button><button onclick="fpOpt('rc')">Rimetti davanti i pannelli</button>${!lv&&FP.on?'<button onclick="fpMenu(0)">La prima persona torna a fine filmato, nave o minigioco</button>':''}</div>
-<h4>Comandi</h4><table><tr><td>Attaccare</td><td>Muovi il controller destro (fendente) · grilletto destro sul nemico davanti</td></tr><tr><td>Affondo</td><td>Stoccata in avanti con il controller · impugnatura destra</td></tr><tr><td>Colpo ad area</td><td>Le due mani giù insieme · impugnatura sinistra</td></tr><tr><td>Camminare / girarsi</td><td>Levetta sinistra (o cammina nella stanza) / levetta destra</td></tr><tr><td>Interagire</td><td>Punta con il raggio una persona, una porta o un oggetto e premi il grilletto (o A); A da solo usa quello che hai davanti</td></tr><tr><td>Schivata / chiudere</td><td>B</td></tr><tr><td>Pozione / zaino</td><td>X / Y</td></tr><tr><td>Mappa</td><td>Premi la levetta sinistra</td></tr><tr><td>Finestre e menu</td><td>Punta con il raggio e premi il grilletto · grilletto sinistro nel vuoto: questo menu</td></tr></table>
+<h4>Comandi</h4><table><tr><td>Attaccare</td><td>Muovi il controller destro (fendente) · grilletto destro sul nemico davanti</td></tr><tr><td>Affondo</td><td>Stoccata in avanti con il controller · impugnatura destra</td></tr><tr><td>Colpo ad area</td><td>Le due mani giù insieme · impugnatura sinistra</td></tr><tr><td>Camminare / girarsi</td><td>Levetta sinistra (o cammina nella stanza) / levetta destra</td></tr><tr><td>Interagire</td><td>Punta con il raggio una persona, una porta o un oggetto e premi il grilletto (o A); A da solo usa quello che hai davanti</td></tr><tr><td>Schivata / chiudere</td><td>B</td></tr><tr><td>Pozione / zaino</td><td>X / Y</td></tr><tr><td>Mappa</td><td>Premi la levetta sinistra</td></tr><tr><td>Finestre e menu</td><td>Punta con il raggio e premi il grilletto · levetta destra su o giù: scorre · grilletto sinistro nel vuoto: questo menu</td></tr></table>
 <div class="xr" style="margin-top:8px"><button onclick="fpMenu(0)">Chiudi</button></div>`}
 function fpOpt(k){if(k==='on')FP.on=FP.on?0:1;else if(k==='rot'){const o=Object.keys(FPROT);FP.rot=o[(o.indexOf(FP.rot)+1)%o.length]}else if(k==='vig')FP.vig=((FP.vig|0)+1)%4;else if(k==='vd'){const o=[16,24,32,40];FP.vd=o[(o.indexOf(FP.vd)+1)%o.length]}
   else if(k==='spd')FP.spd=FP.spd>=1?.7:FP.spd>=.7?.5:1;else if(k==='hud')FP.hud=FP.hud?0:1;else if(k==='cal'){FP.cal=1;msg('Altezza ricalibrata: ora vedi dagli occhi dell\'eroe')}else if(k==='rc')fpRecenter();
@@ -11492,10 +11506,14 @@ function fpQuad(A,o,c,r,up,w,h,u){const p=(sx,sy)=>[c[0]+r[0]*sx*w/2+up[0]*sy*h/
 const fpFace=c=>{let fx=c[0]-FP.hp[0],fz=c[2]-FP.hp[2];const l=Math.hypot(fx,fz)||1;return[-fz/l,0,fx/l]};
 
 /* ---- l'interfaccia del gioco (la foto HTML di 8zg_xrui.js più i canvas dal vivo, come la minimappa) diventa la texture dei pannelli ---- */
-function fpUi(gl){if(typeof XU==='undefined'||!XU.c||!XU.w)return FP.uok;const now=performance.now();if(now-FP.ut<80)return FP.uok;FP.ut=now;
+function fpUi(gl){if(typeof XU==='undefined'||!XU.c||!XU.w)return FP.uok;const now=performance.now();if(now-FP.ut<80)return FP.uok;
+  // la texture si ricarica quando c'è una foto nuova o cambia il pulsante puntato; per i soli canvas dal vivo (minimappa, orologio) 3 volte al secondo
+  const H=xuHiL(),hk=H.map(e=>{const b=e.getBoundingClientRect();return b.left+','+b.top+','+b.width}).join(';');
+  if(FP.uok&&XU.v===FP.uv&&hk===FP.uh&&now-FP.ut<330)return FP.uok;FP.ut=now;FP.uv=XU.v;FP.uh=hk;
   let c=FP.uc;if(!c)c=FP.uc=document.createElement('canvas');const w=XU.c.width,h=XU.c.height;if(c.width!==w||c.height!==h){c.width=w;c.height=h}
   const x=c.getContext('2d'),k=w/XU.w;x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,w,h);x.drawImage(XU.c,0,0);x.setTransform(k,0,0,k,0,0);
   for(const l of XU.live)if(l.c.isConnected)try{x.drawImage(l.c,l.x,l.y,l.w,l.h)}catch(e){}
+  xuHi(x,k,H);
   gl.bindTexture(gl.TEXTURE_2D,FP.utx);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);gl.generateMipmap(gl.TEXTURE_2D);return FP.uok=1}
 
 /* ---- un fotogramma: pezzi di mondo vicini (cache del diorama), ciò che si muove, effetti, scritte, pannelli, raggi ---- */

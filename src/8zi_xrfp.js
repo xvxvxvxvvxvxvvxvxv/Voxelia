@@ -77,7 +77,7 @@ function fpGesture(src,gp,fr,now){const sp=src.gripSpace&&fr.getPose(src.gripSpa
 
 /* ---- comandi in prima persona (per controller; rendono true così i comandi dello schermo sospeso non si applicano) ----
    grilletto: clic sull'interfaccia; nel vuoto il destro attacca e il sinistro apre il menu della VR
-   levetta sinistra: cammina (premuta: mappa) · levetta destra: gira (premuta: rimette davanti i pannelli)
+   levetta sinistra: cammina (premuta: mappa) · levetta destra: gira, su e giù su una finestra la scorre (premuta: rimette davanti i pannelli)
    impugnatura sinistra / destra: colpo ad area / affondo · X / Y: pozione / zaino · A / B: interagisci / chiudi o schiva */
 const _xrHookFP=typeof xrInputHook==='function'?xrInputHook:null;
 window.xrInputHook=function(src,gp,B,B0,ray,fr){const dn=i=>B[i]&&!B0[i],hd=src.handedness;
@@ -86,13 +86,13 @@ window.xrInputHook=function(src,gp,B,B0,ray,fr){const dn=i=>B[i]&&!B0[i],hd=src.
     if(XR.s&&hd==='left'&&dn(0)&&!(ray&&ray.h&&ray.h.in)&&started){fpMenu(!FP.menu);xrPulse(gp,.3,20)}
     return _xrHookFP?_xrHookFP(src,gp,B,B0,ray,fr):false}
   // l'interfaccia sotto lo sguardo si guarda soltanto (i suoi comandi sono nel menu della VR): il raggio usa solo le finestre aperte
-  if(ray){ray.h=FP.win?xrHit(ray.o,ray.d):null;const h=ray.h,on=h&&h.in;ray.ck=on&&xrClickable(xrTarget(h.x,h.y));ray.pk=on?null:fpPick(ray);
+  if(ray){ray.h=FP.win?xrHit(ray.o,ray.d):null;const h=ray.h,on=h&&h.in;ray.ck=on?xrClickable(xrTarget(h.x,h.y)):null;ray.pk=on?null:fpPick(ray);
     ray.vis=ray.ck?h.t:ray.pk?ray.pk.t:0}
   const now=performance.now(),ax=gp.axes.length>=4?[gp.axes[2],gp.axes[3]]:[gp.axes[0]||0,gp.axes[1]||0],pk=ray&&ray.pk;
   if(dn(0)){const h=ray&&ray.h;if(fpOnUI(h)){XR.act=src;xrClick(h.x,h.y);xrPulse(gp)}else if(pk&&!(pk.e.k==='en'&&hd==='right')){fpUse(pk.e);xrPulse(gp,.3,25)}else if(hd==='left'){fpMenu(!FP.menu);xrPulse(gp,.3,20)}else fpStrike(gp)}
   if(hd==='left'){FP.ax=ax;
     if(dn(1))area();if(dn(4))pot();if(dn(5)){fpMenu(0);tog('inv')}if(dn(3)){$('mappa')&&$('mappa').style.display==='flex'?closeMap():(fpMenu(0),openMap())}}
-  else{const x=ax[0];
+  else{const x=ax[0];if(Math.abs(ax[1])>.25&&fpOnUI(ray&&ray.h))xrScroll(ray.h.x,ray.h.y,ax[1]);
     if(FP.rot==='lib'){if(Math.abs(x)>.2){FP.th+=Math.sign(x)*(Math.abs(x)-.2)/.8*2.2*FP.dt;FP.turn=Math.abs(x)}}
     else if(Math.abs(x)>.7&&FP.sr){FP.sr=0;FP.th+=Math.sign(x)*(FP.rot==='s45'?Math.PI/4:Math.PI/6);FP.snapT=now;xrPulse(gp,.15,10)}else if(Math.abs(x)<.35)FP.sr=1;
     if(dn(1))lunge();if(dn(4)){const e=pk&&pk.e.k!=='en'?pk.e:FP.ait;if(e)fpUse(e)}if(dn(5))fpBack();if(dn(3)){fpRecenter();xrPulse(gp,.5,40)}}
@@ -164,7 +164,7 @@ function fpMenuShow(){let el=$('xrfp');
   el.innerHTML=`<h3>${ico('gamepad',20)} Realtà virtuale</h3><div class="xr">${bar}<button onclick="fpMenu(0);pot()">${ico('pozione',20)} Pozione</button></div>
 <h4>Vista e comfort</h4><div class="xr">${opt('on','Prima persona',FP.on?'sì':'no (schermo sospeso)')}${opt('rot','Rotazione',FPROT[FP.rot]||FPROT.s30)}${opt('vig','Vignetta in movimento',FPVIG[FP.vig|0]||'leggera')}${opt('vd','Distanza di visuale',FPVD[FP.vd]||'media')}${opt('spd','Velocità',FPSPD[FP.spd]||'100%')}${opt('hud','Interfaccia',FP.hud?'sotto lo sguardo':'nascosta')}
 <button onclick="fpOpt('cal')">Ricalibra l'altezza degli occhi</button><button onclick="fpOpt('rc')">Rimetti davanti i pannelli</button>${!lv&&FP.on?'<button onclick="fpMenu(0)">La prima persona torna a fine filmato, nave o minigioco</button>':''}</div>
-<h4>Comandi</h4><table><tr><td>Attaccare</td><td>Muovi il controller destro (fendente) · grilletto destro sul nemico davanti</td></tr><tr><td>Affondo</td><td>Stoccata in avanti con il controller · impugnatura destra</td></tr><tr><td>Colpo ad area</td><td>Le due mani giù insieme · impugnatura sinistra</td></tr><tr><td>Camminare / girarsi</td><td>Levetta sinistra (o cammina nella stanza) / levetta destra</td></tr><tr><td>Interagire</td><td>Punta con il raggio una persona, una porta o un oggetto e premi il grilletto (o A); A da solo usa quello che hai davanti</td></tr><tr><td>Schivata / chiudere</td><td>B</td></tr><tr><td>Pozione / zaino</td><td>X / Y</td></tr><tr><td>Mappa</td><td>Premi la levetta sinistra</td></tr><tr><td>Finestre e menu</td><td>Punta con il raggio e premi il grilletto · grilletto sinistro nel vuoto: questo menu</td></tr></table>
+<h4>Comandi</h4><table><tr><td>Attaccare</td><td>Muovi il controller destro (fendente) · grilletto destro sul nemico davanti</td></tr><tr><td>Affondo</td><td>Stoccata in avanti con il controller · impugnatura destra</td></tr><tr><td>Colpo ad area</td><td>Le due mani giù insieme · impugnatura sinistra</td></tr><tr><td>Camminare / girarsi</td><td>Levetta sinistra (o cammina nella stanza) / levetta destra</td></tr><tr><td>Interagire</td><td>Punta con il raggio una persona, una porta o un oggetto e premi il grilletto (o A); A da solo usa quello che hai davanti</td></tr><tr><td>Schivata / chiudere</td><td>B</td></tr><tr><td>Pozione / zaino</td><td>X / Y</td></tr><tr><td>Mappa</td><td>Premi la levetta sinistra</td></tr><tr><td>Finestre e menu</td><td>Punta con il raggio e premi il grilletto · levetta destra su o giù: scorre · grilletto sinistro nel vuoto: questo menu</td></tr></table>
 <div class="xr" style="margin-top:8px"><button onclick="fpMenu(0)">Chiudi</button></div>`}
 function fpOpt(k){if(k==='on')FP.on=FP.on?0:1;else if(k==='rot'){const o=Object.keys(FPROT);FP.rot=o[(o.indexOf(FP.rot)+1)%o.length]}else if(k==='vig')FP.vig=((FP.vig|0)+1)%4;else if(k==='vd'){const o=[16,24,32,40];FP.vd=o[(o.indexOf(FP.vd)+1)%o.length]}
   else if(k==='spd')FP.spd=FP.spd>=1?.7:FP.spd>=.7?.5:1;else if(k==='hud')FP.hud=FP.hud?0:1;else if(k==='cal'){FP.cal=1;msg('Altezza ricalibrata: ora vedi dagli occhi dell\'eroe')}else if(k==='rc')fpRecenter();
@@ -244,10 +244,14 @@ function fpQuad(A,o,c,r,up,w,h,u){const p=(sx,sy)=>[c[0]+r[0]*sx*w/2+up[0]*sy*h/
 const fpFace=c=>{let fx=c[0]-FP.hp[0],fz=c[2]-FP.hp[2];const l=Math.hypot(fx,fz)||1;return[-fz/l,0,fx/l]};
 
 /* ---- l'interfaccia del gioco (la foto HTML di 8zg_xrui.js più i canvas dal vivo, come la minimappa) diventa la texture dei pannelli ---- */
-function fpUi(gl){if(typeof XU==='undefined'||!XU.c||!XU.w)return FP.uok;const now=performance.now();if(now-FP.ut<80)return FP.uok;FP.ut=now;
+function fpUi(gl){if(typeof XU==='undefined'||!XU.c||!XU.w)return FP.uok;const now=performance.now();if(now-FP.ut<80)return FP.uok;
+  // la texture si ricarica quando c'è una foto nuova o cambia il pulsante puntato; per i soli canvas dal vivo (minimappa, orologio) 3 volte al secondo
+  const H=xuHiL(),hk=H.map(e=>{const b=e.getBoundingClientRect();return b.left+','+b.top+','+b.width}).join(';');
+  if(FP.uok&&XU.v===FP.uv&&hk===FP.uh&&now-FP.ut<330)return FP.uok;FP.ut=now;FP.uv=XU.v;FP.uh=hk;
   let c=FP.uc;if(!c)c=FP.uc=document.createElement('canvas');const w=XU.c.width,h=XU.c.height;if(c.width!==w||c.height!==h){c.width=w;c.height=h}
   const x=c.getContext('2d'),k=w/XU.w;x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,w,h);x.drawImage(XU.c,0,0);x.setTransform(k,0,0,k,0,0);
   for(const l of XU.live)if(l.c.isConnected)try{x.drawImage(l.c,l.x,l.y,l.w,l.h)}catch(e){}
+  xuHi(x,k,H);
   gl.bindTexture(gl.TEXTURE_2D,FP.utx);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);gl.generateMipmap(gl.TEXTURE_2D);return FP.uok=1}
 
 /* ---- un fotogramma: pezzi di mondo vicini (cache del diorama), ciò che si muove, effetti, scritte, pannelli, raggi ---- */

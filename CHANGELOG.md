@@ -5,6 +5,47 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.13 — Voxelia nella realtà virtuale: Meta Quest 3 (20 ottobre 2026)
+
+### Entrare in VR
+Nel browser del Meta Quest compare il pulsante **Entra in VR**, nel menu e in basso a destra durante la partita. Il gioco usa gli stessi modelli, gli stessi colori e la stessa interfaccia: non ci sono grafiche nuove fatte apposta per la VR. Serve un indirizzo **https** (il server pubblicato va già bene) oppure `localhost`. Dal menu si entra direttamente nella partita salvata.
+
+### Prima persona
+- Vedi il mondo con gli occhi dell'eroe, a grandezza naturale. Nella mano destra hai l'arma equipaggiata, nella sinistra lo scudo, e muovendo i controller vedi entrambi gli avambracci.
+- **Combattimento con il movimento:** un fendente con il controller destro attacca, una stoccata in avanti è l'affondo, le due mani giù insieme fanno il colpo ad area. Restano anche i tasti: grilletto destro, impugnature, B per la schivata.
+- **Camminare:** la levetta sinistra va dove guardi; puoi anche camminare davvero nella stanza. La levetta destra gira a scatti o in modo continuo.
+- **Interagire:** punta una persona, una porta o un oggetto e premi il grilletto (o A); se è lontano l'eroe ci va da solo. A da solo usa quello che hai davanti. Sopra la cosa più vicina compare il suggerimento «A · Parla», «A · Entra»…
+- Il raggio del controller compare solo quando punta qualcosa con cui interagire.
+- L'interfaccia del gioco è un pannello sotto lo sguardo. Zaino, dialoghi, negozi, impostazioni e mappa si aprono su un pannello davanti a te.
+- Durante filmati, visita guidata, navigazione e minigiochi si torna da soli allo schermo sospeso.
+
+### Menu della VR
+Grilletto sinistro puntato nel vuoto. Contiene i pulsanti della barra e le impostazioni del visore, che restano salvate:
+- prima persona sì/no;
+- rotazione a scatti di 30° o 45°, oppure continua;
+- **vignetta** contro il mal di movimento: nessuna, leggera (la nuova scelta di base), media o forte;
+- **distanza di visuale**: vicina, media, lontana o massima;
+- velocità di camminata e altezza degli occhi.
+
+### Finestre e menu nel visore
+- Pulsanti, schede, tendine e cursori si usano con il raggio e il grilletto. Il pulsante puntato ha un **contorno giallo**, esattamente dove arriva il clic.
+- Puntando una finestra, la **levetta destra su e giù la scorre**.
+- I dialoghi si scrivono fino in fondo e le porte si aprono con A anche nel visore, dove il browser del Quest ferma le animazioni della pagina.
+
+### Schermo sospeso e diorama
+- Senza prima persona il gioco è un grande schermo sospeso: il raggio fa da mouse, la levetta sinistra muove l'eroe, la destra fa lo zoom. Premendo la levetta destra lo schermo torna davanti a te.
+- Tenendo premuta la levetta destra per un secondo il mondo compare in 3D su un tavolo rotondo davanti a te.
+
+### Correzioni dalle prime prove sul Quest
+- I personaggi girati in diagonale sparivano dalla vista in prima persona: ora si vedono da ogni angolo.
+- Il tasto A apriva i menu dell'interfaccia invece di interagire.
+- I menu e le impostazioni non rispondevano ai clic.
+- Le finestre aperte facevano rallentare il gioco: l'interfaccia ora si ridisegna molto meno spesso.
+- I contorni dei pulsanti uscivano un po' dai bordi degli elementi: la foto dell'interfaccia usa le misure vere della pagina.
+- Il server con https (`TLS_CERT` / `TLS_KEY`) si fermava all'avvio.
+
+---
+
 ## 7.12.1 — Raccolte di nuovo in vista (20 ottobre 2026)
 
 - **Picchi Gelidi:** uno dei Fiori di ghiaccio vicino al rifugio dell'Esploratrice Ilva finiva dentro una roccia e quasi non si vedeva. Ora sotto il fiore c'è il terreno; il resto della zona resta identico.

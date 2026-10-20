@@ -37,7 +37,7 @@ function xuClone(el,hov){const t=el.tagName;
     if(!XU.ok.get(el))return k;const im=document.createElementNS('http://www.w3.org/1999/xhtml','img');
     for(const a of['id','class','style'])if(el.hasAttribute(a))im.setAttribute(a,el.getAttribute(a));
     try{im.setAttribute('src',el.toDataURL())}catch(e){return k}im.style.width=r.width+'px';im.style.height=r.height+'px';return im}
-  const k=el.cloneNode(false);
+  const k=el.cloneNode(false);xuPin(el,k);
   if(t==='IMG'){const s=xuSrc(el);if(s)k.setAttribute('src',s);else k.removeAttribute('src');k.removeAttribute('srcset')}
   else if(t==='INPUT'){if(el.type==='checkbox'||el.type==='radio'){if(el.checked)k.setAttribute('checked','');else k.removeAttribute('checked')}else k.setAttribute('value',el.value)}
   else if(t==='OPTION'){if(el.selected)k.setAttribute('selected','');else k.removeAttribute('selected')}
@@ -51,13 +51,23 @@ function xuClone(el,hov){const t=el.tagName;
       if(sx||sy)c.style.translate=`${-sx}px ${-sy}px`;k.appendChild(c)}}
   return k}
 
+// la foto impagina di nuovo la pagina, e nel visore può uscire un po' diversa (caratteri, barre di scorrimento, testo ingrandito):
+// ogni riquadro della copia prende le misure vere di quello della pagina, così pulsanti e caselle stanno dove arriva il clic
+const XUNP=new Set(['OPTION','OPTGROUP','BR','WBR','TR','TD','TH','TBODY','THEAD','TFOOT','COL','COLGROUP','CAPTION']);
+function xuPin(el,k){if(!(el instanceof HTMLElement)||XUNP.has(el.tagName))return;const cs=getComputedStyle(el),dp=cs.display;
+  if(dp==='inline'||dp==='contents'||dp==='none'||dp.startsWith('table'))return;
+  let w,h;if(cs.transform==='none'){const r=el.getBoundingClientRect();w=r.width;h=r.height}else{w=el.offsetWidth;h=el.offsetHeight}
+  const s=k.style;s.setProperty('width',w+'px','important');s.setProperty('height',h+'px','important');s.setProperty('box-sizing','border-box','important');
+  for(const p of['min-width','min-height'])s.setProperty(p,'0','important');for(const p of['max-width','max-height'])s.setProperty(p,'none','important');
+  s.setProperty('flex','0 0 auto','important')}
 function xuSnap(){const w=W,h=H;if(!w||!h)return;XU.busy=1;XU.dirty=0;XU.t=performance.now();XU.live=[];
   // il pulsante puntato non entra nella foto: lo evidenzia xuHi dal vivo, così muovere il raggio non costa una foto nuova
   const hov=null;
   const b=document.createElementNS('http://www.w3.org/1999/xhtml','body');b.className=document.body.className;
   const st=document.createElementNS('http://www.w3.org/1999/xhtml','style');st.textContent=xuCss();b.appendChild(st);
   for(let n=document.body.firstChild;n;n=n.nextSibling){if(n.nodeType===1){const c=xuClone(n,hov);if(c)b.appendChild(c)}else if(n.nodeType===3&&n.nodeValue.trim())b.appendChild(n.cloneNode(false))}
-  b.setAttribute('style',`width:${w}px;height:${h}px`);
+  // il corpo è largo quanto l'area vera della pagina (senza l'eventuale barra di scorrimento), come gli elementi fissi della pagina
+  const de0=document.documentElement;b.setAttribute('style',`width:${de0.clientWidth||w}px;height:${de0.clientHeight||h}px`);
   const de=document.documentElement,at=['lang','class','data-theme','style'].map(a=>de.hasAttribute(a)?` ${a}="${de.getAttribute(a).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"`:'').join('');
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"${at}><foreignObject x="0" y="0" width="${w}" height="${h}">${new XMLSerializer().serializeToString(b)}</foreignObject></svg>`;
   // risoluzione della foto: al massimo 1,25 pixel per pixel CSS (nel visore basta e la foto costa la metà)

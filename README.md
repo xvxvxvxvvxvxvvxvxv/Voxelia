@@ -120,6 +120,36 @@ Sui dispositivi touch compaiono:
 Lo zoom si fa con due dita. Comandi e pulsanti si adattano da soli a telefoni, pieghevoli e tablet, in verticale e in
 orizzontale, e si possono spostare e ridimensionare con l'**editor dell'HUD** (Impostazioni → Interfaccia).
 
+### Meta Quest (realtà virtuale)
+Nel browser del Quest compare il pulsante **Entra in VR** (nel menu e, durante la partita, in basso a destra). Il gioco
+appare su un grande schermo sospeso davanti a te; la pagina deve essere aperta da un indirizzo **https** (o da `localhost`),
+altrimenti il browser non offre la realtà virtuale.
+
+| Comando | Controller |
+|---|---|
+| Puntare e cliccare | Raggio del controller + grilletto |
+| Muoversi | Levetta sinistra |
+| Zoom | Levetta destra (avanti e indietro) |
+| Interagire (R) / Schivata (o chiudi finestra) | A / B |
+| Pozione / Zaino | X / Y |
+| Colpo ad area / Affondo | Impugnatura sinistra / destra |
+| Mappa / Rimettere lo schermo davanti | Premere la levetta sinistra / destra |
+
+#### Prima persona
+Entrando in VR si gioca **in prima persona**: vedi il mondo con gli occhi dell'eroe, a grandezza naturale, costruito con gli
+stessi modelli del gioco; in mano hai l'arma equipaggiata e sul braccio lo scudo. Si attacca muovendo il controller.
+L'interfaccia del gioco è un pannello sotto lo sguardo; zaino, dialoghi, negozi e mappa si aprono su un pannello davanti a te.
+Durante filmati, visita guidata, navigazione e minigiochi si torna da soli allo schermo sospeso.
+
+| Comando | Controller |
+|---|---|
+| Attaccare | Fendente con il controller destro · grilletto destro (nemico davanti) |
+| Affondo / Colpo ad area | Stoccata in avanti · impugnatura destra / le due mani giù insieme · impugnatura sinistra |
+| Camminare / Girarsi | Levetta sinistra (si cammina dove guardi, o davvero nella stanza) / levetta destra |
+| Interagire / Schivata o chiudi | A / B |
+| Pozione / Zaino / Mappa | X / Y / premere la levetta sinistra |
+| Menu della VR | Grilletto sinistro puntato nel vuoto: pulsanti della barra, prima persona sì/no, rotazione a scatti o continua, vignetta, velocità, altezza degli occhi |
+
 ---
 
 ## Le modalità
@@ -361,13 +391,46 @@ Gli amministratori possono nascondere mondi, rispondere alle segnalazioni e bloc
 | Variabile | Predefinito | A cosa serve |
 |---|---|---|
 | `PORT` | `3000` | Porta HTTP e WebSocket |
+| `TLS_CERT` / `TLS_KEY` | (nessuno) | Percorsi di certificato e chiave PEM. Se ci sono entrambi il server parla **https** e i WebSocket passano in **wss** sulla stessa porta. |
 | `ADMIN_PASSWORD` | (chiesta all'avvio) | Password del pannello admin. Se manca e non c'è un terminale, ne viene generata una casuale e stampata nel registro. |
 | `DATA_FILE` | `voxelia-data.json` | Classifica, punti arena, cicli dei dungeon, impostazioni, ban, dati dei plugin |
 | `MONDI_DIR` | `mondi/` | Cartella dei mondi pubblicati |
 | `PLUGINS_DIR` | `plugins/` | Cartella dei plugin |
 
+### Giocare dal Meta Quest
+Il browser del Quest offre la realtà virtuale solo su pagine **https** o su `localhost`, e il gioco si collega al
+WebSocket con lo stesso protocollo della pagina (`wss://` da https). Con il server in `http` sulla rete di casa il gioco
+si apre, ma il pulsante **Entra in VR** non compare. Ci sono tre strade:
+
+1. **Server online o tunnel** (la più semplice). Sul server pubblicato (vedi [Pubblicare il server online](#pubblicare-il-server-online))
+   l'https c'è già. In casa basta un tunnel verso la porta 3000, poi si apre sul Quest l'indirizzo `https://` che stampa:
+   ```sh
+   cloudflared tunnel --url http://localhost:3000
+   # oppure: ngrok http 3000
+   ```
+2. **HTTPS dal server, in rete locale.** Crea un certificato per l'indirizzo del PC (quello stampato all'avvio, ad
+   esempio `192.168.1.20`) e avvia il server con `TLS_CERT` e `TLS_KEY`:
+   ```sh
+   # con mkcert (certificato riconosciuto dai browser del PC dove è installata la sua CA)
+   mkcert 192.168.1.20 localhost
+   TLS_CERT=192.168.1.20+1.pem TLS_KEY=192.168.1.20+1-key.pem node server.js
+   # oppure autofirmato con openssl
+   openssl req -x509 -newkey rsa:2048 -nodes -days 365 -keyout key.pem -out cert.pem \
+     -subj /CN=192.168.1.20 -addext "subjectAltName=IP:192.168.1.20,DNS:localhost"
+   TLS_CERT=cert.pem TLS_KEY=key.pem node server.js
+   ```
+   Sul Quest apri `https://192.168.1.20:3000`: il browser avvisa che il certificato non è attendibile, scegli
+   **Avanzate → Procedi**. Una volta accettato, funzionano anche il multigiocatore (`wss`) e la realtà virtuale. Gli altri
+   giocatori sulla stessa rete usano lo stesso indirizzo `https`.
+3. **Cavo USB con `adb reverse`** (per chi sviluppa, con la modalità sviluppatore del Quest attiva). Il Quest vede la
+   porta del PC come se fosse sua, e `localhost` vale come indirizzo sicuro anche in `http`:
+   ```sh
+   adb reverse tcp:3000 tcp:3000
+   ```
+   Poi sul Quest apri `http://localhost:3000`.
+
 ### Il pannello admin
-Si apre su `http://indirizzo:porta/admin`. Ha queste pagine:
+Si apre su `http://indirizzo:porta/admin` (o `https://` se il server usa `TLS_CERT`/`TLS_KEY`). Ha queste pagine:
 
 | Pagina | Cosa fa |
 |---|---|
@@ -438,13 +501,19 @@ volume `voxelia-data` per i dati:
 ADMIN_PASSWORD='la-tua-password' docker compose up -d
 ```
 
+Per l'https direttamente dal container (ad esempio per il Meta Quest in rete locale), metti `cert.pem` e `key.pem` in
+una cartella `certs/` e togli i commenti alle righe `TLS_CERT`, `TLS_KEY` e al volume `./certs` in `docker-compose.yml`.
+Con `docker run` si aggiunge `-v "$PWD/certs:/certs:ro" -e TLS_CERT=/certs/cert.pem -e TLS_KEY=/certs/key.pem`. Il
+controllo di salute segue da solo il protocollo.
+
 L'immagine la pubblica il workflow `.github/workflows/docker.yml` a ogni push su `main`: il nome segue il proprietario del
 repository e l'etichetta è la versione del gioco (`GAME_VER`), più `latest`.
 
 ### Suga
 Il server ufficiale gira su [Suga](https://suga.app):
 - il container costruisce l'immagine **direttamente da questo repository** con il `Dockerfile`, a ogni push su `main`;
-- un **endpoint HTTPS** punta alla porta **3000**;
+- un **endpoint HTTPS** punta alla porta **3000** (qui `TLS_CERT`/`TLS_KEY` non servono: l'https lo fa l'endpoint, e
+  dal Quest si gioca in VR aprendo direttamente l'indirizzo pubblico);
 - un **volume** è montato su `/data`;
 - `ADMIN_PASSWORD` è impostata come **variabile sensibile**.
 
@@ -530,6 +599,8 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zd_biomi.js` | Foresta, deserto e picchi più grandi: la pianta, i luoghi, le raccolte |
 | `8zd_biomi2.js` | Come si disegnano i biomi (alberi, rocce, piramide, arredi, edifici), gli interni e i loro personaggi |
 | `8ze_ricordo.js` | Il ricordo del Moreau: Aldoria Vecchia intatta, prima della nebbia (filmato flashback) |
+| `8zf_xr.js` | Realtà virtuale (WebXR) per Meta Quest: schermo sospeso, controller, levette |
+| `8zi_xrfp.js` | Realtà virtuale in prima persona: il mondo a grandezza naturale, attacchi con il movimento dei controller, pannelli e menu fluttuanti |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

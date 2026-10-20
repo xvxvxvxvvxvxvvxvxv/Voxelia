@@ -10936,7 +10936,10 @@ function xrStart(s){XR.s=s;XR.pan=null;XR.src.clear();XR.act=null;
     if(!started){const sv=LS.get(SAVEK,null);if(sv&&sv.p)contGame();else newGame(1)}
     s.requestAnimationFrame(xrFrame)}).catch(e=>{msg('Realtà virtuale non disponibile: '+(e&&e.message||e));s.end()});
   s.addEventListener('end',()=>{XR.s=null;XR.ref=null;XR.ax=null;MX=-1;rs();if(!XR.wl){XR.wl=1;requestAnimationFrame(loop)}});
-  s.addEventListener('inputsourceschange',()=>{XR.src.clear()})}
+  s.addEventListener('inputsourceschange',()=>{XR.src.clear()});
+  // mani senza controller (hand tracking): il pizzico fa clic dove punta la mano
+  s.addEventListener('select',e=>{const src=e.inputSource;if(src.gamepad||!XR.ref)return;const p=e.frame.getPose(src.targetRaySpace,XR.ref);if(!p)return;
+    const m=p.transform.matrix,h=xrHit([m[12],m[13],m[14]],[-m[8],-m[9],-m[10]]);XR.act=src;if(h&&h.in)xrClick(h.x,h.y)})}
 
 /* ---- WebGL: uno shader per lo schermo (texture del canvas) e uno per i raggi dei controller ---- */
 function xrProg(vs,fs){const gl=XR.gl,p=gl.createProgram();for(const[t,c]of[[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){const sh=gl.createShader(t);gl.shaderSource(sh,'#version 300 es\nprecision mediump float;\n'+c);gl.compileShader(sh);gl.attachShader(p,sh)}gl.linkProgram(p);return p}
@@ -10964,9 +10967,10 @@ function xrClick(x,y){const el=document.elementFromPoint(x,y)||cv,o={clientX:x,c
   el.dispatchEvent(new PointerEvent('pointerdown',o));el.dispatchEvent(new PointerEvent('pointerup',Object.assign({},o,{buttons:0})));el.dispatchEvent(new MouseEvent('click',Object.assign({},o,{buttons:0})))}
 function xrPulse(gp,k=.35,ms=20){const h=gp&&gp.hapticActuators&&gp.hapticActuators[0];if(h&&h.pulse)try{h.pulse(k,ms)}catch(e){}}
 function xrInput(fr){XR.ax=null;XR.zoom=0;
-  for(const src of XR.s.inputSources){const gp=src.gamepad;if(!gp)continue;const hd=src.handedness,st=XR.src.get(src)||{b:[]};XR.src.set(src,st);
+  for(const src of XR.s.inputSources){const gp=src.gamepad,hd=src.handedness,st=XR.src.get(src)||{b:[]};XR.src.set(src,st);
     const pose=fr.getPose(src.targetRaySpace,XR.ref);st.ray=null;
     if(pose){const m=pose.transform.matrix,o=[m[12],m[13],m[14]],d=[-m[8],-m[9],-m[10]];st.ray={o,d,h:xrHit(o,d)}}
+    if(!gp)continue;
     const B=gp.buttons.map(b=>!!(b&&b.pressed)),B0=st.b,dn=i=>B[i]&&!B0[i];st.b=B;
     const ax=gp.axes.length>=4?[gp.axes[2],gp.axes[3]]:[gp.axes[0]||0,gp.axes[1]||0];
     if(dn(0)){XR.act=src;const h=st.ray&&st.ray.h;if(h&&h.in){xrClick(h.x,h.y);xrPulse(gp)}}
@@ -10977,7 +10981,7 @@ function xrInput(fr){XR.ax=null;XR.zoom=0;
     if(dn(1)||dn(4)||dn(5))xrPulse(gp,.2,15)}
   if(XR.zoom)SZ=clamp(SZ*(1+XR.zoom*.02),.55,1.9);
   // il puntatore attivo è l'ultimo controller che ha premuto il grilletto (all'inizio quello destro)
-  if(!XR.act||!XR.src.has(XR.act))for(const src of XR.s.inputSources)if(src.gamepad&&(!XR.act||src.handedness==='right'))XR.act=src;
+  if(!XR.act||!XR.src.has(XR.act))for(const src of XR.s.inputSources)if(!XR.act||src.handedness==='right')XR.act=src;
   const st=XR.act&&XR.src.get(XR.act),h=st&&st.ray&&st.ray.h;
   if(h&&h.in){if(MX!==h.x||MY!==h.y){MX=h.x;MY=h.y;const el=document.elementFromPoint(MX,MY);if(el)el.dispatchEvent(new PointerEvent('pointermove',{clientX:MX,clientY:MY,bubbles:true,pointerType:'mouse',isPrimary:true}))}}else MX=-1}
 

@@ -122,6 +122,21 @@ orizzontale, e si possono spostare e ridimensionare con l'**editor dell'HUD** (I
 
 ---
 
+### Meta Quest (realtà virtuale)
+Nel browser del Quest compare il pulsante **Entra in VR** (nel menu e, durante la partita, in basso a destra). Il gioco
+appare su un grande schermo sospeso davanti a te; la pagina deve essere aperta da un indirizzo **https** (o da `localhost`),
+altrimenti il browser non offre la realtà virtuale.
+
+| Comando | Controller |
+|---|---|
+| Puntare e cliccare | Raggio del controller + grilletto |
+| Muoversi | Levetta sinistra |
+| Zoom | Levetta destra (avanti e indietro) |
+| Interagire (R) / Schivata (o chiudi finestra) | A / B |
+| Pozione / Zaino | X / Y |
+| Colpo ad area / Affondo | Impugnatura sinistra / destra |
+| Mappa / Rimettere lo schermo davanti | Premere la levetta sinistra / destra |
+
 ## Le modalità
 
 ![Il menu](docs/menu.jpg)
@@ -530,6 +545,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zd_biomi.js` | Foresta, deserto e picchi più grandi: la pianta, i luoghi, le raccolte |
 | `8zd_biomi2.js` | Come si disegnano i biomi (alberi, rocce, piramide, arredi, edifici), gli interni e i loro personaggi |
 | `8ze_ricordo.js` | Il ricordo del Moreau: Aldoria Vecchia intatta, prima della nebbia (filmato flashback) |
+| `8zf_xr.js` | Realtà virtuale (WebXR) per Meta Quest: schermo sospeso, controller, levette |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

@@ -376,13 +376,46 @@ Gli amministratori possono nascondere mondi, rispondere alle segnalazioni e bloc
 | Variabile | Predefinito | A cosa serve |
 |---|---|---|
 | `PORT` | `3000` | Porta HTTP e WebSocket |
+| `TLS_CERT` / `TLS_KEY` | (nessuno) | Percorsi di certificato e chiave PEM. Se ci sono entrambi il server parla **https** e i WebSocket passano in **wss** sulla stessa porta. |
 | `ADMIN_PASSWORD` | (chiesta all'avvio) | Password del pannello admin. Se manca e non c'è un terminale, ne viene generata una casuale e stampata nel registro. |
 | `DATA_FILE` | `voxelia-data.json` | Classifica, punti arena, cicli dei dungeon, impostazioni, ban, dati dei plugin |
 | `MONDI_DIR` | `mondi/` | Cartella dei mondi pubblicati |
 | `PLUGINS_DIR` | `plugins/` | Cartella dei plugin |
 
+### Giocare dal Meta Quest
+Il browser del Quest offre la realtà virtuale solo su pagine **https** o su `localhost`, e il gioco si collega al
+WebSocket con lo stesso protocollo della pagina (`wss://` da https). Con il server in `http` sulla rete di casa il gioco
+si apre, ma il pulsante **Entra in VR** non compare. Ci sono tre strade:
+
+1. **Server online o tunnel** (la più semplice). Sul server pubblicato (vedi [Pubblicare il server online](#pubblicare-il-server-online))
+   l'https c'è già. In casa basta un tunnel verso la porta 3000, poi si apre sul Quest l'indirizzo `https://` che stampa:
+   ```sh
+   cloudflared tunnel --url http://localhost:3000
+   # oppure: ngrok http 3000
+   ```
+2. **HTTPS dal server, in rete locale.** Crea un certificato per l'indirizzo del PC (quello stampato all'avvio, ad
+   esempio `192.168.1.20`) e avvia il server con `TLS_CERT` e `TLS_KEY`:
+   ```sh
+   # con mkcert (certificato riconosciuto dai browser del PC dove è installata la sua CA)
+   mkcert 192.168.1.20 localhost
+   TLS_CERT=192.168.1.20+1.pem TLS_KEY=192.168.1.20+1-key.pem node server.js
+   # oppure autofirmato con openssl
+   openssl req -x509 -newkey rsa:2048 -nodes -days 365 -keyout key.pem -out cert.pem \
+     -subj /CN=192.168.1.20 -addext "subjectAltName=IP:192.168.1.20,DNS:localhost"
+   TLS_CERT=cert.pem TLS_KEY=key.pem node server.js
+   ```
+   Sul Quest apri `https://192.168.1.20:3000`: il browser avvisa che il certificato non è attendibile, scegli
+   **Avanzate → Procedi**. Una volta accettato, funzionano anche il multigiocatore (`wss`) e la realtà virtuale. Gli altri
+   giocatori sulla stessa rete usano lo stesso indirizzo `https`.
+3. **Cavo USB con `adb reverse`** (per chi sviluppa, con la modalità sviluppatore del Quest attiva). Il Quest vede la
+   porta del PC come se fosse sua, e `localhost` vale come indirizzo sicuro anche in `http`:
+   ```sh
+   adb reverse tcp:3000 tcp:3000
+   ```
+   Poi sul Quest apri `http://localhost:3000`.
+
 ### Il pannello admin
-Si apre su `http://indirizzo:porta/admin`. Ha queste pagine:
+Si apre su `http://indirizzo:porta/admin` (o `https://` se il server usa `TLS_CERT`/`TLS_KEY`). Ha queste pagine:
 
 | Pagina | Cosa fa |
 |---|---|
@@ -453,13 +486,19 @@ volume `voxelia-data` per i dati:
 ADMIN_PASSWORD='la-tua-password' docker compose up -d
 ```
 
+Per l'https direttamente dal container (ad esempio per il Meta Quest in rete locale), metti `cert.pem` e `key.pem` in
+una cartella `certs/` e togli i commenti alle righe `TLS_CERT`, `TLS_KEY` e al volume `./certs` in `docker-compose.yml`.
+Con `docker run` si aggiunge `-v "$PWD/certs:/certs:ro" -e TLS_CERT=/certs/cert.pem -e TLS_KEY=/certs/key.pem`. Il
+controllo di salute segue da solo il protocollo.
+
 L'immagine la pubblica il workflow `.github/workflows/docker.yml` a ogni push su `main`: il nome segue il proprietario del
 repository e l'etichetta è la versione del gioco (`GAME_VER`), più `latest`.
 
 ### Suga
 Il server ufficiale gira su [Suga](https://suga.app):
 - il container costruisce l'immagine **direttamente da questo repository** con il `Dockerfile`, a ogni push su `main`;
-- un **endpoint HTTPS** punta alla porta **3000**;
+- un **endpoint HTTPS** punta alla porta **3000** (qui `TLS_CERT`/`TLS_KEY` non servono: l'https lo fa l'endpoint, e
+  dal Quest si gioca in VR aprendo direttamente l'indirizzo pubblico);
 - un **volume** è montato su `/data`;
 - `ADMIN_PASSWORD` è impostata come **variabile sensibile**.
 

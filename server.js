@@ -4,11 +4,22 @@
 // i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
 // e i MONDI PUBBLICATI con Voxelia Studio (browser dei mondi, recensioni, commenti): cartella mondi/ (o MONDI_DIR).
 // Nessuna dipendenza: basta Node.js 16+.   Avvio:  node server.js   (porta 3000, o PORT=xxxx)
+// HTTPS facoltativo (serve al Meta Quest, che offre la realtà virtuale solo da indirizzi sicuri):
+// TLS_CERT=cert.pem TLS_KEY=key.pem node server.js  -> https:// e WebSocket wss:// sulla stessa porta.
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
-const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
+const http = require('http'), https = require('https'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
 const VER = '7.12';
 const PORT = process.env.PORT || 3000;
+// certificato e chiave in formato PEM: se ci sono entrambi il server parla solo https/wss
+const TLS = (() => {
+  const c = process.env.TLS_CERT, k = process.env.TLS_KEY;
+  if (!c && !k) return null;
+  if (!c || !k) { console.error('Per HTTPS servono sia TLS_CERT sia TLS_KEY'); process.exit(1); }
+  try { return { cert: fs.readFileSync(c), key: fs.readFileSync(k) }; }
+  catch (e) { console.error('Certificato HTTPS non leggibile: ' + e.message); process.exit(1); }
+})();
+const PROTO = TLS ? 'https' : 'http';
 const DATA = process.env.DATA_FILE || path.join(__dirname, 'voxelia-data.json');
 // il gioco può chiamarsi voxelia.html oppure voxelia_v6.3.html ecc.: si usa il file voxelia*.html più recente
 const gameFile = () => { try { const f = fs.readdirSync(__dirname).filter(n => /^voxelia.*\.html$/i.test(n)).map(n => [n, fs.statSync(path.join(__dirname, n)).mtimeMs]).sort((a, b) => b[1] - a[1]); return f.length ? f[0][0] : 'voxelia.html'; } catch (e) { return 'voxelia.html'; } };
@@ -93,7 +104,7 @@ async function choosePassword() {
   console.log('  ║' + t.padEnd(46) + '║');
   console.log('  ╚' + '═'.repeat(46) + '╝');
   console.log('  Scegli la password per il pannello admin.');
-  console.log('  Ti servirà per entrare su http://localhost:' + PORT + '/admin');
+  console.log('  Ti servirà per entrare su ' + PROTO + '://localhost:' + PORT + '/admin');
   console.log('');
   for (;;) {
     const a = await askHidden('  Password (almeno 6 caratteri): ');
@@ -112,7 +123,7 @@ function authed(req) { const t = cookie(req, 'vxadm'), e = t && SESS.get(t); if 
 const json = (res, code, o, h) => { res.writeHead(code, Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, h || {})); res.end(JSON.stringify(o)); };
 function body(req, cb) { let d = ''; req.on('data', x => { d += x; if (d.length > 20000) req.destroy(); }); req.on('end', () => { let j = {}; try { j = JSON.parse(d || '{}'); } catch (e) {} cb(j && typeof j === 'object' ? j : {}); }); }
 
-const srv = http.createServer((req, res) => {
+const srv = (TLS ? https.createServer.bind(null, TLS) : http.createServer)((req, res) => {
   const u = req.url.split('?')[0];
   if (u === '/' || u === '/index.html') {
     try { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(page()); }
@@ -145,7 +156,7 @@ function adminApi(req, res, u) {
       FAILS.delete(ip);
       const t = crypto.randomBytes(24).toString('hex'); SESS.set(t, Date.now() + 12 * 3600e3);
       log('admin', 'Accesso al pannello da ' + ip);
-      const sec = (req.headers['x-forwarded-proto'] || '').includes('https') ? '; Secure' : '';
+      const sec = TLS || (req.headers['x-forwarded-proto'] || '').includes('https') ? '; Secure' : '';
       json(res, 200, { ok: 1 }, { 'Set-Cookie': 'vxadm=' + t + '; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200' + sec });
     });
   }
@@ -1161,10 +1172,11 @@ setInterval(() => {
   srv.listen(PORT, '0.0.0.0', () => {
     log('sys', 'Server avviato sulla porta ' + PORT);
     console.log('Voxelia ' + VER + ' in ascolto sulla porta ' + PORT);
-    console.log('Stessa rete wifi:  http://localhost:' + PORT);
-    for (const ip of lanIps()) console.log('                   http://' + ip + ':' + PORT);
+    console.log('Stessa rete wifi:  ' + PROTO + '://localhost:' + PORT);
+    for (const ip of lanIps()) console.log('                   ' + PROTO + '://' + ip + ':' + PORT);
     console.log('Wifi diverse: esponi la porta ' + PORT + ' con un tunnel (cloudflared o ngrok) e condividi l\'indirizzo https.');
-    console.log('Pannello admin:    http://localhost:' + PORT + '/admin');
+    if (!TLS) console.log('Meta Quest: la realtà virtuale vuole https. Usa TLS_CERT/TLS_KEY, un tunnel o adb reverse (vedi README).');
+    console.log('Pannello admin:    ' + PROTO + '://localhost:' + PORT + '/admin');
     console.log('Dati salvati in:   ' + DATA);
     console.log('Plugin:            ' + plugSummary());
     console.log('Mondi pubblicati:  ' + Object.keys(MD.w).length + '  (' + MD_DIR + ')');

@@ -60,7 +60,22 @@ function xrHit(o,d){const p=XR.pan;if(!p)return null;const den=dot3(d,p.n);if(de
   return{t,q,x:x*W,y:y*H,in:x>=0&&x<=1&&y>=0&&y<=1}}
 
 /* ---- comandi dei controller (profilo xr-standard: 0 grilletto, 1 impugnatura, 3 pressione della levetta, 4 A/X, 5 B/Y) ---- */
-function xrClick(x,y){const el=document.elementFromPoint(x,y)||cv,o={clientX:x,clientY:y,bubbles:true,cancelable:true,view:window,button:0,buttons:1,pointerId:1,pointerType:'mouse',isPrimary:true};
+// l'elemento della pagina sotto il punto (x,y): quello del browser e, se il browser non lo trova (nel visore la pagina non si vede
+// e alcuni browser non la «toccano»), il più in alto fra gli elementi cliccabili il cui riquadro contiene il punto
+const XRCK='button,a[href],input,select,textarea,summary,label,[onclick],[role=button],.ti';
+function xrTarget(x,y){const e=document.elementFromPoint(x,y);if(e&&e!==cv&&e!==document.body&&e!==document.documentElement)return e;
+  const L=document.querySelectorAll(XRCK);for(let i=L.length-1;i>=0;i--){const b=L[i];if(b.disabled||!b.getClientRects().length)continue;const r=b.getBoundingClientRect();
+    if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom&&getComputedStyle(b).visibility!=='hidden')return b}
+  return e}
+// si può cliccare? (pulsanti, campi, voci con onclick o con la manina del mouse)
+function xrClickable(e){if(!e||e===cv||e===document.body||e===document.documentElement)return null;const c=e.closest(XRCK);if(c)return c;
+  for(let x=e;x&&x!==document.body;x=x.parentElement)if(x.onclick||/pointer/.test(getComputedStyle(x).cursor))return x;return null}
+function xrClick(x,y){const el=xrTarget(x,y)||cv,o={clientX:x,clientY:y,bubbles:true,cancelable:true,view:window,button:0,buttons:1,pointerId:1,pointerType:'mouse',isPrimary:true};
+  // menu a tendina e cursori: nel visore il browser non apre le sue finestrelle, quindi il clic sceglie la voce dopo o il punto del cursore
+  const ch=t=>{t.dispatchEvent(new Event('input',{bubbles:true}));t.dispatchEvent(new Event('change',{bubbles:true}))};
+  if(el.tagName==='SELECT'&&!el.disabled){const n=el.options.length;if(n){el.selectedIndex=(el.selectedIndex+1)%n;ch(el)}return}
+  if(el.tagName==='INPUT'&&el.type==='range'&&!el.disabled){const r=el.getBoundingClientRect(),a=+el.min||0,b=el.max===''?100:+el.max,st=+el.step||1,k=clamp((x-r.left)/Math.max(1,r.width),0,1);
+    el.value=String(Math.round((a+(b-a)*k)/st)*st);ch(el);return}
   el.dispatchEvent(new PointerEvent('pointerdown',o));el.dispatchEvent(new PointerEvent('pointerup',Object.assign({},o,{buttons:0})));el.dispatchEvent(new MouseEvent('click',Object.assign({},o,{buttons:0})))}
 function xrPulse(gp,k=.35,ms=20){const h=gp&&gp.hapticActuators&&gp.hapticActuators[0];if(h&&h.pulse)try{h.pulse(k,ms)}catch(e){}}
 function xrInput(fr){XR.ax=null;XR.zoom=0;
@@ -81,7 +96,7 @@ function xrInput(fr){XR.ax=null;XR.zoom=0;
   // il puntatore attivo è l'ultimo controller che ha premuto il grilletto (all'inizio quello destro)
   if(!XR.act||!XR.src.has(XR.act))for(const src of XR.s.inputSources)if(!XR.act||src.handedness==='right')XR.act=src;
   const st=XR.act&&XR.src.get(XR.act),h=st&&st.ray&&st.ray.h;
-  if(h&&h.in){if(MX!==h.x||MY!==h.y){MX=h.x;MY=h.y;const el=document.elementFromPoint(MX,MY);if(el)el.dispatchEvent(new PointerEvent('pointermove',{clientX:MX,clientY:MY,bubbles:true,pointerType:'mouse',isPrimary:true}))}}else MX=-1}
+  if(h&&h.in){if(MX!==h.x||MY!==h.y){MX=h.x;MY=h.y;const el=xrTarget(MX,MY);if(el)el.dispatchEvent(new PointerEvent('pointermove',{clientX:MX,clientY:MY,bubbles:true,pointerType:'mouse',isPrimary:true}))}}else MX=-1}
 
 // il cursore del gioco (stesse forme e colori delle Impostazioni), disegnato sul canvas dove punta il controller
 function xrCursor(){if(MX<0)return;const k=curK||'def',st=SET.cur<4?SET.cur|0:1,col=CURC[SET.curc]||CURC.oro;let c=XR.cur[k+st+col];
@@ -97,7 +112,8 @@ function xrFrame(n,fr){const s=XR.s;if(!s)return;s.requestAnimationFrame(xrFrame
     if(last!==l0){if(typeof xrUiDraw==='function')xrUiDraw(G0);xrCursor();gl.bindTexture(gl.TEXTURE_2D,XR.tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,cv);gl.generateMipmap(gl.TEXTURE_2D)}
     XR.cost=XR.cost*.9+(performance.now()-t0)*.1;XR.div=XR.cost>9?2:XR.cost<6?1:XR.div}
   const L=s.renderState.baseLayer;gl.bindFramebuffer(gl.FRAMEBUFFER,L.framebuffer);gl.clearColor(.063,.075,.102,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);
-  const lines=[];for(const st of XR.src.values())if(st.ray){const r=st.ray,e=v3(r.o,r.d,r.h&&r.h.in?r.h.t:.6);lines.push(...r.o,...e)}
+  // il raggio si vede solo quando punta lo schermo
+  const lines=[];for(const st of XR.src.values())if(st.ray&&st.ray.h&&st.ray.h.in){const r=st.ray,e=v3(r.o,r.d,r.h.t);lines.push(...r.o,...e)}
   gl.bindBuffer(gl.ARRAY_BUFFER,XR.lb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(lines),gl.STREAM_DRAW);
   for(const v of pose.views){const vp=L.getViewport(v);gl.viewport(vp.x,vp.y,vp.width,vp.height);
     if(!XR.noPan){gl.bindVertexArray(null);gl.useProgram(XR.pq);gl.uniformMatrix4fv(gl.getUniformLocation(XR.pq,'P'),false,v.projectionMatrix);gl.uniformMatrix4fv(gl.getUniformLocation(XR.pq,'V'),false,v.transform.inverse.matrix);

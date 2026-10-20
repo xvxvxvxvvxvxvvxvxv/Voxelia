@@ -10967,7 +10967,22 @@ function xrHit(o,d){const p=XR.pan;if(!p)return null;const den=dot3(d,p.n);if(de
   return{t,q,x:x*W,y:y*H,in:x>=0&&x<=1&&y>=0&&y<=1}}
 
 /* ---- comandi dei controller (profilo xr-standard: 0 grilletto, 1 impugnatura, 3 pressione della levetta, 4 A/X, 5 B/Y) ---- */
-function xrClick(x,y){const el=document.elementFromPoint(x,y)||cv,o={clientX:x,clientY:y,bubbles:true,cancelable:true,view:window,button:0,buttons:1,pointerId:1,pointerType:'mouse',isPrimary:true};
+// l'elemento della pagina sotto il punto (x,y): quello del browser e, se il browser non lo trova (nel visore la pagina non si vede
+// e alcuni browser non la «toccano»), il più in alto fra gli elementi cliccabili il cui riquadro contiene il punto
+const XRCK='button,a[href],input,select,textarea,summary,label,[onclick],[role=button],.ti';
+function xrTarget(x,y){const e=document.elementFromPoint(x,y);if(e&&e!==cv&&e!==document.body&&e!==document.documentElement)return e;
+  const L=document.querySelectorAll(XRCK);for(let i=L.length-1;i>=0;i--){const b=L[i];if(b.disabled||!b.getClientRects().length)continue;const r=b.getBoundingClientRect();
+    if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom&&getComputedStyle(b).visibility!=='hidden')return b}
+  return e}
+// si può cliccare? (pulsanti, campi, voci con onclick o con la manina del mouse)
+function xrClickable(e){if(!e||e===cv||e===document.body||e===document.documentElement)return null;const c=e.closest(XRCK);if(c)return c;
+  for(let x=e;x&&x!==document.body;x=x.parentElement)if(x.onclick||/pointer/.test(getComputedStyle(x).cursor))return x;return null}
+function xrClick(x,y){const el=xrTarget(x,y)||cv,o={clientX:x,clientY:y,bubbles:true,cancelable:true,view:window,button:0,buttons:1,pointerId:1,pointerType:'mouse',isPrimary:true};
+  // menu a tendina e cursori: nel visore il browser non apre le sue finestrelle, quindi il clic sceglie la voce dopo o il punto del cursore
+  const ch=t=>{t.dispatchEvent(new Event('input',{bubbles:true}));t.dispatchEvent(new Event('change',{bubbles:true}))};
+  if(el.tagName==='SELECT'&&!el.disabled){const n=el.options.length;if(n){el.selectedIndex=(el.selectedIndex+1)%n;ch(el)}return}
+  if(el.tagName==='INPUT'&&el.type==='range'&&!el.disabled){const r=el.getBoundingClientRect(),a=+el.min||0,b=el.max===''?100:+el.max,st=+el.step||1,k=clamp((x-r.left)/Math.max(1,r.width),0,1);
+    el.value=String(Math.round((a+(b-a)*k)/st)*st);ch(el);return}
   el.dispatchEvent(new PointerEvent('pointerdown',o));el.dispatchEvent(new PointerEvent('pointerup',Object.assign({},o,{buttons:0})));el.dispatchEvent(new MouseEvent('click',Object.assign({},o,{buttons:0})))}
 function xrPulse(gp,k=.35,ms=20){const h=gp&&gp.hapticActuators&&gp.hapticActuators[0];if(h&&h.pulse)try{h.pulse(k,ms)}catch(e){}}
 function xrInput(fr){XR.ax=null;XR.zoom=0;
@@ -10988,7 +11003,7 @@ function xrInput(fr){XR.ax=null;XR.zoom=0;
   // il puntatore attivo è l'ultimo controller che ha premuto il grilletto (all'inizio quello destro)
   if(!XR.act||!XR.src.has(XR.act))for(const src of XR.s.inputSources)if(!XR.act||src.handedness==='right')XR.act=src;
   const st=XR.act&&XR.src.get(XR.act),h=st&&st.ray&&st.ray.h;
-  if(h&&h.in){if(MX!==h.x||MY!==h.y){MX=h.x;MY=h.y;const el=document.elementFromPoint(MX,MY);if(el)el.dispatchEvent(new PointerEvent('pointermove',{clientX:MX,clientY:MY,bubbles:true,pointerType:'mouse',isPrimary:true}))}}else MX=-1}
+  if(h&&h.in){if(MX!==h.x||MY!==h.y){MX=h.x;MY=h.y;const el=xrTarget(MX,MY);if(el)el.dispatchEvent(new PointerEvent('pointermove',{clientX:MX,clientY:MY,bubbles:true,pointerType:'mouse',isPrimary:true}))}}else MX=-1}
 
 // il cursore del gioco (stesse forme e colori delle Impostazioni), disegnato sul canvas dove punta il controller
 function xrCursor(){if(MX<0)return;const k=curK||'def',st=SET.cur<4?SET.cur|0:1,col=CURC[SET.curc]||CURC.oro;let c=XR.cur[k+st+col];
@@ -11004,7 +11019,8 @@ function xrFrame(n,fr){const s=XR.s;if(!s)return;s.requestAnimationFrame(xrFrame
     if(last!==l0){if(typeof xrUiDraw==='function')xrUiDraw(G0);xrCursor();gl.bindTexture(gl.TEXTURE_2D,XR.tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,cv);gl.generateMipmap(gl.TEXTURE_2D)}
     XR.cost=XR.cost*.9+(performance.now()-t0)*.1;XR.div=XR.cost>9?2:XR.cost<6?1:XR.div}
   const L=s.renderState.baseLayer;gl.bindFramebuffer(gl.FRAMEBUFFER,L.framebuffer);gl.clearColor(.063,.075,.102,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);
-  const lines=[];for(const st of XR.src.values())if(st.ray){const r=st.ray,e=v3(r.o,r.d,r.h&&r.h.in?r.h.t:.6);lines.push(...r.o,...e)}
+  // il raggio si vede solo quando punta lo schermo
+  const lines=[];for(const st of XR.src.values())if(st.ray&&st.ray.h&&st.ray.h.in){const r=st.ray,e=v3(r.o,r.d,r.h.t);lines.push(...r.o,...e)}
   gl.bindBuffer(gl.ARRAY_BUFFER,XR.lb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(lines),gl.STREAM_DRAW);
   for(const v of pose.views){const vp=L.getViewport(v);gl.viewport(vp.x,vp.y,vp.width,vp.height);
     if(!XR.noPan){gl.bindVertexArray(null);gl.useProgram(XR.pq);gl.uniformMatrix4fv(gl.getUniformLocation(XR.pq,'P'),false,v.projectionMatrix);gl.uniformMatrix4fv(gl.getUniformLocation(XR.pq,'V'),false,v.transform.inverse.matrix);
@@ -11229,12 +11245,12 @@ function xr3dDraw(gl,v,XR){if(!XR.s)return;const now=performance.now(),nf=now-X3
    pannello sotto lo sguardo; finestre, dialoghi, negozi e mappa si aprono su un pannello davanti agli occhi e si usano
    con il raggio e il grilletto. Il menu della VR (grilletto sinistro nel vuoto) ha i pulsanti della barra e le opzioni di comfort.
    Durante i filmati, la navigazione e i minigiochi disegnati sul canvas si torna da soli allo schermo sospeso. */
-const FP=Object.assign({on:1,rot:'s30',vig:1,spd:1,hud:1,seen:0},LS.get('voxelia_xrfp',{}),
+const FP=Object.assign({on:1,rot:'s30',vig:1,spd:1,hud:1,seen:0,vd:24},LS.get('voxelia_xrfp',{}),
   {mode:'',menu:0,th:0,G:0,cal:1,hp:[0,1.6,0],hf:[0,-1],tf:[0,1],lh:null,sr:1,fid:0,dfid:-1,lt:0,dt:0,ax:null,mv:0,vv:0,snapT:0,
    win:0,wt:0,wp:null,hy:null,hfol:0,grip:{},hs:new Map(),pb:new Map(),gl:null,mdl:new Float32Array(16),vis:[],dn:0,fn:0,sn:0,ln:0,pn:0,spn:0,wk:'',sk:'',ut:0,uok:0,atl:null,ast:0,spr:[]});
-const FPS=1.6,FPZ=.05,FPR=16;  // 1 casella = 1,6 m, 1 pixel d'altezza = 5 cm (l'eroe è alto circa 1,7 m), raggio di vista 16 caselle
+const FPS=1.6,FPZ=.05,FPR=24;  // 1 casella = 1,6 m, 1 pixel d'altezza = 5 cm (l'eroe è alto circa 1,7 m), raggio di vista di base 24 caselle (FP.vd)
 const FPI=new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
-const fpSave=()=>LS.set('voxelia_xrfp',{on:FP.on,rot:FP.rot,vig:FP.vig,spd:FP.spd,hud:FP.hud,seen:FP.seen});
+const fpSave=()=>LS.set('voxelia_xrfp',{on:FP.on,rot:FP.rot,vig:FP.vig,spd:FP.spd,hud:FP.hud,seen:FP.seen,vd:FP.vd});
 const fpLive=()=>!!XR.s&&FP.mode==='fp';
 // la prima persona vale quando si gioca a piedi; filmati, visita guidata, nave, pesca, scavi, duelli ed editor si vedono sullo schermo sospeso
 const fpWant=()=>!!(FP.on&&started&&P&&M&&!(NAV&&Zk==='mare')&&!(FSH&&PM==='fish')&&PM!=='dig'&&PM!=='duel'&&!(typeof EDIT!=='undefined'&&EDIT)&&!(typeof TOUR!=='undefined'&&TOUR)&&!(typeof OCC!=='undefined'&&OCC&&OCC.intro));
@@ -11259,7 +11275,7 @@ const _drawFP=draw;draw=function(){if(fpLive())return;_drawFP()};
 const _rsFP=rs;rs=function(){_rsFP();if(fpLive()){cv.width=cv.height=4;lc=null;FC=null}};
 // un clic del raggio che finisce sul canvas (zone vuote dell'interfaccia) non deve diventare «cammina fin lì»
 const _xrClickFP=xrClick;xrClick=function(x,y){if(fpLive()&&!fpUiEl(x,y))return;_xrClickFP(x,y)};
-const fpUiEl=(x,y)=>{const e=document.elementFromPoint(x,y);return e&&e!==cv&&e!==document.body&&e!==document.documentElement?e:null};
+const fpUiEl=(x,y)=>{const e=xrTarget(x,y);return e&&e!==cv&&e!==document.body&&e!==document.documentElement?e:null};
 const fpOnUI=h=>!!(h&&h.in&&fpUiEl(h.x,h.y));
 // l'affondo va verso il nemico davanti a te (o dritto avanti), non verso quello più vicino alle tue spalle
 const _lungeFP=lunge;lunge=function(){if(!fpLive())return _lungeFP();const e=fpTarget(()=>7,35),f=FP.tf;
@@ -11306,18 +11322,33 @@ window.xrInputHook=function(src,gp,B,B0,ray,fr){const dn=i=>B[i]&&!B0[i],hd=src.
     // anche sullo schermo sospeso il grilletto sinistro fuori dallo schermo apre il menu della VR (per tornare in prima persona)
     if(XR.s&&hd==='left'&&dn(0)&&!(ray&&ray.h&&ray.h.in)&&started){fpMenu(!FP.menu);xrPulse(gp,.3,20)}
     return _xrHookFP?_xrHookFP(src,gp,B,B0,ray,fr):false}
-  if(ray)ray.h=xrHit(ray.o,ray.d);
-  const now=performance.now(),ax=gp.axes.length>=4?[gp.axes[2],gp.axes[3]]:[gp.axes[0]||0,gp.axes[1]||0];
-  if(dn(0)){const h=ray&&ray.h;if(fpOnUI(h)){XR.act=src;xrClick(h.x,h.y);xrPulse(gp)}else if(hd==='left'){fpMenu(!FP.menu);xrPulse(gp,.3,20)}else fpStrike(gp)}
+  // l'interfaccia sotto lo sguardo si guarda soltanto (i suoi comandi sono nel menu della VR): il raggio usa solo le finestre aperte
+  if(ray){ray.h=FP.win?xrHit(ray.o,ray.d):null;const h=ray.h,on=h&&h.in;ray.ck=on&&xrClickable(xrTarget(h.x,h.y));ray.pk=on?null:fpPick(ray);
+    ray.vis=ray.ck?h.t:ray.pk?ray.pk.t:0}
+  const now=performance.now(),ax=gp.axes.length>=4?[gp.axes[2],gp.axes[3]]:[gp.axes[0]||0,gp.axes[1]||0],pk=ray&&ray.pk;
+  if(dn(0)){const h=ray&&ray.h;if(fpOnUI(h)){XR.act=src;xrClick(h.x,h.y);xrPulse(gp)}else if(pk&&!(pk.e.k==='en'&&hd==='right')){fpUse(pk.e);xrPulse(gp,.3,25)}else if(hd==='left'){fpMenu(!FP.menu);xrPulse(gp,.3,20)}else fpStrike(gp)}
   if(hd==='left'){FP.ax=ax;
     if(dn(1))area();if(dn(4))pot();if(dn(5)){fpMenu(0);tog('inv')}if(dn(3)){$('mappa')&&$('mappa').style.display==='flex'?closeMap():(fpMenu(0),openMap())}}
   else{const x=ax[0];
     if(FP.rot==='lib'){if(Math.abs(x)>.2){FP.th+=Math.sign(x)*(Math.abs(x)-.2)/.8*2.2*FP.dt;FP.turn=Math.abs(x)}}
     else if(Math.abs(x)>.7&&FP.sr){FP.sr=0;FP.th+=Math.sign(x)*(FP.rot==='s45'?Math.PI/4:Math.PI/6);FP.snapT=now;xrPulse(gp,.15,10)}else if(Math.abs(x)<.35)FP.sr=1;
-    if(dn(1))lunge();if(dn(4)&&IT){P.path=[];P.tg=null;act(IT)}if(dn(5))fpBack();if(dn(3)){fpRecenter();xrPulse(gp,.5,40)}}
+    if(dn(1))lunge();if(dn(4)){const e=pk&&pk.e.k!=='en'?pk.e:FP.ait;if(e)fpUse(e)}if(dn(5))fpBack();if(dn(3)){fpRecenter();xrPulse(gp,.5,40)}}
   if(dn(1)||dn(4)||dn(5))xrPulse(gp,.2,15);
   if(!fpOnUI(ray&&ray.h))fpGesture(src,gp,fr,now);else FP.grip[hd]=src.gripSpace&&fr.getPose(src.gripSpace,XR.ref)?fr.getPose(src.gripSpace,XR.ref).transform.matrix:null;
   return true};
+/* ---- puntare il mondo: la persona, la porta o l'oggetto (o il nemico) più vicino al raggio, entro 9 caselle ---- */
+function fpPick(r){if(!r||!P)return null;let best=null;
+  for(const e of ents){if(!(ITK.has(e.k)||e.k==='en'))continue;if(Math.abs(e.px-P.px)>9||Math.abs(e.py-P.py)>9)continue;
+    const c=fpRef(e.px,e.py,e.k==='npc'||e.k==='en'?26:e.k==='po'?30:12),q=[c[0]-r.o[0],c[1]-r.o[1],c[2]-r.o[2]],t=dot3(q,r.d);if(t<.2)continue;
+    const d=Math.hypot(q[0]-r.d[0]*t,q[1]-r.d[1]*t,q[2]-r.d[2]*t);if(d<.3+t*.035&&(!best||t<best.t))best={e,t}}
+  return best}
+// la cosa con cui interagisce il tasto A: quella vicina (entro la portata del gioco) più davanti allo sguardo
+function fpAim(){let best=null,bs=1e9;const f=FP.tf,fl=Math.hypot(f[0],f[1])||1;
+  for(const e of ents){if(!ITK.has(e.k))continue;const dx=e.px-P.px,dy=e.py-P.py,d=Math.hypot(dx,dy);if(d>1.9)continue;const k=d>.05?(dx*f[0]+dy*f[1])/d/fl:1,sc=d+(1-k)*1.5;if(sc<bs){bs=sc;best=e}}
+  return best||IT}
+// interagire: vicino si usa subito, lontano l'eroe ci va da solo (come con il clic del mouse) e poi lo usa
+function fpUse(e){if(!e||!started||!P||P.hp<=0)return;if(e.k==='en'){P.tg=null;return}fpMenu(0);
+  if(Math.hypot(e.px-P.px,e.py-P.py)<=1.7){P.path=[];P.tg=null;act(e)}else{P.tg=e;P.rp=0}}
 function fpBack(){if(FP.menu){fpMenu(0);return}const mp=$('mappa');if(mp&&mp.style.display==='flex'){closeMap();return}if(PM){cl();return}dodge()}
 function fpRecenter(){FP.wp=null;FP.hy=null}
 
@@ -11335,6 +11366,7 @@ function fpPre(fr){const now=performance.now();FP.dt=Math.min(.1,(now-(FP.lt||no
   // l'eroe guarda dove guardi tu (gli altri giocatori lo vedono girato così); i bersagli automatici non lo trascinano in giro
   if(!P.dm){const f=FP.tf,d=Math.hypot(f[0],f[1])||1;P.dr=[f[0]/d,f[1]/d];if(!P.km)P.fc=faceOf(P.dr[0],P.dr[1])}
   if(P.tg&&(P.tg.k==='en'||P.tg.k==='pl'))P.tg=null;
+  FP.ait=fpAim();
   if(now-FP.wt>150){FP.wt=now;FP.win=fpWinOpen()}
   fpPanels(hp)}
 function fpSwitch(w){FP.mode=w;FP.lh=null;FP.wp=null;FP.hy=null;FP.hs.clear();
@@ -11358,7 +11390,7 @@ function fpPanels(hp){const f=FP.hf;
   const g=[Math.cos(FP.hy),Math.sin(FP.hy)];XR.pan=fpPan([hp[0]+g[0]*.95,hp[1]-.52,hp[2]+g[1]*.95],g,.56,1)}
 
 /* ---- menu della VR: un pannello HTML del gioco (stessi stili e icone), quindi si vede e si clicca come le altre finestre ---- */
-const FPROT={s30:'a scatti di 30°',s45:'a scatti di 45°',lib:'continua'},FPSPD={1:'100%',.7:'70%',.5:'50%'};
+const FPROT={s30:'a scatti di 30°',s45:'a scatti di 45°',lib:'continua'},FPSPD={1:'100%',.7:'70%',.5:'50%'},FPVIG=['no','leggera','media','forte'],FPVD={16:'vicina',24:'media',32:'lontana',40:'massima'};
 function fpMenu(on){FP.menu=on?1:0;fpMenuShow();FP.wt=0}
 function fpMenuShow(){let el=$('xrfp');
   if(!el){if(!FP.menu)return;const st=document.createElement('style');st.textContent='#xrfp{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(600px,94vw);max-height:88%;overflow:auto;background:var(--pn);border:2px solid var(--ac);padding:10px 14px;box-sizing:border-box;box-shadow:0 10px 40px #0009;color:var(--fg);z-index:60;display:none}#xrfp.on{display:block}#xrfp h3,#xrfp h4{margin:6px 0}#xrfp .xr{display:flex;flex-wrap:wrap;gap:4px}#xrfp .xr button{margin:0}#xrfp table{border-collapse:collapse;font-size:13px;width:100%}#xrfp td{padding:2px 6px;border-top:1px solid #fff2}#xrfp td:first-child{opacity:.85;white-space:nowrap}';
@@ -11367,11 +11399,11 @@ function fpMenuShow(){let el=$('xrfp');
   const bar=[...document.querySelectorAll('#bar>button')].map(b=>{const k=b.cloneNode(true);k.removeAttribute('id');k.setAttribute('onclick','fpMenu(0);'+(b.getAttribute('onclick')||''));return k.outerHTML}).join('');
   const lv=fpLive(),opt=(k,l,v)=>`<button onclick="fpOpt('${k}')">${l}: <b>${v}</b></button>`;
   el.innerHTML=`<h3>${ico('gamepad',20)} Realtà virtuale</h3><div class="xr">${bar}<button onclick="fpMenu(0);pot()">${ico('pozione',20)} Pozione</button></div>
-<h4>Vista e comfort</h4><div class="xr">${opt('on','Prima persona',FP.on?'sì':'no (schermo sospeso)')}${opt('rot','Rotazione',FPROT[FP.rot]||FPROT.s30)}${opt('vig','Vignetta in movimento',FP.vig?'sì':'no')}${opt('spd','Velocità',FPSPD[FP.spd]||'100%')}${opt('hud','Interfaccia',FP.hud?'sotto lo sguardo':'nascosta')}
+<h4>Vista e comfort</h4><div class="xr">${opt('on','Prima persona',FP.on?'sì':'no (schermo sospeso)')}${opt('rot','Rotazione',FPROT[FP.rot]||FPROT.s30)}${opt('vig','Vignetta in movimento',FPVIG[FP.vig|0]||'leggera')}${opt('vd','Distanza di visuale',FPVD[FP.vd]||'media')}${opt('spd','Velocità',FPSPD[FP.spd]||'100%')}${opt('hud','Interfaccia',FP.hud?'sotto lo sguardo':'nascosta')}
 <button onclick="fpOpt('cal')">Ricalibra l'altezza degli occhi</button><button onclick="fpOpt('rc')">Rimetti davanti i pannelli</button>${!lv&&FP.on?'<button onclick="fpMenu(0)">La prima persona torna a fine filmato, nave o minigioco</button>':''}</div>
-<h4>Comandi</h4><table><tr><td>Attaccare</td><td>Muovi il controller destro (fendente) · grilletto destro sul nemico davanti</td></tr><tr><td>Affondo</td><td>Stoccata in avanti con il controller · impugnatura destra</td></tr><tr><td>Colpo ad area</td><td>Le due mani giù insieme · impugnatura sinistra</td></tr><tr><td>Camminare / girarsi</td><td>Levetta sinistra (o cammina nella stanza) / levetta destra</td></tr><tr><td>Interagire</td><td>A, vicino a persone, porte, forzieri e oggetti</td></tr><tr><td>Schivata / chiudere</td><td>B</td></tr><tr><td>Pozione / zaino</td><td>X / Y</td></tr><tr><td>Mappa</td><td>Premi la levetta sinistra</td></tr><tr><td>Finestre e menu</td><td>Punta con il raggio e premi il grilletto · grilletto sinistro nel vuoto: questo menu</td></tr></table>
+<h4>Comandi</h4><table><tr><td>Attaccare</td><td>Muovi il controller destro (fendente) · grilletto destro sul nemico davanti</td></tr><tr><td>Affondo</td><td>Stoccata in avanti con il controller · impugnatura destra</td></tr><tr><td>Colpo ad area</td><td>Le due mani giù insieme · impugnatura sinistra</td></tr><tr><td>Camminare / girarsi</td><td>Levetta sinistra (o cammina nella stanza) / levetta destra</td></tr><tr><td>Interagire</td><td>Punta con il raggio una persona, una porta o un oggetto e premi il grilletto (o A); A da solo usa quello che hai davanti</td></tr><tr><td>Schivata / chiudere</td><td>B</td></tr><tr><td>Pozione / zaino</td><td>X / Y</td></tr><tr><td>Mappa</td><td>Premi la levetta sinistra</td></tr><tr><td>Finestre e menu</td><td>Punta con il raggio e premi il grilletto · grilletto sinistro nel vuoto: questo menu</td></tr></table>
 <div class="xr" style="margin-top:8px"><button onclick="fpMenu(0)">Chiudi</button></div>`}
-function fpOpt(k){if(k==='on')FP.on=FP.on?0:1;else if(k==='rot'){const o=Object.keys(FPROT);FP.rot=o[(o.indexOf(FP.rot)+1)%o.length]}else if(k==='vig')FP.vig=FP.vig?0:1;
+function fpOpt(k){if(k==='on')FP.on=FP.on?0:1;else if(k==='rot'){const o=Object.keys(FPROT);FP.rot=o[(o.indexOf(FP.rot)+1)%o.length]}else if(k==='vig')FP.vig=((FP.vig|0)+1)%4;else if(k==='vd'){const o=[16,24,32,40];FP.vd=o[(o.indexOf(FP.vd)+1)%o.length]}
   else if(k==='spd')FP.spd=FP.spd>=1?.7:FP.spd>=.7?.5:1;else if(k==='hud')FP.hud=FP.hud?0:1;else if(k==='cal'){FP.cal=1;msg('Altezza ricalibrata: ora vedi dagli occhi dell\'eroe')}else if(k==='rc')fpRecenter();
   fpSave();fpMenuShow()}
 
@@ -11404,15 +11436,19 @@ function fpSky(gl){const out=SET.sky!==0&&SKY[Zk],dk=Math.round(Math.max(DK,NK*.
       const A=pt(a0,e0),B=pt(a1,e0),C2=pt(a1,e1),D=pt(a0,e1);for(const[q,c]of[[A,c0],[B,c0],[C2,c1],[A,c0],[C2,c1],[D,c1]])o=fpV(o,q[0],q[1],q[2],c,255)}
     FP.kn=fpUp(gl,FP.kb,o)}}
 // vignetta: un anello scuro davanti agli occhi che si stringe camminando e girando (riduce la nausea)
-function fpVig(gl){const S=40;fpBuf(S*12*16);let o=0;const K=[0,0,0];
-  for(let i=0;i<S;i++){const a0=i/S*6.2832,a1=(i+1)/S*6.2832,p=(a,r)=>[Math.cos(a)*r,Math.sin(a)*r,-.3];
-    for(const[a,r,al]of[[a0,.16,0],[a1,.16,0],[a1,.26,255],[a0,.16,0],[a1,.26,255],[a0,.26,255],[a0,.26,255],[a1,.26,255],[a1,1.2,255],[a0,.26,255],[a1,1.2,255],[a0,1.2,255]]){const q=p(a,r);o=fpV(o,q[0],q[1],q[2],K,al)}}
+// livelli (Impostazioni del menu VR): leggera lascia libero quasi tutto lo sguardo e scurisce solo i bordi, forte è un tunnel stretto
+const FPVL=[null,{r0:.34,r1:.56,a:.55,s:.2},{r0:.26,r1:.42,a:.8,s:.35},{r0:.16,r1:.26,a:1,s:.55}];
+function fpVig(gl){const L=FPVL[FP.vig|0]||FPVL[1],S=40;FP.vgl=FP.vig|0;fpBuf(S*12*16);let o=0;const K=[0,0,0];
+  for(let i=0;i<S;i++){const a0=i/S*6.2832,a1=(i+1)/S*6.2832,p=(a,r)=>[Math.cos(a)*r,Math.sin(a)*r,-.3],r0=L.r0,r1=L.r1;
+    for(const[a,r,al]of[[a0,r0,0],[a1,r0,0],[a1,r1,255],[a0,r0,0],[a1,r1,255],[a0,r1,255],[a0,r1,255],[a1,r1,255],[a1,1.2,255],[a0,r1,255],[a1,1.2,255],[a0,1.2,255]]){const q=p(a,r);o=fpV(o,q[0],q[1],q[2],K,al)}}
   FP.vn=fpUp(gl,FP.vb,o)}
 
 /* ---- armi in mano: gli stessi modelli che l'eroe porta nel gioco (wpnL, shdL), con l'impugnatura nel pugno ---- */
-function fpHeld(gl){const w=P.eq.w,s=P.eq.s,key=(w?w.u+w.r+w.n:'')+'|'+(s?s.u+s.r+s.n:'');if(key===FP.wk)return;FP.wk=key;
+function fpHeld(gl){const w=P.eq.w,s=P.eq.s,ap=apFix(P.ap||APM),sk=APO.sk.c[ap.sk],key=(w?w.u+w.r+w.n:'')+'|'+(s?s.u+s.r+s.n:'')+'|'+sk;if(key===FP.wk)return;FP.wk=key;
   const mk=(L,buf)=>{if(!L||!L.length)return 0;const B=[];for(const b of L){const k=x3Col(b[6]);B.push(b[0],b[1],b[2],b[3],b[4],b[5],k[0],k[1],k[2])}const n=x3Size(B),vb=x3Need(n);x3Emit(B,vb,0);gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Uint8Array(vb,0,n),gl.STATIC_DRAW);return n>>4};
-  FP.wn=mk(w?wpnL(itype(w),RC[w.r]||'#cccccc'):null,FP.wb);FP.sn=mk(s?shdL(itype(s),RC[s.r]):null,FP.sb)}
+  FP.wn=mk(w?wpnL(itype(w),RC[w.r]||'#cccccc'):null,FP.wb);FP.sn=mk(s?shdL(itype(s),RC[s.r]):null,FP.sb);
+  // l'avambraccio è il braccio del modello dell'eroe (stessa scatola .12×.16, alta 10, color pelle), dal pugno verso il gomito
+  if(!FP.ab)FP.ab=gl.createBuffer();FP.an=mk([[.31,-.08,2,.12,.16,11,sk]],FP.ab)}
 // dal modello (caselle e pixel, impugnatura dell'arma in x .37, z 12) al pugno: la lama esce in avanti lungo il controller.
 // Le proporzioni sono quelle del modello (1 casella = 39,2 pixel, come nel diorama), con la spada lunga circa 80 cm
 const FPWK=.03,FPWT=39.2*FPWK;
@@ -11422,14 +11458,14 @@ const FPSA=new Float32Array([0,FPWT,0,0, -FPWT,0,0,0, 0,0,-FPWK,0, .125*FPWT,.36
 
 /* ---- scritte nel mondo, come nel gioco: vita dei nemici, nomi, «!» e «?» delle missioni, danni, cosa fa il tasto A ---- */
 const FPVERB={npc:'Parla',po:'Entra',ch:'Apri',dr:'Raccogli',res:'Raccogli',shard:'Raccogli',lore:'Leggi',board:'Classifica',fs:'Pesca',stash:'Baule',letto:'Dormi'};
-function fpSprites(){const L=[],near=(e,r)=>Math.abs(e.px-P.px)<r&&Math.abs(e.py-P.py)<r;
-  for(const e of ents){if(!near(e,FPR))continue;
+function fpSprites(){const L=[],near=(e,r)=>Math.abs(e.px-P.px)<r&&Math.abs(e.py-P.py)<r,FR=FP.R||FPR;
+  for(const e of ents){if(!near(e,FR))continue;
     if(e.k==='en'||e.k==='tr')L.push({e,z:(e.boss?74:46),bar:e.hp/e.mx,bc:e.k==='tr'?'#4a8aff':e.enr?'#ff7a2a':'#ee3333',tx:e.boss||e.b&&e.b.pt||e.bld?e.n:'',c:'#fff',w:e.boss?1.1:.7});
     else if(e.k==='npc'&&(e.qm||SET.names))L.push({e,z:e.nid==='gatto'?22:48,tx:SET.names?e.n||(NPCS[e.nid]||{}).n||'':'',mk:e.qm,mc:e.qm==='?'?'#7aff7a':'#ffd84a',c:'#fff',w:.9});
     else if(e.k==='dr'&&near(e,5))L.push({e,z:24,tx:iname(e.it),c:RC[e.it.r|0]||'#fff',w:.8})}
-  for(const o of NET.list)if(near(o,FPR))L.push({e:o,z:46,bar:o.hp/o.mx,bc:'#44aaff',tx:SET.names?o.n+' Lv'+o.lv:'',c:inPit(o.px,o.py)?'#ff9a9a':'#fff',w:.8});
-  if(IT&&!FP.win){const k=IT.k==='npc'?'npc':IT.k;L.push({e:IT,z:IT.k==='npc'?62:IT.k==='po'?54:30,tx:'A · '+(FPVERB[k]||'Usa')+(IT.n&&IT.k!=='npc'?' · '+IT.n:IT.k==='npc'?' · '+(IT.n||''):''),c:'#ffe38a',w:1.1,hint:1})}
-  if(SET.dmg)for(const p of pop)if(Math.abs(p.x-P.px)<FPR&&Math.abs(p.y-P.py)<FPR)L.push({p,z:44,tx:p.s,c:p.c,w:.5,pop:1});
+  for(const o of NET.list)if(near(o,FR))L.push({e:o,z:46,bar:o.hp/o.mx,bc:'#44aaff',tx:SET.names?o.n+' Lv'+o.lv:'',c:inPit(o.px,o.py)?'#ff9a9a':'#fff',w:.8});
+  const AI=FP.ait;if(AI&&!FP.win&&ents.includes(AI)){const k=AI.k;L.push({e:AI,z:k==='npc'?62:k==='po'?54:30,tx:'A · '+(FPVERB[k]||'Usa')+(AI.n?' · '+AI.n:''),c:'#ffe38a',w:1.1,hint:1})}
+  if(SET.dmg)for(const p of pop)if(Math.abs(p.x-P.px)<FR&&Math.abs(p.y-P.py)<FR)L.push({p,z:44,tx:p.s,c:p.c,w:.5,pop:1});
   L.sort((a,b)=>{const A=a.p||a.e,B=b.p||b.e;return Math.hypot((A.px??A.x)-P.px,(A.py??A.y)-P.py)-Math.hypot((B.px??B.x)-P.px,(B.py??B.y)-P.py)});
   return L.slice(0,32)}
 function fpAtlas(gl){let c=FP.atl;if(!c){c=FP.atl=document.createElement('canvas');c.width=1024;c.height=512}
@@ -11455,18 +11491,19 @@ function fpUi(gl){if(typeof XU==='undefined'||!XU.c||!XU.w)return FP.uok;const n
 function fpFrame(gl){if(FP.gl!==gl)fpGL(gl);
   if(X3.zk!==Zk||X3.M!==M||X3.N!==N||(FC&&X3.fc!==FC))x3Reset();
   fpMat();fpSky(gl);fpHeld(gl);
-  const R=DARKZ.has(Zk)?8:FPR,nc=Math.ceil(N/X3CS),f=FP.tf,fl=Math.hypot(f[0],f[1])||1,vis=[];
+  const R=DARKZ.has(Zk)?10:(FP.vd||FPR),nc=Math.ceil(N/X3CS),f=FP.tf,fl=Math.hypot(f[0],f[1])||1,vis=[],near=[];
   for(let j=Math.max(0,Math.floor((P.py-R)/X3CS));j<=Math.min(nc-1,Math.floor((P.py+R)/X3CS));j++)
     for(let i=Math.max(0,Math.floor((P.px-R)/X3CS));i<=Math.min(nc-1,Math.floor((P.px+R)/X3CS));i++){
       const cx=(i+.5)*X3CS-P.px,cy=(j+.5)*X3CS-P.py,qx=clamp(P.px,i*X3CS,(i+1)*X3CS),qy=clamp(P.py,j*X3CS,(j+1)*X3CS);
       // i pezzi alle spalle non si disegnano (il loro centro è oltre mezzo pezzo dietro la testa)
-      if(Math.hypot(qx-P.px,qy-P.py)<R+1&&(cx*f[0]+cy*f[1])/fl>-X3CS*.75)vis.push(j*nc+i)}
-  const t0=performance.now();for(const k of vis)if(!X3.ch.has(k)){x3Chunk(gl,k);if(performance.now()-t0>4)break}
+      // si preparano anche i pezzi alle spalle (così girandosi non spunta niente all'improvviso), ma si disegnano solo quelli davanti
+      if(Math.hypot(qx-P.px,qy-P.py)<R+1){near.push(j*nc+i);if((cx*f[0]+cy*f[1])/fl>-X3CS*.75)vis.push(j*nc+i)}}
+  const t0=performance.now();for(const k of vis.concat(near))if(!X3.ch.has(k)){x3Chunk(gl,k);if(performance.now()-t0>4)break}
   if(vis.length){const k=vis[X3.rr++%vis.length];if(X3.ch.has(k))x3Chunk(gl,k)}
   FP.vis=vis;FP.R=R;
   const B=x3Rec(()=>{
     for(const k of vis){const c=X3.ch.get(k);if(c)for(let i=0;i<c.D.length;i+=2)fObj(c.D[i],c.D[i+1])}
-    for(const e of ents.concat(NET.list)){if(!e||e.px==null)continue;const far=e.k==='ship'?R+12:R+1.5;if(Math.abs(e.px-P.px)>far||Math.abs(e.py-P.py)>far)continue;try{ent(e)}catch(_){}}
+    for(const e of ents.concat(NET.list)){if(!e||e.px==null)continue;const far=e.k==='ship'?R+12:R+1.5;if(Math.abs(e.px-P.px)>far||Math.abs(e.py-P.py)>far)continue;X3G.globalAlpha=1;try{ent(e)}catch(_){}}
     for(const p of PJ)box(p.x-.08,p.y-.08,18,.16,.16,8,p.c,1.2);if(typeof PPJ!=='undefined'&&PPJ.length)ppjDraw()},0);
   {const n=x3Size(B),vb=x3Need(n);x3Emit(B,vb,0);gl.bindBuffer(gl.ARRAY_BUFFER,FP.db);gl.bufferData(gl.ARRAY_BUFFER,new Uint8Array(vb,0,n),gl.STREAM_DRAW);FP.dn=n>>4}
   // avvisi dei boss (cerchio rosso), anelli e scoppi: dischi trasparenti sul pavimento, come le ellissi del gioco
@@ -11489,10 +11526,12 @@ function fpFrame(gl){if(FP.gl!==gl)fpGL(gl);
     if(FP.pw){const q=(sx,sy)=>[p.c[0]+p.r[0]*sx*p.w/2+p.u[0]*sy*p.h/2-p.n[0]*.01,p.c[1]+p.r[1]*sx*p.w/2+p.u[1]*sy*p.h/2-p.n[1]*.01,p.c[2]+p.r[2]*sx*p.w/2+p.u[2]*sy*p.h/2-p.n[2]*.01];
       for(const[sx,sy]of[[-1,1],[1,1],[1,-1],[-1,1],[1,-1],[-1,-1]]){const v=q(sx*1.02,sy*1.03);o=fpV(o,v[0],v[1],v[2],[16,19,26],215)}}
     FP.bo=o;
-    for(const st of rays){const r=st.ray,h=r.h,on=h&&h.in;if(!on&&!FP.win)continue;const e=v3(r.o,r.d,on?h.t:.6);o=fpV(o,r.o[0],r.o[1],r.o[2],K,255);o=fpV(o,e[0],e[1],e[2],K,255)}
+    // il raggio si vede solo quando punta qualcosa con cui interagire (un pulsante di una finestra, una persona, una porta, un nemico)
+    for(const st of rays){const r=st.ray;if(!r.vis)continue;const e=v3(r.o,r.d,r.vis);o=fpV(o,r.o[0],r.o[1],r.o[2],K,255);o=fpV(o,e[0],e[1],e[2],K,255)}
     FP.ln=(o-FP.bo)>>4;FP.lb0=FP.bo>>4;fpUp(gl,FP.lb,o||16,1)}
   // vignetta: camminando, girando o durante schivate e affondi
-  const tv=FP.vig?Math.min(1,Math.max(FP.mv,P.dm?1:0,FP.turn||0,performance.now()-FP.snapT<160?.8:0)):0;FP.vv+=(tv-FP.vv)*Math.min(1,FP.dt*(tv>FP.vv?10:4))}
+  if(FP.vgl!==(FP.vig|0))fpVig(gl);
+  const tv=FP.vig?Math.min(1,Math.max(FP.mv,P.dm?1:0,P.path&&P.path.length?.6:0,FP.turn||0,performance.now()-FP.snapT<160?.8:0)):0;FP.vv+=(tv-FP.vv)*Math.min(1,FP.dt*(tv>FP.vv?10:4))}
 function fpDisc(o,x,y,r,ri,c,a){const S=48;for(let i=0;i<S;i++){const a0=i/S*6.2832,a1=(i+1)/S*6.2832,P0=fpRef(x+Math.cos(a0)*r,y+Math.sin(a0)*r,1),P1=fpRef(x+Math.cos(a1)*r,y+Math.sin(a1)*r,1);
     if(ri>0){const Q0=fpRef(x+Math.cos(a0)*ri,y+Math.sin(a0)*ri,1),Q1=fpRef(x+Math.cos(a1)*ri,y+Math.sin(a1)*ri,1);for(const q of[Q0,P0,P1,Q0,P1,Q1])o=fpV(o,q[0],q[1],q[2],c,a)}
     else{const C=fpRef(x,y,1);for(const q of[C,P0,P1])o=fpV(o,q[0],q[1],q[2],c,a)}}
@@ -11510,8 +11549,8 @@ function fpView(gl,v){const pc=FP.pc,pt=FP.pt,U=pc.u,P4=v.projectionMatrix,V4=v.
   for(const k of FP.vis){const c=X3.ch.get(k);if(c)col(c.buf,c.n,FP.mdl)}
   col(FP.db,FP.dn,FP.mdl);
   gl.uniform2f(U.FD,1e5,2e5);const M4=new Float32Array(16);
-  if(FP.grip.right&&FP.wn)col(FP.wb,FP.wn,fpMul(FP.grip.right,FPWA,M4));
-  if(FP.grip.left&&FP.sn)col(FP.sb,FP.sn,fpMul(FP.grip.left,FPSA,M4));
+  if(FP.grip.right){fpMul(FP.grip.right,FPWA,M4);if(FP.wn)col(FP.wb,FP.wn,M4);if(FP.an)col(FP.ab,FP.an,M4)}
+  if(FP.grip.left){if(FP.an)col(FP.ab,FP.an,fpMul(FP.grip.left,FPWA,M4));if(FP.sn)col(FP.sb,FP.sn,fpMul(FP.grip.left,FPSA,M4))}
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);gl.uniform2f(U.FD,R*.55,R*.95);
   col(FP.fb,FP.fn,FP.mdl);
   // scritte nel mondo
@@ -11525,7 +11564,7 @@ function fpView(gl,v){const pc=FP.pc,pt=FP.pt,U=pc.u,P4=v.projectionMatrix,V4=v.
   gl.useProgram(pc.p);
   if(FP.ln){gl.uniformMatrix4fv(U.Mdl,false,FPI);gl.bindBuffer(gl.ARRAY_BUFFER,FP.lb);gl.vertexAttribPointer(0,3,gl.FLOAT,false,16,0);gl.vertexAttribPointer(1,4,gl.UNSIGNED_BYTE,true,16,12);gl.drawArrays(gl.LINES,FP.lb0,FP.ln)}
   // vignetta, negli occhi (V = identità: i vertici sono già nello spazio dell'occhio)
-  if(FP.vv>.02){const k=FP.vv,S=new Float32Array(FPI);S[0]=S[5]=1-k*.55;gl.uniformMatrix4fv(U.V,false,FPI);gl.uniform1f(U.A,Math.min(1,k*1.4));col(FP.vb,FP.vn,S)}
+  if(FP.vig&&FP.vv>.02){const L=FPVL[FP.vig|0]||FPVL[1],k=FP.vv,S=new Float32Array(FPI);S[0]=S[5]=1-k*L.s;gl.uniformMatrix4fv(U.V,false,FPI);gl.uniform1f(U.A,Math.min(1,k*1.4)*L.a);col(FP.vb,FP.vn,S)}
   gl.disable(gl.BLEND);gl.depthMask(true);gl.enable(gl.DEPTH_TEST);gl.bindVertexArray(null)}
 
 const _xr3dFP=typeof xr3dDraw==='function'?xr3dDraw:null;

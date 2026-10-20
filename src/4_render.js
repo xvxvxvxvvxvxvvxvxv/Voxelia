@@ -320,6 +320,8 @@ function genDist(z){const n=N;GT=new Set();RDF=new Set();BM=grid(-1);TB=[];
   const fence=(x0,y0,w,h,gap)=>{for(let x=x0;x<x0+w;x++)for(let y=y0;y<y0+h;y++)if((x===x0||x===x0+w-1||y===y0||y===y0+h-1)&&!(gap&&gap.some(([a,b])=>a===x&&b===y)))D(x,y,'f')};
   for(let i=0;i<n;i++)M[0][i]=M[n-1][i]=M[i][0]=M[i][n-1]=1;
   const sp=z.gen({R4,D,F,W,H,gate,N2,AN,RS,EN,FS,scat,fence,n});
+  // 7.12.1: un arredo messo dopo sopra una raccolta (un albero o un'aiuola sopra le rose del Roseto) si toglie: la raccolta resta in vista
+  for(const e of ents)if(e.k==='res'){const x=e.px|0,y=e.py|0;if(M[y][x]===6){const i=y*n+x;M[y][x]=RDF.has(i)?4:0;RDF.delete(i);DEC[y][x]=''}}
   if(!z.ruin&&!z.nolamp)for(let y=2;y<n-2;y++)for(let x=2;x<n-2;x++)if(M[y][x]===0&&!DEC[y][x]&&(x*7+y*13)%17===0&&[[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>M[y+b][x+a]===4))D(x,y,'l');
   // apre un varco tra le decorazioni verso ogni personaggio, porta, risorsa, forziere o nemico rimasto chiuso fuori
   const NB=[[1,0],[-1,0],[0,1],[0,-1]];let d=bfs(sp[0],sp[1]);const rc=(x,y)=>d[y*n+x]>=0;

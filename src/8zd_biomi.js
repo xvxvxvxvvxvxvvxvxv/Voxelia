@@ -54,6 +54,8 @@ function genBiome(z){const n=N,k=Zk,rnd=sd(hs('bioma|'+k+'|7.12')),rr=(a,b)=>a+M
   const sp=gd==='x'?[gx,gy-3]:[gx-3*geo,gy];C.gate=[gx,gy];C.sp=sp;
   B.build(C);                                                   // luoghi, acqua, sentieri, strutture
   for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(!RS[y*n+x]&&M[y][x]===0)B.fill(C,x,y);   // boschi, rocce, dune
+  // 7.12.1: una raccolta rimasta sotto una roccia o un albero del riempimento torna sul terreno (si fa dopo, così il resto della pianta non cambia)
+  for(const e of C.ents)if(e.k==='res'){const x=e.px|0,y=e.py|0;if(!RS[y*n+x]&&(M[y][x]===1||M[y][x]===6))C.F(x,y,'')}
   for(let i=0;i<n;i++)for(const[x,y]of[[i,0],[i,n-1],[0,i],[n-1,i]])if(M[y][x]!==0||!(Math.abs(x-gx)<=1&&Math.abs(y-gy)<=1)){M[y][x]=1;DEC[y][x]=DN+B.edge}
   for(let q=-1;q<=1;q++){if(gd==='x'){M[gy+geo][gx+q]=0;DEC[gy+geo][gx+q]=''}else{M[gy+q][gx+geo]=0;DEC[gy+q][gx+geo]=''}}
   // tutto deve essere raggiungibile: se qualcosa resta chiuso fra gli alberi si apre un varco (mai nei muri delle strutture)

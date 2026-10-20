@@ -5,6 +5,14 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.12.1 — Raccolte di nuovo in vista (20 ottobre 2026)
+
+- **Picchi Gelidi:** uno dei Fiori di ghiaccio vicino al rifugio dell'Esploratrice Ilva finiva dentro una roccia e quasi non si vedeva. Ora sotto il fiore c'è il terreno; il resto della zona resta identico.
+- **Quartiere Nobile:** due rose del Roseto erano coperte da un albero del viale e da un'aiuola. L'arredo sopra una raccolta ora si toglie, così tutte e dieci le rose si vedono.
+- Il controllo vale per tutte le raccolte dei quartieri e dei biomi, non solo per queste.
+
+---
+
 ## 7.12 — Biomi più grandi, il Colosseo vero, la mappa della zona e il ricordo di Aldoria Vecchia (15 ottobre 2026)
 
 ### Foresta, deserto e picchi rifatti

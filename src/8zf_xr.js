@@ -8,6 +8,12 @@ const XR={ok:0,wl:1,s:null,gl:null,ref:null,tex:null,pq:null,pl:null,bq:null,bl:
 // il ciclo dello schermo si ferma mentre il visore è acceso: i fotogrammi li chiama la sessione WebXR
 // (XR.wl: il ciclo dello schermo ha ancora un fotogramma in attesa; se si è fermato, all'uscita dalla VR si riavvia)
 const _loopXR=loop;loop=function(n){if(XR.s){XR.wl=0;return}_loopXR(n)};
+// sul Quest, durante la sessione immersiva, il requestAnimationFrame della pagina non scatta più: le animazioni fatte con lui
+// (la battuta dei dialoghi che si scrive, il ritratto che parla, la tendina nera delle porte) le fa andare avanti il fotogramma del visore
+const XRQ=[],_rafXR=window.requestAnimationFrame.bind(window),_cafXR=window.cancelAnimationFrame.bind(window);let XRQN=1e9;
+window.requestAnimationFrame=function(cb){if(!XR.s)return _rafXR(cb);XRQ.push([++XRQN,cb]);return XRQN};
+window.cancelAnimationFrame=function(id){if(id>1e9){const i=XRQ.findIndex(q=>q[0]===id);if(i>=0)XRQ.splice(i,1);return}_cafXR(id)};
+function xrRaf(n){for(const[,cb]of XRQ.splice(0))try{cb(n)}catch(e){console.error(e)}}
 // in VR il canvas si disegna a una risoluzione fissa (circa 1920 pixel di larghezza), adatta allo schermo virtuale
 const _rsXR=rs;rs=function(){_rsXR();if(!XR.s)return;DPR=Math.min(2,1920/Math.max(1,W))*SET.rs;cv.width=Math.max(1,W*DPR|0);cv.height=Math.max(1,H*DPR|0);lc=null;FC=null};
 // levetta sinistra → direzione nel mondo isometrico, come il joystick touch
@@ -32,7 +38,7 @@ function xrStart(s){XR.s=s;XR.pan=null;XR.src.clear();XR.act=null;
     // dal menu si entra direttamente nella partita salvata (o in una nuova): il menu è una pagina HTML e nel visore non si vede
     if(!started){const sv=LS.get(SAVEK,null);if(sv&&sv.p)contGame();else newGame(1)}
     s.requestAnimationFrame(xrFrame)}).catch(e=>{msg('Realtà virtuale non disponibile: '+(e&&e.message||e));s.end()});
-  s.addEventListener('end',()=>{XR.s=null;XR.ref=null;XR.ax=null;MX=-1;rs();if(!XR.wl){XR.wl=1;requestAnimationFrame(loop)}});
+  s.addEventListener('end',()=>{XR.s=null;for(const[,cb]of XRQ.splice(0))_rafXR(cb);XR.ref=null;XR.ax=null;MX=-1;rs();if(!XR.wl){XR.wl=1;requestAnimationFrame(loop)}});
   s.addEventListener('inputsourceschange',()=>{XR.src.clear()});
   // mani senza controller (hand tracking): il pizzico fa clic dove punta la mano
   s.addEventListener('select',e=>{const src=e.inputSource;if(src.gamepad||!XR.ref)return;const p=e.frame.getPose(src.targetRaySpace,XR.ref);if(!p)return;
@@ -104,6 +110,7 @@ function xrCursor(){if(MX<0)return;const k=curK||'def',st=SET.cur<4?SET.cur|0:1,
   G0.save();G0.setTransform(DPR,0,0,DPR,0,0);G0.globalAlpha=1;G0.globalCompositeOperation='source-over';G0.drawImage(c.c,MX-c.x,MY-c.y);G0.restore()}
 
 function xrFrame(n,fr){const s=XR.s;if(!s)return;s.requestAnimationFrame(xrFrame);
+  xrRaf(n);
   const pose=fr.getViewerPose(XR.ref);if(!pose)return;if(!XR.pan||Math.abs(XR.pan.asp-W/H)>.01)xrPlace(pose);
   xrInput(fr);
   // il gioco si disegna a ogni fotogramma del visore; se il canvas costa troppo (oltre ~9 ms) un fotogramma sì e uno no:

@@ -11,6 +11,10 @@ const X3Z=1/39.2,X3CS=8,X3TR=.42;  // 1 casella = 39,2 pixel di altezza (proiezi
 const X3G=Object.create(REC);  // un "pennello" muto: tutto ciò che non è box() non disegna niente
 let X3B=null;  // le box annotate (x,y,z,w,d,h,r,g,b) mentre si registra
 const _box3d=box;box=function(x,y,z,w,d,h,c,f){if(X3B){x3Box(x,y,z,w,d,h,c,f===undefined?1:f);return}_box3d(x,y,z,w,d,h,c,f)};
+// i personaggi girati in diagonale (drawHero con fc dispari) passano da rbox, che disegna poligoni e non box:
+// qui diventano box ruotate di 45° attorno al loro centro (segnate con la larghezza negativa)
+const _rbox3d=rbox;rbox=function(x,y,z,w,d,h,c,ca,sa,ox,oy){if(!X3B){_rbox3d(x,y,z,w,d,h,c,ca,sa,ox,oy);return}if(X3G.globalAlpha<.12||!(w>0)||!(d>0))return;
+  const u=x+w/2,v=y+d/2,k=x3Col(c);X3B.push(ox+u*ca-v*sa-w/2,oy+u*sa+v*ca-d/2,z,-w,d,Math.max(0,h),k[0],k[1],k[2])};
 const X3C=new Map();
 function x3Col(c){let o=X3C.get(c);if(o)return o;let r=128,gg=128,b=128;
   if(typeof c==='string'){if(c[0]==='#'){let s=c.slice(1);if(s.length<6)s=s[0]+s[0]+s[1]+s[1]+s[2]+s[2];const n=parseInt(s.slice(0,6),16);if(n===n){r=n>>16;gg=n>>8&255;b=n&255}}
@@ -30,9 +34,9 @@ function x3Need(n){if(X3.vb.byteLength<n){let s=X3.vb.byteLength;while(s<n)s*=2;
 const X3F=[[1,[0,0,1, 1,0,1, 1,1,1, 0,1,1]],[.78,[0,1,1, 1,1,1, 1,1,0, 0,1,0]],[.58,[1,0,1, 1,1,1, 1,1,0, 1,0,0]],[.88,[0,0,1, 1,0,1, 1,0,0, 0,0,0]],[.68,[0,0,1, 0,1,1, 0,1,0, 0,0,0]]];
 const X3Q=[0,1,2,0,2,3];
 function x3Emit(B,vb,o,A){const F=new Float32Array(vb),U=new Uint8Array(vb),a=A===undefined?255:A;
-  for(let i=0;i<B.length;i+=9){const x=B[i],y=B[i+1],z=B[i+2],w=B[i+3],d=B[i+4],h=B[i+5],nf=h>0?5:1;
+  for(let i=0;i<B.length;i+=9){const x=B[i],y=B[i+1],z=B[i+2],ro=B[i+3]<0,w=Math.abs(B[i+3]),d=B[i+4],h=B[i+5],nf=h>0?5:1,cx=x+w/2,cy=y+d/2;
     for(let f=0;f<nf;f++){const s=X3F[f][0],q=X3F[f][1],r=Math.min(255,B[i+6]*s),gg=Math.min(255,B[i+7]*s),b=Math.min(255,B[i+8]*s);
-      for(const j of X3Q){const v=o>>2;F[v]=x+q[j*3]*w;F[v+1]=y+q[j*3+1]*d;F[v+2]=z+q[j*3+2]*h;const u=o+12;U[u]=r;U[u+1]=gg;U[u+2]=b;U[u+3]=a;o+=16}}}
+      for(const j of X3Q){const v=o>>2;if(ro){const a=(q[j*3]-.5)*w,c=(q[j*3+1]-.5)*d;F[v]=cx+(a-c)*Math.SQRT1_2;F[v+1]=cy+(a+c)*Math.SQRT1_2}else{F[v]=x+q[j*3]*w;F[v+1]=y+q[j*3+1]*d}F[v+2]=z+q[j*3+2]*h;const u=o+12;U[u]=r;U[u+1]=gg;U[u+2]=b;U[u+3]=a;o+=16}}}
   return o}
 const x3Size=B=>{let n=0;for(let i=5;i<B.length;i+=9)n+=B[i]>0?30:6;return n*16};
 

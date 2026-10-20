@@ -135,6 +135,21 @@ altrimenti il browser non offre la realtà virtuale.
 | Colpo ad area / Affondo | Impugnatura sinistra / destra |
 | Mappa / Rimettere lo schermo davanti | Premere la levetta sinistra / destra |
 
+#### Prima persona
+Entrando in VR si gioca **in prima persona**: vedi il mondo con gli occhi dell'eroe, a grandezza naturale, costruito con gli
+stessi modelli del gioco; in mano hai l'arma equipaggiata e sul braccio lo scudo. Si attacca muovendo il controller.
+L'interfaccia del gioco è un pannello sotto lo sguardo; zaino, dialoghi, negozi e mappa si aprono su un pannello davanti a te.
+Durante filmati, visita guidata, navigazione e minigiochi si torna da soli allo schermo sospeso.
+
+| Comando | Controller |
+|---|---|
+| Attaccare | Fendente con il controller destro · grilletto destro (nemico davanti) |
+| Affondo / Colpo ad area | Stoccata in avanti · impugnatura destra / le due mani giù insieme · impugnatura sinistra |
+| Camminare / Girarsi | Levetta sinistra (si cammina dove guardi, o davvero nella stanza) / levetta destra |
+| Interagire / Schivata o chiudi | A / B |
+| Pozione / Zaino / Mappa | X / Y / premere la levetta sinistra |
+| Menu della VR | Grilletto sinistro puntato nel vuoto: pulsanti della barra, prima persona sì/no, rotazione a scatti o continua, vignetta, velocità, altezza degli occhi |
+
 ---
 
 ## Le modalità
@@ -585,6 +600,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zd_biomi2.js` | Come si disegnano i biomi (alberi, rocce, piramide, arredi, edifici), gli interni e i loro personaggi |
 | `8ze_ricordo.js` | Il ricordo del Moreau: Aldoria Vecchia intatta, prima della nebbia (filmato flashback) |
 | `8zf_xr.js` | Realtà virtuale (WebXR) per Meta Quest: schermo sospeso, controller, levette |
+| `8zi_xrfp.js` | Realtà virtuale in prima persona: il mondo a grandezza naturale, attacchi con il movimento dei controller, pannelli e menu fluttuanti |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

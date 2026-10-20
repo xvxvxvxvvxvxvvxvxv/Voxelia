@@ -120,8 +120,6 @@ Sui dispositivi touch compaiono:
 Lo zoom si fa con due dita. Comandi e pulsanti si adattano da soli a telefoni, pieghevoli e tablet, in verticale e in
 orizzontale, e si possono spostare e ridimensionare con l'**editor dell'HUD** (Impostazioni → Interfaccia).
 
----
-
 ### Meta Quest (realtà virtuale)
 Nel browser del Quest compare il pulsante **Entra in VR** (nel menu e, durante la partita, in basso a destra). Il gioco
 appare su un grande schermo sospeso davanti a te; la pagina deve essere aperta da un indirizzo **https** (o da `localhost`),
@@ -136,6 +134,8 @@ altrimenti il browser non offre la realtà virtuale.
 | Pozione / Zaino | X / Y |
 | Colpo ad area / Affondo | Impugnatura sinistra / destra |
 | Mappa / Rimettere lo schermo davanti | Premere la levetta sinistra / destra |
+
+---
 
 ## Le modalità
 

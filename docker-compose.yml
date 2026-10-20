@@ -12,8 +12,13 @@ services:
       DATA_FILE: /data/voxelia-data.json
       MONDI_DIR: /data/mondi
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      # HTTPS direttamente dal server (per il Meta Quest in rete locale): togli i commenti qui e al volume ./certs.
+      # Su Suga non serve: lì l'HTTPS lo fa l'endpoint.
+      # TLS_CERT: /certs/cert.pem
+      # TLS_KEY: /certs/key.pem
     volumes:
       - voxelia-data:/data
+      # - ./certs:/certs:ro
 
 volumes:
   voxelia-data:

@@ -4272,7 +4272,9 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&started)sa
    non si vedevano, ma tenevano occupato il browser, che finiva per mostrarne meno (il gioco andava più lento, non più veloce).
    Con un limite FPS più basso della frequenza dello schermo si saltano i fotogrammi in più, a intervalli regolari. */
 let FPL=0,HZ=0,HZL=0;const HZS=[];
-function loop(n){requestAnimationFrame(loop);
+function loop(n){requestAnimationFrame(loop);frame(n)}
+// un fotogramma del gioco: lo chiama il ciclo dello schermo e, in realtà virtuale, quello del visore (8zf_xr.js)
+function frame(n){
   if(HZL&&HZS.length<90){const d=n-HZL;if(d>2&&d<60)HZS.push(d);if(HZS.length===90)HZ=Math.round(1000/HZS.slice().sort((a,b)=>a-b)[45])}HZL=n;
   if(SET.fpsmax>0&&!(HZ&&SET.fpsmax>=HZ-1)){const iv=1000/SET.fpsmax;if(n-FPL<iv-1.5)return;FPL=n-FPL>2*iv?n:FPL+iv}else FPL=n;
   const dt=Math.max(0,Math.min(.05,(n-last)/1000||0));last=n;

@@ -11008,7 +11008,7 @@ function xrFrame(n,fr){const s=XR.s;if(!s)return;s.requestAnimationFrame(xrFrame
     gl.vertexAttribPointer(a,3,gl.FLOAT,false,20,0);gl.vertexAttribPointer(u,2,gl.FLOAT,false,20,12);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,XR.tex);gl.drawArrays(gl.TRIANGLES,0,6);gl.disableVertexAttribArray(u)}
     if(typeof xr3dDraw==='function')xr3dDraw(gl,v,XR);
     if(lines.length&&!XR.noPan){gl.bindVertexArray(null);gl.useProgram(XR.lq);gl.uniformMatrix4fv(gl.getUniformLocation(XR.lq,'P'),false,v.projectionMatrix);gl.uniformMatrix4fv(gl.getUniformLocation(XR.lq,'V'),false,v.transform.inverse.matrix);
-      gl.uniform4f(gl.getUniformLocation(XR.lq,'C'),.96,.73,.26,1);gl.bindBuffer(gl.ARRAY_BUFFER,XR.lb);a=gl.getAttribLocation(XR.lq,'a');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,12,0);gl.drawArrays(gl.LINES,0,lines.length/3)}}}
+      gl.uniform4f(gl.getUniformLocation(XR.lq,'C'),.96,.73,.26,1);gl.bindBuffer(gl.ARRAY_BUFFER,XR.lb);const a=gl.getAttribLocation(XR.lq,'a');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,12,0);gl.drawArrays(gl.LINES,0,lines.length/3)}}}
 /* ---- punti d'aggancio per gli altri moduli VR (ognuno nel suo file, facoltativo):
    xrUiDraw(g)       disegna l'interfaccia HTML del gioco sul canvas g, prima che diventi la texture dello schermo
    xr3dDraw(gl,v,XR) disegna altro nella scena, per ogni occhio v (XRView), con il contesto WebGL 2 della sessione

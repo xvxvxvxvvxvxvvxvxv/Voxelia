@@ -8,7 +8,7 @@
 // TLS_CERT=cert.pem TLS_KEY=key.pem node server.js  -> https:// e WebSocket wss:// sulla stessa porta.
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
-const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
+const http = require('http'), https = require('https'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
 const VER = '7.12.1';
 const PORT = process.env.PORT || 3000;
 // certificato e chiave in formato PEM: se ci sono entrambi il server parla solo https/wss

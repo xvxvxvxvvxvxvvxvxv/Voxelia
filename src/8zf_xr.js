@@ -69,6 +69,7 @@ function xrInput(fr){XR.ax=null;XR.zoom=0;
     if(pose){const m=pose.transform.matrix,o=[m[12],m[13],m[14]],d=[-m[8],-m[9],-m[10]];st.ray={o,d,h:xrHit(o,d)}}
     if(!gp)continue;
     const B=gp.buttons.map(b=>!!(b&&b.pressed)),B0=st.b,dn=i=>B[i]&&!B0[i];st.b=B;
+    if(typeof xrInputHook==='function'&&xrInputHook(src,gp,B,B0,st.ray,fr))continue;
     const ax=gp.axes.length>=4?[gp.axes[2],gp.axes[3]]:[gp.axes[0]||0,gp.axes[1]||0];
     if(dn(0)){XR.act=src;const h=st.ray&&st.ray.h;if(h&&h.in){xrClick(h.x,h.y);xrPulse(gp)}}
     if(hd==='left'){XR.ax=ax;
@@ -99,13 +100,15 @@ function xrFrame(n,fr){const s=XR.s;if(!s)return;s.requestAnimationFrame(xrFrame
   const lines=[];for(const st of XR.src.values())if(st.ray){const r=st.ray,e=v3(r.o,r.d,r.h&&r.h.in?r.h.t:.6);lines.push(...r.o,...e)}
   gl.bindBuffer(gl.ARRAY_BUFFER,XR.lb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(lines),gl.STREAM_DRAW);
   for(const v of pose.views){const vp=L.getViewport(v);gl.viewport(vp.x,vp.y,vp.width,vp.height);
-    gl.useProgram(XR.pq);gl.uniformMatrix4fv(gl.getUniformLocation(XR.pq,'P'),false,v.projectionMatrix);gl.uniformMatrix4fv(gl.getUniformLocation(XR.pq,'V'),false,v.transform.inverse.matrix);
+    if(!XR.noPan){gl.bindVertexArray(null);gl.useProgram(XR.pq);gl.uniformMatrix4fv(gl.getUniformLocation(XR.pq,'P'),false,v.projectionMatrix);gl.uniformMatrix4fv(gl.getUniformLocation(XR.pq,'V'),false,v.transform.inverse.matrix);
     gl.bindBuffer(gl.ARRAY_BUFFER,XR.pb);let a=gl.getAttribLocation(XR.pq,'a'),u=gl.getAttribLocation(XR.pq,'u');gl.enableVertexAttribArray(a);gl.enableVertexAttribArray(u);
-    gl.vertexAttribPointer(a,3,gl.FLOAT,false,20,0);gl.vertexAttribPointer(u,2,gl.FLOAT,false,20,12);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,XR.tex);gl.drawArrays(gl.TRIANGLES,0,6);gl.disableVertexAttribArray(u);
+    gl.vertexAttribPointer(a,3,gl.FLOAT,false,20,0);gl.vertexAttribPointer(u,2,gl.FLOAT,false,20,12);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,XR.tex);gl.drawArrays(gl.TRIANGLES,0,6);gl.disableVertexAttribArray(u)}
     if(typeof xr3dDraw==='function')xr3dDraw(gl,v,XR);
-    if(lines.length){gl.useProgram(XR.lq);gl.uniformMatrix4fv(gl.getUniformLocation(XR.lq,'P'),false,v.projectionMatrix);gl.uniformMatrix4fv(gl.getUniformLocation(XR.lq,'V'),false,v.transform.inverse.matrix);
+    if(lines.length&&!XR.noPan){gl.bindVertexArray(null);gl.useProgram(XR.lq);gl.uniformMatrix4fv(gl.getUniformLocation(XR.lq,'P'),false,v.projectionMatrix);gl.uniformMatrix4fv(gl.getUniformLocation(XR.lq,'V'),false,v.transform.inverse.matrix);
       gl.uniform4f(gl.getUniformLocation(XR.lq,'C'),.96,.73,.26,1);gl.bindBuffer(gl.ARRAY_BUFFER,XR.lb);a=gl.getAttribLocation(XR.lq,'a');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,12,0);gl.drawArrays(gl.LINES,0,lines.length/3)}}}
 /* ---- punti d'aggancio per gli altri moduli VR (ognuno nel suo file, facoltativo):
    xrUiDraw(g)       disegna l'interfaccia HTML del gioco sul canvas g, prima che diventi la texture dello schermo
-   xr3dDraw(gl,v,XR) disegna altro nella scena, per ogni occhio v (XRView), con il contesto WebGL 2 della sessione ---- */
+   xr3dDraw(gl,v,XR) disegna altro nella scena, per ogni occhio v (XRView), con il contesto WebGL 2 della sessione
+   xrInputHook(src,gp,B,B0,ray,fr)  comandi di un controller (B premuti ora, B0 al fotogramma prima): se rende true, i comandi di qui si saltano
+   XR.noPan=1        nasconde lo schermo sospeso e i raggi (per esempio in prima persona) ---- */
 xrButton();

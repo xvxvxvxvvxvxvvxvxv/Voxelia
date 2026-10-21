@@ -1,9 +1,9 @@
-// Plugin di esempio: rinomina questo file in esempio.js (senza il trattino basso) e premi
-// "Ricarica" nella pagina Plugin del pannello admin, oppure riavvia il server.
+// Plugin di esempio, da cui partire per scriverne uno nuovo. Si spegne dalla pagina Plugin del pannello admin
+// (oppure rinominando il file con il trattino basso davanti, _esempio.js).
 module.exports = {
   name: 'Esempio',
-  version: '1.0',
-  description: 'Saluta chi entra, aggiunge /dado, /ora, /boss e /festa e una pagina web',
+  version: '1.1',
+  description: 'Saluta chi entra, aggiunge /dado, /ora, /vittorie e /festa e una pagina web',
   defaults: { benvenuto: 'Benvenuto, {nome}! Scrivi /aiuto per i comandi del server.' },
 
   setup(api) {
@@ -16,7 +16,8 @@ module.exports = {
       api.say(p.room, p.name + ' tira un d' + f + ': ' + (1 + Math.floor(Math.random() * f)));
     });
     api.command('ora', "l'ora del mondo", () => { const c = api.server.clock(); return 'Giorno ' + c.day + ', ore ' + c.time; });
-    api.command('boss', 'quanti boss hai sconfitto', p => (api.store[p.name] || 0) + ' boss sconfitti da ' + p.name);
+    // (non /boss: quel comando è del plugin Boss del mondo, e i comandi doppi vengono ignorati)
+    api.command('vittorie', 'quanti boss dei dungeon hai sconfitto', p => (api.store[p.name] || 0) + ' boss sconfitti da ' + p.name);
 
     // dati che restano tra un riavvio e l'altro
     api.on('dungeon', (p, dungeon, ciclo) => {

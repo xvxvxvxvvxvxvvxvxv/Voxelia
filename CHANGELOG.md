@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.13.3 — Manutenzione: il comando del plugin di esempio (21 ottobre 2026)
+
+- **Plugin di esempio:** il suo comando `/boss` (quanti boss dei dungeon hai sconfitto) aveva lo stesso nome del comando del plugin Boss del mondo. Il server lo scartava a ogni avvio, con l'avviso «il comando /boss esiste già» nel registro, e il conteggio non si poteva vedere. Ora il comando si chiama `/vittorie`; i conteggi già salvati restano. `/boss` continua a mostrare il boss del mondo. Lo stesso vale per il plugin di esempio che il server crea in una cartella dei plugin vuota.
+- **README:** versione attuale aggiornata; aggiunti i plugin Emote e fumetti, Il Sindaco di Aldoria e Speedrun dei dungeon e i file della realtà virtuale `8zg_xrui.js` e `8zh_xr3d.js`, che mancavano dagli elenchi.
+
+---
+
 ## 7.13.2 — Contorni al loro posto e asce dritte in VR (21 ottobre 2026)
 
 - **Realtà virtuale:** i contorni gialli del pulsante puntato finivano spostati (di molto nelle finestre appena aperte, come lo zaino). Nel visore il browser non disegna la pagina e le animazioni d'apertura delle finestre restavano ferme a metà, con i pulsanti veri rimpiccioliti e spostati rispetto alla foto mostrata nel pannello. Durante la VR le animazioni dell'interfaccia sono ora già concluse anche nella pagina, così contorni e clic cadono esattamente sui pulsanti che si vedono.

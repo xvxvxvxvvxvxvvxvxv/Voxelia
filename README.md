@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.12** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.13.3** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -457,6 +457,7 @@ e si accendono e spengono senza riavviare. Come scriverne uno è spiegato in [pl
 |---|---|
 | **Albo degli eroi** (`albo.js`) | Pagina web con la scheda di ogni eroe e il comando `/albo` |
 | **Boss del mondo** (`boss.js`) | Un boss enorme da affrontare tutti insieme, con premi in base al contributo (`/boss`) |
+| **Emote e fumetti** (`emote.js`) | Emote con il fumetto sopra la testa (`/saluta`, `/ridi`, `/balla`…) e ruota delle emote col tasto G |
 | **Discoteca** (`discoteca.js`) | Una discoteca con DJ, brani da YouTube e SoundCloud, coda, voti e luci (`/discoteca`) |
 | **Premio giornaliero** (`giornaliero.js`) | Un premio al giorno, più ricco giorno dopo giorno (`/giornaliero`) |
 | **Gruppi d'avventura** (`gruppi.js`) | Gruppi fino a 4 eroi con chat ed esperienza e oro condivisi sui boss (`/gruppo`) |
@@ -468,6 +469,8 @@ e si accendono e spengono senza riavviare. Come scriverne uno è spiegato in [pl
 | **Notti di caccia** (`notti.js`) | Eventi notturni con esperienza moltiplicata e gara a punti (`/evento`) |
 | **Gara di pesca** (`pesca.js`) | Albo dei record, gare a tempo e annunci dei pesci leggendari |
 | **Posta e amici** (`posta.js`) | Messaggi per chi è offline (`/posta`) e avvisi sugli amici (`/amici`) |
+| **Il Sindaco di Aldoria** (`sindaco.js`) | Elezione settimanale del sindaco e decreti (`/vota`, `/sindaco`) |
+| **Speedrun dei dungeon** (`speedrun.js`) | Cronometro dei dungeon, classifiche, record e sfida della settimana (`/speedrun`) |
 | **Stress test** (`stress.js`) | Bot finti che giocano sul server per misurare latenza, memoria ed errori |
 | **Taglie del giorno** (`taglie.js`) | Nuove taglie ogni giorno (`/taglie`) |
 | **Caccia al tesoro** (`tesoro.js`) | Un tesoro nascosto in città con indizi a tappe (`/tesoro`) |
@@ -553,7 +556,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.12 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.13.3 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -600,6 +603,8 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zd_biomi2.js` | Come si disegnano i biomi (alberi, rocce, piramide, arredi, edifici), gli interni e i loro personaggi |
 | `8ze_ricordo.js` | Il ricordo del Moreau: Aldoria Vecchia intatta, prima della nebbia (filmato flashback) |
 | `8zf_xr.js` | Realtà virtuale (WebXR) per Meta Quest: schermo sospeso, controller, levette |
+| `8zg_xrui.js` | Realtà virtuale: l'interfaccia HTML del gioco (HUD, finestre, dialoghi) fotografata e mostrata nel visore |
+| `8zh_xr3d.js` | Realtà virtuale: il mondo in 3D sul tavolo (diorama), con gli stessi modelli del gioco |
 | `8zi_xrfp.js` | Realtà virtuale in prima persona: il mondo a grandezza naturale, attacchi con il movimento dei controller, pannelli e menu fluttuanti |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 

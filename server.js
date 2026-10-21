@@ -1,4 +1,4 @@
-// Server di Voxelia 7.13.2: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Server di Voxelia 7.13.3: serve il gioco e fa da ponte WebSocket tra i giocatori.
 // Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
 // rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
 // i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
@@ -9,7 +9,7 @@
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
 const http = require('http'), https = require('https'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
-const VER = '7.13.2';
+const VER = '7.13.3';
 const PORT = process.env.PORT || 3000;
 // certificato e chiave in formato PEM: se ci sono entrambi il server parla solo https/wss
 const TLS = (() => {
@@ -1105,7 +1105,7 @@ const PLUG_EXAMPLE = `// Plugin di esempio: rinomina questo file in esempio.js (
 module.exports = {
   name: 'Esempio',
   version: '1.0',
-  description: 'Saluta chi entra, aggiunge /dado, /ora, /boss e /festa e una pagina web',
+  description: 'Saluta chi entra, aggiunge /dado, /ora, /vittorie e /festa e una pagina web',
   defaults: { benvenuto: 'Benvenuto, {nome}! Scrivi /aiuto per i comandi del server.' },
 
   setup(api) {
@@ -1118,7 +1118,8 @@ module.exports = {
       api.say(p.room, p.name + ' tira un d' + f + ': ' + (1 + Math.floor(Math.random() * f)));
     });
     api.command('ora', "l'ora del mondo", () => { const c = api.server.clock(); return 'Giorno ' + c.day + ', ore ' + c.time; });
-    api.command('boss', 'quanti boss hai sconfitto', p => (api.store[p.name] || 0) + ' boss sconfitti da ' + p.name);
+    // (non /boss: quel comando è del plugin Boss del mondo, e i comandi doppi vengono ignorati)
+    api.command('vittorie', 'quanti boss dei dungeon hai sconfitto', p => (api.store[p.name] || 0) + ' boss sconfitti da ' + p.name);
 
     // dati che restano tra un riavvio e l'altro
     api.on('dungeon', (p, dungeon, ciclo) => {

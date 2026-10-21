@@ -178,7 +178,7 @@ function fpGL(gl){FP.gl=gl;if(X3.gl!==gl)x3GL(gl);
   FP.pc=fpProg(gl,'uniform mat4 P,V,Mdl;in vec3 a;in vec4 c;out vec4 vc;out float vd;void main(){vec4 e=V*Mdl*vec4(a,1.);vc=c;vd=length(e.xyz);gl_Position=P*e;}',
     'uniform vec3 F;uniform vec2 FD;uniform float NK,A;in vec4 vc;in float vd;out vec4 o;void main(){vec3 k=mix(vc.rgb,F,clamp((vd-FD.x)/(FD.y-FD.x),0.,1.));k=mix(k,k*vec3(.32,.38,.62),NK*.75);o=vec4(k,vc.a*A);}',['a','c']);
   FP.pt=fpProg(gl,'uniform mat4 P,V;in vec3 a;in vec2 u;out vec2 v;void main(){v=u;gl_Position=P*V*vec4(a,1.);}','uniform sampler2D T;uniform vec4 K;in vec2 v;out vec4 o;void main(){o=texture(T,v)*K;}',['a','u']);
-  FP.vao=gl.createVertexArray();for(const k of['db','fb','lb','kb','vb','wb','sb','qb','tb'])FP[k]=gl.createBuffer();
+  FP.vao=gl.createVertexArray();for(const k of['db','fb','lb','kb','vb','wb','sb','qb','tb','ob'])FP[k]=gl.createBuffer();
   const tx=()=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return t};
   FP.ut=0;FP.uok=0;FP.utx=tx();FP.atx=tx();FP.ast=0;FP.wk='';FP.sk='';fpVig(gl)}
@@ -296,9 +296,18 @@ function fpFrame(gl){if(FP.gl!==gl)fpGL(gl);
     // il raggio si vede solo quando punta qualcosa con cui interagire (un pulsante di una finestra, una persona, una porta, un nemico)
     for(const st of rays){const r=st.ray;if(!r.vis)continue;const e=v3(r.o,r.d,r.vis);o=fpV(o,r.o[0],r.o[1],r.o[2],K,255);o=fpV(o,e[0],e[1],e[2],K,255)}
     FP.ln=(o-FP.bo)>>4;FP.lb0=FP.bo>>4;fpUp(gl,FP.lb,o||16,1)}
+  // tendina delle porte e lampi, negli occhi
+  {const c=fpCurtain();FP.ca=c.a;if(c.a>.01){fpBuf(6*16);let o=0;for(const[x,y]of[[-2,2],[2,2],[2,-2],[-2,2],[2,-2],[-2,-2]])o=fpV(o,x,y,-.3,c.c,255);fpUp(gl,FP.ob,o,1)}}
   // vignetta: camminando, girando o durante schivate e affondi
   if(FP.vgl!==(FP.vig|0))fpVig(gl);
   const tv=FP.vig?Math.min(1,Math.max(FP.mv,P.dm?1:0,P.path&&P.path.length?.6:0,FP.turn||0,performance.now()-FP.snapT<160?.8:0)):0;FP.vv+=(tv-FP.vv)*Math.min(1,FP.dt*(tv>FP.vv?10:4))}
+// passando da una porta o da un portale la pagina chiude un'iride nera (#iris) e alcuni colpi fanno un lampo colorato (#flash):
+// in prima persona non stanno sul pannello dell'interfaccia ma davanti agli occhi, come una dissolvenza (l'iride che si stringe in VR darebbe fastidio)
+XU.skip=el=>(el.id==='iris'||el.id==='flash')&&fpLive();
+function fpCurtain(){let a=0,c=[0,0,0];const ir=$('iris');
+  if(ir&&ir.style.display==='block'){const m=/transparent ([\d.]+)px/.exec(ir.style.background);a=1-clamp((m?+m[1]:0)/Math.hypot(W,H),0,1)}
+  const fl=$('flash');if(fl){const cs=getComputedStyle(fl),o=+cs.opacity||0;if(o>a){a=o;c=x3Col(cs.backgroundColor)}}
+  return{a,c}}
 function fpDisc(o,x,y,r,ri,c,a){const S=48;for(let i=0;i<S;i++){const a0=i/S*6.2832,a1=(i+1)/S*6.2832,P0=fpRef(x+Math.cos(a0)*r,y+Math.sin(a0)*r,1),P1=fpRef(x+Math.cos(a1)*r,y+Math.sin(a1)*r,1);
     if(ri>0){const Q0=fpRef(x+Math.cos(a0)*ri,y+Math.sin(a0)*ri,1),Q1=fpRef(x+Math.cos(a1)*ri,y+Math.sin(a1)*ri,1);for(const q of[Q0,P0,P1,Q0,P1,Q1])o=fpV(o,q[0],q[1],q[2],c,a)}
     else{const C=fpRef(x,y,1);for(const q of[C,P0,P1])o=fpV(o,q[0],q[1],q[2],c,a)}}
@@ -332,6 +341,7 @@ function fpView(gl,v){const pc=FP.pc,pt=FP.pt,U=pc.u,P4=v.projectionMatrix,V4=v.
   if(FP.ln){gl.uniformMatrix4fv(U.Mdl,false,FPI);gl.bindBuffer(gl.ARRAY_BUFFER,FP.lb);gl.vertexAttribPointer(0,3,gl.FLOAT,false,16,0);gl.vertexAttribPointer(1,4,gl.UNSIGNED_BYTE,true,16,12);gl.drawArrays(gl.LINES,FP.lb0,FP.ln)}
   // vignetta, negli occhi (V = identità: i vertici sono già nello spazio dell'occhio)
   if(FP.vig&&FP.vv>.02){const L=FPVL[FP.vig|0]||FPVL[1],k=FP.vv,S=new Float32Array(FPI);S[0]=S[5]=1-k*L.s;gl.uniformMatrix4fv(U.V,false,FPI);gl.uniform1f(U.A,Math.min(1,k*1.4)*L.a);col(FP.vb,FP.vn,S)}
+  if(FP.ca>.01){gl.uniformMatrix4fv(U.V,false,FPI);gl.uniform1f(U.A,FP.ca);col(FP.ob,6,FPI)}
   gl.disable(gl.BLEND);gl.depthMask(true);gl.enable(gl.DEPTH_TEST);gl.bindVertexArray(null)}
 
 const _xr3dFP=typeof xr3dDraw==='function'?xr3dDraw:null;

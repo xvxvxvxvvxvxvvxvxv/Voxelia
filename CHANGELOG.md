@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.13.1 — Le porte si attraversano anche negli occhi (21 ottobre 2026)
+
+- **Realtà virtuale, prima persona:** passando da una porta o da un portale, la chiusura a nero si vedeva solo nel pannello dell'interfaccia sotto lo sguardo. Ora è una dissolvenza al nero davanti agli occhi, e il nuovo luogo compare quando si riapre.
+- Anche i lampi colorati (colpi subiti, fulmini, crolli) ora si vedono nella vista del visore.
+
+---
+
 ## 7.13 — Voxelia nella realtà virtuale: Meta Quest 3 (20 ottobre 2026)
 
 ### Entrare in VR

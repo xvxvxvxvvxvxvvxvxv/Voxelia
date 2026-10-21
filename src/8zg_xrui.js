@@ -13,7 +13,11 @@ function xuCss(){const sh=[...document.styleSheets],k=sh.length+':'+[...document
   for(const s of sh){let r='';try{r=[...s.cssRules].map(x=>x.cssText).join('\n')}catch(e){r=s.ownerNode&&s.ownerNode.textContent||''}t+=r+'\n'}
   XU.cssK=k;return XU.css=t.replace(/:hover\b/g,'.xrh')+'\nbody{background:transparent!important;margin:0!important;overflow:hidden!important}video{visibility:hidden!important}'+
     // nella foto le animazioni ripartirebbero da zero (finestre trasparenti): si mostrano già concluse
-    '*,*::before,*::after{animation-delay:-60s!important;transition:none!important}'}
+    XUFIN}
+// animazioni CSS già concluse e ferme, nella foto e (durante la VR) anche nella pagina vera: nel visore il browser non disegna la pagina
+// e il suo orologio delle animazioni può restare fermo all'inizio (finestre ancora rimpicciolite e spostate), così le posizioni vere
+// dei pulsanti (clic e contorni gialli) non coinciderebbero più con quelle della foto
+const XUFIN='*,*::before,*::after{animation-delay:-60s!important;animation-play-state:paused!important;transition:none!important}';
 
 // immagini non incorporate (per esempio blob: o file del server): una foto SVG non può caricarle, quindi diventano data URL
 function xuSrc(im){const u=im.currentSrc||im.src||'';if(!u||u.startsWith('data:'))return u;if(XU.src.has(u))return XU.src.get(u);
@@ -29,7 +33,8 @@ function xuLive(c,r){if(!c.width||!c.height||r.width<2||r.height<2)return 0;
 
 // copia di un elemento visibile con i suoi figli visibili: valori dei campi, scorrimento e :hover diventano attributi o stili
 function xuClone(el,hov){const t=el.tagName;
-  if(XU.skip&&XU.skip(el))return null;
+  // le icone che volano verso l'HUD si muovono con animazioni che la foto non vede: resterebbero ferme a metà schermo
+  if(XU.skip&&XU.skip(el)||el.classList.contains('fly'))return null;
   if(t==='SCRIPT'||t==='STYLE'||t==='LINK'||t==='TEMPLATE'||t==='VIDEO'||t==='AUDIO'||t==='IFRAME'||el===cv)return null;
   if(el.hidden||t!=='OPTION'&&t!=='OPTGROUP'&&!el.getClientRects().length)return null;
   if(t==='CANVAS'){const r=el.getBoundingClientRect(),k=el.cloneNode(false);
@@ -82,9 +87,10 @@ function xuSnap(){const w=W,h=H;if(!w||!h)return;XU.busy=1;XU.dirty=0;XU.t=perfo
 }
 
 function xuWatch(){if(XU.mo)return;
+  if(!XU.fin){XU.fin=document.createElement('style');XU.fin.id='xrfin';XU.fin.textContent=XUFIN}document.head.appendChild(XU.fin);
   XU.mo=new MutationObserver(R=>{for(const r of R)if(!xuVar(r)){XU.dirty=1;return}});XU.mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeOldValue:true,characterData:true});
   for(const e of['scroll','input','change'])document.addEventListener(e,xuMark,true)}
-function xuUnwatch(){if(!XU.mo)return;XU.mo.disconnect();XU.mo=null;for(const e of['scroll','input','change'])document.removeEventListener(e,xuMark,true);XU.c=null;XU.w=0;XU.live=[];XU.src.clear()}
+function xuUnwatch(){if(!XU.mo)return;XU.mo.disconnect();if(XU.fin)XU.fin.remove();XU.mo=null;for(const e of['scroll','input','change'])document.removeEventListener(e,xuMark,true);XU.c=null;XU.w=0;XU.live=[];XU.src.clear()}
 function xuMark(){XU.dirty=1}
 // è cambiata solo una variabile CSS nello stile (la ruota delle azioni la aggiorna a ogni fotogramma): non serve una foto nuova
 const xuNoVar=v=>(v||'').replace(/--[\w-]+\s*:[^;]*;?/g,'').replace(/\s+/g,'');

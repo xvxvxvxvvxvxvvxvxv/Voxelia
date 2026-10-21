@@ -38,7 +38,7 @@ function xrStart(s){XR.s=s;XR.pan=null;XR.src.clear();XR.act=null;
     // dal menu si entra direttamente nella partita salvata (o in una nuova): il menu è una pagina HTML e nel visore non si vede
     if(!started){const sv=LS.get(SAVEK,null);if(sv&&sv.p)contGame();else newGame(1)}
     s.requestAnimationFrame(xrFrame)}).catch(e=>{msg('Realtà virtuale non disponibile: '+(e&&e.message||e));s.end()});
-  s.addEventListener('end',()=>{XR.s=null;for(const[,cb]of XRQ.splice(0))_rafXR(cb);XR.ref=null;XR.ax=null;MX=-1;rs();if(!XR.wl){XR.wl=1;requestAnimationFrame(loop)}});
+  s.addEventListener('end',()=>{XR.s=null;if(typeof xuUnwatch==='function')xuUnwatch();for(const[,cb]of XRQ.splice(0))_rafXR(cb);XR.ref=null;XR.ax=null;MX=-1;rs();if(!XR.wl){XR.wl=1;requestAnimationFrame(loop)}});
   s.addEventListener('inputsourceschange',()=>{XR.src.clear()});
   // mani senza controller (hand tracking): il pizzico fa clic dove punta la mano
   s.addEventListener('select',e=>{const src=e.inputSource;if(src.gamepad||!XR.ref)return;const p=e.frame.getPose(src.targetRaySpace,XR.ref);if(!p)return;

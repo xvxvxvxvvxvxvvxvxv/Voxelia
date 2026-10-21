@@ -61,7 +61,8 @@ function itemFly(it,wx,wy){if(!started)return;const[x,y]=scr(wx==null?P.px:wx,wy
 function goldFly(n,wx,wy){if(!started||n<=0)return;const[x,y]=scr(wx==null?P.px:wx,wy==null?P.py:wy,30),to=$('hg');const k=Math.min(7,1+Math.floor(n/25));
   for(let i=0;i<k;i++)flyIcon(ICON('oro',2).u,[x+(Math.random()-.5)*30,y+(Math.random()-.5)*20],to,{sz:20,dur:650+i*40,delay:i*70,arc:-40-Math.random()*50})}
 // lampo sullo schermo (bianco, rosso, oro)
-function flash(c='#fff',a=.6,d=420){if(!cineOK())return;const el=$('flash');el.style.background=c;el.animate([{opacity:a},{opacity:0}],{duration:d,easing:'ease-out'})}
+let FLS=null;
+function flash(c='#fff',a=.6,d=420){if(!cineOK())return;const el=$('flash');el.style.background=c;FLS={c,a,d,t:performance.now()};el.animate([{opacity:a},{opacity:0}],{duration:d,easing:'ease-out'})}
 // pioggia di monete per le grandi vincite
 let CRT=0;
 function coinRain(n=26){if(!cineOK()||document.hidden||performance.now()-CRT<1500)return;CRT=performance.now();for(let i=0;i<n;i++){const im=document.createElement('img');im.src=ICON('oro',2).u;im.className='fly';const x=Math.random()*W;im.style.cssText=`left:${x}px;top:-30px;width:22px;height:22px`;document.body.appendChild(im);

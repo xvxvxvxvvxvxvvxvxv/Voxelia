@@ -5,6 +5,14 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.13.2 — Contorni al loro posto e asce dritte in VR (21 ottobre 2026)
+
+- **Realtà virtuale:** i contorni gialli del pulsante puntato finivano spostati (di molto nelle finestre appena aperte, come lo zaino). Nel visore il browser non disegna la pagina e le animazioni d'apertura delle finestre restavano ferme a metà, con i pulsanti veri rimpiccioliti e spostati rispetto alla foto mostrata nel pannello. Durante la VR le animazioni dell'interfaccia sono ora già concluse anche nella pagina, così contorni e clic cadono esattamente sui pulsanti che si vedono.
+- **Prima persona:** asce e falci in mano avevano la lama girata di lato. Ora il filo guarda in avanti, verso il nemico, quando si alza l'arma per colpire (come il filo della spada).
+- I lampi colorati nella vista del visore si spengono da soli anche se la pagina è ferma, e le icone che volano verso l'HUD non restano più immobili nel pannello.
+
+---
+
 ## 7.13.1 — Le porte si attraversano anche negli occhi (21 ottobre 2026)
 
 - **Realtà virtuale, prima persona:** passando da una porta o da un portale, la chiusura a nero si vedeva solo nel pannello dell'interfaccia sotto lo sguardo. Ora è una dissolvenza al nero davanti agli occhi, e il nuovo luogo compare quando si riapre.

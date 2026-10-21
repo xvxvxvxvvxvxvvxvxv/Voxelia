@@ -209,11 +209,15 @@ function fpVig(gl){const L=FPVL[FP.vig|0]||FPVL[1],S=40;FP.vgl=FP.vig|0;fpBuf(S*
 /* ---- armi in mano: gli stessi modelli che l'eroe porta nel gioco (wpnL, shdL), con l'impugnatura nel pugno ---- */
 function fpHeld(gl){const w=P.eq.w,s=P.eq.s,ap=apFix(P.ap||APM),sk=APO.sk.c[ap.sk],key=(w?w.u+w.r+w.n:'')+'|'+(s?s.u+s.r+s.n:'')+'|'+sk;if(key===FP.wk)return;FP.wk=key;
   const mk=(L,buf)=>{if(!L||!L.length)return 0;const B=[];for(const b of L){const k=x3Col(b[6]);B.push(b[0],b[1],b[2],b[3],b[4],b[5],k[0],k[1],k[2])}const n=x3Size(B),vb=x3Need(n);x3Emit(B,vb,0);gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Uint8Array(vb,0,n),gl.STATIC_DRAW);return n>>4};
-  FP.wn=mk(w?wpnL(itype(w),RC[w.r]||'#cccccc'):null,FP.wb);FP.sn=mk(s?shdL(itype(s),RC[s.r]):null,FP.sb);
+  const ty=w?itype(w):'';FP.wn=mk(w?FPWR.has(ty)?fpWRot(wpnL(ty,RC[w.r]||'#cccccc')):wpnL(ty,RC[w.r]||'#cccccc'):null,FP.wb);FP.sn=mk(s?shdL(itype(s),RC[s.r]):null,FP.sb);
   // l'avambraccio è il braccio del modello dell'eroe (stessa scatola .12×.16, alta 10, color pelle), dal pugno verso il gomito
   if(!FP.ab)FP.ab=gl.createBuffer();FP.an=mk([[.31,-.08,2,.12,.16,11,sk]],FP.ab)}
 // dal modello (caselle e pixel, impugnatura dell'arma in x .37, z 12) al pugno: la lama esce in avanti lungo il controller.
 // Le proporzioni sono quelle del modello (1 casella = 39,2 pixel, come nel diorama), con la spada lunga circa 80 cm
+// ascia e falce: nel gioco la testa sporge di lato (+x, la vista dall'alto); in mano nel visore si gira di 90° attorno al manico,
+// così il filo guarda in giù col controller puntato in avanti e verso il nemico quando si alza l'arma per il colpo (come il filo della spada)
+const FPWR=new Set(['axe','scy']);
+function fpWRot(L){return L.map(b=>{const cx=b[0]+b[3]/2-.37,cy=b[1]+b[4]/2,w=b[4],d=b[3];return[.37+cy-w/2,-cx-d/2,b[2],w,d,b[5],b[6]]})}
 const FPWK=.03,FPWT=39.2*FPWK;
 const FPWA=new Float32Array([FPWT,0,0,0, 0,FPWT,0,0, 0,0,-FPWK,0, -.37*FPWT,0,12*FPWK,1]);
 // lo scudo sull'avambraccio sinistro: la faccia guarda fuori, il lato lungo lungo il braccio
@@ -306,7 +310,8 @@ function fpFrame(gl){if(FP.gl!==gl)fpGL(gl);
 XU.skip=el=>(el.id==='iris'||el.id==='flash')&&fpLive();
 function fpCurtain(){let a=0,c=[0,0,0];const ir=$('iris');
   if(ir&&ir.style.display==='block'){const m=/transparent ([\d.]+)px/.exec(ir.style.background);a=1-clamp((m?+m[1]:0)/Math.hypot(W,H),0,1)}
-  const fl=$('flash');if(fl){const cs=getComputedStyle(fl),o=+cs.opacity||0;if(o>a){a=o;c=x3Col(cs.backgroundColor)}}
+  // il lampo si calcola dall'ora in cui è partito (la sua animazione nella pagina può restare ferma mentre si è nel visore)
+  if(FLS){const k=(performance.now()-FLS.t)/FLS.d;if(k>=1)FLS=null;else{const o=FLS.a*(1-k)**3;if(o>a){a=o;c=x3Col(FLS.c)}}}
   return{a,c}}
 function fpDisc(o,x,y,r,ri,c,a){const S=48;for(let i=0;i<S;i++){const a0=i/S*6.2832,a1=(i+1)/S*6.2832,P0=fpRef(x+Math.cos(a0)*r,y+Math.sin(a0)*r,1),P1=fpRef(x+Math.cos(a1)*r,y+Math.sin(a1)*r,1);
     if(ri>0){const Q0=fpRef(x+Math.cos(a0)*ri,y+Math.sin(a0)*ri,1),Q1=fpRef(x+Math.cos(a1)*ri,y+Math.sin(a1)*ri,1);for(const q of[Q0,P0,P1,Q0,P1,Q1])o=fpV(o,q[0],q[1],q[2],c,a)}

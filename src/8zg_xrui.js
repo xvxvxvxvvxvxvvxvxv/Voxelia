@@ -29,6 +29,7 @@ function xuLive(c,r){if(!c.width||!c.height||r.width<2||r.height<2)return 0;
 
 // copia di un elemento visibile con i suoi figli visibili: valori dei campi, scorrimento e :hover diventano attributi o stili
 function xuClone(el,hov){const t=el.tagName;
+  if(XU.skip&&XU.skip(el))return null;
   if(t==='SCRIPT'||t==='STYLE'||t==='LINK'||t==='TEMPLATE'||t==='VIDEO'||t==='AUDIO'||t==='IFRAME'||el===cv)return null;
   if(el.hidden||t!=='OPTION'&&t!=='OPTGROUP'&&!el.getClientRects().length)return null;
   if(t==='CANVAS'){const r=el.getBoundingClientRect(),k=el.cloneNode(false);

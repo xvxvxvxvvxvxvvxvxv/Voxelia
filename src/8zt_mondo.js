@@ -8,7 +8,8 @@
 const TWW={m:0,cache:new Map(),kill:new Map(),carry:null,seam:0,pre:[],preT:0};
 const TWRD=[[24,'Corta'],[36,'Media'],[48,'Lunga']];
 SETD.twrd=TOUCH?0:1;if(SET.twrd==null)SET.twrd=SETD.twrd;
-const twMarg=()=>TWRD[clamp(SET.twrd|0,0,2)][0];
+// 7.19.1: si torna al passaggio di prima fra le regioni (una regione alla volta, con la transizione): la fascia è zero
+const twMarg=()=>0;
 const twWinN=()=>TWR+2*twMarg();
 const twWin=()=>!!(ZZ&&ZZ.tw&&TWW.m);
 // da finestra a regione e ritorno
@@ -55,7 +56,7 @@ const _load718=load;load=function(k,from){if(String(k).startsWith('tw:')){const 
 // i nemici abbattuti si ricordano per un po'
 const _kill718=kill;kill=function(e){if(e&&e.rk!=null&&e.k==='en'&&twWin())TWW.kill.set(e.rk+'#'+e.sid,gNow());_kill718(e)};
 /* ---- camminare oltre il bordo della regione: la finestra si sposta con te ---- */
-twEdge=function(){if(!twOn()||!P||P.hp<=0||PM||!String(Zk).startsWith('tw:')||OW.tx||OW.tp)return;const m=TWW.m;if(!m)return;const h=1.5;let dx=0,dy=0;
+const _twEdge719=twEdge;twEdge=function(){if(!TWW.m){_twEdge719();return}if(!twOn()||!P||P.hp<=0||PM||!String(Zk).startsWith('tw:')||OW.tx||OW.tp)return;const m=TWW.m;if(!m)return;const h=1.5;let dx=0,dy=0;
   if(P.px<m-h)dx=-1;else if(P.px>=m+TWR+h)dx=1;if(P.py<m-h)dy=-1;else if(P.py>=m+TWR+h)dy=1;if(dx||dy)twShift(dx,dy)};
 function twShift(dx,dy){const p=twP(Zk);if(!p)return;const nk=twK(p[0]+dx,p[1]+dy),ox=P.px,oy=P.py,ocx=camX,ocy=camY,tg=P.tg,ofx=fx,opop=pop,oPJ=PJ,opa=parts;
   const seen=new Set();for(const e of ents)if(e.rk!=null)seen.add(e.rk+'#'+e.sid);
@@ -114,10 +115,6 @@ const _buildFC718=buildFC;buildFC=function(){if(ZZ&&ZZ.tw&&N>TWR){buildFCw();ret
 // il disegno del pavimento sceglie da solo fra il foglio unico e i blocchi
 function fcPaint(){if(!FC)buildFC();if(FC.chunk)fcDraw();else if(FC.cv)g.drawImage(FC.cv,-FC.ox,-FC.oy,FC.w,FC.h)}
 /* ---- le Impostazioni: la distanza di visuale di Tomorrow ---- */
-SETCAT.splice(3,0,['tw','mappa','Tomorrow','Distanza di visuale del mondo aperto',['twrd']]);
-const _setBody718=setBody;setBody=function(k){if(k!=='tw')return _setBody718(k);const v=clamp(SET.twrd|0,0,2);
-  return sGrp('Distanza di visuale',`<div class="row"><label>Quanto mondo resta caricato intorno alla tua regione</label><span>${TWRD.map(([m,l],i)=>`<button class="${i===v?'on':''}" onclick="twSetRD(${i})">${l}</button>`).join(' ')}</span></div>
-    <p class="mu">Le regioni di Tomorrow sono unite: si cammina dall'una all'altra senza fermarsi. Il gioco tiene pronta la tua regione e una fascia di ${TWRD[v][0]} caselle di quelle intorno, con i loro abitanti e i loro mostri. Più la fascia è larga, più mondo vedi e più nemici ti possono seguire, ma il gioco chiede più memoria e potenza: sui telefoni conviene «Corta».</p>`)};
 function twSetRD(i){const was=twMarg();SET.twrd=clamp(i|0,0,2);if(typeof saveSet==='function')saveSet();else try{LS.set('voxelia_set',SET)}catch(_){}
   if(twOn()&&twWin()&&twMarg()!==was&&started){const d=twMarg()-was,ox=P.px,oy=P.py;TWW.carry={ents:ents.slice(),dx:0,dy:0,seen:new Set()};for(const e of TWW.carry.ents){e.px+=d;e.py+=d}TWW.seam=1;
     try{load(Zk)}finally{TWW.seam=0;TWW.carry=null}P.px=ox+d;P.py=oy+d;camX=PX(P.px,P.py);camY=PY(P.px,P.py,10)}

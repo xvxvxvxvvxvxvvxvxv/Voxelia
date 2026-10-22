@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.19** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.19.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -272,11 +272,8 @@ toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti,
 
 ### Un mondo che non finisce
 
-- Il mondo è fatto di **regioni** di 96×96 caselle, generate mentre cammini, e dalla 7.18 sono **unite**: il gioco tiene
-  caricata la tua regione e una fascia di quelle intorno (la **distanza di visuale**, nelle Impostazioni → Tomorrow:
-  24, 36 o 48 caselle), e la sposta con te quando passi il bordo, senza fermarsi. I nemici che ti inseguono ti
-  seguono, e quelli abbattuti tornano dopo tre ore di gioco. Il seme è dell'eroe; con un **codice stanza** è della stanza, e tutti giocano nello stesso mondo, con gli stessi
-  villaggi e gli stessi dungeon.
+- Il mondo è fatto di **regioni** di 96×96 caselle, generate mentre cammini. Cammina oltre il bordo e sei nella regione
+  accanto (nella 7.18 le regioni erano unite senza passaggio; dalla 7.19.1 si torna al passaggio con la transizione).
 - Il terreno dipende dalle coordinate del mondo: fiumi, laghi, boschi, dune e pareti di roccia continuano da una
   regione all'altra, e i sentieri si incontrano sempre sul bordo comune.
 - **Cinque biomi:** prati fioriti, boschi, deserti con mese e oasi, vette innevate, lande di cenere.
@@ -727,7 +724,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.19 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.19.1 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -787,7 +784,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zq_mappa.js` | Tomorrow: la mappa del mondo interattiva e le nuove finestre dei contratti (bacheca, pannello J, resoconto) |
 | `8zr_caricamento.js` | Le schermate di caricamento di ogni modalità e il filmato del viaggio con la gemma |
 | `8zs_modelli.js` | I modelli nuovi (con scheletro e animazioni) dei boss e degli animali rimasti alla grafica vecchia: drago, sfinge, piovra, spettro, signore della fiamma, cavalcalupi, nido di mitragliatrice, animali da cortile e cavalli |
-| `8zt_mondo.js` | Tomorrow unito: la finestra delle regioni intorno, lo spostamento senza passaggi, la distanza di visuale, il pavimento a blocchi, i borghi |
+| `8zt_mondo.js` | Tomorrow: le regioni generate e ricordate, il campo che resta dove l'hai montato, il pavimento a blocchi, i borghi (la finestra senza passaggi della 7.18 è spenta dalla 7.19.1) |
 | `8zu_combattimento.js` | Il combattimento nuovo: catene di colpi, colpo perfetto, colpi caricati e mosse proprie di ogni arma, effetti sui nemici, pose dell'eroe |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 

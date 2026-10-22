@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.19.1 — Il passaggio fra le regioni (22 ottobre 2026)
+
+- **Tomorrow:** il passaggio da una regione all'altra torna com'era prima della 7.18. Si carica una regione alla volta e, camminando oltre il bordo, si passa alla regione accanto con la transizione. Le impostazioni non hanno più la distanza di visuale.
+- Restano i borghi agli incroci, il campo che resta dove l'hai montato, i modelli nuovi e il combattimento della 7.19.
+
+---
+
 ## 7.19 — Le mosse delle armi (22 ottobre 2026)
 
 - **Combattimento nuovo:** non si clicca e basta. **Spazio**, **X**, il pulsante grande sul telefono o un clic sul nemico a portata fanno la mossa seguente della **catena** dell'arma, tre colpi diversi.

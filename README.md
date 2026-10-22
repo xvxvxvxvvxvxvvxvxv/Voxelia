@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.21** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.22** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -161,6 +161,13 @@ Se cadono si riprendono in un minuto, o subito al campo, al santuario o alla loc
   personalizza con nome, colori e decorazioni.
 - **Fazioni** (tasto **Y**): sei fazioni con stemma, città sede, emissario e terre. Puoi unirti a una o fondare la tua,
   con lo stemma che disegni (forma, partizione, colori, simbolo).
+
+### Le guerre (dalla 7.22)
+
+Le fazioni attaccano le tue terre: hai fino al giorno dopo per difendere lo stendardo dalle loro ondate, altrimenti la
+terra passa a loro o il borgo viene saccheggiato. Con il server e il plugin **Territori**, gli eroi dello stesso mondo
+(stesso codice stanza) si contendono le terre: quelle di un altro si prendono con un assedio, i suoi insediamenti si
+saccheggiano. La cronaca è nel registro (U → Guerra).
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -663,6 +670,7 @@ e si accendono e spengono senza riavviare. Come scriverne uno è spiegato in [pl
 | **Speedrun dei dungeon** (`speedrun.js`) | Cronometro dei dungeon, classifiche, record e sfida della settimana (`/speedrun`) |
 | **Stress test** (`stress.js`) | Bot finti che giocano sul server per misurare latenza, memoria ed errori |
 | **Taglie del giorno** (`taglie.js`) | Nuove taglie ogni giorno (`/taglie`) |
+| **Territori** (`territori.js`) | Le terre di Tomorrow condivise fra gli eroi dello stesso mondo: assedi, saccheggi e cronaca (`/terre`) |
 | **Caccia al tesoro** (`tesoro.js`) | Un tesoro nascosto in città con indizi a tappe (`/tesoro`) |
 | **Torneo dell'arena** (`torneo.js`) | Tornei a eliminazione diretta nel Colosseo, con tabellone e premi |
 | **Teletrasporto** (`tpa.js`) | `/tpa <nome>` per raggiungere un altro eroe, se accetta |
@@ -746,7 +754,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.21 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.22 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -810,6 +818,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zu_combattimento.js` | Il combattimento nuovo: catene di colpi, colpo perfetto, colpi caricati e mosse proprie di ogni arma, effetti sui nemici, pose dell'eroe |
 | `8zv_domare.js` | Domare i mostri: sigilli, cattura, compagni in campo con la loro mossa speciale, livelli ed evoluzioni, la stalla, il bestiario |
 | `8zw_regno.js` | Tomorrow: conquista delle regioni, insediamento con edifici e tesoro, fazioni con sedi, emissari e stemmi, la tua fazione, le terre sulla mappa |
+| `8zx_guerre.js` | Le guerre: assalti delle fazioni alle tue terre, assedi e saccheggi fra giocatori con il plugin Territori, la cronaca |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

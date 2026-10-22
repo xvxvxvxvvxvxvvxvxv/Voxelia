@@ -5,6 +5,24 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.22 — Le guerre (22 ottobre 2026)
+
+- **Le fazioni attaccano:** ogni giorno una fazione può marciare su una delle tue terre. Lo fanno più spesso quelle ostili, con cui hai la reputazione sotto zero.
+  - Hai fino al giorno dopo per correre a difenderla: le loro ondate di soldati, guidate da un capitano, attaccano lo **stendardo**, che ha la sua barra della vita.
+  - Nel tuo insediamento le **guardie** combattono con te e le **torri** riducono gli assalitori.
+  - Se respingi l'assalto vinci oro, esperienza e reputazione.
+  - Se non arrivi in tempo o lo stendardo cade, la terra passa a loro (puoi riprenderla) oppure il borgo viene **saccheggiato**: torri e palizzata riducono la perdita.
+- **Guerre fra giocatori** (con il server e il nuovo plugin **Territori**, nello stesso mondo con il codice stanza):
+  - le terre di tutti gli eroi compaiono sulla mappa con lo stemma di chi le tiene, e lì i mostri non ci sono;
+  - le terre di un altro eroe si prendono con un **assedio** contro le sue guardie: più ondate se il suo borgo ha torri e palizzata;
+  - il suo insediamento non si prende, si **saccheggia** e se ne porta via una parte del tesoro;
+  - chi perde una terra o viene saccheggiato lo scopre subito, o al suo ritorno se era offline.
+- **Registro → Guerra** (tasto U): l'assalto in corso con il tempo che resta e la destinazione, le fazioni ostili, le terre degli altri eroi e la **cronaca** delle battaglie, la tua e quella del mondo.
+- Sulla mappa la terra sotto assalto lampeggia in rosso.
+- Server: nuovo plugin `plugins/territori.js`, nel pacchetto del server.
+
+---
+
 ## 7.21 — Il tuo regno (22 ottobre 2026)
 
 - **Conquistare le terre** (tasto **U**): in una regione selvaggia di Tomorrow pianti lo **stendardo** (100 monete) e abbatti i suoi mostri.

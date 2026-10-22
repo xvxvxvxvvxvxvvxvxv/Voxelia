@@ -15,7 +15,7 @@
      ed esplorazioni di regioni lontane), con la direzione da prendere scritta in ogni tappa.
    - Mappa del mondo (tasto M): le regioni intorno con biomi, villaggi, dungeon e i luoghi dei contratti.
    - In 3D l'orizzonte mostra il mondo vero: le regioni vicine che vedi in lontananza sono quelle in cui puoi camminare. */
-const TWR=64;
+const TWR=96;   // 7.17: regioni più grandi (prima 64×64)
 const twOn=()=>!!(OW.on&&MODE==='story'&&P&&P.tw);
 function twFix(o){o=o&&typeof o==='object'?o:{};o.seed=o.seed||((Math.random()*2147483647)|0)||7;o.home=o.home||'tw:0,0';o.at=o.at||o.home;o.vis=o.vis&&typeof o.vis==='object'?o.vis:{};o.ch=Array.isArray(o.ch)?o.ch.slice(-3000):[];return o}
 const twSeed=()=>NET.code?hs('tw|'+NET.code):(P&&P.tw?P.tw.seed:1);
@@ -34,7 +34,10 @@ const TWBN={prato:'Prati',bosco:'Boschi',deserto:'Dune',neve:'Vette',cenere:'Lan
 function twBio(rx,ry){if(!rx&&!ry)return'prato';const T=twF(rx/5.5,ry/5.5,11),Wt=twF(rx/4.5,ry/4.5,23),dd=Math.hypot(rx,ry);
   if(dd>3.5&&twF(rx/3.2,ry/3.2,41)>.68)return'cenere';if(T<.36)return'neve';if(T>.62&&Wt<.52)return'deserto';if(Wt>.53)return'bosco';return'prato'}
 const twLv=(rx,ry)=>1+Math.floor(Math.hypot(rx,ry)*1.25);
-const twVil=(rx,ry)=>(!rx&&!ry)||(Math.max(Math.abs(rx),Math.abs(ry))>=2&&twI(rx,ry,101)<.13);
+// le città: la prima a due regioni dalla partenza, poi rare; i villaggi più spessi. Una città conta anche come villaggio.
+let TWC1=null,TWC1S=null;const twCity1=()=>{const s=twSeed();if(TWC1S===s)return TWC1;let b=null,bh=2;for(let y=-2;y<=2;y++)for(let x=-2;x<=2;x++){if(Math.max(Math.abs(x),Math.abs(y))!==2)continue;const h=twI(x,y,107);if(h<bh){bh=h;b=[x,y]}}TWC1S=s;return TWC1=b};
+const twCity=(rx,ry)=>{const c=twCity1();if(c&&c[0]===rx&&c[1]===ry)return true;return Math.max(Math.abs(rx),Math.abs(ry))>=4&&twI(rx,ry,109)<.05};
+const twVil=(rx,ry)=>(!rx&&!ry)||twCity(rx,ry)||(Math.max(Math.abs(rx),Math.abs(ry))>=2&&twI(rx,ry,101)<.13);
 const twDun=(rx,ry)=>!twVil(rx,ry)&&((rx===1&&ry===0)||twI(rx,ry,103)<.38);
 const twEnc=n=>n<0?'m'+(-n):''+n,twDec=s=>s[0]==='m'?-(+s.slice(1)):+s;
 const twDid=(rx,ry)=>'twd_'+twEnc(rx)+'_'+twEnc(ry);
@@ -89,7 +92,7 @@ function twSpecies(rx,ry){const b=twBio(rx,ry),L=TWBP[b].filter(t=>E[t]),r=twRnd
 
 /* ---- le zone: una regione o un piano di dungeon, create quando servono ---- */
 function twZ(k){if(Z[k])return Z[k];const p=twP(k);if(!p)return null;const[rx,ry]=p,bio=twBio(rx,ry),th=TWBT[bio],base=Z[th],lv=twLv(rx,ry),vil=twVil(rx,ry);
-  const z={n:twName(rx,ry),lv,N:TWR,th,a:base.a,b:base.b,o:base.o,bg:base.bg,en:twSpecies(rx,ry),c:vil?16:Math.min(44,24+(lv>>1)),mus:vil?'town':base.mus,pt:bio==='cenere'?'ember':bio==='prato'?'petal':base.pt,tw:1,rx,ry,bio,vil};
+  const city=twCity(rx,ry);const z={n:twName(rx,ry),lv,N:TWR,th,a:base.a,b:base.b,o:base.o,bg:base.bg,en:twSpecies(rx,ry),c:city?14:vil?22:Math.min(72,40+(lv>>1)),city,mus:vil?'town':base.mus,pt:bio==='cenere'?'ember':bio==='prato'?'petal':base.pt,tw:1,rx,ry,bio,vil};
   Z[k]=z;SKY[k]=SKY[th]||SKY.forest;return z}
 function twDG(id){if(DG[id])return DG[id];const m=/^twd_(m?\d+)_(m?\d+)$/.exec(String(id||''));if(!m)return null;const rx=twDec(m[1]),ry=twDec(m[2]),rn=twRnd('dg',rx,ry),bio=twBio(rx,ry),lv=twLv(rx,ry)+1;
   const TH2={prato:['cave','crypt','cave'],bosco:['cave','crypt','sea'],deserto:['pyr','crypt','pyr'],neve:['ice','cave','ice'],cenere:['fire','void','fire']}[bio],th=TH2[Math.floor(rn()*TH2.length)];
@@ -129,37 +132,40 @@ function twGen(z){const n=N,rx=z.rx,ry=z.ry,bio=z.bio,rnd=twRnd('reg',rx,ry),rr=
   // 1. il terreno del mondo
   for(let y=0;y<n;y++)for(let x=0;x<n;x++){const[m,c]=twBase(rx*n+x,ry*n+y,bio);M[y][x]=m;DEC[y][x]=m===2?'':m===0?(c?DN+c:''):DN+c+(bio==='cenere'?'8':'')}
   // 2. i sentieri: dal centro della regione ai quattro punti di passaggio, gli stessi delle regioni accanto
-  const hub=[rr(24,40),rr(24,40)],ends=[[n-1,twEdgeY(rx,ry)],[0,twEdgeY(rx-1,ry)],[twEdgeX(rx,ry),n-1],[twEdgeX(rx,ry-1),0]];
+  const hub=[rr(38,58),rr(38,58)],ends=[[n-1,twEdgeY(rx,ry)],[0,twEdgeY(rx-1,ry)],[twEdgeX(rx,ry),n-1],[twEdgeX(rx,ry-1),0]];
   const trail=(a,b,w)=>{const d=Math.hypot(b[0]-a[0],b[1]-a[1])||1,st=Math.ceil(d*3);for(let s=0;s<=st;s++){const u=s/st,wob=(twV((a[0]+u*(b[0]-a[0])+rx*n)/7,(a[1]+u*(b[1]-a[1])+ry*n)/7,13)-.5)*5*Math.sin(u*Math.PI),
       x=a[0]+(b[0]-a[0])*u-(b[1]-a[1])/d*wob,y=a[1]+(b[1]-a[1])*u+(b[0]-a[0])/d*wob;for(let j=0;j<w;j++)for(let i=0;i<w;i++){const X=clamp(Math.floor(x)+i-(w>>1),0,n-1),Y=clamp(Math.floor(y)+j-(w>>1),0,n-1);
         if(M[Y][X]===2){M[Y][X]=4;DEC[Y][X]='~';res(X,Y)}else if(M[Y][X]!==4&&M[Y][X]!==3){M[Y][X]=0;DEC[Y][X]=DN+'1';res(X,Y)}}}};
   for(const e of ends){trail(hub,e,2);for(let k=-1;k<=1;k++){const X=e[0]===0||e[0]===n-1?e[0]:clamp(e[0]+k,0,n-1),Y=e[1]===0||e[1]===n-1?e[1]:clamp(e[1]+k,0,n-1);if(M[Y][X]!==4){M[Y][X]=0;DEC[Y][X]=DN+'1'}}}
   const tg=[];let sp=hub.slice();
   // 3. i luoghi
-  if(z.vil)sp=twVillage({F,W,Pp,disc,rnd,rr,n,hub,rx,ry,bio,tg});
+  const CX={F,W,Pp,Wa,disc,rnd,rr,n,hub,rx,ry,bio,tg,ok,res,RS,z,trail};
+  if(z.city)sp=twCityGen(CX);else if(z.vil)sp=twVillage(CX);
   else{disc(hub[0]+.5,hub[1]+.5,2.2,(x,y)=>{if(M[y][x]!==4)F(x,y,'1')})}
-  const spot=(minD,maxD)=>{for(let k=0;k<200;k++){const a=rnd()*6.283,d=minD+rnd()*(maxD-minD),x=Math.round(hub[0]+Math.cos(a)*d),y=Math.round(hub[1]+Math.sin(a)*d);if(x>4&&y>4&&x<n-5&&y<n-5&&!RS[y*n+x]&&M[y][x]!==2&&M[y][x]!==3)return[x,y]}return null};
+  const sc6=n/64,spot=(minD,maxD)=>{minD*=sc6;maxD*=sc6;if(z.city)minD=Math.max(minD,34);for(let k=0;k<200;k++){const a=rnd()*6.283,d=minD+rnd()*(maxD-minD),x=Math.round(hub[0]+Math.cos(a)*d),y=Math.round(hub[1]+Math.sin(a)*d);if(x>4&&y>4&&x<n-5&&y<n-5&&!RS[y*n+x]&&M[y][x]!==2&&M[y][x]!==3)return[x,y]}return null};
   if(twDun(rx,ry)){const q=spot(12,24);if(q){const[x,y]=q,id=twDid(rx,ry);twDG(id);disc(x+.5,y+.5,2.6,(u,v)=>{if(M[v][u]!==3)F(u,v,bio==='deserto'?'4':bio==='cenere'?'9':'4')});
       for(let i=0;i<8;i++){const a=i/8*6.283,u=Math.round(x+Math.cos(a)*3.4),v=Math.round(y+Math.sin(a)*3.4);if(ok(u,v)&&i%2&&M[v][u]!==3)W(u,v,'W',bio==='cenere'?'9':'')}
       ents.push(po(x,y,id+'@1',{st:'dun'}));tg.push([x,y])}}
   const C2=[];
-  if(!z.vil&&rnd()<.45){const q=spot(10,22);if(q){const[x,y]=q;disc(x+.5,y+.5,4,(u,v,d)=>{if(M[v][u]!==3)F(u,v,d<2?'6':'')});Pp(x,y,'f');for(const[u,v]of[[x-2,y-1],[x+2,y+1],[x,y-3]])if(ok(u,v)&&M[v][u]===0)Pp(u,v,'t');
-      C2.push([x,y+2,1]);tg.push([x,y+2]);z.camp=[x,y]}}
-  if(rnd()<.3){const q=spot(8,26);if(q){const[x,y]=q;disc(x+.5,y+.5,3.2,(u,v,d)=>{if(M[v][u]===3)return;if(d>2.3&&hh(u*7,v*3)>.3)W(u,v,'W',bio==='cenere'?'9':'');else F(u,v,'4')});C2.push([x,y,1]);tg.push([x,y])}}
+  for(let ci=0;ci<(z.vil?0:rr(1,2));ci++){const q=spot(10,26);if(q){const[x,y]=q;disc(x+.5,y+.5,4,(u,v,d)=>{if(M[v][u]!==3)F(u,v,d<2?'6':'')});Pp(x,y,'f');for(const[u,v]of[[x-2,y-1],[x+2,y+1],[x,y-3]])if(ok(u,v)&&M[v][u]===0)Pp(u,v,'t');
+      C2.push([x,y+2,1]);tg.push([x,y+2]);(z.camps=z.camps||[]).push([x,y])}}
+  for(let ri2=0;ri2<(rnd()<.5?2:1);ri2++){const q=spot(8,28);if(q){const[x,y]=q;disc(x+.5,y+.5,3.2,(u,v,d)=>{if(M[v][u]===3)return;if(d>2.3&&hh(u*7,v*3)>.3)W(u,v,'W',bio==='cenere'?'9':'');else F(u,v,'4')});C2.push([x,y,1]);tg.push([x,y])}}
   // raccolte del bioma
-  const RL=TWRES[bio]||[];for(let i=0;i<(RL.length?rr(3,6):0);i++){const q=spot(5,28);if(!q)continue;const r=RL[Math.floor(rnd()*RL.length)];F(q[0],q[1],'');ents.push({k:'res',r,n:RESN[r],px:q[0]+.5,py:q[1]+.5});tg.push(q)}
-  for(let i=0;i<rr(2,4);i++){const q=spot(6,30);if(q){F(q[0],q[1],'');C2.push([q[0],q[1],0]);tg.push(q)}}
+  const RL=TWRES[bio]||[];for(let i=0;i<(RL.length?rr(5,9):0);i++){const q=spot(5,28);if(!q)continue;const r=RL[Math.floor(rnd()*RL.length)];F(q[0],q[1],'');ents.push({k:'res',r,n:RESN[r],px:q[0]+.5,py:q[1]+.5});tg.push(q)}
+  if(typeof twGenExtra==='function')twGenExtra(CX,spot,C2);
+  for(let i=0;i<rr(3,6);i++){const q=spot(6,30);if(q){F(q[0],q[1],'');C2.push([q[0],q[1],0]);tg.push(q)}}
   // 4. tutto raggiungibile: un varco verso ciò che resta chiuso fra alberi e rocce
+  for(const e of ents)if(e.k==='po')tg.push([e.px|0,e.py|0]);// anche le porte delle case
   const NB=[[1,0],[-1,0],[0,1],[0,-1]];let d=bfs(sp[0],sp[1]);
   for(const[x0,y0]of tg.concat(ends)){if(d[y0*n+x0]>=0)continue;const pr=new Int32Array(n*n).fill(-2),q=[y0*n+x0];pr[q[0]]=-1;let hit=-1;
     for(let i=0;i<q.length&&hit<0;i++){const c=q[i],x=c%n,y=c/n|0;for(const[a,b]of NB){const u=x+a,v=y+b;if(u<0||v<0||u>=n||v>=n||pr[v*n+u]!==-2||M[v][u]===3)continue;pr[v*n+u]=c;if(d[v*n+u]>=0){hit=v*n+u;break}q.push(v*n+u)}}
     if(hit<0)continue;for(let c=hit;c>=0;c=pr[c]){const x=c%n,y=c/n|0;if(M[y][x]===1||M[y][x]===6){M[y][x]=0;DEC[y][x]=DN+'1'}else if(M[y][x]===2){M[y][x]=4;DEC[y][x]='~'}}d=bfs(sp[0],sp[1])}
   // 5. forzieri (quelli già aperti non tornano), nemici lontani dal villaggio, un Campione nell'accampamento
   const opened=new Set(P.tw.ch);for(const[x,y,rich]of C2){const key=Zk+':'+x+','+y;if(WK(M[y][x])&&!opened.has(key))ents.push({k:'ch',px:x+.5,py:y+.5,rich,twk:key})}
-  const far=[],safe=z.vil?17:7;for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(WK(M[y][x])&&d[y*n+x]>safe&&!ents.some(e=>Math.abs(e.px-x-.5)<1.5&&Math.abs(e.py-y-.5)<1.5))far.push([x,y]);
+  const far=[],safe=z.city?40:z.vil?20:8;for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(WK(M[y][x])&&d[y*n+x]>safe&&!ents.some(e=>Math.abs(e.px-x-.5)<1.5&&Math.abs(e.py-y-.5)<1.5))far.push([x,y]);
   for(let i=far.length-1;i>0;i--){const j=ri(0,i);[far[i],far[j]]=[far[j],far[i]]}
   for(let i=0;i<z.c&&far.length;i++){const[x,y]=far.pop();ents.push(mk(z.en[Math.floor(R()*z.en.length)],x,y))}
-  if(z.camp){const[x,y]=z.camp;for(let i=0;i<3;i++){const[u,v]=nearFree(x+(i-1)*2,y+1);const e=mk(z.en[i%z.en.length],u,v);if(i===0)eliteMk(e);ents.push(e)}}
+  for(const cp of z.camps||[]){const[x,y]=cp;for(let i=0;i<3;i++){const[u,v]=nearFree(x+(i-1)*2,y+1);const e=mk(z.en[i%z.en.length],u,v);if(i===0)eliteMk(e);ents.push(e)}}
   return sp}
 function twVillage(C){const{F,W,Pp,disc,rnd,rr,n,hub,rx,ry,bio,tg}=C,[cx,cy]=hub;
   disc(cx+.5,cy+.5,12,(x,y,d)=>{if(M[y][x]===2&&d>9)return;if(M[y][x]===2){M[y][x]=4;DEC[y][x]='~';return}F(x,y,d<4.5?'4':d<6?'1':bio==='deserto'?'2':bio==='neve'?'':bio==='cenere'?'9':'2')});
@@ -167,7 +173,7 @@ function twVillage(C){const{F,W,Pp,disc,rnd,rr,n,hub,rx,ry,bio,tg}=C,[cx,cy]=hub
   const roofs=['#a8402f','#3a5a8a','#4a6a3a','#7a3a2a','#5a4a3a','#8a6a2a','#6a3a8a'];
   const nh=rr(4,6),houses=[];for(let i=0;i<nh;i++){const a=i/nh*6.283+rnd()*.4,dd=8.2,w=rr(3,4),h=3,x=Math.round(cx+Math.cos(a)*dd-w/2),y=Math.round(cy+Math.sin(a)*dd-h/2);
     if(x<2||y<2||x+w>n-2||y+h>n-2)continue;if(houses.some(b=>x<b.x+b.w+1&&x+w+1>b.x&&y<b.y+b.h+1&&y+h+1>b.y))continue;
-    const b={x,y,w,h,wall:walls[i%3],roof:roofs[Math.floor(rnd()*roofs.length)],ht:22+rr(0,6),smoke:rnd()<.5?1:0};houses.push(b);const k=TB.push(b)-1;for(let v=y;v<y+h;v++)for(let u=x;u<x+w;u++){M[v][u]=3;DEC[v][u]='';BM[v][u]=k}}
+    const b={x,y,w,h,wall:walls[i%3],roof:roofs[Math.floor(rnd()*roofs.length)],ht:22+rr(0,6),smoke:rnd()<.5?1:0};houses.push(b);twHouse(b,i,rx,ry)}
   // gli abitanti: anziano accanto alla bacheca, mercante, fabbro, guaritrice, oste e qualche paesano a passeggio
   const roles=[['anz',''],['mer','shop'],['fab','smith'],['gua','heal'],['ost','inn'],['alc','alch'],['pae',''],['pae',''],['pae','']];
   const pos=[[cx+2,cy-2],[cx-3,cy+1],[cx+3,cy+2],[cx-2,cy-3],[cx+1,cy+3],[cx-4,cy-1],[cx+4,cy-1],[cx-1,cy+4],[cx+2,cy+4]];
@@ -176,16 +182,18 @@ function twVillage(C){const{F,W,Pp,disc,rnd,rr,n,hub,rx,ry,bio,tg}=C,[cx,cy]=hub
   return[cx,cy+2]}
 // gli abitanti dei villaggi: nome, mestiere e colori sempre uguali per lo stesso villaggio
 const TWNM=['Arnaldo','Bice','Corrado','Delia','Ettore','Fosca','Guido','Ilaria','Lapo','Mirella','Nando','Ofelia','Piero','Rosa','Sandro','Tecla','Ugo','Vanna','Zeno','Adelmo','Gemma','Ilario','Noemi','Ruggero','Agata','Bruno','Celsa','Dino','Elsa','Fulvio','Gilda','Lino','Marta','Nilo','Orsola','Primo'];
-const TWROLE={anz:['Anziano','Anziana',''],mer:['Mercante','Mercante','shop'],fab:['Fabbro','Fabbra','smith'],gua:['Guaritore','Guaritrice','heal'],ost:['Oste','Ostessa','inn'],alc:['Erborista','Erborista','alch'],pae:['','','']};
+const TWROLE={gem:['Custode delle Gemme','Custode delle Gemme','gem'],gua2:['Guardia','Guardia',''],anz:['Anziano','Anziana',''],mer:['Mercante','Mercante','shop'],fab:['Fabbro','Fabbra','smith'],gua:['Guaritore','Guaritrice','heal'],ost:['Oste','Ostessa','inn'],alc:['Erborista','Erborista','alch'],pae:['','','']};
 const twNpcId=(rx,ry,i)=>'tv_'+twEnc(rx)+'_'+twEnc(ry)+'_'+i;
 function twNpc(id){if(NPCS[id])return NPCS[id];const m=/^tv_(m?\d+)_(m?\d+)_(\d+)$/.exec(id);if(!m)return null;const rx=twDec(m[1]),ry=twDec(m[2]),i=+m[3],r=twRnd('npc',rx,ry,i);
-  const rk=['anz','mer','fab','gua','ost','alc','pae','pae','pae'][i]||'pae',nm=TWNM[(twHs('vnm',rx,ry)+i*7)%TWNM.length],fem=/a$|e$/.test(nm)&&!['Ettore','Dante','Sandro'].includes(nm),R2=TWROLE[rk];
+  const rk=['anz','mer','fab','gua','ost','alc','pae','pae','pae','gem','gua2','gua2','gua2','gua2'][i]||'pae',nm=TWNM[(twHs('vnm',rx,ry)+i*7)%TWNM.length],fem=/a$|e$/.test(nm)&&!['Ettore','Dante','Sandro'].includes(nm),R2=TWROLE[rk];
   const ttl=R2[fem?1:0],vn=twVilName(rx,ry),near=[];for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++)if(twDun(rx+dx,ry+dy))near.push([dx,dy]);
   const q=near.length?near[Math.floor(r()*near.length)]:null,dn=q?twDG(twDid(rx+q[0],ry+q[1])):null;
   const ln=[`Benvenuto a ${vn}. Qui la terra è nuova: nessuno sa davvero cosa c'è oltre le colline.`,dn?`Dicono che ${twDir(q[0],q[1])} ci sia ${dn.n}. Chi ci è sceso è tornato con meno amici e più oro.`:'Le strade si incontrano sempre al confine tra due terre: seguile, e non ti perderai.',
     `Più ti allontani da qui, più le bestie si fanno grosse. Ma anche quello che portano addosso vale di più.`,`Alla bacheca c'è sempre lavoro: qualcuno paga per ogni guaio di questa terra.`];
   const c=['#7a5a3a','#3a5a8a','#8a3a3a','#4a7a3a','#6a4a7a','#a8632f','#5a6a7a','#8a7a4a'][Math.floor(r()*8)],hat=['#333333','#7a3a2a','#d4af37','#3a3a5a','#8a6a2a','#5a2a2a'][Math.floor(r()*6)];
-  return NPCS[id]={n:(ttl?ttl+' ':'')+nm,role:R2[2]||undefined,c,hat,ln}}
+  if(rk==='gua2')ln.splice(0,4,`Le mura di ${vn} hanno retto a tre assedi. Al quarto ci penso io.`,'Tieni la spada nel fodero, in città. Fuori fai quello che vuoi.','Di notte le bestie si avvicinano alle porte: si sentono grattare.');
+  if(rk==='gem')ln.splice(0,4,`Una gemma di ${vn} ti riporta qui da qualunque angolo del mondo. Una volta sola, poi si spegne.`,'Le gemme si caricano alla luce della nostra fontana: per questo valgono quello che costano.');
+  return NPCS[id]={n:(ttl?ttl+' ':'')+nm,role:R2[2]&&R2[2]!=='gem'?R2[2]:undefined,tw2:rk,c:rk==='gua2'?'#5a6a8a':c,hat:rk==='gua2'?'#9aa4b8':hat,ln}}
 const TWDIR=[['est','sud-est','sud','sud-ovest','ovest','nord-ovest','nord','nord-est']];
 function twDir(dx,dy){if(!dx&&!dy)return'qui';const a=Math.atan2(dy,dx),i=((Math.round(a/(Math.PI/4))%8)+8)%8,d=Math.max(Math.abs(dx),Math.abs(dy));return(d===1?'una regione':d+' regioni')+' a '+TWDIR[0][i]}
 const _genWild716=genWild;genWild=function(z){return z&&z.tw?twGen(z):_genWild716(z)};
@@ -216,7 +224,7 @@ Object.assign(OWF,{
   clan:{n:'Clan dei Cacciatori',c:'#e0b070',pat:['la Capobranco','il Tracciatore','la Cacciatrice'],ar:['taglia','infest','comm','esplora'],sl:'wh'}});
 const TWFK=['lega','carto','fiamma','strada','custodi','clan'];
 function twGenC(seed,plv,tier,hon,vk){const rn=sd(hs('twc|'+seed)),p2=a=>a[Math.floor(rn()*a.length)],r2=(a,b)=>a+Math.floor(rn()*(b-a+1));
-  const[vx,vy]=twP(vk)||[0,0],fk=p2(TWFK),F=OWF[fk],ar=p2(F.ar),pat=p2(F.pat)+' '+p2(TWNM);const tgt=plv+r2(-1,2)+(hon?2:0);
+  const[vx,vy]=twP(vk)||[0,0],fk=p2(TWFK),F=OWF[fk];let ar=p2(F.ar);if(twCity(vx,vy)&&rn()<.35)ar='battaglia';const pat=p2(F.pat)+' '+p2(TWNM);const tgt=plv+r2(-1,2)+(hon?2:0);
   // una regione adatta: abbastanza lontana, del livello giusto
   const pick=(minD,maxD,f)=>{const L=[];for(let y=vy-maxD;y<=vy+maxD;y++)for(let x=vx-maxD;x<=vx+maxD;x++){const d=Math.max(Math.abs(x-vx),Math.abs(y-vy));if(d<minD||(f&&!f(x,y)))continue;const lv=twLv(x,y),dl=lv-tgt;L.push([x,y,dl>3?.01:Math.exp(-dl*dl/(dl>0?5:14))+.01])}
     if(!L.length)return[vx+minD,vy];let s=L.reduce((a,b)=>a+b[2],0)*rn();for(const q of L){s-=q[2];if(s<=0)return[q[0],q[1]]}return[L[0][0],L[0][1]]};
@@ -224,7 +232,7 @@ function twGenC(seed,plv,tier,hon,vk){const rn=sd(hs('twc|'+seed)),p2=a=>a[Math.
   const traits=()=>{const n=clamp(1+(tgt>=6?1:0)+(rn()<.45?1:0)+(hon?1:0),1,3),pool=OWTRK.slice(),o=[];for(let i=0;i<n;i++)o.push(pool.splice(Math.floor(rn()*pool.length),1)[0]);return o};
   const hunt=(z,t,es)=>({k:'hunt',z,t,nm:nameT(),tr:traits(),es:es==null?r2(1,3):es});
   const regionSp=(x,y)=>{const z=twZ(twK(x,y));return z.en};
-  const witness=(x,y)=>{const k=twK(x,y);twZ(k);const i=r2(0,8),id=twNpcId(x,y,i);twNpc(id);return{k:'talk',z:k,nid:id,ln:''}};
+  const witness=(x,y)=>{const k=twK(x,y);twZ(k);const i=p2([0,5,6,7,8]),id=twNpcId(x,y,i);twNpc(id);return{k:'talk',z:k,nid:id,ln:''}};
   const farVil=(minD,maxD)=>{const L=[];for(let y=vy-maxD;y<=vy+maxD;y++)for(let x=vx-maxD;x<=vx+maxD;x++){const d=Math.max(Math.abs(x-vx),Math.abs(y-vy));if(d>=minD&&twVil(x,y))L.push([x,y])}return L.length?p2(L):[vx,vy]};
   const where=(x,y)=>twDir(x-vx,y-vy);
   const steps=[];let ti='',tx='',zlv=1,trophy='';
@@ -238,6 +246,9 @@ function twGenC(seed,plv,tier,hon,vk){const rn=sd(hs('twc|'+seed)),p2=a=>a[Math.
     else{const T=witness(vx,vy),G=hunt(id+'@'+Math.max(1,D.fls-1),p2(D.en),r2(2,3));ti=owCap(rel);tx=`«${owCap(rel)} è finito in ${D.n}, ${where(x,y)}. ${owNpcN(T.nid)} ha letto le vecchie carte: chiedi a lui.»`;
       T.ln=`«Le carte dicono ${D.n}, al piano ${Math.max(1,D.fls-1)}. La custodisce ${G.nm}. ${G.tr.map(q=>OWTR[q].h).join(' ')}»`;steps.push(T,{k:'relic',z:id+'@'+Math.max(1,D.fls-1),nm:rel,g:G})}
     trophy='Calco · '+owCap(rel)}
+  else if(ar==='battaglia'){const z=twZ(vk),wl=p2(OWB1)+' '+p2(OWB2);zlv=z.lv+3;ti='La battaglia di '+z.n;
+    tx=`«Le vedette l'hanno visto dalle torri: un esercito di mostri marcia su ${z.n}, guidato da ${wl}. Arriveranno a ondate dalla porta. I nostri soldati terranno la linea con te: tu cerca il loro signore della guerra e abbattilo.»`;
+    steps.push({k:'bat',z:vk,w:3+(tgt>=10?1:0),nm:wl});trophy='Stendardo strappato a '+wl}
   else if(ar==='assedio'){const k=vk,z=twZ(k),[nx,ny]=pick(1,2),t=p2(regionSp(nx,ny)),pl=p2(['la piazza','i granai','il pozzo','le case a nord','la bacheca']);const H=hunt(k,t,0);zlv=Math.max(z.lv,twLv(nx,ny));
     ti='Difendi '+z.n;tx=`«Dalle terre ${twDir(nx-vx,ny-vy).replace(/^.*a /,'a ')} arrivano ${E[t].n}, a ondate. Difendi ${pl} finché non arriva il loro capo, ${H.nm}.»`;
     steps.push({k:'def',z:k,pl,w:3+(tgt>=8?1:0)+(hon?1:0),wv:0,nm:H.nm,tr:H.tr,t});trophy='Stendardo di '+H.nm;OW.defsp=OW.defsp||{};OW.defsp[k]=[t]}

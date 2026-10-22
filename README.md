@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.16** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.17** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -107,6 +107,8 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **L** | Classifica |
 | **P** | Giocatori |
 | **M** | Mappa di Aldoria (in Tomorrow, la mappa del mondo) |
+| **T** | In Tomorrow, accamparsi |
+| **G** | In Tomorrow, le gemme del teletrasporto |
 | **C** | Aspetto dell'eroe |
 | **O** | Opzioni |
 | **V** | Ruota delle azioni (il tasto si può cambiare) |
@@ -250,7 +252,7 @@ toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti,
 
 ### Un mondo che non finisce
 
-- Il mondo è fatto di **regioni** di 64×64 caselle, generate mentre cammini. Cammina oltre il bordo e sei nella regione
+- Il mondo è fatto di **regioni** di 96×96 caselle (64×64 nella 7.16), generate mentre cammini. Cammina oltre il bordo e sei nella regione
   accanto. Il seme è dell'eroe; con un **codice stanza** è della stanza, e tutti giocano nello stesso mondo, con gli stessi
   villaggi e gli stessi dungeon.
 - Il terreno dipende dalle coordinate del mondo: fiumi, laghi, boschi, dune e pareti di roccia continuano da una
@@ -258,6 +260,12 @@ toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti,
 - **Cinque biomi:** prati fioriti, boschi, deserti con mese e oasi, vette innevate, lande di cenere.
 - **Villaggi** (uno ogni sette regioni circa, più quello di partenza): case, abitanti con nome, mercante, fabbro, erborista,
   guaritrice, locanda e la Bacheca dei Contratti. Si rinasce nell'ultimo villaggio visitato.
+- **Città** (dalla 7.17; la prima è sempre a due regioni dalla partenza): mura con torri e porte sulle strade, vie
+  lastricate, piazza con fontana, statue, lampioni, mercato e la bacheca, fino a 22 case, guardie e cittadini a passeggio.
+- **Case in cui si entra:** ogni casa di villaggi e città ha il suo interno con chi ci abita. Ci sono la locanda, la
+  bottega, la fucina, il tempio della guaritrice e, in alcune città, il Custode delle Gemme.
+- **Vita lungo le strade:** recinti con animali, orti, viandanti e mercanti, falò, e santuari che una volta al giorno curano
+  e danno difesa +25% per 5 minuti.
 - **Dungeon** con nome proprio (Grotte, Cripte, Tombe, Caverne, Forge, Grotte sommerse, Abissi), da 2 a 5 piani, mostri del
   loro tema e un **boss con nome e abilità mescolate**.
 - **Mostri sempre diversi:** ogni zona del mondo ha le sue specie, varianti dei mostri del regno con colori, taglia, forza,
@@ -265,8 +273,20 @@ toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti,
 - **Livello senza limite:** più ti allontani dal villaggio di partenza, più il livello sale. I mostri diventano più forti e
   il bottino più prezioso.
 - Accampamenti con un Campione, rovine con un forziere, raccolte del bioma. I forzieri aperti restano aperti.
-- **Mappa del mondo** (tasto **M**): le regioni intorno con biomi, villaggi, dungeon, livello e i luoghi dei contratti; le
-  regioni mai visitate sono velate.
+- **Mappa del mondo** (tasto **M**), dipinta dal terreno vero, con strade, città, villaggi, dungeon e le terre mai viste
+  velate. Si trascina, si avvicina con la rotellina o i pulsanti, e un clic su una regione apre la sua scheda (livello,
+  pericolo, luoghi, contratti, direzione). Dalla scheda la regione diventa la **destinazione**, segnata sulla mappa e nel
+  resoconto in alto a destra fino all'arrivo.
+
+### Campo, gemme e battaglie
+
+- **Campo** (tasto **T** o pulsante ⛺, fuori dai villaggi e senza nemici vicini): tenda e fuoco fanno una zona sicura in
+  cui i nemici non entrano, la vita torna in fretta e le pozioni si ricaricano prima. Al fuoco si riposa (cura completa,
+  due ore), si dorme fino all'alba, si cucina (forza +25% per 3 minuti) o si smonta il campo.
+- **Gemme del teletrasporto:** in alcune città il Custode delle Gemme vende la gemma della città (il prezzo sale con il
+  livello). Tasto **G** o pulsante 💎: una colonna di luce, poi il filmato del volo sulla mappa fino alla città.
+- **Battaglie:** le città possono essere assediate, da sole (dal livello 3) o con un contratto «La battaglia di…». Si
+  combatte a ondate insieme a 13–21 soldati alleati; l'ultima porta un signore della guerra.
 - In **vista 3D** l'orizzonte mostra il mondo vero: le regioni che vedi in lontananza sono quelle in cui puoi camminare.
 
 ### La Bacheca dei Contratti
@@ -288,6 +308,7 @@ ed è unico:
 | Commissione rara | raccogliere materiali in una regione, poi il trofeo di una bestia |
 | Messaggio | portare una lettera a un abitante di un villaggio lontano, poi la risposta a un altro |
 | Esplorazione | raggiungere due regioni lontane |
+| Battaglia | difendere una città insieme ai soldati, a ondate, fino al signore della guerra, poi la paga |
 
 Ogni tappa dice in che direzione andare («3 regioni a nord-est»).
 
@@ -682,7 +703,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.16 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.17 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -738,6 +759,9 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zm_3d.js` | La vista 3D: registra i disegni del gioco e li rende in WebGL 2 con luce, ombre, materiali, cielo e l'orizzonte oltre i confini; telecamera, clic e movimento in 3D |
 | `8zn_pausa.js` | Il pulsante delle impostazioni, il menu di pausa (anche con Esc) e la sezione «Vista 3D» delle impostazioni |
 | `8zo_tomorrow.js` | Tomorrow, il mondo: regioni generate senza fine, biomi, villaggi, dungeon e specie generati, contratti nuovi, mappa del mondo, orizzonte 3D |
+| `8zp_vivo.js` | Tomorrow vivo: città con mura e piazza, case con interni, abitanti, animali, viandanti, santuari; il campo, le gemme del teletrasporto e le battaglie con gli alleati |
+| `8zq_mappa.js` | Tomorrow: la mappa del mondo interattiva e le nuove finestre dei contratti (bacheca, pannello J, resoconto) |
+| `8zr_caricamento.js` | Le schermate di caricamento di ogni modalità e il filmato del viaggio con la gemma |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

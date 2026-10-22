@@ -5,6 +5,33 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.17 — Tomorrow vivo (22 ottobre 2026)
+
+- **Un mondo più grande:** ogni regione di Tomorrow è passata da 64×64 a 96×96 caselle. Il villaggio è più ampio, e ci sono più accampamenti, rovine, forzieri e raccolte.
+- **Città:** lontano dalla partenza ci sono città con mura e torri, porte dove passano le strade, vie lastricate e una piazza con fontana, statue, lampioni, panchine e mercato. Hanno fino a 22 case, guardie che pattugliano e cittadini che vanno in giro. La prima città è sempre a due regioni dalla partenza.
+- **Case in cui si entra:** in ogni casa di villaggi e città c'è un interno con i suoi abitanti. Ci sono la locanda, la bottega, la fucina, il tempio della guaritrice e, in alcune città, la casa del Custode delle Gemme.
+- **Un mondo vivo:** recinti con mucche, pecore e maiali, orti e spaventapasseri. Sulle strade fra un villaggio e l'altro ci sono viandanti e mercanti, falò con i ceppi intorno e santuari. Un santuario cura e dà difesa +25% per 5 minuti, una volta al giorno.
+- **Battaglie epiche:** le città possono essere assediate. Si combatte a ondate insieme a 13–21 soldati alleati, e l'ultima ondata porta un signore della guerra. Gli assedi capitano da soli (dal livello 3) o arrivano come contratto «La battaglia di…». Le guardie e i soldati hanno la loro barra della vita.
+- **Accamparsi** (tasto **T** o pulsante ⛺, fuori dai villaggi e senza nemici vicini): si monta la tenda e si accende il fuoco. Il campo è una zona sicura: i nemici non entrano, la vita torna in fretta e le pozioni si ricaricano prima. Puoi riposare (cura completa, passano due ore), dormire fino all'alba, cucinare un pasto (forza +25% per 3 minuti) o smontare il campo. Il campo compare sulla mappa.
+- **Gemme del teletrasporto:** in alcune città il Custode delle Gemme vende la gemma della sua città. Il prezzo cresce con il livello della regione. Con il tasto **G** o il pulsante 💎 si sceglie la gemma, si attiva con una colonna di luce e parte il filmato del volo sulla mappa fino alla città.
+- **La nuova mappa del mondo** (tasto **M**):
+  - è dipinta dal terreno vero (boschi, fiumi e laghi, sabbia, neve, cenere) e ha la rete delle strade, città con mura, villaggi, dungeon, rosa dei venti e cornice;
+  - si trascina con il mouse o il dito e si avvicina con la rotellina o i pulsanti ＋ − ◎;
+  - le terre mai viste sono velate;
+  - un clic su una regione apre la sua scheda: nome, livello, pericolo, luoghi, contratti, direzione e distanza;
+  - nella scheda puoi impostare la regione come **destinazione**: la bandierina compare sulla mappa e nel resoconto, con la direzione, e si toglie quando arrivi.
+- **Finestre dei contratti nuove:** la Bacheca è fatta di schede di pergamena con lo stemma e il colore della fazione, le stelle, la citazione del committente, le tappe con le icone (quella in corso evidenziata, quelle fatte barrate), gli imprevisti e le ricompense in evidenza. La reputazione ha le sue schede per fazione, e i reperti hanno una griglia. Anche il pannello J e il resoconto in alto a destra sono rifatti.
+- **Schermate di caricamento:** ogni modalità ha la sua, dipinta e animata dal vivo:
+  - la Storia: il castello di Aldoria di notte e i sei frammenti della Corona che si riuniscono;
+  - Tomorrow: l'alba su colline senza fine con un viandante sul crinale;
+  - Voxelia Dimension: la cabina che precipita nel vortice del tempo;
+  - Voxelia Studio: una casetta che si costruisce cubo per cubo su un progetto;
+  - i Mondi della community: un pianeta con le isole volanti.
+  
+  Ognuna ha una barra di avanzamento, le fasi e i consigli. Si salta con un tocco o un tasto. Con le cinematiche spente non compare.
+
+---
+
 ## 7.16 — Tomorrow (22 ottobre 2026)
 
 - **Il Mondo aperto diventa Tomorrow,** con una terra tutta nuova oltre i confini del regno, che si genera mentre cammini e non finisce mai. Ha un eroe e un salvataggio suoi; un eroe del vecchio Mondo aperto ci passa con livello, oggetti, reperti e reputazione.

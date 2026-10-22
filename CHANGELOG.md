@@ -5,6 +5,14 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.17.1 — Manutenzione di Tomorrow (22 ottobre 2026)
+
+- **Assedi:** se cadevi durante la battaglia di una città, ti risvegliavi nella stessa città e la battaglia restava aperta senza nemici. All'ultima ondata compariva subito «Vittoria!» con oro, esperienza e un oggetto unico; prima dell'ultima, le ondate arrivavano senza soldati. Ora cadere fa perdere la battaglia. Un contratto «La battaglia di…» riparte quando rientri in città.
+- **Difesa dei villaggi:** le ondate sono fatte dei mostri scritti nel contratto accettato. Prima arrivavano quelli dell'ultima offerta generata per quel villaggio e, dopo aver riaperto il gioco, quelli del villaggio.
+- **Un mondo nuovo è davvero nuovo:** se tornavi al menu e cominciavi un eroe nuovo, o entravi in una stanza con il codice, le regioni già visitate tenevano nome, bioma, villaggi, dungeon e abitanti del mondo di prima, mentre il terreno era quello nuovo. Anche la mappa mostrava le terre vecchie. Ora, quando il mondo cambia, quello vecchio si dimentica.
+
+---
+
 ## 7.17 — Tomorrow vivo (22 ottobre 2026)
 
 - **Un mondo più grande:** ogni regione di Tomorrow è passata da 64×64 a 96×96 caselle. Il villaggio è più ampio, e ci sono più accampamenti, rovine, forzieri e raccolte.

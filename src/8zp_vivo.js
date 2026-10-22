@@ -214,10 +214,11 @@ function twBatEnd(win,why){const B=OW.bat;if(!B)return;OW.bat=null;for(const a o
   const g=Math.round((80+B.lv*35)*(1+B.al.length/Math.max(1,B.ally0))),xp=Math.round((40+B.lv*B.lv*6));P.g+=g;gainXP(xp);P.ow.rep.lega=(P.ow.rep.lega|0)+15;const it=uqNew(Math.max(P.lv,B.lv)+1,null,2,NET.name);if(P.inv.length<INV)P.inv.push(it);
   if(cineOK()){goldFly(g);itemFly(it)}clog('','Battaglia vinta a '+ZZ.n+': '+g+' oro, '+xp+' XP, '+iname(it),{sys:1});save();hud()}
 // la battaglia del contratto parte quando arrivi in città; ogni tanto una città viene assediata da sola
-const _loadPost717=loadPost;loadPost=function(k){_loadPost717(k);if(!twOn())return;if(OW.bat&&OW.bat.z!==k)twBatEnd(0,'Hai lasciato la battaglia');
+const _loadPost717=loadPost;loadPost=function(k){_loadPost717(k);if(!twOn())return;// 7.17.1: anche ricaricare la stessa città (succede quando cadi: ti risvegli in piazza) chiude la battaglia, che è persa
+  if(OW.bat)twBatEnd(0,OW.bat.z===k?'Sei caduto: la battaglia è perduta':'Hai lasciato la battaglia');
   if(String(k).startsWith('tw:')&&ZZ.city){for(const C of P.ow.act){const s=owCur(C);if(s&&s.k==='bat'&&s.z===k){setTimeout(()=>{if(Zk===k&&!OW.bat)twBatStart(C,s)},1800);return}}
     const day=gDay();P.tw.sg=P.tw.sg||{};if(P.tw.sg[k]!==day&&twI(day,hs(k)%9973,127)<.18&&P.lv>=3){P.tw.sg[k]=day;setTimeout(()=>{if(Zk===k&&!OW.bat)twBatStart(null,null)},2500)}}
-  if(OW.bat)OW.bat.z=k};
+};
 const _owStepTxt717=owStepTxt;owStepTxt=function(C,s,long){s=s||owCur(C);if(s&&s.k==='bat'){let t='Difendi '+owZn(s.z)+' nella battaglia';const a=twP(s.z),b=twP(String(Zk).startsWith('tw:')?Zk:P.tw.at);if(a&&b&&!(a[0]===b[0]&&a[1]===b[1]))t+=' · '+twDir(a[0]-b[0],a[1]-b[1]);return t}return _owStepTxt717(C,s,long)};
 
 /* ---- agganci: tasti, aggiornamento, disegno ---- */

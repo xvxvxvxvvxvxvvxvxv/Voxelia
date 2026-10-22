@@ -5,6 +5,26 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.20 — Domare i mostri (22 ottobre 2026)
+
+- **Domare i mostri:** indebolisci un mostro sotto un terzo della vita e lancia un **Sigillo di doma** con il tasto **Z**, o con il pulsante «Doma» che compare vicino a lui.
+  - Il mostro resta preso nel cerchio di luce e si dibatte tre volte: se il sigillo tiene, è tuo.
+  - Più è debole, più è facile; i mostri delle zone di livello alto resistono di più, e chi è già nel bestiario si doma un po' meglio.
+  - I boss, i bersagli dei contratti e i nemici delle battaglie non si domano.
+  - Sopra i mostri pronti per il sigillo brilla un segno dorato.
+- **Compagni:** uno alla volta ti segue e combatte con te.
+  - Si gira verso il nemico che colpisci, ha la sua barra della vita e il suo nome.
+  - I nemici che colpisce lo prendono di mira.
+  - Ha una **mossa speciale** secondo la sua natura: le belve mordono e fanno sanguinare, i guerrieri stordiscono, gli artropodi avvelenano e rallentano, le creature magiche colpiscono da lontano, le melme ti curano, i volanti piombano sul nemico.
+- **Crescono:** con i nemici abbattuti vicino a loro salgono di livello. Al **livello 10** e al **20 si evolvono**: diventano più grandi e più forti, e cambiano nome («Grande…», «Antico…»).
+- Se un compagno cade è **stremato**: si riprende da solo in un minuto, o subito al campo, al santuario o alla locanda.
+- **La stalla** (tasto **N**): fino a 12 compagni, ognuno con il suo ritratto, livello, vita, esperienza e mossa. Si possono chiamare, richiamare, rinominare e liberare.
+- Il **bestiario** conta le specie domate: in Tomorrow ce ne sono centinaia.
+- I **Sigilli di doma** si comprano dai mercanti, 60 monete l'uno o 5 per 270. Un eroe nuovo di Tomorrow ne ha 3.
+- Compagni, sigilli e bestiario si salvano con l'eroe, nella Storia come in Tomorrow.
+
+---
+
 ## 7.19.1 — Il passaggio fra le regioni (22 ottobre 2026)
 
 - **Tomorrow:** il passaggio da una regione all'altra torna com'era prima della 7.18. Si carica una regione alla volta e, camminando oltre il bordo, si passa alla regione accanto con la transizione. Le impostazioni non hanno più la distanza di visuale.

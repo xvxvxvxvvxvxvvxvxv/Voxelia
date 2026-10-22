@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.19.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.20** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -107,6 +107,8 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **L** | Classifica |
 | **P** | Giocatori |
 | **M** | Mappa di Aldoria (in Tomorrow, la mappa del mondo) |
+| **Z** | Domare: lancia un Sigillo di doma sul mostro indebolito più vicino |
+| **N** | I compagni (la stalla) |
 | **T** | In Tomorrow, accamparsi |
 | **G** | In Tomorrow, le gemme del teletrasporto |
 | **C** | Aspetto dell'eroe |
@@ -139,6 +141,14 @@ caricato** dell'arma: più è carico, più fa male. Le mosse colpiscono tutti i 
 | Falce | Mietitura · Rovescio · Raccolto (ruba vita) | Danza della morte: due giri che rubano vita |
 
 Le mosse dell'arma sono scritte anche nella sua scheda, nello zaino.
+
+### Domare i mostri (dalla 7.20)
+
+Un mostro sotto un terzo della vita si può domare con un **Sigillo di doma** (tasto **Z** o il pulsante «Doma»; i
+sigilli si comprano dai mercanti). Più è debole, più è facile; i boss non si domano. I compagni (tasto **N**, fino a
+12 nella stalla) combattono al tuo fianco uno alla volta, con una mossa speciale secondo la loro natura (belva,
+guerriero, artropode, creatura magica, melma, volante). Crescono con le vittorie e si evolvono ai livelli 10 e 20.
+Se cadono si riprendono in un minuto, o subito al campo, al santuario o alla locanda.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -724,7 +734,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.19.1 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.20 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -786,6 +796,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zs_modelli.js` | I modelli nuovi (con scheletro e animazioni) dei boss e degli animali rimasti alla grafica vecchia: drago, sfinge, piovra, spettro, signore della fiamma, cavalcalupi, nido di mitragliatrice, animali da cortile e cavalli |
 | `8zt_mondo.js` | Tomorrow: le regioni generate e ricordate, il campo che resta dove l'hai montato, il pavimento a blocchi, i borghi (la finestra senza passaggi della 7.18 è spenta dalla 7.19.1) |
 | `8zu_combattimento.js` | Il combattimento nuovo: catene di colpi, colpo perfetto, colpi caricati e mosse proprie di ogni arma, effetti sui nemici, pose dell'eroe |
+| `8zv_domare.js` | Domare i mostri: sigilli, cattura, compagni in campo con la loro mossa speciale, livelli ed evoluzioni, la stalla, il bestiario |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

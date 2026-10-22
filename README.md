@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.18** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.19** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -96,7 +96,7 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | Clic sul terreno, **W A S D** o frecce | Muoversi |
 | Clic su nemici, forzieri, oggetti, personaggi | Attaccare, aprire, raccogliere, parlare |
 | **R** | Interagire con ciò che hai vicino |
-| **Spazio** | Colpo ad area |
+| **Spazio** o **X** | Attacco: ogni pressione fa la mossa seguente della catena dell'arma; tenuto premuto, il colpo caricato |
 | **Shift** o **E** | Schivata |
 | **F** | Affondo (diverso per ogni tipo di arma) |
 | **1 2 3 4** | Abilità delle arti marziali |
@@ -119,6 +119,26 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | Tasto destro del mouse, trascinando | In 3D, gira la telecamera |
 
 Ogni tasto delle finestre le apre e le chiude. Si apre una finestra alla volta: aprendone una si chiudono le altre.
+
+### Il combattimento (dalla 7.19)
+
+Ogni arma ha le sue mosse. **Spazio**, **X**, il pulsante grande sul telefono o un clic sul nemico a portata fanno la
+mossa seguente della **catena** di tre colpi; premere di nuovo appena la mossa finisce dà un **colpo perfetto** (+30%).
+Chi clicca il bersaglio e basta ripete solo il primo colpo, più lentamente. **Tenendo premuto** si carica il **colpo
+caricato** dell'arma: più è carico, più fa male. Le mosse colpiscono tutti i nemici nella loro forma.
+
+| Arma | Catena | Colpo caricato |
+|---|---|---|
+| Pugnale, stocco | Taglio · Rovescio · Doppia pugnalata (sanguinamento) | Danza delle lame: scatto che trafigge e fa sanguinare |
+| Spada | Fendente · Montante · Colpo del cavaliere (spinge lontano) | Turbine: due giri tutto intorno |
+| Ascia | Fendente pesante · Rovescio · Spaccascudi (corazza spezzata: +30% danni) | Salto del boia: salto con onda d'urto |
+| Martello, mazza | Colpo · Montante · Schianto (stordisce) | Terremoto: colpo a terra che stordisce tutto intorno |
+| Lancia | Stoccata · Stoccata alta · Spazzata | Carica: scatto lungo che trafigge |
+| Tridente | Affondo · Affondo · Tre punte (tira a te) | Maremoto: onda che travolge e rallenta |
+| Bastone, scettro | Dardo arcano · Dardo arcano · Catena di fulmini | Nova arcana: esplosione sul bersaglio che rallenta |
+| Falce | Mietitura · Rovescio · Raccolto (ruba vita) | Danza della morte: due giri che rubano vita |
+
+Le mosse dell'arma sono scritte anche nella sua scheda, nello zaino.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -707,7 +727,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.18 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.19 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -768,6 +788,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zr_caricamento.js` | Le schermate di caricamento di ogni modalità e il filmato del viaggio con la gemma |
 | `8zs_modelli.js` | I modelli nuovi (con scheletro e animazioni) dei boss e degli animali rimasti alla grafica vecchia: drago, sfinge, piovra, spettro, signore della fiamma, cavalcalupi, nido di mitragliatrice, animali da cortile e cavalli |
 | `8zt_mondo.js` | Tomorrow unito: la finestra delle regioni intorno, lo spostamento senza passaggi, la distanza di visuale, il pavimento a blocchi, i borghi |
+| `8zu_combattimento.js` | Il combattimento nuovo: catene di colpi, colpo perfetto, colpi caricati e mosse proprie di ogni arma, effetti sui nemici, pose dell'eroe |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

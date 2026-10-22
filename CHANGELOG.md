@@ -5,6 +5,29 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.19 — Le mosse delle armi (22 ottobre 2026)
+
+- **Combattimento nuovo:** non si clicca e basta. **Spazio**, **X**, il pulsante grande sul telefono o un clic sul nemico a portata fanno la mossa seguente della **catena** dell'arma, tre colpi diversi.
+  - Premere di nuovo appena la mossa finisce dà un **colpo perfetto** (+30% di danno). Premere a raffica non basta.
+  - Chi lascia fare all'eroe (bersaglio cliccato e basta) ripete solo il primo colpo, più lentamente.
+- **Colpo caricato:** tieni premuto Spazio, X o il pulsante grande. Più carichi, più fa male; ogni arma ha il suo e la sua ricarica.
+- **Otto stili:**
+  - pugnale e stocco: veloci, fanno sanguinare;
+  - spada: equilibrata, con il Turbine;
+  - ascia: spezza la corazza (+30% di danni subiti) e salta sui nemici;
+  - martello e mazza: lenti, stordiscono, con il Terremoto;
+  - lancia: colpisce da lontano e carica;
+  - tridente: tira a te i nemici e con il Maremoto li travolge;
+  - bastone e scettro: dardi arcani, catena di fulmini e Nova arcana;
+  - falce: colpi larghi che rubano vita.
+- Le mosse **colpiscono tutti i nemici nella loro forma** (arco, affondo, cerchio, onda, dardo), con animazioni dell'eroe, scie ed effetti propri.
+- I nemici **storditi**, **sanguinanti**, con la **corazza spezzata** o **rallentati** lo mostrano sopra la testa o ai piedi. Sui boss gli effetti durano meno e non vengono spinti.
+- Sotto l'eroe compaiono lo stile dell'arma, i tre segni della catena, la barra della carica e «Perfetto!».
+- Le mosse dell'arma sono scritte nella sua scheda, nello zaino.
+- Il pulsante «Colpo» ora si chiama «Attacco». Affondo (F), schivata e tecniche del Maestro restano come prima.
+
+---
+
 ## 7.18 — Un mondo solo (22 ottobre 2026)
 
 - **Tomorrow senza passaggi:** le regioni sono unite. Il gioco tiene caricata la tua regione e una fascia di quelle intorno, con i loro abitanti, i mostri e le case. Quando cammini oltre il bordo, il mondo si sposta con te senza fermarsi:

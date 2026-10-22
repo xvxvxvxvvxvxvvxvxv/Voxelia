@@ -1,4 +1,4 @@
-// Server di Voxelia 7.13.3: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Server di Voxelia 7.16: serve il gioco e fa da ponte WebSocket tra i giocatori.
 // Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
 // rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
 // i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
@@ -9,7 +9,7 @@
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
 const http = require('http'), https = require('https'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
-const VER = '7.13.3';
+const VER = '7.16';
 const PORT = process.env.PORT || 3000;
 // certificato e chiave in formato PEM: se ci sono entrambi il server parla solo https/wss
 const TLS = (() => {
@@ -623,9 +623,16 @@ setInterval(() => { const lim = Date.now() - 10 * 60e3; for (const [rm, G] of GR
 const trades = new Map();
 function cleanItem(o) {
   if (!o || typeof o !== 'object' || o.ar) return null;
-  if (typeof o.s !== 'string' || !['w', 'h', 'c', 's'].includes(o.s)) return null;
   const n = (v, a, b) => Math.max(a, Math.min(b, Math.round(+v || 0)));
-  return { u: str(o.u, 12) || crypto.randomBytes(4).toString('hex'), s: o.s, r: n(o.r, 0, 3), v: n(o.v, 1, 99999), n: str(o.n, 40) || 'Oggetto', p: n(o.p, 0, 999999), hp: n(o.hp, 0, 9999), cr: n(o.cr, 0, 50), up: n(o.up, 0, 5) };
+  const u = str(o.u, 12) || crypto.randomBytes(4).toString('hex');
+  // 7.14: i reperti del Mondo aperto (trofei, curiosità): solo nome, descrizione, rarità e valore
+  if (o.s === 'x') return { u, s: 'x', n: str(o.n, 40) || 'Reperto', d: str(o.d, 140), r: n(o.r, 0, 3), p: n(o.p, 0, 99999), k: str(o.k, 12) };
+  if (typeof o.s !== 'string' || !['w', 'h', 'c', 's'].includes(o.s)) return null;
+  const it = { u, s: o.s, r: n(o.r, 0, 3), v: n(o.v, 1, 99999), n: str(o.n, 48) || 'Oggetto', p: n(o.p, 0, 999999), hp: n(o.hp, 0, 9999), cr: n(o.cr, 0, 50), up: n(o.up, 0, 5) };
+  // 7.14: un oggetto unico viaggia con il suo seme; chi lo riceve ricalcola tutto il resto dal seme (uqFix)
+  const q = o.uq;
+  if (q && typeof q === 'object' && /^[a-z0-9]{6,16}$/.test(String(q.sd || ''))) it.uq = { sd: String(q.sd), lv: n(q.lv, 1, 99), rm: n(q.rm, 0, 3), gv: n(q.gv, 1, 9), own: (Array.isArray(q.own) ? q.own : []).slice(-6).map(x => str(x, 14)).filter(Boolean) };
+  return it;
 }
 function trSync(S) { for (const p of [S.a, S.b]) { const o = p === S.a ? S.b : S.a; send(p, { t: 'tr', a: 'st', n: o.name, you: S.o[p.id], them: S.o[o.id] }); } }
 function trEnd(S, m) { trades.delete(S.a.id); trades.delete(S.b.id); if (m) for (const p of [S.a, S.b]) send(p, { t: 'tr', a: 'end', s: m }); }
@@ -650,6 +657,7 @@ function trade(c, j) {
     if (j.a === 'off') {
       me.it = (Array.isArray(j.it) ? j.it : []).slice(0, 12).map(cleanItem).filter(Boolean);
       me.g = Math.max(0, Math.min(1e7, j.g | 0));
+      me.pt = Math.max(0, Math.min(999, j.pt | 0));   // 7.14: anche le pozioni si scambiano
       for (const k in S.o) S.o[k].ok = false; trSync(S);
     } else if (j.a === 'ok') {
       me.ok = true;

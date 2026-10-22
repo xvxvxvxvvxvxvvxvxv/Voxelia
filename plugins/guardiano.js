@@ -117,7 +117,7 @@ function sensore(ID, INT) {
 
 module.exports = {
   name: 'Guardiano',
-  version: '2.5',
+  version: '2.6',
   author: 'Voxelia',
   description: 'Riconosce oro, livelli, statistiche e oggetti ottenuti con trucchi o cheat esterni; pagina admin con le prove',
   defaults: {
@@ -315,20 +315,24 @@ module.exports = {
     // un oggetto che il gioco non può creare: restituisce il motivo, o '' se va bene
     function oggettoStrano(it, lv) {
       if (!it || typeof it !== 'object') return 'oggetto non valido';
+      // 7.14: i reperti del Mondo aperto (trofei dei contratti) non si indossano: contano solo rarità e valore
+      if (it.s === 'x') { const r = +it.r, p = +it.p || 0; if (!(r >= 0 && r <= 3 && r % 1 === 0)) return 'rarità ' + r + ' inesistente'; if (p < 0 || p > 100 * lvOggettiMax(lv)) return 'reperto con valore ' + p + ' troppo alto'; return ''; }
+      // 7.14: gli oggetti unici (con il seme in it.uq) hanno poteri: critico, vita e prezzo possono essere più alti
+      const uq = !!(it.uq && typeof it.uq === 'object');
       const s = it.s, r = +it.r, v = +it.v, p = +it.p || 0, hp = +it.hp || 0, cr = +it.cr || 0, up = +it.up || 0, ml = +it.ml || 0;
       if (!['w', 'h', 'c', 's'].includes(s)) return 'tipo di oggetto sconosciuto';
       if (it.ar ? r !== 4 : !(r >= 0 && r <= 3 && r % 1 === 0)) return 'rarità ' + r + ' inesistente';
       if (!(v >= 1) || !isFinite(v)) return 'valore ' + v + ' non valido';
       if (up < 0 || up > 5 || up % 1) return 'potenziamento +' + up + ' (il fabbro arriva a +5)';
       if (ml < 0 || ml > 10 || ml % 1) return 'maestria ' + ml + ' (massimo 10)';
-      if (cr < 0 || cr > 20) return 'critico +' + cr + '% (il massimo nel gioco è 20%)';
+      if (cr < 0 || cr > (uq ? 30 : 20)) return 'critico +' + cr + '% (il massimo nel gioco è ' + (uq ? 30 : 20) + '%)';
       if (hp < 0 || p < 0) return 'valori negativi';
       // livello dell'oggetto ricavato dal valore: il minimo (tiro migliore da unico) e il massimo (tiro peggiore)
       const k = s === 'w' ? 2 : 1.4, b = ibase(s, 0), alto = it.ar ? 3.9 : RM[r] * 1.15 * 1.15, basso = it.ar ? 3.2 : RM[r] * .85;
       const lvMin = (v / alto - b) / k, lvTop = (v / basso - b) / k + 1, L = lvOggettiMax(lv);
       if (lvMin > L) return 'valore ' + v + ' possibile solo da un oggetto di livello ' + Math.ceil(lvMin) + ' (ora al massimo ' + L + ')';
-      if (hp > 160 + 3 * Math.max(0, lvTop)) return 'punti vita +' + hp + ' troppo alti per un oggetto di valore ' + v;
-      if (p > v * 6 * Math.pow(1.15, up) + 5 + up) return 'prezzo di vendita ' + p + ' troppo alto per un oggetto di valore ' + v;
+      if (hp > (uq ? 220 + 8 * Math.max(0, lvTop) : 160 + 3 * Math.max(0, lvTop))) return 'punti vita +' + hp + ' troppo alti per un oggetto di valore ' + v;
+      if (p > v * (uq ? 20 : 6) * Math.pow(1.15, up) + 5 + up) return 'prezzo di vendita ' + p + ' troppo alto per un oggetto di valore ' + v;
       return '';
     }
     const descr = it => (it && it.n ? it.n : 'oggetto') + (it && it.up ? ' +' + it.up : '') + ' (' + ['comune', 'raro', 'epico', 'leggendario', 'arena'][+it.r] + ', valore ' + it.v + (it.hp ? ', vita +' + it.hp : '') + (it.cr ? ', critico +' + it.cr + '%' : '') + ')';

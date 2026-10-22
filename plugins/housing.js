@@ -1099,6 +1099,9 @@ function pulisciOggetto(o) {
     else if (typeof v === 'string') r[k] = testo(v, 60);
     else if (typeof v === 'boolean') r[k] = v;
   }
+  // 7.14: un oggetto unico porta con sé il seme (uq): il gioco ricalcola tutto il resto da lì
+  const q = o.uq;
+  if (q && typeof q === 'object' && /^[a-z0-9]{6,16}$/.test(String(q.sd || ''))) r.uq = { sd: String(q.sd), lv: lim(Math.round(+q.lv || 1), 1, 99), rm: lim(Math.round(+q.rm || 0), 0, 3), gv: lim(Math.round(+q.gv || 1), 1, 9), own: (Array.isArray(q.own) ? q.own : []).slice(-6).map(x => testo(String(x), 14)).filter(Boolean) };
   if (!/^[a-z]$/.test(r.s || '') || !r.n) return null;
   r.u = testo(String(r.u || ''), 12) || crypto.randomBytes(4).toString('hex');
   return r;
@@ -1119,7 +1122,7 @@ const LV_MAX = 30;
 
 module.exports = {
   name: 'Case',
-  version: '1.5',
+  version: '1.6',
   author: 'Voxelia',
   description: '/casa: ogni eroe ha una casa da scegliere, colorare e arredare, con un deposito che apre solo lui e un pet da accudire; nel Borgo delle Case si visitano le case degli altri',
   defaults: {

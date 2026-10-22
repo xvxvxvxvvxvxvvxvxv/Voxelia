@@ -3,6 +3,11 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Oggetti unici e reperti (gioco 7.14)
+
+- **Guardiano 2.6:** gli oggetti unici del Mondo aperto (quelli con il seme in `uq`) hanno poteri, quindi possono avere critico fino al 30%, più vita e un prezzo di vendita più alto: il controllo degli «oggetti impossibili» ora ne tiene conto. I reperti (`s: 'x'`) non si indossano e si controllano solo rarità e valore. Prima un'offerta di scambio con un unico o un reperto veniva fermata come trucco.
+- **Mercatino 1.3 e Case 1.6:** quando ripuliscono un oggetto ricevuto dal browser tengono anche il seme dell'unico (`uq`: seme, livello, rarità minima, provenienza). Il gioco ricalcola poteri, nome e storia dal seme, quindi un unico venduto al mercatino o lasciato in casa torna identico.
+
 ## Pagine web col tema di Voxelia
 
 - Il 14 ottobre le pagine web dei plugin hanno preso l'aspetto dei menu del gioco e della guida 7.10: Georgia, titoli oro con l'ombra ruggine, barra di legno coi chiodi in alto, pannelli col bordo e l'ombra piena sotto, tabelle con l'intestazione di legno, pulsanti come quelli del gioco, colori pergamena col tema chiaro. Si leggono anche sul telefono.

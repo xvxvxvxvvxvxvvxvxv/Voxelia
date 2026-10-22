@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.13.3** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.16** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -19,8 +19,10 @@ gioco, nel menu **Novità**).
 - [In breve](#in-breve)
 - [Come si gioca subito](#come-si-gioca-subito)
 - [Comandi](#comandi)
+- [La vista 3D](#la-vista-3d)
 - [Le modalità](#le-modalità)
 - [La Modalità Storia](#la-modalità-storia)
+- [Tomorrow (anteprima)](#tomorrow-anteprima)
 - [Il mondo](#il-mondo)
 - [L'eroe e l'equipaggiamento](#leroe-e-lequipaggiamento)
 - [Cose da fare ad Aldoria](#cose-da-fare-ad-aldoria)
@@ -40,6 +42,8 @@ gioco, nel menu **Novità**).
 
 - **Un solo file.** Il gioco intero è `voxelia.html`: grafica, musica, testi e logica. Non servono installazioni,
   librerie o connessione a internet per giocare da soli.
+- **Vista classica o vista 3D**, da alternare in qualsiasi momento: in 3D luce del sole, ombre, materiali, acqua che
+  riflette, torce che illuminano davvero e un orizzonte che arriva fino alle montagne.
 - **Grafica voxel isometrica** disegnata in tempo reale su canvas, con giorno e notte, luci, meteo e particelle,
   e qualità regolabile da «leggera» a «Ultra».
 - **Musica procedurale e scritta nota per nota**: 57 brani scritti a mano, fra cui uno diverso per ogni edificio di
@@ -48,6 +52,8 @@ gioco, nel menu **Novità**).
   71 tipi di nemici di cui 13 boss.
 - **Una storia raccontata da filmati** girati nei luoghi veri del gioco, con i suoi personaggi e l'eroe vestito con il
   suo equipaggiamento.
+- **Tomorrow** (anteprima): un mondo nuovo e senza confini, generato mentre cammini, con villaggi, dungeon e mostri
+  sempre diversi, contratti nati da zero e oggetti unici da trovare e da scambiare con gli altri eroi.
 - **Multigiocatore** con un server Node.js **senza dipendenze**: stanze, chat, scambi, arena PvP con classifica,
   pannello admin e plugin.
 - **Voxelia Studio**: un editor completo per creare mondi con mappe, personaggi, dialoghi, missioni, oggetti, musiche
@@ -100,13 +106,15 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **K** | Diario |
 | **L** | Classifica |
 | **P** | Giocatori |
-| **M** | Mappa di Aldoria |
+| **M** | Mappa di Aldoria (in Tomorrow, la mappa del mondo) |
 | **C** | Aspetto dell'eroe |
 | **O** | Opzioni |
 | **V** | Ruota delle azioni (il tasto si può cambiare) |
 | **Invio** | Chat |
-| **Esc** | Chiude la finestra aperta |
-| Rotella del mouse | Zoom |
+| **Esc** | Chiude la finestra aperta; con niente di aperto, il menu di pausa |
+| Rotella del mouse | Zoom (in 3D avvicina la telecamera) |
+| **B** | Vista classica o vista 3D |
+| Tasto destro del mouse, trascinando | In 3D, gira la telecamera |
 
 Ogni tasto delle finestre le apre e le chiude. Si apre una finestra alla volta: aprendone una si chiudono le altre.
 
@@ -152,6 +160,35 @@ Durante filmati, visita guidata, navigazione e minigiochi si torna da soli allo 
 
 ---
 
+## La vista 3D
+
+Dalla 7.15 il gioco si può guardare in vero 3D. Si passa dalla vista classica alla vista 3D in qualsiasi momento, con il
+tasto **B**, con il pulsante **3D** in alto o dal menu di pausa, e la partita continua uguale.
+
+- **Telecamera:** segue l'eroe da dietro. Con il tasto destro del mouse (o due dita sul telefono) si gira; con la rotellina
+  (o il pizzico) si avvicina. Ci sono anche i pulsanti ⟲ ⟳ in alto. WASD e la levetta si muovono rispetto alla telecamera.
+  Il clic funziona come sempre: si cammina, si attacca, si parla, si raccoglie. Muri e alberi fra la telecamera e l'eroe
+  diventano trasparenti, così l'eroe si vede sempre.
+- **Luce:** il sole segue l'ora del giorno e proietta le ombre; al tramonto la luce si fa arancione, di notte compaiono le
+  stelle, e lampioni, torce e bracieri illuminano davvero le strade e i sotterranei.
+- **Materiali:** i modelli sono quelli del gioco, ma con gli spigoli arrotondati e la loro grana: erba, pietra, legno,
+  sabbia, neve, metallo lucido (armi e armature brillano al sole). L'acqua si muove e riflette il cielo, la lava pulsa. I fili
+  d'erba si muovono col vento.
+- **Orizzonte:** attorno a ogni zona all'aperto il mondo continua: campi e casolari, boschi, dune, laghi e catene di
+  montagne innevate fino all'orizzonte, sfumati dalla foschia.
+- **Opzioni** (menu di pausa o Impostazioni → Vista 3D): dettaglio Basso, Medio o Alto, ombre, erba, orizzonte lontano,
+  velocità della telecamera. Se il gioco rallenta, la vista 3D abbassa da sola la risoluzione e poi il dettaglio. Sui telefoni
+  parte con il dettaglio Basso.
+- Nei filmati, durante la pesca, la navigazione, le battaglie navali e nell'editor si torna da soli alla vista classica.
+- Serve WebGL 2, che hanno tutti i browser recenti; se manca, il gioco lo dice e resta nella vista classica.
+
+### Il menu di pausa
+
+L'ingranaggio in alto (o **Esc** quando non c'è niente di aperto) apre il menu di pausa: riprendi, vista classica o 3D con le
+sue opzioni, impostazioni, aspetto dell'eroe, comandi, salva ora e ritorno al menu principale.
+
+---
+
 ## Le modalità
 
 ![Il menu](docs/menu.jpg)
@@ -159,6 +196,7 @@ Durante filmati, visita guidata, navigazione e minigiochi si torna da soli allo 
 | Modalità | Che cos'è |
 |---|---|
 | **Modalità Storia** | Il Regno Perduto: l'avventura principale, con quattro difficoltà, il prologo e le scene della storia. |
+| **Tomorrow** *(anteprima)* | Un mondo senza confini oltre il regno, generato a regioni mentre cammini: villaggi, dungeon e mostri sempre nuovi, contratti dalle bacheche dei villaggi, bottino di oggetti unici. Ha un eroe e un salvataggio suoi. |
 | **Parco giochi · Voxelia Studio** | L'editor per costruire e giocare i propri mondi. |
 | **Mondi della community** | I mondi pubblicati dagli altri giocatori sul server: si giocano, si votano e si commentano. |
 | **Voxelia Dimension** | Un'avventura a parte attraverso le epoche (Far West, Londra vittoriana, Rivoluzione francese, Grande Guerra). Per ora è nascosta dal menu ed è raggiungibile dal pannello sviluppatore. |
@@ -201,6 +239,88 @@ Dalla 7.11 la Modalità Storia è più impegnativa a ogni difficoltà:
 - le pozioni curano il 35% e se ne beve una ogni 2,5 secondi, l'armatura protegge un po' meno e i falò curano più piano.
 
 I mondi di Voxelia Studio tengono l'equilibrio scelto dal loro autore.
+
+---
+
+## Tomorrow (anteprima)
+
+Dalla 7.16 (era il «Mondo aperto» della 7.14). Oltre i confini del regno si apre una terra che nessuna mappa ha mai
+disegnato. Si sceglie dal menu, con un eroe e un salvataggio tutti suoi (`voxelia_ow`): la partita della storia non viene
+toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti, reperti e reputazione.
+
+### Un mondo che non finisce
+
+- Il mondo è fatto di **regioni** di 64×64 caselle, generate mentre cammini. Cammina oltre il bordo e sei nella regione
+  accanto. Il seme è dell'eroe; con un **codice stanza** è della stanza, e tutti giocano nello stesso mondo, con gli stessi
+  villaggi e gli stessi dungeon.
+- Il terreno dipende dalle coordinate del mondo: fiumi, laghi, boschi, dune e pareti di roccia continuano da una
+  regione all'altra, e i sentieri si incontrano sempre sul bordo comune.
+- **Cinque biomi:** prati fioriti, boschi, deserti con mese e oasi, vette innevate, lande di cenere.
+- **Villaggi** (uno ogni sette regioni circa, più quello di partenza): case, abitanti con nome, mercante, fabbro, erborista,
+  guaritrice, locanda e la Bacheca dei Contratti. Si rinasce nell'ultimo villaggio visitato.
+- **Dungeon** con nome proprio (Grotte, Cripte, Tombe, Caverne, Forge, Grotte sommerse, Abissi), da 2 a 5 piani, mostri del
+  loro tema e un **boss con nome e abilità mescolate**.
+- **Mostri sempre diversi:** ogni zona del mondo ha le sue specie, varianti dei mostri del regno con colori, taglia, forza,
+  velocità e nome propri («Lupo delle Ceneri», «Scheletro d'Ambra»...). Alcune colpiscono a distanza.
+- **Livello senza limite:** più ti allontani dal villaggio di partenza, più il livello sale. I mostri diventano più forti e
+  il bottino più prezioso.
+- Accampamenti con un Campione, rovine con un forziere, raccolte del bioma. I forzieri aperti restano aperti.
+- **Mappa del mondo** (tasto **M**): le regioni intorno con biomi, villaggi, dungeon, livello e i luoghi dei contratti; le
+  regioni mai visitate sono velate.
+- In **vista 3D** l'orizzonte mostra il mondo vero: le regioni che vedi in lontananza sono quelle in cui puoi camminare.
+
+### La Bacheca dei Contratti
+
+In piazza in ogni villaggio. Ogni giorno di gioco propone quattro contratti nuovi (da «Stimato» in su anche
+un **contratto d'onore**, più duro e pagato meglio) e se ne possono tenere tre alla volta. Ogni contratto nasce da un seme
+ed è unico:
+- un **committente** di una delle sei fazioni di Tomorrow: Lega dei Villaggi, Compagnia dei Cartografi, Ordine della
+  Fiamma, Mercanti di Strada, Custodi delle Rovine, Clan dei Cacciatori;
+- un **tipo**, con le sue tappe:
+
+| Tipo | Tappe |
+|---|---|
+| Taglia | un testimone in un villaggio, poi la caccia a un bersaglio con nome in un'altra regione |
+| Infestazione | sterminare una specie in una regione, poi il capobranco |
+| Spedizione | il guardiano del primo piano di un dungeon, poi la reliquia in fondo all'ultimo |
+| Reliquia perduta | uno studioso, poi la reliquia in un dungeon, custodita da un Campione |
+| Assedio | difendere il villaggio da 3-5 ondate di mostri delle terre vicine, l'ultima guidata da un capo |
+| Commissione rara | raccogliere materiali in una regione, poi il trofeo di una bestia |
+| Messaggio | portare una lettera a un abitante di un villaggio lontano, poi la risposta a un altro |
+| Esplorazione | raggiungere due regioni lontane |
+
+Ogni tappa dice in che direzione andare («3 regioni a nord-est»).
+
+- **Bersagli con nome** (Grakk Spaccaossa, Morva Ombralunga…): sono Campioni, più forti a ogni stella, con da 1 a 3
+  tratti fra corazzato, furioso, rapido, rigenerante, evocatore, spinato e scudato. **I testimoni te li raccontano prima
+  dello scontro.** Una colonna di luce indica bersagli, reliquie, testimoni e luoghi da difendere.
+- **Patti** che alzano la posta (e la paga): tempo limitato, niente pozioni nella zona del contratto, scorta di
+  Campioni, orda.
+- **Stelle** da 1 a 5, secondo zona, livello, tratti e patti.
+- **Ricompense**: oro, esperienza, un **oggetto unico** (raro con 2 stelle, epico con 4, leggendario con 5), un
+  **reperto** da collezione e la **reputazione** con la fazione (Sconosciuto, Conosciuto, Stimato, Onorato,
+  Leggendario), che fa crescere le paghe.
+
+I contratti in corso si seguono in alto a destra e nel pannello delle missioni (J).
+
+### Oggetti unici
+
+Nel Mondo aperto bottino, forzieri, fabbro e bottega danno solo **oggetti unici**. Ogni oggetto nasce da un seme che
+decide tutto: la forma (15 armi, 6 elmi, 6 corazze, 5 scudi), la rarità, la qualità (dal 60 al 100%), da 1 a 3 poteri
+fra 19 (fuoco, gelo, fulmine, veleno, vampiro, ferocia, precisione, caccia, rapidità, mietitura, saggezza, fortuna,
+robustezza, spine, agilità, rigenerazione, alchimia, guardia, buona stella) con la loro forza, il nome, una riga di storia
+e il numero di serie. I leggendari hanno un nome proprio e un potere firmato: Eco, Sete di sangue, Tempesta, Baluardo,
+Seconda pelle, Fenice. Lo zaino mostra tutto nella scheda dell'oggetto, compresa la **provenienza** (chi l'ha trovato e
+chi l'ha avuto dopo).
+
+Nel salvataggio e negli scambi viaggia solo il seme: il gioco ricalcola il resto, così un oggetto non si può gonfiare a
+mano. I poteri funzionano in tutte le modalità tranne l'editor.
+
+### Scambi
+
+Gli oggetti unici sono la moneta degli scambi fra eroi. Dalla finestra di scambio si scambiano armi e armature (con poteri
+e provenienza in vista), **reperti**, oro e, dalla 7.14, anche **pozioni**. Chi riceve un unico lo ritrova identico, e il
+suo nome si aggiunge alla provenienza. Mercatino e Case (plugin) conservano gli unici.
 
 ---
 
@@ -327,6 +447,12 @@ più e usa un'abilità ogni tre o quattro secondi.
 Tutta la musica è generata in tempo reale dal sintetizzatore del gioco:
 - **57 brani scritti** nota per nota, ognuno con melodia, accordi, basso, accompagnamento e batteria;
 - **brani procedurali** per le zone speciali.
+
+Il tema della città, **«Le vie di Aldoria»** (7.14), è un brano in cinque sezioni che cresce come una giornata in
+piazza: l'apertura d'arpa, il tema al flauto, il tema ripreso con il violino che risponde, un ponte allo zufolo e il
+ritornello di festa agli ottoni, un tono sopra. Suona in città, nei quartieri, nei filmati girati ad Aldoria e nelle
+mappe di Voxelia Studio. Il motore dei brani scritti ora permette a ogni sezione di cambiare strumento, accompagnamento,
+basso, batteria e tonalità, e ha una seconda voce e l'armonia a una terza.
 
 Ogni zona ha il suo tema, e dalla 7.10 anche **ogni edificio** ha il suo brano a tema. La taverna balla una giga, la
 fucina batte sull'incudine, il tempio canta in coro, il faro suona sopra le onde. Gli strumenti sono 19 (flauto, ottoni,
@@ -541,7 +667,7 @@ porta 3000`.
   - **English**, che traduce menu, comandi, impostazioni e la maggior parte dei pulsanti (dialoghi e missioni restano in
     italiano);
   - **Eldoriano**, la lingua antica del regno, che trasforma tutti i testi.
-- **Salvataggi**: tutto resta nel `localStorage` del browser. Ci sono la partita, le impostazioni, l'aspetto dell'eroe,
+- **Salvataggi**: tutto resta nel `localStorage` del browser. Ci sono la partita, Tomorrow (a parte), le impostazioni, l'aspetto dell'eroe,
   i mondi di Voxelia Studio e i filmati già visti. Il salvataggio si aggiorna da solo, anche chiudendo la pagina.
 
 ---
@@ -556,7 +682,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.13.3 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.16 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -606,6 +732,12 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zg_xrui.js` | Realtà virtuale: l'interfaccia HTML del gioco (HUD, finestre, dialoghi) fotografata e mostrata nel visore |
 | `8zh_xr3d.js` | Realtà virtuale: il mondo in 3D sul tavolo (diorama), con gli stessi modelli del gioco |
 | `8zi_xrfp.js` | Realtà virtuale in prima persona: il mondo a grandezza naturale, attacchi con il movimento dei controller, pannelli e menu fluttuanti |
+| `8zj_citta.js` | «Le vie di Aldoria», il nuovo tema della città, e le sezioni dinamiche del motore dei brani scritti |
+| `8zk_unici.js` | Oggetti unici: generatore dal seme, poteri, scheda, provenienza; scambi di unici, reperti e pozioni |
+| `8zl_aperto.js` | Tomorrow, la base: menu, salvataggio a parte, Bacheca dei Contratti, tappe dei contratti, bersagli, assedi, reputazione |
+| `8zm_3d.js` | La vista 3D: registra i disegni del gioco e li rende in WebGL 2 con luce, ombre, materiali, cielo e l'orizzonte oltre i confini; telecamera, clic e movimento in 3D |
+| `8zn_pausa.js` | Il pulsante delle impostazioni, il menu di pausa (anche con Esc) e la sezione «Vista 3D» delle impostazioni |
+| `8zo_tomorrow.js` | Tomorrow, il mondo: regioni generate senza fine, biomi, villaggi, dungeon e specie generati, contratti nuovi, mappa del mondo, orizzonte 3D |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

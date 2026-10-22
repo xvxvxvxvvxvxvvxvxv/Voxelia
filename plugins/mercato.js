@@ -227,6 +227,9 @@ function pulisciOggetto(o) {
     else if (typeof v === 'string') r[k] = testo(v, 60);
     else if (typeof v === 'boolean') r[k] = v;
   }
+  // 7.14: un oggetto unico porta con sé il seme (uq): il gioco ricalcola tutto il resto da lì
+  const q = o.uq;
+  if (q && typeof q === 'object' && /^[a-z0-9]{6,16}$/.test(String(q.sd || ''))) r.uq = { sd: String(q.sd), lv: lim(Math.round(+q.lv || 1), 1, 99), rm: lim(Math.round(+q.rm || 0), 0, 3), gv: lim(Math.round(+q.gv || 1), 1, 9), own: (Array.isArray(q.own) ? q.own : []).slice(-6).map(x => testo(String(x), 14)).filter(Boolean) };
   if (!['w', 'h', 'c', 's'].includes(r.s) || !r.n || r.ar || r.lk || !(r.r >= 0 && r.r <= 3)) return null;
   r.u = testo(String(r.u || ''), 12); if (!r.u) return null;
   return r;
@@ -235,7 +238,7 @@ const descr = it => it.n + (it.up ? ' +' + it.up : '');
 
 module.exports = {
   name: 'Mercatino di Aldoria',
-  version: '1.2',
+  version: '1.3',
   author: 'Voxelia',
   description: '/mercato: metti in vendita gli oggetti dello zaino e compra quelli degli altri, anche quando il venditore non è online',
   defaults: {

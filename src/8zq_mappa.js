@@ -106,6 +106,7 @@ function twMapSide(){const el=$('twms');if(!el||!TWM.sel)return;const[rx,ry]=TWM
 openMap=function(){if(twOn()){twMapOpen();return}_openMap716()};
 // arrivati alla destinazione, la bandierina si toglie
 const _load717m=load;load=function(k,from){_load717m(k,from);if(twOn()&&P.tw.wp&&Zk===P.tw.wp){P.tw.wp=null;banner('Destinazione raggiunta',ZZ.n,'mappa')}};
+// 7.17.1 dimenticava qui il mondo di prima quando cambiava il seme; dalla 7.18 lo fa twForget() in 8zt_mondo.js, all'inizio della partita
 
 /* ---- la bacheca dei contratti ---- */
 owCard=function(C,i,mode){const F=OWF[C.fa],R=C.rw,mods=Object.keys(C.mods),cur=C.si;

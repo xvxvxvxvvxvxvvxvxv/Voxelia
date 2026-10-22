@@ -5,6 +5,50 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.16 — Tomorrow (22 ottobre 2026)
+
+- **Il Mondo aperto diventa Tomorrow,** con una terra tutta nuova oltre i confini del regno, che si genera mentre cammini e non finisce mai. Ha un eroe e un salvataggio suoi; un eroe del vecchio Mondo aperto ci passa con livello, oggetti, reperti e reputazione.
+- **Regioni senza fine:** il mondo è fatto di regioni di 64×64 caselle. Cammini oltre il bordo e sei nella regione accanto. Fiumi, laghi, boschi, dune e pareti di roccia continuano da una regione all'altra, e i sentieri si incontrano sempre sul bordo comune. Con un codice stanza tutti giocano nello stesso mondo.
+- **Cinque biomi:** prati fioriti, boschi, deserti con mese e oasi, vette innevate e lande di cenere.
+- **Villaggi** con case, abitanti con nome, mercante, fabbro, erborista, guaritrice, locanda e la Bacheca dei Contratti. Si rinasce nell'ultimo villaggio visitato.
+- **Dungeon unici:** ognuno ha un nome proprio, un tema, da 2 a 5 piani, mostri suoi e un boss con nome e abilità mescolate.
+- **Mostri che non si ripetono:** ogni zona del mondo ha le sue specie, varianti dei mostri del regno con colori, taglia, forza, velocità e nome propri («Lupo delle Ceneri», «Scheletro d'Ambra»...). Alcune colpiscono a distanza. In 169 regioni intorno alla partenza ci sono circa 500 specie diverse.
+- **Livello senza limite:** più ti allontani dal villaggio di partenza, più mostri e bottino crescono.
+- Accampamenti con un Campione, rovine con un forziere e raccolte del bioma. I forzieri aperti restano aperti.
+- **Contratti fatti da zero:** sei fazioni nuove (Lega dei Villaggi, Compagnia dei Cartografi, Ordine della Fiamma, Mercanti di Strada, Custodi delle Rovine, Clan dei Cacciatori) e otto tipi: taglie, infestazioni, spedizioni nei dungeon, reliquie, assedi al villaggio, commissioni, messaggi da portare in villaggi lontani ed esplorazioni. Ogni tappa dice in che direzione andare.
+- **Mappa del mondo** (tasto M): le regioni intorno con biomi, villaggi, dungeon, livello e i luoghi dei contratti.
+- **In vista 3D** l'orizzonte mostra il mondo vero intorno alla regione: quello che vedi in lontananza è dove puoi camminare.
+
+---
+
+## 7.15 — La vista 3D (22 ottobre 2026)
+
+- **Vista 3D.** Il mondo di Voxelia si può guardare in vero 3D. Si passa dalla vista classica alla vista 3D in qualsiasi momento: tasto **B**, pulsante **3D** in alto o menu di pausa. La partita continua uguale, nella Modalità Storia, nel Mondo aperto, in Voxelia Dimension e nei mondi di Voxelia Studio.
+- **Telecamera:** segue l'eroe da dietro. Si gira con il tasto destro del mouse, con due dita sul telefono o con i pulsanti ⟲ ⟳, e si avvicina con la rotellina o con il pizzico. WASD e la levetta si muovono rispetto alla telecamera. Il clic funziona come sempre. Muri e alberi fra la telecamera e l'eroe diventano trasparenti.
+- **Luce vera:** il sole segue l'ora del giorno e proietta le ombre. Il tramonto è arancione e di notte ci sono le stelle. Lampioni, torce e bracieri illuminano le strade, le taverne e i sotterranei, e nei dungeon l'eroe porta una lanterna.
+- **Modelli più realistici:** sono quelli del gioco, ma resi come oggetti veri. Hanno spigoli arrotondati e la grana del loro materiale (erba, pietra, legno, sabbia, neve, metallo che brilla al sole). L'acqua si muove e riflette il cielo, la lava pulsa e i fili d'erba si piegano al vento.
+- **Un mondo che non finisce ai confini:** attorno a ogni zona all'aperto il paesaggio continua fino all'orizzonte, partendo da quello che c'è sul bordo della mappa: campi e casolari, boschi, dune, laghi, coste e catene di montagne innevate, sfumati dalla foschia.
+- **Opzioni della vista 3D** (Impostazioni → Vista 3D, o il menu di pausa): dettaglio Basso, Medio o Alto, ombre, erba, orizzonte lontano, velocità della telecamera e asse invertito. Se il gioco rallenta, la vista 3D abbassa da sola la risoluzione e poi il dettaglio; sui telefoni parte dal dettaglio Basso.
+- Nei filmati, durante la pesca, la navigazione, le battaglie navali e nell'editor il gioco torna da solo alla vista classica, e riprende il 3D subito dopo.
+- **Menu di pausa:** un ingranaggio sempre in vista in alto (o Esc quando non c'è niente di aperto) apre la pausa. Da lì si riprende, si sceglie la vista classica o 3D con le sue opzioni, si aprono impostazioni, aspetto dell'eroe e comandi, si salva o si torna al menu principale.
+
+---
+
+## 7.14 — Il Mondo aperto e la nuova musica di Aldoria (22 ottobre 2026)
+
+- **La nuova musica della città: «Le vie di Aldoria».** Il tema della città è riscritto da capo e cresce come una giornata in piazza: un'apertura d'arpa, il tema al flauto con il ritmo puntato delle danze, il tema ripreso con il violino che risponde, un ponte più pensoso allo zufolo e il ritornello di festa agli ottoni, un tono sopra, con l'armonia e i tamburi pieni. Sostituisce il vecchio tema ovunque si sentiva: in città, nei quartieri, nei sei filmati girati ad Aldoria (prologo, giuramento, campione, verità, finale vero, ricordo) e nelle mappe di Voxelia Studio.
+- **Il motore dei brani scritti** impara tre cose, valide per qualsiasi brano: ogni sezione può cambiare strumento solista, accompagnamento, basso, batteria, volume e tonalità; una seconda voce suona insieme alla melodia; un'armonia raddoppia la melodia una terza sotto.
+- **Nuova modalità: Mondo aperto (anteprima).** Dal menu, con un eroe e un salvataggio tutti suoi: la partita della storia non viene toccata. Il regno anni dopo la caduta di Malakar, tutto aperto (anche il Borgo delle Ceneri), senza trama da seguire. Si gioca anche in stanza con gli altri.
+- **La Bacheca dei Contratti**, in piazza accanto all'arrivo: ogni giorno di gioco quattro contratti nuovi (da «Stimato» in su anche un contratto d'onore), fino a tre alla volta. Ogni contratto nasce da un seme ed è unico: un committente di una delle sei fazioni, uno dei sette tipi (Taglia, Infestazione, Reliquia perduta, Indagine, Assedio, Commissione rara, Spedizione) con le sue tappe, un luogo scelto secondo il tuo livello, un bersaglio con nome.
+- **Bersagli che si studiano:** sono Campioni con da 1 a 3 tratti (corazzato, furioso, rapido, rigenerante, evocatore, spinato, scudato), e i testimoni te li raccontano prima dello scontro. Gli assedi arrivano a ondate, l'ultima guidata da un capo, anche nei Campi, al Porto e nel Quartiere Nobile. Le reliquie sono custodite. Una colonna di luce indica bersagli, reliquie, testimoni e luoghi da difendere.
+- **Patti e stelle:** tempo limitato, niente pozioni, scorta di Campioni, orda. Da 1 a 5 stelle; le ricompense crescono con le stelle: oro, esperienza, un oggetto unico (con 5 stelle sempre leggendario), un reperto e la reputazione con la fazione, su cinque gradi.
+- **Oggetti unici.** Nel Mondo aperto bottino, forzieri, fabbro e bottega danno solo oggetti unici. Ogni oggetto nasce da un seme che decide forma, rarità, qualità, da 1 a 3 poteri fra 19 (fuoco, gelo, fulmine, veleno, vampiro, spine, schivata, rigenerazione, alchimia...), nome, una riga di storia e numero di serie. I leggendari hanno un nome proprio e un potere firmato: Eco, Sete di sangue, Tempesta, Baluardo, Seconda pelle o Fenice. La scheda dello zaino mostra tutto, compresa la provenienza. Nel salvataggio e negli scambi viaggia solo il seme e il gioco ricalcola il resto, così nessuno può gonfiare un oggetto a mano.
+- **Scambi:** gli oggetti unici passano di mano con poteri e provenienza in vista, e chi li riceve li ritrova identici. Si scambiano anche i **reperti** (i trofei dei contratti, che si collezionano o si vendono alla bacheca) e le **pozioni**.
+- **Server:** accetta negli scambi gli oggetti unici (con il seme controllato), i reperti e le pozioni.
+- **Plugin:** il Guardiano (2.6) riconosce oggetti unici e reperti e non li scambia più per trucchi. Mercatino (1.3) e Case (1.6) conservano il seme degli unici.
+
+---
+
 ## 7.13.3 — Manutenzione: il comando del plugin di esempio (21 ottobre 2026)
 
 - **Plugin di esempio:** il suo comando `/boss` (quanti boss dei dungeon hai sconfitto) aveva lo stesso nome del comando del plugin Boss del mondo. Il server lo scartava a ogni avvio, con l'avviso «il comando /boss esiste già» nel registro, e il conteggio non si poteva vedere. Ora il comando si chiama `/vittorie`; i conteggi già salvati restano. `/boss` continua a mostrare il boss del mondo. Lo stesso vale per il plugin di esempio che il server crea in una cartella dei plugin vuota.

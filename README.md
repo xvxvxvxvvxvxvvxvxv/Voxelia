@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.17** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.17.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -703,7 +703,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.17 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.17.1 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose

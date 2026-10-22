@@ -105,6 +105,12 @@ function twMapSide(){const el=$('twms');if(!el||!TWM.sel)return;const[rx,ry]=TWM
 openMap=function(){if(twOn()){twMapOpen();return}_openMap716()};
 // arrivati alla destinazione, la bandierina si toglie
 const _load717m=load;load=function(k,from){_load717m(k,from);if(twOn()&&P.tw.wp&&Zk===P.tw.wp){P.tw.wp=null;banner('Destinazione raggiunta',ZZ.n,'mappa')}};
+// 7.17.1: regioni, interni, dungeon e abitanti di Tomorrow restano in memoria per coordinate. Se cambia il seme del mondo
+// (un eroe nuovo, oppure una stanza con il codice) quelli del mondo di prima si dimenticano, altrimenti il mondo esce misto
+let TWZS=null;
+function twSeedCk(){const s=twSeed();if(s===TWZS)return;TWZS=s;for(const k in Z)if(/^twi?:/.test(k))delete Z[k];for(const k in DG)if(k.startsWith('twd_'))delete DG[k];
+  for(const k in NPCS)if(/^t[vrt]_/.test(k))delete NPCS[k];TWTH.clear();TWCH.clear();TWRC.clear();TWRI.clear()}
+const _load7171=load;load=function(k,from){if(twOn())twSeedCk();_load7171(k,from)};
 
 /* ---- la bacheca dei contratti ---- */
 owCard=function(C,i,mode){const F=OWF[C.fa],R=C.rw,mods=Object.keys(C.mods),cur=C.si;

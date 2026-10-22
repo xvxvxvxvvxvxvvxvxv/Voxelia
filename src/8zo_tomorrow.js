@@ -251,7 +251,7 @@ function twGenC(seed,plv,tier,hon,vk){const rn=sd(hs('twc|'+seed)),p2=a=>a[Math.
     steps.push({k:'bat',z:vk,w:3+(tgt>=10?1:0),nm:wl});trophy='Stendardo strappato a '+wl}
   else if(ar==='assedio'){const k=vk,z=twZ(k),[nx,ny]=pick(1,2),t=p2(regionSp(nx,ny)),pl=p2(['la piazza','i granai','il pozzo','le case a nord','la bacheca']);const H=hunt(k,t,0);zlv=Math.max(z.lv,twLv(nx,ny));
     ti='Difendi '+z.n;tx=`«Dalle terre ${twDir(nx-vx,ny-vy).replace(/^.*a /,'a ')} arrivano ${E[t].n}, a ondate. Difendi ${pl} finché non arriva il loro capo, ${H.nm}.»`;
-    steps.push({k:'def',z:k,pl,w:3+(tgt>=8?1:0)+(hon?1:0),wv:0,nm:H.nm,tr:H.tr,t});trophy='Stendardo di '+H.nm;OW.defsp=OW.defsp||{};OW.defsp[k]=[t]}
+    steps.push({k:'def',z:k,pl,w:3+(tgt>=8?1:0)+(hon?1:0),wv:0,nm:H.nm,tr:H.tr,t});trophy='Stendardo di '+H.nm}
   else if(ar==='comm'){const[x,y]=pick(0,3,(x,y)=>(TWRES[twBio(x,y)]||[]).length>0&&!twVil(x,y)),k=twK(x,y),z=twZ(k),rs=TWRES[z.bio],r=p2(rs),n=r2(3,5),H=hunt(k,p2(z.en),r2(1,2));zlv=z.lv;const pz=p2(OWTRO);
     ti='Commissione: '+RESN[r]+' e '+pz.toLowerCase();tx=`«Mi servono ${n} ${RESN[r].toLowerCase()} da ${z.n} (${where(x,y)}) e ${pz==='Stendardo'?'lo stendardo':'il '+pz.toLowerCase()} di ${H.nm}, che si aggira là. Paga la carovana, e paga bene.»`;
     steps.push({k:'gath',r,z:k,n,c:0},H);trophy=pz+' di '+H.nm}
@@ -276,7 +276,8 @@ const _owStepTxt716=owStepTxt;owStepTxt=function(C,s,long){s=s||owCur(C);if(!s)r
     if(a&&b&&!(a[0]===b[0]&&a[1]===b[1]))t+=' · '+twDir(a[0]-b[0],a[1]-b[1])}
   if(s.k==='back'&&twOn())t='Torna alla bacheca di un villaggio';return t};
 // le specie che arrivano all'assedio di un villaggio vengono dalle terre vicine
-const _enOf716=OW.enOf;OW.enOf=k=>{if(OW.defsp&&OW.defsp[k]&&ZZ&&ZZ.vil)return OW.defsp[k];return _enOf716(k)};
+// 7.17.1: nell'assedio di un villaggio arrivano i mostri scritti nel contratto accettato (prima: quelli dell'ultima offerta generata, e dopo un ricaricamento quelli del villaggio)
+const _enOf716=OW.enOf;OW.enOf=k=>{if(ZZ&&ZZ.vil&&P&&P.ow)for(const C of P.ow.act){const s=owCur(C);if(s&&s.k==='def'&&s.z===k&&s.t&&twType(s.t))return[s.t]}return _enOf716(k)};
 OWFK.length=0;OWFK.push(...TWFK);
 
 /* ---- la mappa del mondo (M) ---- */

@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.17** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.18** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -252,8 +252,10 @@ toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti,
 
 ### Un mondo che non finisce
 
-- Il mondo è fatto di **regioni** di 96×96 caselle (64×64 nella 7.16), generate mentre cammini. Cammina oltre il bordo e sei nella regione
-  accanto. Il seme è dell'eroe; con un **codice stanza** è della stanza, e tutti giocano nello stesso mondo, con gli stessi
+- Il mondo è fatto di **regioni** di 96×96 caselle, generate mentre cammini, e dalla 7.18 sono **unite**: il gioco tiene
+  caricata la tua regione e una fascia di quelle intorno (la **distanza di visuale**, nelle Impostazioni → Tomorrow:
+  24, 36 o 48 caselle), e la sposta con te quando passi il bordo, senza fermarsi. I nemici che ti inseguono ti
+  seguono, e quelli abbattuti tornano dopo tre ore di gioco. Il seme è dell'eroe; con un **codice stanza** è della stanza, e tutti giocano nello stesso mondo, con gli stessi
   villaggi e gli stessi dungeon.
 - Il terreno dipende dalle coordinate del mondo: fiumi, laghi, boschi, dune e pareti di roccia continuano da una
   regione all'altra, e i sentieri si incontrano sempre sul bordo comune.
@@ -264,6 +266,8 @@ toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti,
   lastricate, piazza con fontana, statue, lampioni, mercato e la bacheca, fino a 22 case, guardie e cittadini a passeggio.
 - **Case in cui si entra:** ogni casa di villaggi e città ha il suo interno con chi ci abita. Ci sono la locanda, la
   bottega, la fucina, il tempio della guaritrice e, in alcune città, il Custode delle Gemme.
+- **Borghi** (dalla 7.18): dove si incrociano i sentieri di ogni regione ci sono da due a quattro case con i loro
+  abitanti, il focolare o il pozzo e un orto.
 - **Vita lungo le strade:** recinti con animali, orti, viandanti e mercanti, falò, e santuari che una volta al giorno curano
   e danno difesa +25% per 5 minuti.
 - **Dungeon** con nome proprio (Grotte, Cripte, Tombe, Caverne, Forge, Grotte sommerse, Abissi), da 2 a 5 piani, mostri del
@@ -703,7 +707,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.17 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.18 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -762,6 +766,8 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zp_vivo.js` | Tomorrow vivo: città con mura e piazza, case con interni, abitanti, animali, viandanti, santuari; il campo, le gemme del teletrasporto e le battaglie con gli alleati |
 | `8zq_mappa.js` | Tomorrow: la mappa del mondo interattiva e le nuove finestre dei contratti (bacheca, pannello J, resoconto) |
 | `8zr_caricamento.js` | Le schermate di caricamento di ogni modalità e il filmato del viaggio con la gemma |
+| `8zs_modelli.js` | I modelli nuovi (con scheletro e animazioni) dei boss e degli animali rimasti alla grafica vecchia: drago, sfinge, piovra, spettro, signore della fiamma, cavalcalupi, nido di mitragliatrice, animali da cortile e cavalli |
+| `8zt_mondo.js` | Tomorrow unito: la finestra delle regioni intorno, lo spostamento senza passaggi, la distanza di visuale, il pavimento a blocchi, i borghi |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

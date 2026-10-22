@@ -5,6 +5,32 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.18 — Un mondo solo (22 ottobre 2026)
+
+- **Tomorrow senza passaggi:** le regioni sono unite. Il gioco tiene caricata la tua regione e una fascia di quelle intorno, con i loro abitanti, i mostri e le case. Quando cammini oltre il bordo, il mondo si sposta con te senza fermarsi:
+  - niente schermo che si chiude;
+  - i nemici che ti inseguono ti seguono davvero;
+  - quello che è a terra resta dov'è;
+  - i nemici abbattuti tornano solo dopo tre ore di gioco.
+  
+  Le regioni intorno si preparano mentre giochi, così lo spostamento non si sente.
+- **Distanza di visuale** (Impostazioni → Tomorrow): Corta, Media o Lunga, cioè quante caselle delle regioni vicine restano caricate intorno alla tua (24, 36 o 48). Più è lunga, più mondo vedi e più chiede al dispositivo. Sui telefoni parte da «Corta».
+- **Borghi:** dove si incrociano i sentieri, al posto della radura, c'è un piccolo borgo. Ha da due a quattro case in cui si entra, il focolare o il pozzo, un orto con lo spaventapasseri e due o tre paesani. A volte passa anche un mercante.
+- **Il campo resta dove l'hai montato,** anche se ti allontani: lo ritrovi quando torni, e la mappa lo segna.
+- **Grafica nuova per chi era rimasto a quella vecchia,** con le animazioni:
+  - il **Drago di Brina**: zampe, collo e coda a segmenti, ali che si aprono, fauci che si spalancano nell'attacco;
+  - la **Sfinge Antica**: leone alato con il volto umano e il copricapo;
+  - il **Leviatano**: una piovra con otto tentacoli che ondeggiano e si abbattono su di te;
+  - **Lord Vexmoor**: uno spettro incoronato con la spada;
+  - **Ignis**: il Signore della Fiamma, con corna, corona di fuoco e spadone;
+  - il **Cavalcalupi**: un goblin in sella al suo lupo;
+  - il **nido di mitragliatrice**, con i sacchi, il mitragliere, il rinculo e la fiammata;
+  - gli **animali** (mucca, pecora, maiale, gatto, cavalli, gallina e gabbiano) camminano, brucano, scodinzolano, beccano e sbattono le ali.
+- Il pavimento delle zone grandi si disegna a blocchi, solo dove guardi: più mondo con meno memoria.
+- Corretto: iniziando un mondo di Tomorrow nuovo nella stessa sessione, a volte restavano nomi e luoghi del mondo di prima.
+
+---
+
 ## 7.17 — Tomorrow vivo (22 ottobre 2026)
 
 - **Un mondo più grande:** ogni regione di Tomorrow è passata da 64×64 a 96×96 caselle. Il villaggio è più ampio, e ci sono più accampamenti, rovine, forzieri e raccolte.

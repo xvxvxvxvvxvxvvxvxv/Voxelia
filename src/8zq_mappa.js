@@ -81,7 +81,7 @@ function twMapDraw(){const c=$('twmc');if(!c)return;const q=c.getContext('2d'),W
     if(P.tw.wp===k2){q.fillStyle='#c0392b';q.beginPath();q.moveTo(X-Z2*.28,Y+Z2*.12);q.lineTo(X-Z2*.28,Y-Z2*.3);q.lineTo(X-Z2*.06,Y-Z2*.22);q.lineTo(X-Z2*.28,Y-Z2*.14);q.fill();q.strokeStyle='#2a1a0a';q.lineWidth=1.5;q.beginPath();q.moveTo(X-Z2*.28,Y+Z2*.12);q.lineTo(X-Z2*.28,Y-Z2*.3);q.stroke()}
     if(P.tw.camp&&P.tw.camp.k===k2)ic(sx(rx)+P.tw.camp.x/TWR*Z2,sy(ry)+P.tw.camp.y/TWR*Z2,'t',s*.8)}
   // tu
-  {const p=twP(String(Zk).startsWith('tw:')?Zk:P.tw.at)||[0,0],inR=String(Zk).startsWith('tw:'),X=sx(p[0])+(inR?P.px/N:.5)*Z2,Y=sy(p[1])+(inR?P.py/N:.5)*Z2,pu=(now*1.2)%1;
+  {const p=twP(String(Zk).startsWith('tw:')?Zk:P.tw.at)||[0,0],inR=String(Zk).startsWith('tw:'),X=sx(p[0])+(inR?twLX():.5)*Z2,Y=sy(p[1])+(inR?twLY():.5)*Z2,pu=(now*1.2)%1;
     q.strokeStyle=`rgba(255,216,74,${1-pu})`;q.lineWidth=3;q.beginPath();q.arc(X,Y,8+pu*22,0,6.3);q.stroke();q.fillStyle='#ffd84a';q.strokeStyle='#2a1a0a';q.lineWidth=2;q.beginPath();q.arc(X,Y,7,0,6.3);q.fill();q.stroke();
     q.strokeStyle='#ffd84a';q.lineWidth=3;q.strokeRect(sx(p[0])+1.5,sy(p[1])+1.5,Z2-3,Z2-3)}
   // la regione scelta

@@ -144,7 +144,7 @@ function twCampCook(){const food=['mela','uova','grano','lunare','scarab','ghiac
 function twCampDown(){const c=twCampHere();if(c)ents.splice(ents.indexOf(c),1);P.tw.camp=null;cl();msg('Hai smontato il campo');tone(250,.1,'triangle')}
 // la zona sicura e il recupero
 function twCampTick(dt){if(OW.camping){OW.camping.t+=dt;if(Math.hypot(P.px-OW.camping.x,P.py-OW.camping.y)>.6){OW.camping=null;msg('Hai smesso di montare il campo');return}if(cineOK()&&Math.random()<dt*6)sparks(P.px+.4,P.py,2,['#c8a878','#8a6a42'],40);if(OW.camping.t>=2.2)twCampBuild();return}
-  const c=twCampHere();if(!c){if(P.tw.camp&&P.tw.camp.k!==Zk)P.tw.camp=null;return}
+  const c=twCampHere();if(!c)return;
   const inside=Math.hypot(P.px-c.px,P.py-c.py)<TWCR;if(inside&&P.hp>0&&P.hp<P.mx){P.hp=Math.min(P.mx,P.hp+P.mx*.05*dt);if(P.pc>0)P.pc=Math.max(0,P.pc-dt*2)}
   for(const e of ents){if(e.k!=='en'||e.boss)continue;const dx=e.px-c.px,dy=e.py-c.py,d=Math.hypot(dx,dy);if(d<TWCR+.6){const k=(TWCR+.8-d)*4*dt/(d||1);mv(e,dx*k,dy*k);if(d<TWCR){e.al=0;e.cdt=Math.max(e.cdt||0,.6)}}}
   for(const p of PJ)if(Math.hypot(p.x-c.px,p.y-c.py)<TWCR)p.t=0}

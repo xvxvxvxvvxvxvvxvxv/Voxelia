@@ -1712,7 +1712,7 @@ function draw(){const z=ZZ,out=!!SKY[Zk];GLOW.length=0;NLS.length=0;
   if(SET.sky&&out)drawSky();else{g.setTransform(DPR,0,0,DPR,0,0);g.fillStyle=z.bg;g.fillRect(0,0,W,H)}
   const[tx,ty]=camTarget();camX+=(PX(tx,ty)-camX)*.12;camY+=(PY(tx,ty,10)-camY)*.12;shakeTick(1/60);
   const fast=SET.fast!==0&&FAST.ok;if(fast)fastCam();else g.setTransform(S*DPR,0,0,S*DPR,(W/2-camX*S)*DPR,(H/2-camY*S)*DPR);
-  if(!FC)buildFC();g.drawImage(FC.cv,-FC.ox,-FC.oy,FC.w,FC.h);if(fast)fastWater();
+  fcPaint();if(fast)fastWater();
   const by={},cvx=W/2/S+170,cvy=H/2/S+230;for(const e of ents.concat(P,NET.list)){if(e.k!=='ship'){const ex=PX(e.px,e.py)-camX,ey=PY(e.px,e.py,0)-camY;if(ex>cvx||ex<-cvx||ey>cvy||ey<-cvy)continue}const k=(e.px|0)+(e.py|0);(by[k]=by[k]||[]).push(e)}
   const vx=W/2/S+100,vy0=H/2/S+60,vy1=H/2/S+160;
   if(fast)fastTiles(by,vx,vy0,vy1);else for(let d=0;d<2*N-1;d++){for(let x=Math.max(0,d-N+1);x<=Math.min(d,N-1);x++){const y=d-x,ex=PX(x,y)-camX,ey=PY(x,y,0)-camY;if(Math.abs(ex)<vx&&ey>-vy1&&ey<vy0+40)tile(x,y)}if(by[d])by[d].sort((a,b)=>a.py-b.py).forEach(ent)}

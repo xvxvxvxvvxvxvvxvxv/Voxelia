@@ -141,6 +141,7 @@ function twGen(z){const n=N,rx=z.rx,ry=z.ry,bio=z.bio,rnd=twRnd('reg',rx,ry),rr=
   // 3. i luoghi
   const CX={F,W,Pp,Wa,disc,rnd,rr,n,hub,rx,ry,bio,tg,ok,res,RS,z,trail};
   if(z.city)sp=twCityGen(CX);else if(z.vil)sp=twVillage(CX);
+  else if(typeof twHamlet==='function')sp=twHamlet(CX,ends);
   else{disc(hub[0]+.5,hub[1]+.5,2.2,(x,y)=>{if(M[y][x]!==4)F(x,y,'1')})}
   const sc6=n/64,spot=(minD,maxD)=>{minD*=sc6;maxD*=sc6;if(z.city)minD=Math.max(minD,34);for(let k=0;k<200;k++){const a=rnd()*6.283,d=minD+rnd()*(maxD-minD),x=Math.round(hub[0]+Math.cos(a)*d),y=Math.round(hub[1]+Math.sin(a)*d);if(x>4&&y>4&&x<n-5&&y<n-5&&!RS[y*n+x]&&M[y][x]!==2&&M[y][x]!==3)return[x,y]}return null};
   if(twDun(rx,ry)){const q=spot(12,24);if(q){const[x,y]=q,id=twDid(rx,ry);twDG(id);disc(x+.5,y+.5,2.6,(u,v)=>{if(M[v][u]!==3)F(u,v,bio==='deserto'?'4':bio==='cenere'?'9':'4')});
@@ -162,7 +163,7 @@ function twGen(z){const n=N,rx=z.rx,ry=z.ry,bio=z.bio,rnd=twRnd('reg',rx,ry),rr=
     if(hit<0)continue;for(let c=hit;c>=0;c=pr[c]){const x=c%n,y=c/n|0;if(M[y][x]===1||M[y][x]===6){M[y][x]=0;DEC[y][x]=DN+'1'}else if(M[y][x]===2){M[y][x]=4;DEC[y][x]='~'}}d=bfs(sp[0],sp[1])}
   // 5. forzieri (quelli già aperti non tornano), nemici lontani dal villaggio, un Campione nell'accampamento
   const opened=new Set(P.tw.ch);for(const[x,y,rich]of C2){const key=Zk+':'+x+','+y;if(WK(M[y][x])&&!opened.has(key))ents.push({k:'ch',px:x+.5,py:y+.5,rich,twk:key})}
-  const far=[],safe=z.city?40:z.vil?20:8;for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(WK(M[y][x])&&d[y*n+x]>safe&&!ents.some(e=>Math.abs(e.px-x-.5)<1.5&&Math.abs(e.py-y-.5)<1.5))far.push([x,y]);
+  const far=[],safe=z.city?40:z.vil?20:z.ham?14:8;for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(WK(M[y][x])&&d[y*n+x]>safe&&!ents.some(e=>Math.abs(e.px-x-.5)<1.5&&Math.abs(e.py-y-.5)<1.5))far.push([x,y]);
   for(let i=far.length-1;i>0;i--){const j=ri(0,i);[far[i],far[j]]=[far[j],far[i]]}
   for(let i=0;i<z.c&&far.length;i++){const[x,y]=far.pop();ents.push(mk(z.en[Math.floor(R()*z.en.length)],x,y))}
   for(const cp of z.camps||[]){const[x,y]=cp;for(let i=0;i<3;i++){const[u,v]=nearFree(x+(i-1)*2,y+1);const e=mk(z.en[i%z.en.length],u,v);if(i===0)eliteMk(e);ents.push(e)}}
@@ -296,7 +297,7 @@ function twMapDraw(){const c=$('twmc');if(!c)return;const q=c.getContext('2d'),R
 const _openMap716=openMap;openMap=function(){if(twOn()){edPanel('twmap',twMapHTML());twMapDraw();return}_openMap716()};
 
 /* ---- l'orizzonte in 3D: il mondo vero intorno alla regione ---- */
-const _d3Backdrop716=d3Backdrop;d3Backdrop=function(){if(!(ZZ&&ZZ.tw))return _d3Backdrop716();const B=[],rx=ZZ.rx,ry=ZZ.ry,n=TWR,ring=[0,40,56,72][D3.q]||56,far=Math.round([0,96,150,220][D3.q]*(D3.far?1:.5)/8)*8;
+const _d3Backdrop716=d3Backdrop;d3Backdrop=function(){if(!(ZZ&&ZZ.tw))return _d3Backdrop716();const B=[],rx=ZZ.rx,ry=ZZ.ry,n=N,R0=TWR,o0=typeof TWW!=='undefined'?TWW.m:0,ring=[0,40,56,72][D3.q]||56,far=Math.round([0,96,150,220][D3.q]*(D3.far?1:.5)/8)*8;
   const pal=(bio,c)=>{const th=TWBT[bio],P2=BFL[th]&&BFL[th][c];if(P2)return x3Col(P2[0]);return x3Col(bio==='cenere'?'#4e4644':Z[th].a)};
   const tree=(x,y,bio,code,big)=>{const sc=big?2.2:1,pine=code==='P'||code==='F',g=bio==='neve'?[40,86,64]:pine?[46,92,58]:code==='B'?[110,150,70]:[62,118,50];
     if(code==='M'){B.push(x-.4*sc,y-.4*sc,0,.8*sc,.8*sc,(30+twH2(x,y)*30)*sc,196,150,96,1+20);return}if(code==='N'){B.push(x-.45*sc,y-.45*sc,0,.9*sc,.9*sc,(26+twH2(x,y)*26)*sc,170,178,188,1+20);B.push(x-.4*sc,y-.4*sc,(26+twH2(x,y)*26)*sc,.8*sc,.8*sc,5*sc,236,242,248,1+20);return}
@@ -304,14 +305,14 @@ const _d3Backdrop716=d3Backdrop;d3Backdrop=function(){if(!(ZZ&&ZZ.tw))return _d3
     if(code==='X'){B.push(x-.06,y-.06,0,.12,.12,26,120,90,50,1+30);B.push(x-.45,y-.45,26,.9,.9,4,70,140,60,1+10);return}if(code==='U'){B.push(x-.3,y-.3,0,.6,.6,8,60,110,50,1+10);return}
     B.push(x-.08*sc,y-.08*sc,0,.16*sc,.16*sc,12*sc,92,64,40,1+30);if(pine)for(let j=0;j<3;j++){const w=(.9-j*.25)*sc;B.push(x-w/2,y-w/2,(9+j*11)*sc,w,w,11*sc,g[0],g[1],g[2],1+10)}else{B.push(x-.5*sc,y-.5*sc,11*sc,1*sc,1*sc,16*sc,g[0],g[1],g[2],1+10)}};
   // l'anello vicino: le caselle vere delle regioni accanto (una ogni due), con i loro alberi, rocce e acqua
-  for(let y=-ring;y<n+ring;y+=2)for(let x=-ring;x<n+ring;x+=2){if(x>=0&&y>=0&&x<n&&y<n)continue;const wx=rx*n+x,wy=ry*n+y,qx=Math.floor(wx/n),qy=Math.floor(wy/n),bio=twBio(qx,qy),[m,c]=twBase(wx,wy,bio);
+  for(let y=-ring;y<n+ring;y+=2)for(let x=-ring;x<n+ring;x+=2){if(x>=0&&y>=0&&x<n&&y<n)continue;const wx=rx*R0-o0+x,wy=ry*R0-o0+y,qx=Math.floor(wx/R0),qy=Math.floor(wy/R0),bio=twBio(qx,qy),[m,c]=twBase(wx,wy,bio);
     if(m===2){B.push(x,y,-2,2,2,0,64,124,178,1+50);continue}const fc=pal(bio,m===0?c:(bio==='cenere'?'9':''));const v=.94+twH2(wx,wy)*.12;B.push(x,y,-6,2,2,6,fc[0]*v,fc[1]*v,fc[2]*v,1+20);
     if(m===1)tree(x+1,y+1,bio,c,0)}
   // oltre: colline e montagne del bioma, fino all'orizzonte
   const cells=[];const dOf=(x0,y0,cs)=>{const lo=-ring,hi=n+ring-1,dx=x0+cs-1<lo?lo-(x0+cs-1):x0>hi?x0-hi:0,dy=y0+cs-1<lo?lo-(y0+cs-1):y0>hi?y0-hi:0;return Math.max(dx,dy)};
   const sub=(x0,y0,cs)=>{const d=dOf(x0,y0,cs);if(cs===8&&d>=60||cs===4){if(d>0)cells.push([x0,y0,cs,d]);return}const h=cs/2;for(const[u,v]of[[0,0],[h,0],[0,h],[h,h]])sub(x0+u,y0+v,h)};
   for(let y0=-ring-far;y0<n+ring+far;y0+=8)for(let x0=-ring-far;x0<n+ring+far;x0+=8)sub(x0,y0,8);
-  for(const[x,y,cs,d]of cells){const wx=rx*n+x,wy=ry*n+y,qx=Math.floor(wx/n),qy=Math.floor(wy/n),bio=twBio(qx,qy),nz=twF(wx/34,wy/34,61),rise=Math.max(0,d-6);
+  for(const[x,y,cs,d]of cells){const wx=rx*R0-o0+x,wy=ry*R0-o0+y,qx=Math.floor(wx/R0),qy=Math.floor(wy/R0),bio=twBio(qx,qy),nz=twF(wx/34,wy/34,61),rise=Math.max(0,d-6);
     let hgt=bio==='neve'?Math.pow(rise,1.3)*13*(.5+nz):bio==='deserto'?rise*4*(.4+nz)+Math.sin(wx*.2+nz*6)*30:bio==='cenere'?Math.pow(rise,1.2)*8*(.4+nz):Math.pow(rise,1.15)*4*(.3+nz)+(d>70?Math.pow(d-70,1.3)*8*(.3+twF(wx/26,wy/26,62)):0);
     let col=pal(bio,'');const v=.9+twF(wx/11,wy/11,63)*.2;col=col.map(c=>c*v);if(hgt>(bio==='neve'?420:1100)+twV(wx/7,wy/7,64)*300)col=[236,240,246];else if(hgt>(bio==='neve'?250:800))col=[132,130,134];
     const H2=Math.round(hgt/6)*6;B.push(x,y,-40,cs,cs,H2+40,col[0],col[1],col[2],1+20);

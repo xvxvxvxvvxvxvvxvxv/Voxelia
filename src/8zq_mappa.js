@@ -59,6 +59,7 @@ function twMapDraw(){const c=$('twmc');if(!c)return;const q=c.getContext('2d'),W
   // il velo sulle terre mai viste
   {const p0=new Path2D(),p1=new Path2D();let n0=0;for(let ry=y0;ry<=y1;ry++)for(let rx=x0;rx<=x1;rx++){const kn=twKnown(rx,ry);if(kn===2)continue;(kn?p1:p0).rect(sx(rx),sy(ry),Z2+.6,Z2+.6);if(!kn)n0++}
     q.fillStyle='rgba(217,199,159,.28)';q.fill(p1);if(n0){q.fillStyle='rgba(190,170,130,.74)';q.fill(p0);q.save();q.clip(p0);q.strokeStyle='rgba(120,96,60,.25)';q.lineWidth=1;q.beginPath();for(let i=-H2;i<W2;i+=10){q.moveTo(i,H2);q.lineTo(i+H2,0)}q.stroke();q.restore()}}
+  if(typeof twMapTerr==='function')twMapTerr(q,x0,x1,y0,y1,sx,sy,Z2);
   // le strade: da ogni centro di regione ai punti di passaggio sui bordi (dipinte una volta per blocco)
   {const cx0=Math.floor(x0/8),cx1=Math.floor(x1/8),cy0=Math.floor(y0/8),cy1=Math.floor(y1/8);for(let cy=cy0;cy<=cy1;cy++)for(let cx=cx0;cx<=cx1;cx++){const rc=TWRC.get(cx+','+cy)||(TWCH.has(cx+','+cy)?twRoads(cx,cy):null);if(rc)q.drawImage(rc,sx(cx*8),sy(cy*8),8*Z2+.6,8*Z2+.6)}}
   // i confini delle regioni

@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.20** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.21** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -109,6 +109,8 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **M** | Mappa di Aldoria (in Tomorrow, la mappa del mondo) |
 | **Z** | Domare: lancia un Sigillo di doma sul mostro indebolito più vicino |
 | **N** | I compagni (la stalla) |
+| **U** | In Tomorrow: territorio, conquista e il tuo insediamento |
+| **Y** | In Tomorrow: le fazioni e la tua fazione con il suo stemma |
 | **T** | In Tomorrow, accamparsi |
 | **G** | In Tomorrow, le gemme del teletrasporto |
 | **C** | Aspetto dell'eroe |
@@ -149,6 +151,16 @@ sigilli si comprano dai mercanti). Più è debole, più è facile; i boss non si
 12 nella stalla) combattono al tuo fianco uno alla volta, con una mossa speciale secondo la loro natura (belva,
 guerriero, artropode, creatura magica, melma, volante). Crescono con le vittorie e si evolvono ai livelli 10 e 20.
 Se cadono si riprendono in un minuto, o subito al campo, al santuario o alla locanda.
+
+### Il tuo regno in Tomorrow (dalla 7.21)
+
+- **Conquista** (tasto **U**): pianta lo stendardo in una regione selvaggia e abbatti i suoi mostri. Al 100% la regione è
+  tua e i mostri non tornano più. Le terre delle fazioni sono difese dalle loro guardie.
+- **Insediamento**: in una regione conquistata fondi il tuo borgo. Cresce fino al livello 5 e ci costruisci mercato,
+  fucina, tempio, locanda, stalla, granaio, palizzata e torri. Raccoglie tasse e raccolto ogni giorno e si
+  personalizza con nome, colori e decorazioni.
+- **Fazioni** (tasto **Y**): sei fazioni con stemma, città sede, emissario e terre. Puoi unirti a una o fondare la tua,
+  con lo stemma che disegni (forma, partizione, colori, simbolo).
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -734,7 +746,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.20 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.21 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -797,6 +809,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zt_mondo.js` | Tomorrow: le regioni generate e ricordate, il campo che resta dove l'hai montato, il pavimento a blocchi, i borghi (la finestra senza passaggi della 7.18 è spenta dalla 7.19.1) |
 | `8zu_combattimento.js` | Il combattimento nuovo: catene di colpi, colpo perfetto, colpi caricati e mosse proprie di ogni arma, effetti sui nemici, pose dell'eroe |
 | `8zv_domare.js` | Domare i mostri: sigilli, cattura, compagni in campo con la loro mossa speciale, livelli ed evoluzioni, la stalla, il bestiario |
+| `8zw_regno.js` | Tomorrow: conquista delle regioni, insediamento con edifici e tesoro, fazioni con sedi, emissari e stemmi, la tua fazione, le terre sulla mappa |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

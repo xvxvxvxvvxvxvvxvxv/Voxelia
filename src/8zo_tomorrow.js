@@ -141,6 +141,7 @@ function twGen(z){const n=N,rx=z.rx,ry=z.ry,bio=z.bio,rnd=twRnd('reg',rx,ry),rr=
   // 3. i luoghi
   const CX={F,W,Pp,Wa,disc,rnd,rr,n,hub,rx,ry,bio,tg,ok,res,RS,z,trail};
   if(z.city)sp=twCityGen(CX);else if(z.vil)sp=twVillage(CX);
+  else if(typeof twSetGen==='function'&&twSetAt(rx,ry))sp=twSetGen(CX,ends);
   else if(typeof twHamlet==='function')sp=twHamlet(CX,ends);
   else{disc(hub[0]+.5,hub[1]+.5,2.2,(x,y)=>{if(M[y][x]!==4)F(x,y,'1')})}
   const sc6=n/64,spot=(minD,maxD)=>{minD*=sc6;maxD*=sc6;if(z.city)minD=Math.max(minD,34);for(let k=0;k<200;k++){const a=rnd()*6.283,d=minD+rnd()*(maxD-minD),x=Math.round(hub[0]+Math.cos(a)*d),y=Math.round(hub[1]+Math.sin(a)*d);if(x>4&&y>4&&x<n-5&&y<n-5&&!RS[y*n+x]&&M[y][x]!==2&&M[y][x]!==3)return[x,y]}return null};

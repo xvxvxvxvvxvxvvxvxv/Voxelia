@@ -5,6 +5,28 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.21 — Il tuo regno (22 ottobre 2026)
+
+- **Conquistare le terre** (tasto **U**): in una regione selvaggia di Tomorrow pianti lo **stendardo** (100 monete) e abbatti i suoi mostri.
+  - Quando la conquista arriva al 100% la regione è tua: i mostri se ne vanno e **non tornano più**, e sulla mappa prende i tuoi colori.
+  - Se te ne vai a metà, la conquista resta al punto in cui l'hai lasciata.
+  - Le terre intorno alle città delle fazioni sono **difese dalle loro guardie**, che arrivano a ondate con il loro capitano. Prenderle costa 25 punti di reputazione con quella fazione.
+- **Il tuo insediamento:** in una regione conquistata fondi il tuo borgo (500 monete), che diventa casa tua.
+  - Cresce fino al **livello 5**: più case, più abitanti, più spazio.
+  - Ci costruisci e migliori **mercato, fucina, tempio, locanda, stalla, granaio, palizzata e torri di guardia**, ognuno con la sua gente: mercante, fabbro, guaritrice, oste, guardie. La stalla aggiunge 4 posti per i compagni a ogni livello.
+  - Il tempio ti cura e ti protegge una volta al giorno.
+  - Ogni giorno raccoglie **tasse e raccolto** da ritirare.
+  - Lo **personalizzi**: nome, colori di tetti e muri, fontana, statua, giardini, lanterne e stendardi.
+  - Dal registro ci torni quando vuoi («Torna a casa»).
+- **Fazioni** (tasto **Y**):
+  - le sei fazioni di Tomorrow hanno un **stemma**, una **città sede** con l'emissario e i loro stendardi, e le loro **terre** sulla mappa;
+  - parlando con l'emissario le incontri e puoi **unirti** a loro: +20% di monete e +50% di reputazione nei loro contratti;
+  - oppure **fondi la tua fazione** (300 monete): nome, motto e uno **stemma disegnato da te**, scegliendo forma, partizione, colori e simbolo. Lo stemma sventola sui tuoi stendardi e segna le tue terre sulla mappa.
+- **La mappa** mostra le terre delle fazioni, le tue e il tuo insediamento, con gli stemmi sulle città sede. La scheda di ogni regione dice di chi è.
+- Nel **menu di pausa** c'è «Il tuo mondo», con compagni, territorio, insediamento e fazioni.
+
+---
+
 ## 7.20 — Domare i mostri (22 ottobre 2026)
 
 - **Domare i mostri:** indebolisci un mostro sotto un terzo della vita e lancia un **Sigillo di doma** con il tasto **Z**, o con il pulsante «Doma» che compare vicino a lui.

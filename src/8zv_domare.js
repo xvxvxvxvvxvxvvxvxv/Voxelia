@@ -8,7 +8,7 @@
    (subito al campo, al santuario o alla locanda). Nella stalla ne stanno 12. Il bestiario conta le specie domate.
    I Sigilli si comprano dai mercanti (anche nei villaggi di Tomorrow); un eroe nuovo di Tomorrow ne ha 3. */
 const DOM={pet:null,cap:null,ui:null,uk:'',btn:null};
-const DOMMAX=12,DOMSEAL=60;
+const DOMSEAL=60,domMax=()=>12+((P&&P.tw&&P.tw.set&&P.tw.set.b&&P.tw.set.b.stalla)|0)*4;
 const domOn=()=>!!(started&&P&&MODE==='story');
 const domFam=t=>{const m=E[t]&&E[t].m,k=m&&m.kind;if(E[t]&&E[t].rng||k==='ghost'||k==='elem'||k==='eye'||k==='jelly')return'mag';if(k==='q')return'bes';if(k==='a')return'art';if(k==='slime')return'mel';if(k==='bat'||k==='eel')return'vol';return'gue'};
 const DOMF={bes:{n:'Belva',sp:'Morso feroce',d:'fa sanguinare'},gue:{n:'Guerriero',sp:'Colpo tremendo',d:'stordisce'},art:{n:'Artropode',sp:'Veleno',d:'rallenta e logora'},mag:{n:'Creatura magica',sp:'Dardo arcano',d:'colpisce da lontano'},mel:{n:'Melma',sp:'Cura',d:'ti cura'},vol:{n:'Volante',sp:'Picchiata',d:'colpo rapido e preciso'}};
@@ -34,7 +34,7 @@ function domTick(dt){const C=DOM.cap;if(!C)return;const e=C.e,k=t-C.t0;
   const sh=Math.floor(k/.6);if(sh>C.sh&&sh<=3){C.sh=sh;vf({k:'ring',x:e.px,y:e.py,r0:.4,r:1.2,c:'255,230,140',d:.4,w:5});tone(400+sh*120,.08,'square',.04);if(!C.ok&&sh===2&&Math.random()<.5)C.brk=1}
   if(k>=2.1||C.brk&&k>=1.3){DOM.cap=null;
     if(C.ok&&!C.brk){const i=ents.indexOf(e);if(i>=0)ents.splice(i,1);vf({k:'flash',x:e.px,y:e.py,r:80,c:'255,240,180',d:.5,z:14});if(cineOK())sparks(e.px,e.py,30,['#ffe28a','#ffffff','#9adcff'],120);
-      if(P.pets.length>=DOMMAX){msg('La stalla è piena: libera un compagno (tasto N) per domarne altri');P.seal++;return}
+      if(P.pets.length>=domMax()){msg('La stalla è piena: libera un compagno (tasto N) per domarne altri');P.seal++;return}
       const nm=String(e.n||(E[e.t]&&E[e.t].n)||'Compagno').replace(/^(Campione|Elite)\s+/,'').replace(/^[^A-Za-zÀ-ÿ]+/,'');const p={id:uid(),t:e.t,n:nm,lv:1,xp:0,hp:0,bd:gDay?gDay():0};p.lv=Math.max(1,Math.min(P.lv,(ZZ&&ZZ.lv||1)));p.hp=domStats(p).mx;
       P.pets.push(p);const nw=!P.bst[e.t];P.bst[e.t]=(P.bst[e.t]|0)+1;jingle([60,64,67,72,76,79],.09,'triangle');banner('Hai domato '+nm+'!',(nw?'Specie nuova nel bestiario · ':'')+'Tasto N per i tuoi compagni','stella');
       if(P.pet==null||!DOM.pet){P.pet=P.pets.length-1;domSummon()}save();hud()}
@@ -72,7 +72,7 @@ function domXP(p,tg){const need=l=>40+l*l*14;p.xp+=Math.max(2,Math.round((tg.xp|
 const _kill720=kill;kill=function(e){const ok=e&&e.k==='en'&&DOM.pet&&ents.includes(e)&&dist(e,DOM.pet)<9;_kill720(e);if(ok)domXP(DOM.pet.p,e)};
 /* ---- la stalla: il pannello dei compagni ---- */
 function domHTML(){domFix();const L=P.pets,act=P.pet,sp=Object.keys(P.bst).length;
-  let h=`<h3>🐾 I tuoi compagni</h3><p class="mu">Sigilli di doma: <b>${P.seal|0}</b> · nella stalla ${L.length}/${DOMMAX} · bestiario: <b>${sp}</b> ${sp===1?'specie domata':'specie domate'}</p>`;
+  let h=`<h3>🐾 I tuoi compagni</h3><p class="mu">Sigilli di doma: <b>${P.seal|0}</b> · nella stalla ${L.length}/${domMax()} · bestiario: <b>${sp}</b> ${sp===1?'specie domata':'specie domate'}</p>`;
   if(!L.length)h+=`<p class="dmh">Indebolisci un mostro sotto un terzo della vita, poi premi <b>Z</b> (o il pulsante «Doma») per lanciare un Sigillo. Più è debole, più è facile. I boss non si domano.</p>`;
   h+='<div class="dml">'+L.map((p,i)=>{const st=domStats(p),F=DOMF[domFam(p.t)],need=40+p.lv*p.lv*14,on=i===act;
     return`<div class="dmc${on?' on':''}${p.ko?' ko':''}"><canvas class="dmpv" data-i="${i}" width="76" height="76"></canvas><div class="dmb"><b>${esc(domName(p))}</b><small>${esc(F.n)} · livello ${p.lv}${st.ev<2?' · si evolve al '+(st.ev?20:10):' · forma finale'}</small>

@@ -144,7 +144,7 @@ function twCampCook(){const food=['mela','uova','grano','lunare','scarab','ghiac
 function twCampDown(){const c=twCampHere();if(c)ents.splice(ents.indexOf(c),1);P.tw.camp=null;cl();msg('Hai smontato il campo');tone(250,.1,'triangle')}
 // la zona sicura e il recupero
 function twCampTick(dt){if(OW.camping){OW.camping.t+=dt;if(Math.hypot(P.px-OW.camping.x,P.py-OW.camping.y)>.6){OW.camping=null;msg('Hai smesso di montare il campo');return}if(cineOK()&&Math.random()<dt*6)sparks(P.px+.4,P.py,2,['#c8a878','#8a6a42'],40);if(OW.camping.t>=2.2)twCampBuild();return}
-  const c=twCampHere();if(!c){if(P.tw.camp&&P.tw.camp.k!==Zk)P.tw.camp=null;return}
+  const c=twCampHere();if(!c)return;
   const inside=Math.hypot(P.px-c.px,P.py-c.py)<TWCR;if(inside&&P.hp>0&&P.hp<P.mx){P.hp=Math.min(P.mx,P.hp+P.mx*.05*dt);if(P.pc>0)P.pc=Math.max(0,P.pc-dt*2)}
   for(const e of ents){if(e.k!=='en'||e.boss)continue;const dx=e.px-c.px,dy=e.py-c.py,d=Math.hypot(dx,dy);if(d<TWCR+.6){const k=(TWCR+.8-d)*4*dt/(d||1);mv(e,dx*k,dy*k);if(d<TWCR){e.al=0;e.cdt=Math.max(e.cdt||0,.6)}}}
   for(const p of PJ)if(Math.hypot(p.x-c.px,p.y-c.py)<TWCR)p.t=0}
@@ -215,7 +215,8 @@ function twBatEnd(win,why){const B=OW.bat;if(!B)return;OW.bat=null;for(const a o
   if(cineOK()){goldFly(g);itemFly(it)}clog('','Battaglia vinta a '+ZZ.n+': '+g+' oro, '+xp+' XP, '+iname(it),{sys:1});save();hud()}
 // la battaglia del contratto parte quando arrivi in città; ogni tanto una città viene assediata da sola
 const _loadPost717=loadPost;loadPost=function(k){_loadPost717(k);if(!twOn())return;// 7.17.1: anche ricaricare la stessa città (succede quando cadi: ti risvegli in piazza) chiude la battaglia, che è persa
-  if(OW.bat)twBatEnd(0,OW.bat.z===k?'Sei caduto: la battaglia è perduta':'Hai lasciato la battaglia');
+  // 7.22: tranne quando la regione si ricarica sul posto portandosi dietro nemici e alleati (cambio della distanza di visuale; spento finché twMarg() è 0)
+  if(OW.bat&&!(OW.bat.z===k&&typeof TWW!=='undefined'&&TWW.seam&&TWW.carry))twBatEnd(0,OW.bat.z===k?'Sei caduto: la battaglia è perduta':'Hai lasciato la battaglia');
   if(String(k).startsWith('tw:')&&ZZ.city){for(const C of P.ow.act){const s=owCur(C);if(s&&s.k==='bat'&&s.z===k){setTimeout(()=>{if(Zk===k&&!OW.bat)twBatStart(C,s)},1800);return}}
     const day=gDay();P.tw.sg=P.tw.sg||{};if(P.tw.sg[k]!==day&&twI(day,hs(k)%9973,127)<.18&&P.lv>=3){P.tw.sg[k]=day;setTimeout(()=>{if(Zk===k&&!OW.bat)twBatStart(null,null)},2500)}}
 };

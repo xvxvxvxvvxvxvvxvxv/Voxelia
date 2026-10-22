@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.17.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.22** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -96,7 +96,7 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | Clic sul terreno, **W A S D** o frecce | Muoversi |
 | Clic su nemici, forzieri, oggetti, personaggi | Attaccare, aprire, raccogliere, parlare |
 | **R** | Interagire con ciò che hai vicino |
-| **Spazio** | Colpo ad area |
+| **Spazio** o **X** | Attacco: ogni pressione fa la mossa seguente della catena dell'arma; tenuto premuto, il colpo caricato |
 | **Shift** o **E** | Schivata |
 | **F** | Affondo (diverso per ogni tipo di arma) |
 | **1 2 3 4** | Abilità delle arti marziali |
@@ -107,6 +107,10 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **L** | Classifica |
 | **P** | Giocatori |
 | **M** | Mappa di Aldoria (in Tomorrow, la mappa del mondo) |
+| **Z** | Domare: lancia un Sigillo di doma sul mostro indebolito più vicino |
+| **N** | I compagni (la stalla) |
+| **U** | In Tomorrow: territorio, conquista e il tuo insediamento |
+| **Y** | In Tomorrow: le fazioni e la tua fazione con il suo stemma |
 | **T** | In Tomorrow, accamparsi |
 | **G** | In Tomorrow, le gemme del teletrasporto |
 | **C** | Aspetto dell'eroe |
@@ -119,6 +123,51 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | Tasto destro del mouse, trascinando | In 3D, gira la telecamera |
 
 Ogni tasto delle finestre le apre e le chiude. Si apre una finestra alla volta: aprendone una si chiudono le altre.
+
+### Il combattimento (dalla 7.19)
+
+Ogni arma ha le sue mosse. **Spazio**, **X**, il pulsante grande sul telefono o un clic sul nemico a portata fanno la
+mossa seguente della **catena** di tre colpi; premere di nuovo appena la mossa finisce dà un **colpo perfetto** (+30%).
+Chi clicca il bersaglio e basta ripete solo il primo colpo, più lentamente. **Tenendo premuto** si carica il **colpo
+caricato** dell'arma: più è carico, più fa male. Le mosse colpiscono tutti i nemici nella loro forma.
+
+| Arma | Catena | Colpo caricato |
+|---|---|---|
+| Pugnale, stocco | Taglio · Rovescio · Doppia pugnalata (sanguinamento) | Danza delle lame: scatto che trafigge e fa sanguinare |
+| Spada | Fendente · Montante · Colpo del cavaliere (spinge lontano) | Turbine: due giri tutto intorno |
+| Ascia | Fendente pesante · Rovescio · Spaccascudi (corazza spezzata: +30% danni) | Salto del boia: salto con onda d'urto |
+| Martello, mazza | Colpo · Montante · Schianto (stordisce) | Terremoto: colpo a terra che stordisce tutto intorno |
+| Lancia | Stoccata · Stoccata alta · Spazzata | Carica: scatto lungo che trafigge |
+| Tridente | Affondo · Affondo · Tre punte (tira a te) | Maremoto: onda che travolge e rallenta |
+| Bastone, scettro | Dardo arcano · Dardo arcano · Catena di fulmini | Nova arcana: esplosione sul bersaglio che rallenta |
+| Falce | Mietitura · Rovescio · Raccolto (ruba vita) | Danza della morte: due giri che rubano vita |
+
+Le mosse dell'arma sono scritte anche nella sua scheda, nello zaino.
+
+### Domare i mostri (dalla 7.20)
+
+Un mostro sotto un terzo della vita si può domare con un **Sigillo di doma** (tasto **Z** o il pulsante «Doma»; i
+sigilli si comprano dai mercanti). Più è debole, più è facile; i boss non si domano. I compagni (tasto **N**, fino a
+12 nella stalla) combattono al tuo fianco uno alla volta, con una mossa speciale secondo la loro natura (belva,
+guerriero, artropode, creatura magica, melma, volante). Crescono con le vittorie e si evolvono ai livelli 10 e 20.
+Se cadono si riprendono in un minuto, o subito al campo, al santuario o alla locanda.
+
+### Il tuo regno in Tomorrow (dalla 7.21)
+
+- **Conquista** (tasto **U**): pianta lo stendardo in una regione selvaggia e abbatti i suoi mostri. Al 100% la regione è
+  tua e i mostri non tornano più. Le terre delle fazioni sono difese dalle loro guardie.
+- **Insediamento**: in una regione conquistata fondi il tuo borgo. Cresce fino al livello 5 e ci costruisci mercato,
+  fucina, tempio, locanda, stalla, granaio, palizzata e torri. Raccoglie tasse e raccolto ogni giorno e si
+  personalizza con nome, colori e decorazioni.
+- **Fazioni** (tasto **Y**): sei fazioni con stemma, città sede, emissario e terre. Puoi unirti a una o fondare la tua,
+  con lo stemma che disegni (forma, partizione, colori, simbolo).
+
+### Le guerre (dalla 7.22)
+
+Le fazioni attaccano le tue terre: hai fino al giorno dopo per difendere lo stendardo dalle loro ondate, altrimenti la
+terra passa a loro o il borgo viene saccheggiato. Con il server e il plugin **Territori**, gli eroi dello stesso mondo
+(stesso codice stanza) si contendono le terre: quelle di un altro si prendono con un assedio, i suoi insediamenti si
+saccheggiano. La cronaca è nel registro (U → Guerra).
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -252,9 +301,8 @@ toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti,
 
 ### Un mondo che non finisce
 
-- Il mondo è fatto di **regioni** di 96×96 caselle (64×64 nella 7.16), generate mentre cammini. Cammina oltre il bordo e sei nella regione
-  accanto. Il seme è dell'eroe; con un **codice stanza** è della stanza, e tutti giocano nello stesso mondo, con gli stessi
-  villaggi e gli stessi dungeon.
+- Il mondo è fatto di **regioni** di 96×96 caselle, generate mentre cammini. Cammina oltre il bordo e sei nella regione
+  accanto (nella 7.18 le regioni erano unite senza passaggio; dalla 7.19.1 si torna al passaggio con la transizione).
 - Il terreno dipende dalle coordinate del mondo: fiumi, laghi, boschi, dune e pareti di roccia continuano da una
   regione all'altra, e i sentieri si incontrano sempre sul bordo comune.
 - **Cinque biomi:** prati fioriti, boschi, deserti con mese e oasi, vette innevate, lande di cenere.
@@ -264,6 +312,8 @@ toccata. Un eroe del vecchio Mondo aperto passa a Tomorrow con livello, oggetti,
   lastricate, piazza con fontana, statue, lampioni, mercato e la bacheca, fino a 22 case, guardie e cittadini a passeggio.
 - **Case in cui si entra:** ogni casa di villaggi e città ha il suo interno con chi ci abita. Ci sono la locanda, la
   bottega, la fucina, il tempio della guaritrice e, in alcune città, il Custode delle Gemme.
+- **Borghi** (dalla 7.18): dove si incrociano i sentieri di ogni regione ci sono da due a quattro case con i loro
+  abitanti, il focolare o il pozzo e un orto.
 - **Vita lungo le strade:** recinti con animali, orti, viandanti e mercanti, falò, e santuari che una volta al giorno curano
   e danno difesa +25% per 5 minuti.
 - **Dungeon** con nome proprio (Grotte, Cripte, Tombe, Caverne, Forge, Grotte sommerse, Abissi), da 2 a 5 piani, mostri del
@@ -620,6 +670,7 @@ e si accendono e spengono senza riavviare. Come scriverne uno è spiegato in [pl
 | **Speedrun dei dungeon** (`speedrun.js`) | Cronometro dei dungeon, classifiche, record e sfida della settimana (`/speedrun`) |
 | **Stress test** (`stress.js`) | Bot finti che giocano sul server per misurare latenza, memoria ed errori |
 | **Taglie del giorno** (`taglie.js`) | Nuove taglie ogni giorno (`/taglie`) |
+| **Territori** (`territori.js`) | Le terre di Tomorrow condivise fra gli eroi dello stesso mondo: assedi, saccheggi e cronaca (`/terre`) |
 | **Caccia al tesoro** (`tesoro.js`) | Un tesoro nascosto in città con indizi a tappe (`/tesoro`) |
 | **Torneo dell'arena** (`torneo.js`) | Tornei a eliminazione diretta nel Colosseo, con tabellone e premi |
 | **Teletrasporto** (`tpa.js`) | `/tpa <nome>` per raggiungere un altro eroe, se accetta |
@@ -703,7 +754,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.17.1 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.22 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -762,6 +813,12 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zp_vivo.js` | Tomorrow vivo: città con mura e piazza, case con interni, abitanti, animali, viandanti, santuari; il campo, le gemme del teletrasporto e le battaglie con gli alleati |
 | `8zq_mappa.js` | Tomorrow: la mappa del mondo interattiva e le nuove finestre dei contratti (bacheca, pannello J, resoconto) |
 | `8zr_caricamento.js` | Le schermate di caricamento di ogni modalità e il filmato del viaggio con la gemma |
+| `8zs_modelli.js` | I modelli nuovi (con scheletro e animazioni) dei boss e degli animali rimasti alla grafica vecchia: drago, sfinge, piovra, spettro, signore della fiamma, cavalcalupi, nido di mitragliatrice, animali da cortile e cavalli |
+| `8zt_mondo.js` | Tomorrow: le regioni generate e ricordate, il campo che resta dove l'hai montato, il pavimento a blocchi, i borghi (la finestra senza passaggi della 7.18 è spenta dalla 7.19.1) |
+| `8zu_combattimento.js` | Il combattimento nuovo: catene di colpi, colpo perfetto, colpi caricati e mosse proprie di ogni arma, effetti sui nemici, pose dell'eroe |
+| `8zv_domare.js` | Domare i mostri: sigilli, cattura, compagni in campo con la loro mossa speciale, livelli ed evoluzioni, la stalla, il bestiario |
+| `8zw_regno.js` | Tomorrow: conquista delle regioni, insediamento con edifici e tesoro, fazioni con sedi, emissari e stemmi, la tua fazione, le terre sulla mappa |
+| `8zx_guerre.js` | Le guerre: assalti delle fazioni alle tue terre, assedi e saccheggi fra giocatori con il plugin Territori, la cronaca |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

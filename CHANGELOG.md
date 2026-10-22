@@ -5,6 +5,120 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.22 — Le guerre (22 ottobre 2026)
+
+- **Le fazioni attaccano:** ogni giorno una fazione può marciare su una delle tue terre. Lo fanno più spesso quelle ostili, con cui hai la reputazione sotto zero.
+  - Hai fino al giorno dopo per correre a difenderla: le loro ondate di soldati, guidate da un capitano, attaccano lo **stendardo**, che ha la sua barra della vita.
+  - Nel tuo insediamento le **guardie** combattono con te e le **torri** riducono gli assalitori.
+  - Se respingi l'assalto vinci oro, esperienza e reputazione.
+  - Se non arrivi in tempo o lo stendardo cade, la terra passa a loro (puoi riprenderla) oppure il borgo viene **saccheggiato**: torri e palizzata riducono la perdita.
+- **Guerre fra giocatori** (con il server e il nuovo plugin **Territori**, nello stesso mondo con il codice stanza):
+  - le terre di tutti gli eroi compaiono sulla mappa con lo stemma di chi le tiene, e lì i mostri non ci sono;
+  - le terre di un altro eroe si prendono con un **assedio** contro le sue guardie: più ondate se il suo borgo ha torri e palizzata;
+  - il suo insediamento non si prende, si **saccheggia** e se ne porta via una parte del tesoro;
+  - chi perde una terra o viene saccheggiato lo scopre subito, o al suo ritorno se era offline.
+- **Registro → Guerra** (tasto U): l'assalto in corso con il tempo che resta e la destinazione, le fazioni ostili, le terre degli altri eroi e la **cronaca** delle battaglie, la tua e quella del mondo.
+- Sulla mappa la terra sotto assalto lampeggia in rosso.
+- Server: nuovo plugin `plugins/territori.js`, nel pacchetto del server.
+
+---
+
+## 7.21 — Il tuo regno (22 ottobre 2026)
+
+- **Conquistare le terre** (tasto **U**): in una regione selvaggia di Tomorrow pianti lo **stendardo** (100 monete) e abbatti i suoi mostri.
+  - Quando la conquista arriva al 100% la regione è tua: i mostri se ne vanno e **non tornano più**, e sulla mappa prende i tuoi colori.
+  - Se te ne vai a metà, la conquista resta al punto in cui l'hai lasciata.
+  - Le terre intorno alle città delle fazioni sono **difese dalle loro guardie**, che arrivano a ondate con il loro capitano. Prenderle costa 25 punti di reputazione con quella fazione.
+- **Il tuo insediamento:** in una regione conquistata fondi il tuo borgo (500 monete), che diventa casa tua.
+  - Cresce fino al **livello 5**: più case, più abitanti, più spazio.
+  - Ci costruisci e migliori **mercato, fucina, tempio, locanda, stalla, granaio, palizzata e torri di guardia**, ognuno con la sua gente: mercante, fabbro, guaritrice, oste, guardie. La stalla aggiunge 4 posti per i compagni a ogni livello.
+  - Il tempio ti cura e ti protegge una volta al giorno.
+  - Ogni giorno raccoglie **tasse e raccolto** da ritirare.
+  - Lo **personalizzi**: nome, colori di tetti e muri, fontana, statua, giardini, lanterne e stendardi.
+  - Dal registro ci torni quando vuoi («Torna a casa»).
+- **Fazioni** (tasto **Y**):
+  - le sei fazioni di Tomorrow hanno un **stemma**, una **città sede** con l'emissario e i loro stendardi, e le loro **terre** sulla mappa;
+  - parlando con l'emissario le incontri e puoi **unirti** a loro: +20% di monete e +50% di reputazione nei loro contratti;
+  - oppure **fondi la tua fazione** (300 monete): nome, motto e uno **stemma disegnato da te**, scegliendo forma, partizione, colori e simbolo. Lo stemma sventola sui tuoi stendardi e segna le tue terre sulla mappa.
+- **La mappa** mostra le terre delle fazioni, le tue e il tuo insediamento, con gli stemmi sulle città sede. La scheda di ogni regione dice di chi è.
+- Nel **menu di pausa** c'è «Il tuo mondo», con compagni, territorio, insediamento e fazioni.
+
+---
+
+## 7.20 — Domare i mostri (22 ottobre 2026)
+
+- **Domare i mostri:** indebolisci un mostro sotto un terzo della vita e lancia un **Sigillo di doma** con il tasto **Z**, o con il pulsante «Doma» che compare vicino a lui.
+  - Il mostro resta preso nel cerchio di luce e si dibatte tre volte: se il sigillo tiene, è tuo.
+  - Più è debole, più è facile; i mostri delle zone di livello alto resistono di più, e chi è già nel bestiario si doma un po' meglio.
+  - I boss, i bersagli dei contratti e i nemici delle battaglie non si domano.
+  - Sopra i mostri pronti per il sigillo brilla un segno dorato.
+- **Compagni:** uno alla volta ti segue e combatte con te.
+  - Si gira verso il nemico che colpisci, ha la sua barra della vita e il suo nome.
+  - I nemici che colpisce lo prendono di mira.
+  - Ha una **mossa speciale** secondo la sua natura: le belve mordono e fanno sanguinare, i guerrieri stordiscono, gli artropodi avvelenano e rallentano, le creature magiche colpiscono da lontano, le melme ti curano, i volanti piombano sul nemico.
+- **Crescono:** con i nemici abbattuti vicino a loro salgono di livello. Al **livello 10** e al **20 si evolvono**: diventano più grandi e più forti, e cambiano nome («Grande…», «Antico…»).
+- Se un compagno cade è **stremato**: si riprende da solo in un minuto, o subito al campo, al santuario o alla locanda.
+- **La stalla** (tasto **N**): fino a 12 compagni, ognuno con il suo ritratto, livello, vita, esperienza e mossa. Si possono chiamare, richiamare, rinominare e liberare.
+- Il **bestiario** conta le specie domate: in Tomorrow ce ne sono centinaia.
+- I **Sigilli di doma** si comprano dai mercanti, 60 monete l'uno o 5 per 270. Un eroe nuovo di Tomorrow ne ha 3.
+- Compagni, sigilli e bestiario si salvano con l'eroe, nella Storia come in Tomorrow.
+
+---
+
+## 7.19.1 — Il passaggio fra le regioni (22 ottobre 2026)
+
+- **Tomorrow:** il passaggio da una regione all'altra torna com'era prima della 7.18. Si carica una regione alla volta e, camminando oltre il bordo, si passa alla regione accanto con la transizione. Le impostazioni non hanno più la distanza di visuale.
+- Restano i borghi agli incroci, il campo che resta dove l'hai montato, i modelli nuovi e il combattimento della 7.19.
+
+---
+
+## 7.19 — Le mosse delle armi (22 ottobre 2026)
+
+- **Combattimento nuovo:** non si clicca e basta. **Spazio**, **X**, il pulsante grande sul telefono o un clic sul nemico a portata fanno la mossa seguente della **catena** dell'arma, tre colpi diversi.
+  - Premere di nuovo appena la mossa finisce dà un **colpo perfetto** (+30% di danno). Premere a raffica non basta.
+  - Chi lascia fare all'eroe (bersaglio cliccato e basta) ripete solo il primo colpo, più lentamente.
+- **Colpo caricato:** tieni premuto Spazio, X o il pulsante grande. Più carichi, più fa male; ogni arma ha il suo e la sua ricarica.
+- **Otto stili:**
+  - pugnale e stocco: veloci, fanno sanguinare;
+  - spada: equilibrata, con il Turbine;
+  - ascia: spezza la corazza (+30% di danni subiti) e salta sui nemici;
+  - martello e mazza: lenti, stordiscono, con il Terremoto;
+  - lancia: colpisce da lontano e carica;
+  - tridente: tira a te i nemici e con il Maremoto li travolge;
+  - bastone e scettro: dardi arcani, catena di fulmini e Nova arcana;
+  - falce: colpi larghi che rubano vita.
+- Le mosse **colpiscono tutti i nemici nella loro forma** (arco, affondo, cerchio, onda, dardo), con animazioni dell'eroe, scie ed effetti propri.
+- I nemici **storditi**, **sanguinanti**, con la **corazza spezzata** o **rallentati** lo mostrano sopra la testa o ai piedi. Sui boss gli effetti durano meno e non vengono spinti.
+- Sotto l'eroe compaiono lo stile dell'arma, i tre segni della catena, la barra della carica e «Perfetto!».
+- Le mosse dell'arma sono scritte nella sua scheda, nello zaino.
+- Il pulsante «Colpo» ora si chiama «Attacco». Affondo (F), schivata e tecniche del Maestro restano come prima.
+
+---
+
+## 7.18 — Un mondo solo (22 ottobre 2026)
+
+- **Tomorrow senza passaggi:** le regioni sono unite. Il gioco tiene caricata la tua regione e una fascia di quelle intorno, con i loro abitanti, i mostri e le case. Quando cammini oltre il bordo, il mondo si sposta con te senza fermarsi:
+  - niente schermo che si chiude;
+  - i nemici che ti inseguono ti seguono davvero;
+  - quello che è a terra resta dov'è;
+  - i nemici abbattuti tornano solo dopo tre ore di gioco.
+  
+  Le regioni intorno si preparano mentre giochi, così lo spostamento non si sente.
+- **Distanza di visuale** (Impostazioni → Tomorrow): Corta, Media o Lunga, cioè quante caselle delle regioni vicine restano caricate intorno alla tua (24, 36 o 48). Più è lunga, più mondo vedi e più chiede al dispositivo. Sui telefoni parte da «Corta».
+- **Borghi:** dove si incrociano i sentieri, al posto della radura, c'è un piccolo borgo. Ha da due a quattro case in cui si entra, il focolare o il pozzo, un orto con lo spaventapasseri e due o tre paesani. A volte passa anche un mercante.
+- **Il campo resta dove l'hai montato,** anche se ti allontani: lo ritrovi quando torni, e la mappa lo segna.
+- **Grafica nuova per chi era rimasto a quella vecchia,** con le animazioni:
+  - il **Drago di Brina**: zampe, collo e coda a segmenti, ali che si aprono, fauci che si spalancano nell'attacco;
+  - la **Sfinge Antica**: leone alato con il volto umano e il copricapo;
+  - il **Leviatano**: una piovra con otto tentacoli che ondeggiano e si abbattono su di te;
+  - **Lord Vexmoor**: uno spettro incoronato con la spada;
+  - **Ignis**: il Signore della Fiamma, con corna, corona di fuoco e spadone;
+  - il **Cavalcalupi**: un goblin in sella al suo lupo;
+  - il **nido di mitragliatrice**, con i sacchi, il mitragliere, il rinculo e la fiammata;
+  - gli **animali** (mucca, pecora, maiale, gatto, cavalli, gallina e gabbiano) camminano, brucano, scodinzolano, beccano e sbattono le ali.
+- Il pavimento delle zone grandi si disegna a blocchi, solo dove guardi: più mondo con meno memoria.
+- Corretto: iniziando un mondo di Tomorrow nuovo nella stessa sessione, a volte restavano nomi e luoghi del mondo di prima.
+
 ## 7.17.1 — Manutenzione di Tomorrow (22 ottobre 2026)
 
 - **Assedi:** se cadevi durante la battaglia di una città, ti risvegliavi nella stessa città e la battaglia restava aperta senza nemici. All'ultima ondata compariva subito «Vittoria!» con oro, esperienza e un oggetto unico; prima dell'ultima, le ondate arrivavano senza soldati. Ora cadere fa perdere la battaglia. Un contratto «La battaglia di…» riparte quando rientri in città.

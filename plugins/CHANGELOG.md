@@ -3,6 +3,13 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Territori 1.0 (gioco 7.22)
+
+- **Nuovo plugin Territori:** i giocatori che giocano a Tomorrow nello stesso mondo (stesso codice stanza) condividono le terre conquistate. Il plugin le ricorda per ogni mondo, le manda a tutti e decide chi le possiede: una terra già presa da un altro si ottiene solo con un assedio.
+- Gli insediamenti non si conquistano: si saccheggiano. Chi perde una terra o viene saccheggiato lo scopre subito, o al suo ritorno se era offline.
+- Ogni mondo ha la sua cronaca delle battaglie. Il comando `/terre` dice chi tiene quante terre; la pagina admin `/plugins/territori/` riassume i mondi.
+- Config: `maxRegioni` (terre per eroe, 400) e `registro` (righe di cronaca, 40). I bot dello Stress test non vengono salvati.
+
 ## Oggetti unici e reperti (gioco 7.14)
 
 - **Guardiano 2.6:** gli oggetti unici del Mondo aperto (quelli con il seme in `uq`) hanno poteri, quindi possono avere critico fino al 30%, più vita e un prezzo di vendita più alto: il controllo degli «oggetti impossibili» ora ne tiene conto. I reperti (`s: 'x'`) non si indossano e si controllano solo rarità e valore. Prima un'offerta di scambio con un unico o un reperto veniva fermata come trucco.

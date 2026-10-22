@@ -59,6 +59,7 @@ function twMapDraw(){const c=$('twmc');if(!c)return;const q=c.getContext('2d'),W
   // il velo sulle terre mai viste
   {const p0=new Path2D(),p1=new Path2D();let n0=0;for(let ry=y0;ry<=y1;ry++)for(let rx=x0;rx<=x1;rx++){const kn=twKnown(rx,ry);if(kn===2)continue;(kn?p1:p0).rect(sx(rx),sy(ry),Z2+.6,Z2+.6);if(!kn)n0++}
     q.fillStyle='rgba(217,199,159,.28)';q.fill(p1);if(n0){q.fillStyle='rgba(190,170,130,.74)';q.fill(p0);q.save();q.clip(p0);q.strokeStyle='rgba(120,96,60,.25)';q.lineWidth=1;q.beginPath();for(let i=-H2;i<W2;i+=10){q.moveTo(i,H2);q.lineTo(i+H2,0)}q.stroke();q.restore()}}
+  if(typeof twMapTerr==='function')twMapTerr(q,x0,x1,y0,y1,sx,sy,Z2);
   // le strade: da ogni centro di regione ai punti di passaggio sui bordi (dipinte una volta per blocco)
   {const cx0=Math.floor(x0/8),cx1=Math.floor(x1/8),cy0=Math.floor(y0/8),cy1=Math.floor(y1/8);for(let cy=cy0;cy<=cy1;cy++)for(let cx=cx0;cx<=cx1;cx++){const rc=TWRC.get(cx+','+cy)||(TWCH.has(cx+','+cy)?twRoads(cx,cy):null);if(rc)q.drawImage(rc,sx(cx*8),sy(cy*8),8*Z2+.6,8*Z2+.6)}}
   // i confini delle regioni
@@ -81,7 +82,7 @@ function twMapDraw(){const c=$('twmc');if(!c)return;const q=c.getContext('2d'),W
     if(P.tw.wp===k2){q.fillStyle='#c0392b';q.beginPath();q.moveTo(X-Z2*.28,Y+Z2*.12);q.lineTo(X-Z2*.28,Y-Z2*.3);q.lineTo(X-Z2*.06,Y-Z2*.22);q.lineTo(X-Z2*.28,Y-Z2*.14);q.fill();q.strokeStyle='#2a1a0a';q.lineWidth=1.5;q.beginPath();q.moveTo(X-Z2*.28,Y+Z2*.12);q.lineTo(X-Z2*.28,Y-Z2*.3);q.stroke()}
     if(P.tw.camp&&P.tw.camp.k===k2)ic(sx(rx)+P.tw.camp.x/TWR*Z2,sy(ry)+P.tw.camp.y/TWR*Z2,'t',s*.8)}
   // tu
-  {const p=twP(String(Zk).startsWith('tw:')?Zk:P.tw.at)||[0,0],inR=String(Zk).startsWith('tw:'),X=sx(p[0])+(inR?P.px/N:.5)*Z2,Y=sy(p[1])+(inR?P.py/N:.5)*Z2,pu=(now*1.2)%1;
+  {const p=twP(String(Zk).startsWith('tw:')?Zk:P.tw.at)||[0,0],inR=String(Zk).startsWith('tw:'),X=sx(p[0])+(inR?twLX():.5)*Z2,Y=sy(p[1])+(inR?twLY():.5)*Z2,pu=(now*1.2)%1;
     q.strokeStyle=`rgba(255,216,74,${1-pu})`;q.lineWidth=3;q.beginPath();q.arc(X,Y,8+pu*22,0,6.3);q.stroke();q.fillStyle='#ffd84a';q.strokeStyle='#2a1a0a';q.lineWidth=2;q.beginPath();q.arc(X,Y,7,0,6.3);q.fill();q.stroke();
     q.strokeStyle='#ffd84a';q.lineWidth=3;q.strokeRect(sx(p[0])+1.5,sy(p[1])+1.5,Z2-3,Z2-3)}
   // la regione scelta
@@ -105,12 +106,7 @@ function twMapSide(){const el=$('twms');if(!el||!TWM.sel)return;const[rx,ry]=TWM
 openMap=function(){if(twOn()){twMapOpen();return}_openMap716()};
 // arrivati alla destinazione, la bandierina si toglie
 const _load717m=load;load=function(k,from){_load717m(k,from);if(twOn()&&P.tw.wp&&Zk===P.tw.wp){P.tw.wp=null;banner('Destinazione raggiunta',ZZ.n,'mappa')}};
-// 7.17.1: regioni, interni, dungeon e abitanti di Tomorrow restano in memoria per coordinate. Se cambia il seme del mondo
-// (un eroe nuovo, oppure una stanza con il codice) quelli del mondo di prima si dimenticano, altrimenti il mondo esce misto
-let TWZS=null;
-function twSeedCk(){const s=twSeed();if(s===TWZS)return;TWZS=s;for(const k in Z)if(/^twi?:/.test(k))delete Z[k];for(const k in DG)if(k.startsWith('twd_'))delete DG[k];
-  for(const k in NPCS)if(/^t[vrt]_/.test(k))delete NPCS[k];TWTH.clear();TWCH.clear();TWRC.clear();TWRI.clear()}
-const _load7171=load;load=function(k,from){if(twOn())twSeedCk();_load7171(k,from)};
+// 7.17.1 dimenticava qui il mondo di prima quando cambiava il seme; dalla 7.18 lo fa twForget() in 8zt_mondo.js, all'inizio della partita
 
 /* ---- la bacheca dei contratti ---- */
 owCard=function(C,i,mode){const F=OWF[C.fa],R=C.rw,mods=Object.keys(C.mods),cur=C.si;

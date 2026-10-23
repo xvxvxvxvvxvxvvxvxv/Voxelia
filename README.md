@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.36** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.37** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -259,6 +259,13 @@ quantità per costruire. La città arriva al livello 15 e, potenziandola molte v
 Nelle tue città e nelle città con il Custode delle Gemme c'è una Pietra del viaggio che elenca tutti i luoghi con una
 gemma del teletrasporto. Ogni gemma si compra una volta sola, in quel luogo: poi ci si viaggia quando si vuole, dalla
 pietra o con il tasto G.
+
+### Fluidità e grafica (dalla 7.37)
+
+L'acqua si disegna poche volte al secondo e la risoluzione dinamica tiene il gioco fluido sui computer meno potenti.
+In Impostazioni → Grafica si regolano luminosità, contrasto, colori, particelle, scossoni e risoluzione (fino al 150%);
+per la vista 3D risoluzione interna con upscaling e nitidezza in stile FSR, campo visivo, nebbia, ombre e luci.
+Il DLSS di NVIDIA non è possibile in un browser.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -845,7 +852,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.36 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.37 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -923,6 +930,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzi_citta.js` | 7.34: più città (fino a 8) ognuna con le sue statistiche, la capitale da cui si riparte, la gemma della tua città al mercato, i materiali a prezzi del giorno nelle altre città |
 | `8zzj_legna.js` | 7.35: gli alberi si abbattono (5 colpi, 2 legna, ricrescono), il legno in quantità, la città fino al livello 15 su tutta la regione |
 | `8zzk_viaggio.js` | 7.36: la Pietra del viaggio con tutti i luoghi che hanno una gemma del teletrasporto; ogni gemma si compra una volta sola |
+| `8zzl_grafica.js` | 7.37: l'acqua su un foglio a parte, la risoluzione dinamica, le opzioni grafiche nuove e l'upscaling con nitidezza in stile FSR per la vista 3D |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

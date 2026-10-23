@@ -14,11 +14,11 @@
    La telecamera segue l'eroe da dietro: tasto destro del mouse (o due dita) per girarla, rotellina per avvicinarla.
    WASD e la levetta si muovono rispetto alla telecamera; clic per camminare, attaccare, parlare, come sempre.
    Nei filmati, durante la pesca, la navigazione e le battaglie del mare il gioco torna da solo alla vista classica. */
-const D3=Object.assign({on:0,q:2,sh:1,gr:1,far:1,sens:1,inv:0,seen:0,vx:1},LS.get('voxelia_3d',{}),
+const D3=Object.assign({on:0,q:2,sh:1,gr:1,far:1,sens:1,inv:0,seen:0,vx:1,rsc:1,fsr:0,shp:.5,fov:57,fog:1,shr:0,nl:12},LS.get('voxelia_3d',{}),
   {gl:null,ok:null,act:0,yaw:Math.PI/4,pitch:.62,dist:13,cam:null,tgt:null,zk:null,M:null,FC:null,ch:new Map(),bd:null,lt:[],labs:[],t:0,rr:0,drag:null,
    vp:null,V:null,P:null,ew:[0,0,0],cw:[0,0,0],sk:null,cv:null,f:0});
 if(LS.get('voxelia_3d',null)===null&&typeof TOUCH!=='undefined'&&TOUCH)D3.q=1;
-const d3Save=()=>LS.set('voxelia_3d',{on:D3.on,q:D3.q,sh:D3.sh,gr:D3.gr,far:D3.far,sens:D3.sens,inv:D3.inv,seen:D3.seen,vx:D3.vx});
+const d3Save=()=>LS.set('voxelia_3d',{on:D3.on,q:D3.q,sh:D3.sh,gr:D3.gr,far:D3.far,sens:D3.sens,inv:D3.inv,seen:D3.seen,vx:D3.vx,rsc:D3.rsc,fsr:D3.fsr,shp:D3.shp,fov:D3.fov,fog:D3.fog,shr:D3.shr,nl:D3.nl});
 const D3TS=1.6,D3ZS=.05,D3CS=16;   // 1 casella = 1,6 m; 1 pixel d'altezza = 5 cm; pezzi di 16×16 caselle
 // la vista 3D vale solo nella partita e non durante pesca, mare, battaglie, editor e realtà virtuale
 const d3Want=()=>!!(D3.on&&started&&P&&M&&D3.ok!==false&&!(typeof XR!=='undefined'&&XR.s)&&!(NAV&&Zk==='mare')&&!(FSH&&PM==='fish')&&PM!=='dig'&&PM!=='duel'&&
@@ -154,7 +154,7 @@ function d3Init(){if(D3.ok!=null)return D3.ok;try{const c=document.createElement
     D3.vao=gl.createVertexArray();D3.svb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,D3.svb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
     D3.dyn=null;D3.ok=true;c.addEventListener('webglcontextlost',e=>{e.preventDefault();D3.lost=1});c.addEventListener('webglcontextrestored',()=>{D3.ok=null;D3.lost=0;c.remove();d3Init();d3Reset()})}
   catch(e){console.warn(e);D3.ok=false;msg('La vista 3D non è disponibile su questo dispositivo: '+e.message)}return D3.ok}
-function d3Shadow(){const gl=D3.gl,s=D3.q>=3?2048:1024;if(D3.smS===s)return;if(D3.smT){gl.deleteTexture(D3.smT);gl.deleteFramebuffer(D3.smF)}D3.smS=s;
+function d3Shadow(){const gl=D3.gl,s=D3.shr?D3.shr:D3.q>=3?2048:1024;if(D3.smS===s)return;if(D3.smT){gl.deleteTexture(D3.smT);gl.deleteFramebuffer(D3.smF)}D3.smS=s;
   const t=D3.smT=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texStorage2D(gl.TEXTURE_2D,1,gl.DEPTH_COMPONENT24,s,s);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_COMPARE_MODE,gl.COMPARE_REF_TO_TEXTURE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_COMPARE_FUNC,gl.LEQUAL);
@@ -254,7 +254,7 @@ function d3Light(){const out=!!SKY[Zk]&&!(ZZ&&ZZ.dg),h=gHour(),nk=out?NK:1,dk=ou
 /* ---- un fotogramma in 3D ---- */
 function d3Frame(){const gl=D3.gl,cvs=D3.cv;const now=performance.now(),fdt=D3.lf?now-D3.lf:16;D3.lf=now;if(fdt<250){D3.ft=(D3.ft||16)*.95+fdt*.05;if(D3.ft>26)D3.dr=Math.max(.5,(D3.dr||1)-.004);else if(D3.ft<19)D3.dr=Math.min(1,(D3.dr||1)+.002);
     if(D3.dr<=.5&&D3.ft>38){D3.slow=(D3.slow||0)+fdt;if(D3.slow>5000&&D3.q>1){D3.q--;D3.slow=0;D3.dr=.8;d3Save();d3Reset();msg('Vista 3D: dettaglio abbassato a '+['','Basso','Medio'][D3.q]+' per andare più fluido')}}else D3.slow=0}
-  const rs=([.6,.6,.85,1][D3.q]||.85)*(D3.dr||1),w=Math.max(1,Math.round(W*DPR*rs)),h=Math.max(1,Math.round(H*DPR*rs));if(cvs.width!==w||cvs.height!==h){cvs.width=w;cvs.height=h}
+  const rs=([.6,.6,.85,1][D3.q]||.85)*(D3.dr||1)*(D3.rsc||1),w=Math.max(1,Math.round(W*DPR*rs)),h=Math.max(1,Math.round(H*DPR*rs));const up=!!D3.fsr&&typeof d3UpInit==='function'&&d3UpInit(gl,w,h),ow=up?Math.max(1,Math.round(W*DPR)):w,oh=up?Math.max(1,Math.round(H*DPR)):h;if(cvs.width!==ow||cvs.height!==oh){cvs.width=ow;cvs.height=oh}
   if(D3.zk!==Zk||D3.M!==M||D3.N!==N)d3Reset();
   const nc=Math.ceil(N/D3CS);
   if(!D3.full){const t0=performance.now();for(let k=0;k<nc*nc;k++)if(!D3.ch.has(k))d3Chunk(k);D3.full=1;D3.bt=performance.now()-t0}
@@ -275,11 +275,11 @@ function d3Frame(){const gl=D3.gl,cvs=D3.cv;const now=performance.now(),fdt=D3.l
   const ph=P.px,pv=P.py,hz=HHc&&HHc.length===N*N?(HHc[(clamp(pv|0,0,N-1))*N+clamp(ph|0,0,N-1)]||0):0,tgt=[ph*D3TS,hz*D3ZS+1.25,pv*D3TS];
   if(!D3.tgt||Math.hypot(tgt[0]-D3.tgt[0],tgt[2]-D3.tgt[2])>9)D3.tgt=tgt.slice();for(let i=0;i<3;i++)D3.tgt[i]+=(tgt[i]-D3.tgt[i])*.18;
   const dist=clamp(13/(SZ||1),4.5,30),pitch=D3.pitch,yw=D3.yaw,ce=[D3.tgt[0]+Math.sin(yw)*Math.cos(pitch)*dist,D3.tgt[1]+Math.sin(pitch)*dist,D3.tgt[2]+Math.cos(yw)*Math.cos(pitch)*dist];
-  D3.cw=ce;const far=SKY[Zk]&&!ZZ.dg?(D3.far?900:520):120,Pm=d3M.per(1.0,W/H,.3,far),Vm=d3M.look(ce,D3.tgt);D3.vp=d3M.mul(Pm,Vm);D3.ivp=d3M.inv(D3.vp);
+  D3.cw=ce;const far=SKY[Zk]&&!ZZ.dg?(D3.far?900:520)*Math.max(1,D3.fog||1):120,Pm=d3M.per(clamp(D3.fov||57,40,100)*Math.PI/180,W/H,.3,far),Vm=d3M.look(ce,D3.tgt);D3.vp=d3M.mul(Pm,Vm);D3.ivp=d3M.inv(D3.vp);
   const Lx=d3Light();D3.L=Lx;
   // luci: lampioni e torce vicine (le più vicine all'eroe), più quelle portate dai personaggi
   if(!D3.lt){D3.lt=[];for(const c of D3.ch.values())for(const l of c.L)D3.lt.push(l)}
-  const lights=D3.lt.concat(dl).map(l=>[l,Math.hypot(l[0]-ph,l[1]-pv)]).filter(q=>q[1]<26).sort((a,b)=>a[1]-b[1]).slice(0,12);
+  const lights=D3.lt.concat(dl).map(l=>[l,Math.hypot(l[0]-ph,l[1]-pv)]).filter(q=>q[1]<26).sort((a,b)=>a[1]-b[1]).slice(0,clamp(D3.nl==null?12:D3.nl,0,12));
   const lk=Lx.out?Math.max(.08,Lx.nk*1.3+DK*.3):1.15;
   // ombre del sole
   const shOn=D3.sh&&D3.q>=2&&Lx.out&&Lx.sun[1]>.12;let LM=new Float32Array(16);
@@ -288,7 +288,7 @@ function d3Frame(){const gl=D3.gl,cvs=D3.cv;const now=performance.now(),fdt=D3.l
     gl.useProgram(D3.dp.p);gl.uniformMatrix4fv(D3.dp.U.LM,false,LM);gl.bindVertexArray(D3.vao);
     for(const c of D3.ch.values())d3Draw(gl,c.o,1);d3Draw(gl,D3.dyn,1);
     gl.disable(gl.POLYGON_OFFSET_FILL);gl.colorMask(true,true,true,true);gl.bindFramebuffer(gl.FRAMEBUFFER,null)}
-  gl.viewport(0,0,w,h);gl.clearColor(Lx.fog[0],Lx.fog[1],Lx.fog[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  gl.bindFramebuffer(gl.FRAMEBUFFER,up?D3.upF:null);gl.viewport(0,0,w,h);gl.clearColor(Lx.fog[0],Lx.fog[1],Lx.fog[2],1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
   // il cielo
   gl.disable(gl.DEPTH_TEST);gl.useProgram(D3.sp.p);const U2=D3.sp.U;gl.uniformMatrix4fv(U2.IVP,false,D3.ivp);gl.uniform3fv(U2.SUN,Lx.sun);gl.uniform3fv(U2.ZEN,Lx.zen);gl.uniform3fv(U2.HZC,Lx.hz);gl.uniform3fv(U2.SUNC,Lx.sunc);gl.uniform1f(U2.TM,t);gl.uniform1f(U2.NK,Lx.nk);gl.uniform1f(U2.OUT,Lx.out?1:0);
   gl.bindVertexArray(D3.vao);gl.bindBuffer(gl.ARRAY_BUFFER,D3.svb);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,8,0);for(let i=1;i<4;i++)gl.disableVertexAttribArray(i);gl.drawArrays(gl.TRIANGLES,0,3);
@@ -296,14 +296,14 @@ function d3Frame(){const gl=D3.gl,cvs=D3.cv;const now=performance.now(),fdt=D3.l
   gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.frontFace(gl.CCW);gl.disable(gl.CULL_FACE);
   gl.useProgram(D3.pr.p);const U=D3.pr.U;gl.uniformMatrix4fv(U.VP,false,D3.vp);gl.uniformMatrix4fv(U.LM,false,LM);gl.uniform1f(U.TM,t);
   gl.uniform3fv(U.SUN,Lx.sun);gl.uniform3fv(U.SUNC,Lx.sunc);gl.uniform3fv(U.AU,Lx.au);gl.uniform3fv(U.AD,Lx.ad);gl.uniform3fv(U.FOGC,Lx.fog);gl.uniform3fv(U.HZC,Lx.hz);gl.uniform3fv(U.CAM,ce);
-  const fogEnd=Lx.out?(D3.far?[0,330,430,560][D3.q]:300):55;gl.uniform1f(U.FOG0,Lx.out?fogEnd*.18:10);gl.uniform1f(U.FOG1,fogEnd);gl.uniform1f(U.SHON,shOn?1:0);gl.uniform1f(U.LAN,Lx.lan);gl.uniform1f(U.VX,D3.vx?1:0);
+  const fogEnd=Lx.out?(D3.far?[0,330,430,560][D3.q]:300)*clamp(D3.fog||1,.4,2):55;gl.uniform1f(U.FOG0,Lx.out?fogEnd*.18:10);gl.uniform1f(U.FOG1,fogEnd);gl.uniform1f(U.SHON,shOn?1:0);gl.uniform1f(U.LAN,Lx.lan);gl.uniform1f(U.VX,D3.vx?1:0);
   gl.uniform4f(U.HL,ph*D3TS,hz*D3ZS+1.9,pv*D3TS,hz*D3ZS);gl.uniform3f(U.HP,ph*D3TS,hz*D3ZS+1.15,pv*D3TS);
   const pl=new Float32Array(48),pc=new Float32Array(36);lights.forEach(([l],i)=>{pl.set([l[0]*D3TS,l[2]*D3ZS,l[1]*D3TS,1.6*lk],i*4);pc.set([l[3]/255*1.2,l[4]/255,l[5]/255*.8],i*3)});
   gl.uniform4fv(U.PL,pl);gl.uniform3fv(U.PC,pc);gl.uniform1i(U.NP,lights.length);
   gl.activeTexture(gl.TEXTURE0);if(D3.smT)gl.bindTexture(gl.TEXTURE_2D,D3.smT);else gl.bindTexture(gl.TEXTURE_2D,null);gl.uniform1i(U.SM,0);
   if(!D3.smT){d3Shadow()}gl.bindTexture(gl.TEXTURE_2D,D3.smT);
   for(const c of D3.ch.values())d3Draw(gl,c.o);d3Draw(gl,D3.dyn);if(D3.bd&&D3.bd.n)d3Draw(gl,D3.bd);
-  gl.bindVertexArray(null)}
+  if(up)d3UpPass(gl,w,h,ow,oh);gl.bindVertexArray(null)}
 function d3Draw(gl,o,depth){if(!o||!o.n)return;gl.bindBuffer(gl.ARRAY_BUFFER,o.vb);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);
   if(depth){for(let i=1;i<4;i++)gl.disableVertexAttribArray(i)}
   else{gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,4,gl.UNSIGNED_BYTE,true,24,12);gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,4,gl.BYTE,true,24,16);gl.enableVertexAttribArray(3);gl.vertexAttribPointer(3,4,gl.UNSIGNED_BYTE,true,24,20)}

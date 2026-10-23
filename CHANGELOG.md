@@ -5,6 +5,23 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.37 — Più fluido, e la grafica come vuoi tu (23 ottobre 2026)
+
+- **Più fluido**:
+  - l'acqua (fiumi, laghi, mare), che era la cosa più pesante da disegnare, ora si disegna su un foglio a parte poche volte al secondo e a ogni fotogramma si copia, spostata con la telecamera (Impostazioni → Prestazioni → «Acqua veloce»);
+  - la **risoluzione dinamica**: se il computer non sta dietro allo schermo, la risoluzione scende un po' da sola (fino al 60%) e risale quando il gioco torna fluido. Si può spegnere.
+- **Impostazioni → Grafica**, molte più cose da regolare:
+  - **Immagine**: luminosità, contrasto e colori, anche mentre giochi;
+  - la **risoluzione** va dal 40% al 150% (sopra il 100% l'immagine è più fine);
+  - **Movimento**: quantità di particelle (da nessuna al doppio) e forza degli scossoni dello schermo.
+- **Vista 3D** (in Grafica e in Vista 3D):
+  - **risoluzione interna** e **upscaling con nitidezza in stile FSR**: il mondo si disegna più piccolo, poi viene ingrandito a schermo pieno e reso nitido con un filtro adattivo al contrasto. Più fotogrammi al secondo, immagine pulita;
+  - quanto rendere nitida l'immagine;
+  - il **campo visivo** (da 40° a 100°), la **distanza della nebbia**, la **qualità delle ombre** (fino a 4096) e quante **luci** (lampioni, torce) accendere insieme.
+- **DLSS**: il DLSS di NVIDIA in un browser non si può usare, perché richiede un gioco nativo (DirectX o Vulkan) e una scheda RTX. L'upscaling con nitidezza della vista 3D fa la stessa cosa in modo più semplice e funziona su qualunque scheda, anche integrata.
+
+---
+
 ## 7.36 — La Pietra del viaggio (23 ottobre 2026)
 
 - **La Pietra del viaggio** (una waystone): c'è in ogni tua città, vicino alla piazza, e in ogni città che vende la sua gemma, accanto alla Casa delle Gemme. Si tocca come un personaggio, e si apre anche con il tasto G.

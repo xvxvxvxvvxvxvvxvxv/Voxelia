@@ -126,6 +126,14 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.27.1 — La realtà virtuale al passo con il combattimento nuovo (23 ottobre 2026)
+
+- **Realtà virtuale, prima persona:** dalla 7.19 i colpi dati muovendo il braccio non facevano più danno nella storia, perché il combattimento nuovo tiene fermo il vecchio attacco. Ora ogni fendente col controller è la mossa seguente della catena dell'arma (tre colpi diversi, con il «Colpo perfetto» se lo dai al momento giusto), verso il nemico che guardi.
+- Le due mani giù insieme fanno il colpo caricato dell'arma, al massimo della carica, quando è pronto.
+- Provati nel visore simulato anche Tomorrow (camminare, colpire, passare da una regione all'altra) e la vista 3D, che si spegne da sola mentre si è in VR e torna quando si esce.
+
+---
+
 ## 7.27 — La vista 3D in stile voxel (23 ottobre 2026)
 
 - **Stile voxel** per la vista 3D, ora quello predefinito:

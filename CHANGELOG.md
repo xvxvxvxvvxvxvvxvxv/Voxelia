@@ -5,6 +5,31 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.29 — L'editor con tutti i materiali (23 ottobre 2026)
+
+- **Terreno**: tutti i pavimenti del gioco e di Voxelia Studio si disegnano a pennello nel borgo.
+  - Erbe, prati fioriti, sabbia, neve, ghiaccio, fango, rocce, cripta, cristallo, lava.
+  - Lastricato, ciottoli, mattoni, pontile, assi, parquet, marmo, piastrelle, tappeti, oro.
+  - I terreni, le strade e i pavimenti dei luoghi del gioco.
+  - Con la ricerca per nome.
+- **Muri**: tutti i tipi di muro, con il colore che vuoi.
+  - Pietra, mura merlate, mattoni, assi, muro di casa, roccia, cripta, ghiaccio, cristalli, ossidiana, oro, roccia lavica, muretto basso.
+- **Arredi**: oltre ai preferiti, tutto il catalogo del gioco, diviso per tipo e con la ricerca.
+  - Natura, Campagna, Città, Casa, Castello, Segrete, Guerra, Porto, Acqua, Oggetti speciali.
+  - Gli arredi d'acqua (barca, boa, zampillo) si mettono sull'acqua.
+- **Edifici su misura**:
+  - lo stile: casa, castello, tempio, arena, osservatorio, municipio, motel, mulino o faro;
+  - il colore dei muri e del tetto, scelto liberamente;
+  - l'altezza e il camino;
+  - sette misure per le case.
+- **Ogni cosa costa le sue risorse**, scritte su ogni pulsante: legna per il legno, pietra per la pietra, argilla per i mattoni, ferro per il metallo e monete per i materiali preziosi. I terreni naturali sono gratis.
+- **Correzioni**:
+  - un edificio appena costruito trova sempre un posto da cui la sua porta si raggiunge;
+  - il banco del mercante non si può più chiudere;
+  - il borgo non si può più tagliare fuori dalle strade della regione.
+
+---
+
 ## 7.28 — La gestione del borgo (23 ottobre 2026)
 
 - **Per costruire servono risorse**: legna, pietra, argilla e ferro, oltre alle monete. La legna mancante non si paga più in monete.

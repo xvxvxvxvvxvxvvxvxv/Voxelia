@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.28** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.29** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -208,6 +208,11 @@ producono con la Segheria e la Cava. Nel registro ci sono le statistiche del bor
 potenza dell'esercito e materiali. Ogni giorno gli abitanti mangiano e bevono: se per due giorni cibo o acqua non
 bastano, una parte se ne va e torna solo quando le condizioni migliorano. Cibo e acqua vengono da Fattoria, Granaio,
 Cisterna, campi, pozzi e fontane, o dal cibo che porti tu.
+
+### L'editor con tutti i materiali (dalla 7.29)
+
+Nell'editor del borgo ci sono tutti i pavimenti, i muri (con il colore che vuoi) e gli arredi del gioco, con la ricerca.
+Gli edifici si fanno su misura: stile, colore dei muri e del tetto, altezza, camino. Ogni cosa costa le sue risorse.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -794,7 +799,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.28 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.29 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -864,6 +869,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zza_prologo.js` | Il nuovo prologo della Storia: le scene nuove (il mare, la fondazione, le sei terre, Malakar, la Corona in frantumi, l'alba) e le sue tre musiche |
 | `8zzb_editborgo.js` | L'editor dell'insediamento: edifici, case, strade, arredi, fontane, banco del mercante e stendardo; la gente che va in giro nel borgo |
 | `8zzc_gestione.js` | La gestione del borgo: risorse da raccogliere e costi degli edifici, Cisterna, Fattoria, Segheria e Cava, statistiche, cibo, acqua e abitanti che vanno e vengono |
+| `8zzd_editor2.js` | L'editor del borgo completo: tutti i pavimenti, i muri e gli arredi del gioco, edifici su misura, costi in risorse |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

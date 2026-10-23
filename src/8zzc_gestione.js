@@ -75,7 +75,7 @@ function setPay(c){for(const r in c){if(r==='g')P.g-=c[r];else P.res[r]=(P.res[r
 const setCostHTML=c=>Object.keys(c).filter(r=>c[r]>0).map(r=>{const have=r==='g'?P.g|0:P.res[r]|0;return`<span class="stc${have<c[r]?' no':''}">${SETMI[r]||''} ${c[r]}</span>`}).join('');
 setBuy=function(b){const S=P.tw.set;if(!S)return;setFix(S);const B=TWSB[b],cur=b==='casa'?S.lv:setB(b);if(!B||cur>=B.max)return;const c=setCostOf(b,cur+1),m=setMiss(c);
   if(m.length){msg('Mancano '+m.map(([r,n])=>n+' '+(r==='g'?'monete':RESN[r].toLowerCase())).join(', ')+'. Le risorse si raccolgono nelle terre selvagge.');tone(150,.1);return}
-  setPay(c);if(b==='casa')S.lv++;else S.b[b]=cur+1;jingle([67,72,76,79],.08,'triangle');banner(B.ic+' '+B.n+(b==='casa'?' · livello '+S.lv:' · livello '+S.b[b]),S.n+' cresce','martello');setRebuild();save();pn('regno')};
+  setPay(c);if(b==='casa')S.lv++;else S.b[b]=cur+1;if(typeof setPlaceNew==='function')setPlaceNew(b);jingle([67,72,76,79],.08,'triangle');banner(B.ic+' '+B.n+(b==='casa'?' · livello '+S.lv:' · livello '+S.b[b]),S.n+' cresce','martello');setRebuild();save();pn('regno')};
 /* ---- il pannello del borgo ---- */
 function setTile(ic,n,v,sub,cls){return`<div class="sst${cls?' '+cls:''}"><i>${ic}</i><b>${v}</b><small>${n}</small>${sub?`<em>${sub}</em>`:''}</div>`}
 function setHTML2(){const S=setFix(P.tw.set);setAccrue();const st=setStats(S),here=Zk===S.k,bar=(v,mx,c)=>`<span class="sbar"><i style="width:${Math.min(100,v/Math.max(1,mx)*100)}%;background:${c}"></i></span>`;

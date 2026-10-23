@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.31** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.32** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -111,6 +111,8 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **N** | I compagni (la stalla) |
 | **U** | In Tomorrow: territorio, conquista e il tuo insediamento |
 | **V** | In Tomorrow, nel tuo insediamento: l'editor del borgo |
+| **Maiusc** | Capriola (premuto e lasciato) · corsa (tenuto mentre ti muovi) |
+| **Tab** | Blocca il bersaglio · il nemico dopo |
 | **Y** | In Tomorrow: le fazioni e la tua fazione con il suo stemma |
 | **T** | In Tomorrow, accamparsi |
 | **G** | In Tomorrow, le gemme del teletrasporto |
@@ -227,6 +229,13 @@ Nel borgo si costruisce la Miniera: dentro si scava a mano cliccando sulla rocci
 rame, marmo, pepite d'oro e gemme, sempre più preziosi man mano che si scende. Potenziandola si scava più in fondo e dal
 livello 3 si trovano i reperti storici di prima del reset (al livello 5 anche i cimeli di Aldoria). Le gallerie restano
 e ogni giorno i minatori portano un po' di minerali al magazzino.
+
+### Il combattimento d'azione (dalla 7.32)
+
+Si combatte cliccando dove si vuole colpire: l'eroe si gira verso il cursore e fa la mossa della sua arma; tenendo premuto
+si carica il colpo pesante. Attacchi, capriola (Maiusc o E) e corsa (Maiusc tenuto) consumano la stamina, che si
+ricarica da sola. Tab blocca il bersaglio: l'eroe lo guarda sempre e ogni colpo va su di lui. Lontano dai nemici il clic
+fa camminare. Il combattimento classico si riattiva in Impostazioni → Comandi.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -813,7 +822,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.31 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.32 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -886,6 +895,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzd_editor2.js` | L'editor del borgo completo: tutti i pavimenti, i muri e gli arredi del gioco, edifici su misura, costi in risorse |
 | `8zze_esercito.js` | La Caserma, i soldati, la potenza dell'esercito, le battaglie risolte con le probabilità e i soldati in campo con te |
 | `8zzf_miniere.js` | Le miniere del borgo: la zona sotto terra, lo scavo a mano, i minerali e le vene, i reperti storici, la produzione dei minatori |
+| `8zzg_azione.js` | Il combattimento d'azione: clic verso il cursore, stamina, capriola, corsa e blocco del bersaglio |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

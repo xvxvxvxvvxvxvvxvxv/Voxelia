@@ -5,6 +5,29 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.32 — Il combattimento d'azione (23 ottobre 2026)
+
+- **Clic per colpire**: per combattere non si clicca più sul nemico, si clicca dove si vuole colpire.
+  - L'eroe si gira verso il cursore e fa la mossa della sua arma, con la catena di tre colpi e il colpo perfetto, facendo un passo avanti a ogni colpo.
+  - Se c'è un nemico in quella direzione, il colpo va su di lui.
+  - Tenendo premuto il tasto del mouse si carica il colpo pesante. Funziona anche in 3D.
+- **La stamina**, la barra verde sotto la vita:
+  - ogni attacco la consuma secondo l'arma (il pugnale poco, il martello tanto), e così il colpo pesante, la capriola e la corsa;
+  - quando finisce si resta senza fiato e bisogna aspettare un attimo;
+  - si ricarica da sola quando ti fermi.
+- **La capriola** (Maiusc premuto e lasciato, E, o il pulsante Schiva): un rotolamento veloce nella direzione in cui ti muovi, invulnerabile per un istante.
+  - Da fermo è un passo indietro.
+  - Non c'è più l'attesa di tre secondi: basta avere stamina.
+- **La corsa**: tenendo premuto Maiusc mentre ti muovi corri più veloce.
+- **Il blocco del bersaglio** (Tab, o il pulsante **Blocca** sul telefono):
+  - l'eroe resta girato verso il nemico scelto anche mentre si sposta, e ogni colpo va su di lui;
+  - Tab di nuovo passa al nemico dopo;
+  - un mirino rosso lo segna.
+- Lontano dai nemici il clic fa camminare come sempre; cliccare persone, porte, forzieri e oggetti funziona come prima.
+- Il combattimento classico si riattiva nelle impostazioni (**Comandi → Combattimento**).
+
+---
+
 ## 7.31 — Le miniere (23 ottobre 2026)
 
 - **La Miniera**: si costruisce nel borgo e si potenzia fino al livello 5. Ha un'entrata nella roccia, con il carrello, le rocce e la legna dei puntelli.

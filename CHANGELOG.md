@@ -5,6 +5,28 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.26 — L'editor del borgo (23 ottobre 2026)
+
+- **Editor del tuo insediamento** (Registro → Insediamento → **Modifica il borgo**, oppure il tasto **V** quando sei nel borgo).
+  - Costruisci camminando fra le case; un clic sulla mappa piazza quello che hai scelto, con l'anteprima verde (si può) o rossa (non c'è spazio).
+  - La prima volta l'editor parte dal borgo così com'è.
+- **Edifici**: sposti mercato, fucina, tempio, locanda, stalla, granaio e le case dove vuoi.
+  - Aggiungi o demolisci case, quante ne permette il livello del borgo, in cinque misure.
+  - Cambi i colori dei muri e del tetto di ogni casa.
+  - Gli edifici che costruisci dopo trovano un posto da soli, e poi li sposti.
+- **Strade**: disegni lastricati e sentieri, o rimetti l'erba, cliccando o trascinando.
+- **Arredi** (10 monete l'uno): alberi, meli, cespugli, aiuole, roseti, siepi, rocce, zampilli, pozzi, lampioni, lanterne, panchine, statue, bandiere, stendardi, vasi, bancarelle, botti, casse, carretti, grano, ortaggi, vigne, fieno, spaventapasseri, staccionate, arnie, legna, stenditoi e altro.
+  - La **fontana** 4×4 costa 120 monete.
+- **Banco del mercante**: scegli dove sta il banco; il mercante ci resta dietro.
+- **Stendardo**: scegli dove piantare lo stendardo del borgo.
+- **Gomma**: togli arredi, strade, fontane e case.
+- L'editor non ti lascia chiudere il passaggio verso una porta, la bacheca o il mercante.
+- **Ripristina** torna al borgo automatico. La palizzata e le torri seguono sempre il confine.
+- **La gente del borgo va in giro**, come nei villaggi: in piazza, sulle strade, a casa, la sera alla locanda. Il mercante e il fabbro restano al loro posto, le guardie fanno la ronda.
+- L'editor funziona anche in 3D e sui telefoni, dove il pannello sta in basso.
+
+---
+
 ## 7.25 — Il nuovo prologo (23 ottobre 2026)
 
 - **Il prologo della Storia, rifatto**: quattordici scene, con scene nuove e le migliori di quello di prima rimontate in un racconto solo.

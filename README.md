@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.25** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.26** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -110,6 +110,7 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **Z** | Domare: lancia un Sigillo di doma sul mostro indebolito più vicino |
 | **N** | I compagni (la stalla) |
 | **U** | In Tomorrow: territorio, conquista e il tuo insediamento |
+| **V** | In Tomorrow, nel tuo insediamento: l'editor del borgo |
 | **Y** | In Tomorrow: le fazioni e la tua fazione con il suo stemma |
 | **T** | In Tomorrow, accamparsi |
 | **G** | In Tomorrow, le gemme del teletrasporto |
@@ -187,6 +188,13 @@ notte a casa. Le guardie fanno la ronda e i mercanti restano al loro banco.
 
 Il prologo della Storia racconta in quattordici scene la fondazione di Aldoria, la Corona e le sei terre, la caduta di
 Malakar, la Corona in frantumi e l'arrivo dell'eroe, con tre musiche nuove. Si rivede dal menu delle scene.
+
+### L'editor del borgo (dalla 7.26)
+
+Nel tuo insediamento apri l'editor (tasto **V**, o Registro → Insediamento): sposti gli edifici, aggiungi e demolisci le
+case, cambi i colori, disegni strade e piazze e metti alberi, fontane, lampioni, panchine, statue, bancarelle, campi e
+staccionate. Scegli anche dove sta il banco del mercante e lo stendardo. La gente del borgo va in giro e il mercante
+resta al suo banco.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -773,7 +781,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.25 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.26 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -841,6 +849,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zy_tw_film.js` | Il filmato del reset dell'universo all'inizio di Tomorrow, le sue musiche e i cimeli di Aldoria |
 | `8zz_borghi.js` | Villaggi e città di Tomorrow con strade, lotti, piazza, mercato, cortili e parco; la gente che si muove con le sue abitudini |
 | `8zza_prologo.js` | Il nuovo prologo della Storia: le scene nuove (il mare, la fondazione, le sei terre, Malakar, la Corona in frantumi, l'alba) e le sue tre musiche |
+| `8zzb_editborgo.js` | L'editor dell'insediamento: edifici, case, strade, arredi, fontane, banco del mercante e stendardo; la gente che va in giro nel borgo |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

@@ -5,6 +5,20 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.32.1 — Manutenzione del borgo e dell'esercito (23 ottobre 2026)
+
+- **Esercito, cambiare zona:** se durante un assalto o un'incursione entravi in una casa o lasciavi la regione, tutti i soldati scesi in campo con te venivano contati come caduti. Ora tornano alla caserma, e si perdono solo quelli caduti davvero.
+- **Esercito, assalto perso sul campo:** se lo stendardo del borgo cadeva mentre combattevi, il gioco faceva combattere di nuovo l'esercito «in tua assenza». Così morivano altri soldati e spesso arrivava una vittoria con +3 di reputazione, senza saccheggio. Ora la sconfitta resta una sconfitta, come quando non c'è l'esercito.
+- **Guerra, senza soldati:** il riquadro «Se non arrivi in tempo» mostrava una probabilità di vittoria anche con la caserma vuota, contando solo torri e mura, ma senza soldati non combatte nessuno. Ora dice che il borgo verrà saccheggiato (o che perderai la terra).
+- **L'Espansione costruisce le case:** comprarla alzava il livello e il numero massimo di case, ma non aggiungeva né case né abitanti. Ora le due case nuove si costruiscono da sole nel borgo, con la porta raggiungibile, e si possono spostare con l'editor. Se la compri da lontano, compaiono quando torni.
+- **Borghi di prima della 7.28 e borghi nuovi:** quando il borgo passava all'editor, gli edifici occupavano il posto di alcune case. Gli abitanti in più restavano senza tetto e, il giorno dopo, metà se ne andava per sempre. Ora le case mancanti si costruiscono da sole.
+- **Il raccolto dei vecchi borghi:** nei salvataggi di prima della 7.28, il cibo del granaio oltre le scorte andava perso. Ora va nel magazzino come grano e mele, da ritirare con 💰 Ritira.
+- **Fontane e acqua:** le fontane e gli arredi d'acqua messi con l'editor facevano credere al borgo di avere un fiume vicino, e l'acqua contava due volte. Ora il bonus del fiume viene solo dall'acqua vera.
+- **Editor, strade sul terreno:** una strada (o l'erba) disegnata su una casella dipinta con lo strumento Terreno non si vedeva, anche se i passanti la usavano come strada. Ora la strada prende il posto del terreno dipinto.
+- **Materiali:** se nel magazzino c'erano solo i minerali della miniera, il riquadro mostrava «nel magazzino:» senza niente dopo. Ora li elenca tutti.
+
+---
+
 ## 7.32 — Il combattimento d'azione (23 ottobre 2026)
 
 - **Clic per colpire**: per combattere non si clicca più sul nemico, si clicca dove si vuole colpire.

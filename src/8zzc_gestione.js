@@ -39,7 +39,10 @@ function setBProps(C,b){const T=TB[TB.length-1];if(T&&SETBC[b.k]){if(!b.wall){T.
   const pr={pozzo:['W','ʬ'],fattoria:['g','q','y','E'],segheria:['L','L','m'],cava:['u','u','k']}[b.k];if(!pr)return;let n=0;
   for(const[x,y]of[[b.x-1,b.y+b.h-1],[b.x+b.w,b.y+b.h-1],[b.x-1,b.y],[b.x+b.w,b.y]]){if(n>=pr.length||!C.ok(x,y)||M[y][x]!==0)continue;const d=DEC[y][x]||'';if(d===DN+'4'||d===DN+'1')continue;M[y][x]=6;DEC[y][x]=pr[n++];C.res(x,y)}}
 /* ---- le statistiche e il giorno del borgo ---- */
-function setFix(S){S=S||(P.tw&&P.tw.set);if(!S)return S;if(S.pop==null){S.pop=Math.max(3,Math.round(setCap(S)*.6));S.cibo=(S.food|0)+20;S.acqua=20;S.food=0}
+function setFix(S){S=S||(P.tw&&P.tw.set);if(!S)return S;if(S.pop==null){S.pop=Math.max(3,Math.round(setCap(S)*.6));
+    // il raccolto dei salvataggi di prima della 7.28: quello che non sta nelle scorte va nel magazzino (grano e mele, come lo pagava il vecchio Ritira)
+    const f=S.food|0,fc=40+setB('granaio')*40+setB('fattoria')*10,keep=Math.min(f,Math.max(0,fc-20)),x=f-keep;S.cibo=keep+20;S.acqua=20;S.food=0;
+    if(x>0){S.mag=S.mag||{};S.mag.grano=(S.mag.grano|0)+Math.ceil(x/2);S.mag.mela=(S.mag.mela|0)+Math.floor(x/2)}}
   S.via=S.via|0;S.fame=S.fame|0;S.mag=S.mag||{};S.log=S.log||[];return S}
 function setCount(S,cs){const Ly=S.lay;let n=0;if(Ly&&Ly.d)for(const k in Ly.d)if(cs.includes(Ly.d[k]))n++;return n}
 function setCap(S){const Ly=S.lay,nc=Ly&&Ly.b?Ly.b.filter(b=>b.k==='casa').length:2+(S.lv|0)*2;return nc*4+setB('locanda')*2+2}
@@ -75,7 +78,7 @@ function setPay(c){for(const r in c){if(r==='g')P.g-=c[r];else P.res[r]=(P.res[r
 const setCostHTML=c=>Object.keys(c).filter(r=>c[r]>0).map(r=>{const have=r==='g'?P.g|0:P.res[r]|0;return`<span class="stc${have<c[r]?' no':''}">${SETMI[r]||''} ${c[r]}</span>`}).join('');
 setBuy=function(b){const S=P.tw.set;if(!S)return;setFix(S);const B=TWSB[b],cur=b==='casa'?S.lv:setB(b);if(!B||cur>=B.max)return;const c=setCostOf(b,cur+1),m=setMiss(c);
   if(m.length){msg('Mancano '+m.map(([r,n])=>n+' '+(r==='g'?'monete':RESN[r].toLowerCase())).join(', ')+'. Le risorse si raccolgono nelle terre selvagge.');tone(150,.1);return}
-  setPay(c);if(b==='casa')S.lv++;else S.b[b]=cur+1;if(typeof setPlaceNew==='function')setPlaceNew(b);jingle([67,72,76,79],.08,'triangle');banner(B.ic+' '+B.n+(b==='casa'?' · livello '+S.lv:' · livello '+S.b[b]),S.n+' cresce','martello');setRebuild();save();pn('regno')};
+  setPay(c);if(b==='casa'){S.lv++;if(S.lay&&S.lay.v)S.lay.hq=(S.lay.hq|0)+2}else S.b[b]=cur+1;if(typeof setPlaceNew==='function')setPlaceNew(b);if(b==='casa'&&typeof setPlaceHouses==='function')setPlaceHouses();jingle([67,72,76,79],.08,'triangle');banner(B.ic+' '+B.n+(b==='casa'?' · livello '+S.lv:' · livello '+S.b[b]),S.n+' cresce','martello');setRebuild();save();pn('regno')};
 /* ---- il pannello del borgo ---- */
 function setTile(ic,n,v,sub,cls){return`<div class="sst${cls?' '+cls:''}"><i>${ic}</i><b>${v}</b><small>${n}</small>${sub?`<em>${sub}</em>`:''}</div>`}
 function setHTML2(){const S=setFix(P.tw.set);setAccrue();const st=setStats(S),here=Zk===S.k,bar=(v,mx,c)=>`<span class="sbar"><i style="width:${Math.min(100,v/Math.max(1,mx)*100)}%;background:${c}"></i></span>`;
@@ -87,7 +90,7 @@ function setHTML2(){const S=setFix(P.tw.set);setAccrue();const st=setStats(S),he
     +setTile('💧','Acqua',S.acqua+'/'+st.wcap,(dw>=0?'+':'')+dw+' al giorno'+bar(S.acqua,st.wcap,'#5ab0ff'),dw<0?'bad':'')
     +setTile('💰','Monete',(S.cash|0),'+'+st.tax+' al giorno · tasse')
     +setTile('⚔','Potenza dell\'esercito',st.pow,typeof setPowerSub==='function'?setPowerSub(S):(setB('torre')?'le guardie delle torri':'nessun esercito'))
-    +setTile('🧱','Materiali',SETMAT.map(k=>(P.res[k]|0)).join(' · '),SETMAT.map(k=>SETMI[k]).join(' · ')+(Object.values(S.mag).some(v=>v>0)?'<br>nel magazzino: '+SETMAT.filter(k=>S.mag[k]).map(k=>S.mag[k]+' '+SETMI[k]).join(' '):''))+`</div>`;
+    +setTile('🧱','Materiali',SETMAT.map(k=>(P.res[k]|0)).join(' · '),SETMAT.map(k=>SETMI[k]).join(' · ')+(Object.values(S.mag).some(v=>v>0)?'<br>nel magazzino: '+Object.keys(S.mag).filter(k=>S.mag[k]>0).map(k=>S.mag[k]+' '+(SETMI[k]||(RESN[k]||k).toLowerCase())).join(' '):''))+`</div>`;
   const tips=[];if(df<0)tips.push('Il cibo non basta: costruisci la Fattoria o il Granaio, semina campi con l\'editor o porta grano, mele e uova.');if(dw<0)tips.push('L\'acqua non basta: costruisci la Cisterna, o metti pozzi e fontane con l\'editor.');
   if(S.via)tips.push(S.via+' abitanti sono andati via: torneranno quando ci saranno abbastanza cibo e acqua (e case libere).');if(st.pop>=st.cap&&!S.via)tips.push('Il borgo è pieno: con l\'Espansione o nuove case arrivano altri abitanti.');
   if(tips.length)h+=`<div class="stips">${tips.map(x=>`<p>⚠ ${x}</p>`).join('')}</div>`;
@@ -103,8 +106,9 @@ const _rgHTML728=rgHTML;rgHTML=function(){let h=_rgHTML728();if(RG.tab!=='set'||
   return h.slice(0,i+17)+setHTML2()+h.slice(j)};
 /* ---- nel borgo: la pianta si usa sempre, il fiume conta per l'acqua, la barra delle risorse ---- */
 const _loadPost728=loadPost;loadPost=function(k){_loadPost728(k);if(!twOn()||!P.tw||!P.tw.set)return;const S=setFix(P.tw.set);setAccrue();
-  if(Zk===S.k&&ZZ&&ZZ.shub){let w=0;const[cx,cy]=ZZ.shub,R=sedR()+6;for(let y=cy-R;y<=cy+R;y++)for(let x=cx-R;x<=cx+R;x++)if(y>0&&x>0&&y<N&&x<N&&M[y][x]===2)w++;S.riv=w>12?1:0;
-    if(!S.lay||!S.lay.v){sedCapture();save();setTimeout(()=>{if(Zk===S.k&&!PM)setRebuild()},30)}}
+  if(Zk===S.k&&ZZ&&ZZ.shub){let w=0;const[cx,cy]=ZZ.shub,R=sedR()+6,Ly=S.lay&&S.lay.v?S.lay:null;for(let y=cy-R;y<=cy+R;y++)for(let x=cx-R;x<=cx+R;x++)if(y>0&&x>0&&y<N&&x<N&&M[y][x]===2&&!(Ly&&((Ly.p&&sedFoAt(x,y))||(Ly.d&&typeof EDECI!=='undefined'&&(EDECI[Ly.d[sedKey(x,y)]]||{}).water))))w++;S.riv=w>12?1:0;
+    if(!S.lay||!S.lay.v){sedCapture();save();setTimeout(()=>{if(Zk===S.k&&!PM){if(typeof setPlaceHouses==='function'&&setPlaceHouses())save();setRebuild()}},30)}
+    else if(S.lay.hq>0)setTimeout(()=>{if(Zk===S.k&&!PM&&typeof setPlaceHouses==='function'&&setPlaceHouses()){save();setRebuild()}},30)}
   if(S.nlog&&S.log[0]){const L=S.log.slice(0,Math.min(3,S.nlog));S.nlog=0;if(L.some(l=>/andat|Manca/.test(l.s)))banner('Notizie da '+S.n,L[0].s,'corona');else msg(S.n+': '+L[0].s)}
   setHud()};
 function setHud(){let el=$('sethud');if(!el){el=document.createElement('div');el.id='sethud';document.body.appendChild(el)}const S=P&&P.tw&&P.tw.set;

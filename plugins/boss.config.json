@@ -1,0 +1,43 @@
+{
+  "ogniMin": 60,
+  "primaMin": 10,
+  "durataMin": 15,
+  "minGiocatori": 1,
+  "vite": 6,
+  "vitePerEroe": 3,
+  "dannoMaxSec": 0.1,
+  "dannoMaxLivello": 0.01,
+  "quotaMin": 0.03,
+  "premio": {
+    "oro": 1200,
+    "xp": 900
+  },
+  "oggetti": {
+    "primo": 3,
+    "bravi": 2,
+    "altri": 1
+  },
+  "boss": [
+    {
+      "zona": "forest",
+      "nome": "Vecchio Tronco, il Troll Millenario",
+      "base": "troll",
+      "scala": 1.6,
+      "forza": 1.2
+    },
+    {
+      "zona": "desert",
+      "nome": "Sfinge delle Sabbie Rosse",
+      "base": "sfinge",
+      "scala": 1.4,
+      "forza": 1.15
+    },
+    {
+      "zona": "peaks",
+      "nome": "Vermigelo, il Drago Antico",
+      "base": "drago_brina",
+      "scala": 1.4,
+      "forza": 1.1
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "massimo": 4,
+  "scadenzaInvitoSec": 60,
+  "assenzaMin": 5,
+  "quotaXp": 0.3,
+  "oroPerLivello": 5,
+  "bonusCiclo": 0.25,
+  "pulsanteRaggiungi": true
+}

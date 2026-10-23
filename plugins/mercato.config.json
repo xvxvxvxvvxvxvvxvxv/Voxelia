@@ -1,0 +1,21 @@
+{
+  "nome": "Mercatino di Aldoria",
+  "tassaPercento": 5,
+  "giorniScadenza": 7,
+  "banchiPerEroe": 8,
+  "banchiTotali": 400,
+  "prezzoMin": 1,
+  "prezzoMax": 100000,
+  "prezzoConsigliato": 2,
+  "bloccaSospetti": true,
+  "attesaCompraSec": 2,
+  "vietateDa": [
+    "arena",
+    "mare",
+    "arrembaggio",
+    "stiva",
+    "sogno",
+    "cella"
+  ],
+  "ancheNeiDungeon": false
+}

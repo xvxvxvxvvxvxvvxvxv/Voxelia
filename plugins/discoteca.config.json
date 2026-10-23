@@ -1,0 +1,31 @@
+{
+  "nome": "Discoteca Voxel",
+  "nomeDj": "DJ Voxel",
+  "bpm": 124,
+  "cercaBpm": true,
+  "chiaveGetSongBpm": "",
+  "sogliaVoto": 0.5,
+  "richiedenteDecide": true,
+  "maxCoda": 25,
+  "maxPerEroe": 3,
+  "durataMaxMin": 10,
+  "attesaSec": 5,
+  "portaleInCitta": true,
+  "posPortale": [
+    33,
+    44
+  ],
+  "vietateDa": [
+    "arena",
+    "mare",
+    "arrembaggio",
+    "stiva",
+    "sogno"
+  ],
+  "frasiDj": [
+    "Mettete un link e si balla!",
+    "Questo pezzo spacca!",
+    "Mani in alto!",
+    "Chi ha la prossima richiesta?"
+  ]
+}

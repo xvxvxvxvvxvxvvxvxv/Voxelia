@@ -1,0 +1,18 @@
+{
+  "tempoMinimoSec": 30,
+  "righeClassifica": 10,
+  "annunciaRecord": true,
+  "tempiParziali": true,
+  "sfidaDungeon": [
+    "tana",
+    "cripta",
+    "piramide",
+    "cristallo",
+    "fucina",
+    "abisso"
+  ],
+  "sfidaMinimoEroi": 2,
+  "sfidaPremioOro": 500,
+  "sfidaPremioOggetto": 2,
+  "indirizzo": ""
+}

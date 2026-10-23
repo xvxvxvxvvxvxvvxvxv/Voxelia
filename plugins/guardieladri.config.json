@@ -1,0 +1,122 @@
+{
+  "iscrizioniSec": 90,
+  "nascondiSec": 60,
+  "cacciaMin": 5,
+  "minGiocatori": 3,
+  "maxGiocatori": 30,
+  "ladriPerGuardia": 2,
+  "raggio": 2,
+  "vista": 6,
+  "aperturaDaiGiocatori": true,
+  "quartiereBase": "aldoria",
+  "velocitaMax": 9,
+  "pausaSec": 5,
+  "sospettiMax": 3,
+  "comandiBloccati": [
+    "tpa",
+    "borgo",
+    "visita",
+    "discoteca",
+    "hub"
+  ],
+  "premi": {
+    "ladro": {
+      "oro": 150,
+      "xp": 100
+    },
+    "guardie": {
+      "oro": 100,
+      "xp": 80
+    },
+    "cattura": {
+      "oro": 25,
+      "xp": 0
+    }
+  },
+  "premiMinGiocatori": 3,
+  "quartieri": {
+    "aldoria": {
+      "nome": "Aldoria e i suoi edifici",
+      "zone": [
+        "town",
+        "arena",
+        "in_castle",
+        "in_library",
+        "in_tavern",
+        "in_house1",
+        "in_alch",
+        "in_smith",
+        "in_temple",
+        "in_house2",
+        "in_casino",
+        "in_house3",
+        "in_panetteria",
+        "in_sartoria",
+        "in_caserma",
+        "in_scuderia",
+        "in_osservatorio",
+        "in_municipio",
+        "in_motel",
+        "in_motel2",
+        "cas_galleria",
+        "cas_consiglio",
+        "cas_cucine",
+        "cas_appartamenti",
+        "cas_armeria",
+        "cas_archivio",
+        "cas_prigioni",
+        "lib_archivio",
+        "tav_camere",
+        "tav_cantina",
+        "tem_cripta",
+        "casino_vip",
+        "bar_dorm",
+        "oss_cupola",
+        "mun_piano"
+      ]
+    },
+    "nobile": {
+      "nome": "Quartiere Nobile",
+      "zone": [
+        "nord",
+        "in_palazzo",
+        "in_banca",
+        "in_teatro",
+        "in_villa1",
+        "in_villa2",
+        "in_villa3",
+        "in_villa4",
+        "in_villa5",
+        "in_villa6"
+      ]
+    },
+    "campi": {
+      "nome": "Campi e Mestieri",
+      "zone": [
+        "campi",
+        "in_mulino",
+        "in_segheria",
+        "in_fattoria",
+        "in_fienile"
+      ]
+    },
+    "porto": {
+      "nome": "Porto di Aldoria",
+      "zone": [
+        "porto",
+        "in_faro",
+        "in_locanda",
+        "in_capitaneria",
+        "in_magazzino1",
+        "in_magazzino2",
+        "in_pescheria",
+        "in_cantiere",
+        "in_casa_p1",
+        "in_casa_p2",
+        "in_casa_p3",
+        "in_casa_p4",
+        "in_galeone"
+      ]
+    }
+  }
+}

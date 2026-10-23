@@ -1,0 +1,16 @@
+{
+  "quante": 3,
+  "premio": {
+    "oro": 300,
+    "xp": 300
+  },
+  "premioDifficile": {
+    "oro": 600,
+    "xp": 600
+  },
+  "premioTutte": {
+    "oro": 500,
+    "oggetto": 2
+  },
+  "promemoria": true
+}

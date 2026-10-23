@@ -1,0 +1,250 @@
+{
+  "ogniMin": 40,
+  "primaMin": 5,
+  "durataMin": 15,
+  "indiziMin": [
+    0,
+    5,
+    10
+  ],
+  "minGiocatori": 1,
+  "raggio": 1.6,
+  "premio": {
+    "oro": 300,
+    "xp": 200,
+    "rarita": 2
+  },
+  "nascondigli": [
+    {
+      "zona": "town",
+      "x": 42,
+      "y": 29,
+      "nome": "il pozzo del mercato",
+      "indizi": [
+        "Il tesoro è in città, dove i mercanti gridano i prezzi.",
+        "Cerca a est della fontana, tra le bancarelle del mercato.",
+        "È proprio sotto il pozzo del mercato, sul lato sud."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 47,
+      "y": 47,
+      "nome": "il grande albero del parco",
+      "indizi": [
+        "Il tesoro riposa all'ombra, nel verde della città.",
+        "Cerca nel parco a sud-est della piazza della fontana.",
+        "È ai piedi del grande albero al centro del parco, appena a sud."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 6,
+      "y": 13,
+      "nome": "il cortile del castello",
+      "indizi": [
+        "Il tesoro è dove abita chi porta la corona.",
+        "Cerca nel cortile davanti al Castello, a nord-ovest di Aldoria.",
+        "È tra i due alberi del cortile, a sinistra della Guardia del Castello."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 62,
+      "y": 12,
+      "nome": "le aiuole dell'Osservatorio",
+      "indizi": [
+        "Il tesoro passa le notti a guardare le stelle.",
+        "Cerca nell'angolo nord-est di Aldoria, davanti all'Osservatorio.",
+        "È tra i cannocchiali e le aiuole, tre passi sotto la porta dell'Osservatorio."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 15,
+      "y": 62,
+      "nome": "l'ancora del lungomare",
+      "indizi": [
+        "Il tesoro sente l'odore del mare, ma non è al Porto.",
+        "Cerca sul lungomare di Aldoria, nella parte ovest.",
+        "È accanto all'ancora più a ovest del lungomare, verso l'acqua."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 65,
+      "y": 49,
+      "nome": "il recinto di Saetta",
+      "indizi": [
+        "Il tesoro ha visto passare più zoccoli che stivali.",
+        "Cerca vicino alla Scuderia, nella parte est di Aldoria.",
+        "È dentro il recinto dei cavalli, dove pascola Saetta."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 8,
+      "y": 45,
+      "nome": "il vecchio cimitero",
+      "indizi": [
+        "Il tesoro dorme accanto a chi non si sveglia più.",
+        "Cerca a sud-ovest di Aldoria, dietro una recinzione.",
+        "È tra le lapidi del vecchio cimitero, appena sotto la piccola cripta."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 61,
+      "y": 30,
+      "nome": "il giardino del Municipio",
+      "indizi": [
+        "Il tesoro è dove si scrivono le leggi della città.",
+        "Cerca nel giardino davanti al Municipio, a est di Aldoria.",
+        "È appena a sud dell'albero, tra le siepi del giardino del Municipio."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 40,
+      "y": 13,
+      "nome": "l'ingresso del Colosseo",
+      "indizi": [
+        "Il tesoro sente le grida della folla.",
+        "Cerca fuori dal Colosseo, a nord di Aldoria.",
+        "È all'angolo sud-ovest del Colosseo, a pochi passi dal Tabellone dell'Arena."
+      ]
+    },
+    {
+      "zona": "town",
+      "x": 22,
+      "y": 11,
+      "nome": "il giardino della Biblioteca",
+      "indizi": [
+        "Il tesoro ama il silenzio e i libri.",
+        "Cerca davanti alla Biblioteca Arcana, a nord di Aldoria.",
+        "È tra le due panchine del giardino, appena sotto la porta della Biblioteca."
+      ]
+    },
+    {
+      "zona": "porto",
+      "x": 47,
+      "y": 44,
+      "nome": "il Faro",
+      "indizi": [
+        "Il tesoro aspetta dove finisce la terra.",
+        "Cerca al Porto, sulla punta del molo a est.",
+        "È ai piedi del Faro di Aldoria, appena sotto la sua porta."
+      ]
+    },
+    {
+      "zona": "porto",
+      "x": 47,
+      "y": 23,
+      "nome": "le reti dei pescatori",
+      "indizi": [
+        "Il tesoro è rimasto impigliato.",
+        "Cerca al Porto, vicino alla Capitaneria.",
+        "È appena sopra le reti stese ad asciugare, a est della Capitaneria."
+      ]
+    },
+    {
+      "zona": "porto",
+      "x": 4,
+      "y": 26,
+      "nome": "l'ancora del molo ovest",
+      "indizi": [
+        "Il tesoro ha gettato l'ancora.",
+        "Cerca al Porto, all'estremità ovest della banchina.",
+        "È accanto alla grande ancora a ovest, sotto la Locanda del Gabbiano."
+      ]
+    },
+    {
+      "zona": "nord",
+      "x": 18,
+      "y": 50,
+      "nome": "il roseto",
+      "indizi": [
+        "Il tesoro profuma di rose.",
+        "Cerca nel Quartiere Nobile, nella parte sud-ovest.",
+        "È nel roseto del Giardiniere Fiore, tra le aiuole."
+      ]
+    },
+    {
+      "zona": "nord",
+      "x": 28,
+      "y": 28,
+      "nome": "la vasca del Quartiere Nobile",
+      "indizi": [
+        "Il tesoro si specchia nell'acqua dei nobili.",
+        "Cerca nella piazza al centro del Quartiere Nobile.",
+        "È appena a sud della grande vasca della piazza."
+      ]
+    },
+    {
+      "zona": "nord",
+      "x": 33,
+      "y": 37,
+      "nome": "il giardino delle siepi",
+      "indizi": [
+        "Il tesoro si è perso tra le siepi.",
+        "Cerca nel Quartiere Nobile, nei giardini a sud della piazza.",
+        "È nel giardino di siepi a est, vicino all'albero."
+      ]
+    },
+    {
+      "zona": "campi",
+      "x": 36,
+      "y": 36,
+      "nome": "il frutteto",
+      "indizi": [
+        "Il tesoro è maturo al punto giusto.",
+        "Cerca ad Aldoria Est, nei Campi e Mestieri.",
+        "È in mezzo al frutteto, tra i meli."
+      ]
+    },
+    {
+      "zona": "campi",
+      "x": 18,
+      "y": 43,
+      "nome": "il pollaio",
+      "indizi": [
+        "Il tesoro è stato covato con cura.",
+        "Cerca ad Aldoria Est, vicino alla Casa della Fattoria.",
+        "È dentro il pollaio, tra le galline e le uova."
+      ]
+    },
+    {
+      "zona": "in_tavern",
+      "x": 11,
+      "y": 2,
+      "nome": "il camino della Taverna",
+      "indizi": [
+        "Il tesoro si scalda vicino al fuoco.",
+        "Cerca alla Taverna del Drago Ubriaco.",
+        "È accanto al camino, in fondo a destra dietro il bancone."
+      ]
+    },
+    {
+      "zona": "in_library",
+      "x": 5,
+      "y": 1,
+      "nome": "gli scaffali della Biblioteca",
+      "indizi": [
+        "Il tesoro è nascosto tra le pagine.",
+        "Cerca dentro la Biblioteca Arcana.",
+        "È in fondo alla sala, tra i due scaffali centrali, dietro il Saggio Elandor."
+      ]
+    },
+    {
+      "zona": "in_temple",
+      "x": 10,
+      "y": 1,
+      "nome": "l'altare del Tempio",
+      "indizi": [
+        "Il tesoro è stato benedetto.",
+        "Cerca dentro il Tempio della Luce.",
+        "È in fondo al tempio, a destra dell'altare, vicino alla pianta."
+      ]
+    }
+  ]
+}

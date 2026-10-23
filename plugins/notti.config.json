@@ -1,0 +1,16 @@
+{
+  "ogniNotti": 3,
+  "oraInizio": 22,
+  "oraFine": 5,
+  "moltiplicatoreXp": 2,
+  "puntiBoss": 3,
+  "puntiArena": 1,
+  "premioPrimo": {
+    "oro": 1500,
+    "oggetto": 3
+  },
+  "premioPartecipanti": {
+    "oro": 200
+  },
+  "preavviso": true
+}

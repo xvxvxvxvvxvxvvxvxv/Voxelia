@@ -1,0 +1,72 @@
+{
+  "azione": "segnala",
+  "azioneDa": "alta",
+  "espelliDopo": 0,
+  "oroSecondo": 12000,
+  "oroMinuto": 20000,
+  "oroMinutoPerLivello": 2000,
+  "livelliSecondo": 2,
+  "livelli10Minuti": 8,
+  "livelloMax": 150,
+  "velocitaMax": 9,
+  "salto": 15,
+  "bossPausaSec": 60,
+  "bloccaBossSospetti": true,
+  "dannoPvpMax": 3000,
+  "dannoPvpPerLivello": 400,
+  "bloccaColpiEccessivi": false,
+  "bloccaScambiSospetti": true,
+  "travasoOro": 100000,
+  "livelliFuori": 5,
+  "oroFuori": 100000,
+  "statistiche": true,
+  "statMultiplo": 5,
+  "statOreMin": 1,
+  "statGiocatoriMin": 3,
+  "copia": "segnala",
+  "sensore": true,
+  "sensoreSec": 5,
+  "senzaSensore": "ignora",
+  "graziaSec": 30,
+  "maxSegnalazioni": 500,
+  "automoderazione": {
+    "attiva": false,
+    "punti": {
+      "alta": 10,
+      "media": 3,
+      "bassa": 0
+    },
+    "puntiTipo": {
+      "cheat menu": 30
+    },
+    "scadenzaOre": 72,
+    "regole": [
+      {
+        "punti": 10,
+        "azione": "avvisa",
+        "messaggio": "Il Guardiano ha notato qualcosa di strano nella tua partita. Se continua scatteranno delle sanzioni."
+      },
+      {
+        "punti": 20,
+        "azione": "ripristina"
+      },
+      {
+        "punti": 30,
+        "azione": "espelli"
+      },
+      {
+        "punti": 60,
+        "azione": "sospendi",
+        "ore": 24
+      },
+      {
+        "punti": 120,
+        "azione": "sospendi",
+        "ore": 168
+      }
+    ],
+    "sospendiIp": false,
+    "annuncia": false,
+    "esenti": []
+  }
+}

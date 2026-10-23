@@ -1,0 +1,47 @@
+{
+  "giornoElezione": 0,
+  "oraElezione": 21,
+  "minutiPerVotare": 30,
+  "votoPerSe": false,
+  "unVotoPerIp": false,
+  "minVoti": 1,
+  "cappello": "🎩 ",
+  "decreti": [
+    {
+      "id": "xp",
+      "nome": "Esperienza doppia",
+      "tipo": "xp",
+      "per": 2,
+      "minuti": 60
+    },
+    {
+      "id": "oro",
+      "nome": "Oro doppio",
+      "tipo": "oro",
+      "per": 2,
+      "minuti": 60
+    },
+    {
+      "id": "festa",
+      "nome": "Festa in discoteca",
+      "tipo": "festa",
+      "minuti": 30,
+      "regalo": {
+        "oro": 25,
+        "pozioni": 1
+      }
+    },
+    {
+      "id": "notte",
+      "nome": "Notte di caccia anticipata",
+      "tipo": "notte"
+    },
+    {
+      "id": "sconto",
+      "nome": "Sconto al Mercatino",
+      "tipo": "sconto",
+      "percento": 10,
+      "minuti": 120
+    }
+  ]
+}

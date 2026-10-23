@@ -5,6 +5,23 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.27 — La vista 3D in stile voxel (23 ottobre 2026)
+
+- **Stile voxel** per la vista 3D, ora quello predefinito:
+  - facce nette e lo spigolo scuro di ogni cubo, al posto degli spigoli arrotondati;
+  - ogni materiale ha la sua grana a cubetti: erba, pietra, legno, sabbia, neve, terra, metallo e anche l'acqua, che si increspa a quadretti;
+  - ogni cubetto ha una sfumatura sua, come nei modelli voxel;
+  - i fili d'erba sono fatti di cubetti.
+  - I dettagli restano tutti: luce del sole, ombre, torce, nebbia, orizzonte.
+  - Nelle opzioni della vista 3D (**Stile della vista 3D**) si torna allo stile liscio.
+- **Correzioni della vista 3D**:
+  - nei castelli, nelle locande, nelle cripte e in altri luoghi alcune caselle del pavimento comparivano come quadrati bianchi accesi: erano scambiate per luci;
+  - le luci troppo vicine (lampioni, torce, la lanterna dell'eroe) non bruciano più l'immagine in bianco;
+  - nei deserti e sulla neve al sole l'immagine non è più slavata: le luci forti hanno una sfumatura morbida;
+  - nei villaggi e nelle città di Tomorrow il bordo delle fontane e gli arredi fatti dal paese (bancarelle, panchine, lampioni, orti) si vedono anche in 3D.
+
+---
+
 ## 7.26 — L'editor del borgo (23 ottobre 2026)
 
 - **Editor del tuo insediamento** (Registro → Insediamento → **Modifica il borgo**, oppure il tasto **V** quando sei nel borgo).

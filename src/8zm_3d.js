@@ -3,7 +3,9 @@
    alto o le impostazioni) e la partita continua uguale. Non ci sono modelli nuovi: il gioco disegna tutto con
    box(x,y,z,w,d,h,colore) e qui quelle chiamate diventano solidi WebGL. Ma sono resi come oggetti veri:
    - luce del sole che segue l'ora del giorno, cielo con nuvole, stelle di notte, ombre proiettate dal sole;
-   - spigoli arrotondati (la luce scivola sui bordi come su legno, pietra e metallo veri), superfici con la loro grana:
+   - 7.27: stile VOXEL (predefinito): facce nette con lo spigolo scuro di ogni cubo, la grana a cubetti di ogni materiale
+     e i fili d'erba fatti di cubetti; nelle opzioni si torna allo stile liscio;
+   - spigoli arrotondati nello stile liscio (la luce scivola sui bordi come su legno, pietra e metallo veri), superfici con la loro grana:
      erba, pietra, legno, sabbia, neve, metallo lucido, e l'acqua che si muove e riflette il cielo;
    - di notte e nei sotterranei le torce, le lanterne e i bracieri illuminano davvero ciò che hanno intorno;
    - fili d'erba mossi dal vento;
@@ -12,11 +14,11 @@
    La telecamera segue l'eroe da dietro: tasto destro del mouse (o due dita) per girarla, rotellina per avvicinarla.
    WASD e la levetta si muovono rispetto alla telecamera; clic per camminare, attaccare, parlare, come sempre.
    Nei filmati, durante la pesca, la navigazione e le battaglie del mare il gioco torna da solo alla vista classica. */
-const D3=Object.assign({on:0,q:2,sh:1,gr:1,far:1,sens:1,inv:0,seen:0},LS.get('voxelia_3d',{}),
+const D3=Object.assign({on:0,q:2,sh:1,gr:1,far:1,sens:1,inv:0,seen:0,vx:1},LS.get('voxelia_3d',{}),
   {gl:null,ok:null,act:0,yaw:Math.PI/4,pitch:.62,dist:13,cam:null,tgt:null,zk:null,M:null,FC:null,ch:new Map(),bd:null,lt:[],labs:[],t:0,rr:0,drag:null,
    vp:null,V:null,P:null,ew:[0,0,0],cw:[0,0,0],sk:null,cv:null,f:0});
 if(LS.get('voxelia_3d',null)===null&&typeof TOUCH!=='undefined'&&TOUCH)D3.q=1;
-const d3Save=()=>LS.set('voxelia_3d',{on:D3.on,q:D3.q,sh:D3.sh,gr:D3.gr,far:D3.far,sens:D3.sens,inv:D3.inv,seen:D3.seen});
+const d3Save=()=>LS.set('voxelia_3d',{on:D3.on,q:D3.q,sh:D3.sh,gr:D3.gr,far:D3.far,sens:D3.sens,inv:D3.inv,seen:D3.seen,vx:D3.vx});
 const D3TS=1.6,D3ZS=.05,D3CS=16;   // 1 casella = 1,6 m; 1 pixel d'altezza = 5 cm; pezzi di 16×16 caselle
 // la vista 3D vale solo nella partita e non durante pesca, mare, battaglie, editor e realtà virtuale
 const d3Want=()=>!!(D3.on&&started&&P&&M&&D3.ok!==false&&!(typeof XR!=='undefined'&&XR.s)&&!(NAV&&Zk==='mare')&&!(FSH&&PM==='fish')&&PM!=='dig'&&PM!=='duel'&&
@@ -38,7 +40,7 @@ const d3Hash=B=>{let h=2166136261;for(let i=0;i<B.length;i++)h=Math.imul(h^(Math
 
 /* ---- i materiali: dal colore e da dove si trova la box ----
    0 normale · 1 foglie ed erba · 2 pietra · 3 legno · 4 metallo · 5 acqua · 6 luce · 7 pelle e stoffa · 8 sabbia · 9 neve · 10 terra · 11 fili d'erba · 12 lava */
-function d3Mat(r,g,b,f,ctx){if(ctx===5)return r>g*1.4&&r>b*1.6?12:5;if(ctx===11)return 11;if(f>1.06)return 6;
+function d3Mat(r,g,b,f,ctx){if(ctx===5)return r>g*1.4&&r>b*1.6?12:5;if(ctx===11)return 11;if(f>1.16)return 6;
   const mx=Math.max(r,g,b),mn=Math.min(r,g,b),s=mx-mn,l=(mx+mn)/510;
   if(r>=mx-2&&g>110&&b<g*.6&&s>70&&l>.35&&g>r*.62)return 4;          // oro e ottone
   if(g>r+10&&g>=b)return 1;
@@ -82,7 +84,7 @@ const D3VS=`uniform mat4 VP,LM;uniform float TM;in vec3 a;in vec4 c;in vec4 n;in
 void main(){vec3 w=vec3(a.x*${D3TS},a.z*${D3ZS},a.y*${D3TS});float m=floor(c.a*255.+.5);
  if(m==11.){float s=sin(TM*2.1+w.x*.9+w.z*.6)+.5*sin(TM*3.3+w.x*2.1);w.xz+=vec2(.07,.04)*s*l.y;}
  wp=w;vc=c;vn3=n.xyz;vl=l;ls=LM*vec4(w+n.xyz*.06,1.);gl_Position=VP*vec4(w,1.);}`;
-const D3FS=`uniform vec3 SUN,SUNC,AU,AD,FOGC,CAM,HZC,HP;uniform float FOG0,FOG1,TM,SHON,LAN;uniform highp sampler2DShadow SM;uniform vec4 PL[12];uniform vec3 PC[12];uniform int NP;uniform vec4 HL;
+const D3FS=`uniform vec3 SUN,SUNC,AU,AD,FOGC,CAM,HZC,HP;uniform float FOG0,FOG1,TM,SHON,LAN,VX;uniform highp sampler2DShadow SM;uniform vec4 PL[12];uniform vec3 PC[12];uniform int NP;uniform vec4 HL;
 in vec3 wp;in vec4 vc;in vec3 vn3;in vec4 vl;in vec4 ls;out vec4 o;
 ${D3NOISE}
 float shd(){if(SHON<.5)return 1.;vec3 p=ls.xyz/ls.w*.5+.5;if(p.x<0.||p.y<0.||p.x>1.||p.y>1.||p.z>1.)return 1.;float s=0.;vec2 tx=vec2(1.)/vec2(textureSize(SM,0));
@@ -92,10 +94,12 @@ void main(){vec3 base=vc.rgb;float m=floor(vc.a*255.+.5);vec3 N=normalize(vn3);b
  {vec3 cd=HP-CAM;float L=length(cd);vec3 dr=cd/L;float tt=dot(wp-CAM,dr);if(tt>.2&&tt<L-.7&&wp.y>HP.y-1.1){float r=length(wp-CAM-dr*tt),rad=1.25+.6*tt/L;if(r<rad){float k=smoothstep(rad,rad*.55,r);vec2 f=floor(gl_FragCoord.xy);if(k>.9||mod(f.x+f.y,2.)<1.||(k>.6&&mod(f.x,2.)<1.))discard;}}}
  vec3 T=vert?normalize(cross(vec3(0,1,0),N)):vec3(1,0,0);vec3 B=vert?vec3(0,1,0):vec3(0,0,1);
  // spigoli arrotondati: vicino ai bordi la normale si piega verso l'esterno
- float W=vl.z*25.5,H=vl.w*25.5;if(vl.z<.999&&vl.w<.999){float u=vl.x*W,v=vl.y*H,r=min(.06,.32*min(W,H));if(r>.005){
+ float W=vl.z*25.5,H=vl.w*25.5,eg=1.;if(vl.z<.999&&vl.w<.999&&VX>.5){float u=vl.x*W,v=vl.y*H,e=min(min(u,W-u),min(v,H-v)),r=min(.045,.18*min(W,H));eg=mix(vert?.72:.82,1.,smoothstep(r*.25,r,e));}
+ if(VX<.5&&vl.z<.999&&vl.w<.999){float u=vl.x*W,v=vl.y*H,r=min(.06,.32*min(W,H));if(r>.005){
    float eu=min(u,W-u),ev=min(v,H-v),ku=1.-smoothstep(0.,r,eu),kv=1.-smoothstep(0.,r,ev);N=normalize(N+T*(u<W*.5?-1.:1.)*ku*1.2+B*(v<H*.5?-1.:1.)*kv*1.2);}}
  // la grana dei materiali
- vec3 p=wp;float spk=.04,shi=16.;
+ vec3 vc3=floor((wp-N*.012)*6.),p=VX>.5?(vc3+.5)/6.:wp;float spk=.04,shi=16.;
+ if(VX>.5&&m!=5.&&m!=6.&&m!=12.&&m!=11.)base*=(.92+.12*h3(vc3*1.37+.5))*eg;
  if(m==1.){base*=.8+.32*fb(p*2.6)+.08*vn(p*22.);spk=.06;}
  else if(m==11.){base*=.8+.4*vl.y;spk=.02;N=normalize(vec3(0,1,0)+N*.25);}
  else if(m==2.){float c=fb(p*3.1);base*=.78+.3*c;base*=1.-.22*smoothstep(.47,.5,vn(p*7.))*smoothstep(.53,.5,vn(p*7.));spk=.08;shi=24.;}
@@ -113,7 +117,7 @@ void main(){vec3 base=vc.rgb;float m=floor(vc.a*255.+.5);vec3 N=normalize(vn3);b
  vec3 amb=mix(AD,AU,N.y*.5+.5)*ao;
  float ndl=max(dot(N,SUN),0.);
  vec3 col=base*(amb+SUNC*ndl*sh);
- for(int i=0;i<12;i++){if(i>=NP)break;vec3 d=PL[i].xyz-wp;float dd=length(d);float at=PL[i].w/(1.+dd*dd*.18);col+=base*PC[i]*(max(dot(N,d/max(dd,.001)),0.)*.85+.15)*at;}
+ for(int i=0;i<12;i++){if(i>=NP)break;vec3 d=PL[i].xyz-wp;float dd=length(d);float at=min(PL[i].w/(1.+dd*dd*.18),1.1);col+=base*PC[i]*(max(dot(N,d/max(dd,.001)),0.)*.85+.15)*at;}
  if(LAN>0.){vec3 d=HL.xyz-wp;float dd=length(d);col+=base*vec3(1.,.78,.5)*LAN*(max(dot(N,d/max(dd,.001)),0.)*.8+.2)/(1.+dd*dd*.09);}
  vec3 Hh=normalize(SUN+Vd);col+=SUNC*pow(max(dot(N,Hh),0.),shi)*spk*sh*(m==4.?base*1.6+.2:vec3(1.));
  if(m==4.){col+=AU*.25*pow(1.-max(dot(N,Vd),0.),2.)*base;}
@@ -122,7 +126,7 @@ void main(){vec3 base=vc.rgb;float m=floor(vc.a*255.+.5);vec3 N=normalize(vn3);b
  // foschia: lontano tutto sfuma nel colore del cielo all'orizzonte
  float dd=length(CAM-wp),f=smoothstep(FOG0,FOG1,dd);f=f*(1.-.25*smoothstep(0.,120.,wp.y));
  col=mix(col,FOGC,f);
- col=col*(1.+.15*col)/(1.+.25*col);
+ col=min(col,vec3(1.6));col=col*(1.+.15*col)/(1.+.25*col);vec3 hi=max(col-.82,0.);col=min(col,vec3(.82))+hi/(1.+hi*3.);
  o=vec4(col,1.);}`;
 const D3SKY_VS=`in vec2 a;out vec2 q;void main(){q=a;gl_Position=vec4(a,.9999,1.);}`;
 const D3SKY_FS=`uniform mat4 IVP;uniform vec3 SUN,ZEN,HZC,SUNC;uniform float TM,NK,OUT;in vec2 q;out vec4 o;
@@ -164,10 +168,10 @@ function d3Tile(x,y,S,D,L,G){const c=M[y][x];if(c===9)return;const h=HHc&&HHc.le
   const a=d3Rec(()=>fObj(x,y),1,0);
   // fili d'erba sul prato libero, all'aperto
   if(G&&!a.length&&c!==2&&fl.length>=10&&SKY[Zk]){const r=fl[6],gg=fl[7],b=fl[8];if(gg>r+8&&gg>b){const n=G;for(let i=0;i<n;i++){const k=hh(x*7.1+i*1.3,y*3.7+i*2.9),k2=hh(x*2.3+i*5.1,y*9.1+i),hgt=3+k*5,cm=.92+k2*.3,bx=x+.08+k*.84,by=y+.08+k2*.84;
-      for(let j=0;j<3;j++)S.push(bx+(j-1)*.03,by+(j%2)*.025,fl[2]+fl[5],.018,.018,hgt*(j===1?1.25:.85),r*cm*.95,gg*cm*1.05,b*cm*.8,1+110)}}}
+      if(D3.vx){if(i%2===0)S.push(bx,by,fl[2]+fl[5],.06,.06,hgt*.7,r*cm*.95,gg*cm*1.08,b*cm*.8,1+110)}else for(let j=0;j<3;j++)S.push(bx+(j-1)*.03,by+(j%2)*.025,fl[2]+fl[5],.018,.018,hgt*(j===1?1.25:.85),r*cm*.95,gg*cm*1.05,b*cm*.8,1+110)}}}
   if(!a.length)return;const b=d3Rec(()=>fObj(x,y),1,.731);
   if(a.rnd||b.rnd||a.length!==b.length||d3Hash(a)!==d3Hash(b)){D.push(x,y);return}
-  for(let i=0;i<a.length;i+=10){S.push(a[i],a[i+1],a[i+2],a[i+3],a[i+4],a[i+5],a[i+6],a[i+7],a[i+8],a[i+9]);const f=a[i+9]%10;if(f>1.06&&a[i+5]>0)L.push([a[i]+Math.abs(a[i+3])/2,a[i+1]+a[i+4]/2,a[i+2]+a[i+5]/2,a[i+6],a[i+7],a[i+8]])}}
+  for(let i=0;i<a.length;i+=10){S.push(a[i],a[i+1],a[i+2],a[i+3],a[i+4],a[i+5],a[i+6],a[i+7],a[i+8],a[i+9]);const f=a[i+9]%10;if(f>1.16&&a[i+5]>0)L.push([a[i]+Math.abs(a[i+3])/2,a[i+1]+a[i+4]/2,a[i+2]+a[i+5]/2,a[i+6],a[i+7],a[i+8]])}}
 function d3Chunk(k){const gl=D3.gl,nc=Math.ceil(N/D3CS),X0=(k%nc)*D3CS,Y0=(k/nc|0)*D3CS,S=[],D=[],L=[],G=D3.gr?[0,2,4,7][D3.q]||4:0;
   for(let y=Y0;y<Math.min(N,Y0+D3CS);y++)for(let x=X0;x<Math.min(N,X0+D3CS);x++)d3Tile(x,y,S,D,L,G);
   const hs=d3Hash(S);let c=D3.ch.get(k);if(c&&c.hs===hs&&c.D.join()===D.join())return c;
@@ -260,7 +264,7 @@ function d3Frame(){const gl=D3.gl,cvs=D3.cv;const now=performance.now(),fdt=D3.l
   D3.labs.length=0;const R=D3.q>=3?40:30,dl=[];
   const B=d3Rec(()=>{for(const c of D3.ch.values())for(let i=0;i<c.D.length;i+=2)fObj(c.D[i],c.D[i+1]);
     D3CTX=3;for(const e of ents.concat(P,NET.list)){if(!e||e.px==null)continue;if(e.k!=='ship'&&(Math.abs(e.px-P.px)>R||Math.abs(e.py-P.py)>R))continue;D3E=e;const n0=D3B.length;try{ent(e)}catch(_){}
-      if(e.torch||e.k==='tc'){for(let i=n0;i<D3B.length;i+=10)if(D3B[i+9]%10>1.06){dl.push([D3B[i],D3B[i+1],D3B[i+2]+D3B[i+5]/2,D3B[i+6],D3B[i+7],D3B[i+8]]);break}}}
+      if(e.torch||e.k==='tc'){for(let i=n0;i<D3B.length;i+=10)if(D3B[i+9]%10>1.16){dl.push([D3B[i],D3B[i+1],D3B[i+2]+D3B[i+5]/2,D3B[i+6],D3B[i+7],D3B[i+8]]);break}}}
     D3E=null;D3CTX=0;for(const p of PJ)box(p.x-.08,p.y-.08,18,.16,.16,8,p.c,1.2);if(typeof PPJ!=='undefined'&&PPJ.length)ppjDraw()},0);
   // effetti: scintille e anelli del gioco diventano piccole luci nel mondo
   if(typeof SFX!=='undefined')for(const p of SFX){if(p.k==='pt'&&p.x!=null){const k=x3Col(p.c||'#ffd84a');B.push(p.x-.03,p.y-.03,(p.z||10),.06,.06,4,k[0],k[1],k[2],2)}}
@@ -292,7 +296,7 @@ function d3Frame(){const gl=D3.gl,cvs=D3.cv;const now=performance.now(),fdt=D3.l
   gl.enable(gl.DEPTH_TEST);gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);gl.frontFace(gl.CCW);gl.disable(gl.CULL_FACE);
   gl.useProgram(D3.pr.p);const U=D3.pr.U;gl.uniformMatrix4fv(U.VP,false,D3.vp);gl.uniformMatrix4fv(U.LM,false,LM);gl.uniform1f(U.TM,t);
   gl.uniform3fv(U.SUN,Lx.sun);gl.uniform3fv(U.SUNC,Lx.sunc);gl.uniform3fv(U.AU,Lx.au);gl.uniform3fv(U.AD,Lx.ad);gl.uniform3fv(U.FOGC,Lx.fog);gl.uniform3fv(U.HZC,Lx.hz);gl.uniform3fv(U.CAM,ce);
-  const fogEnd=Lx.out?(D3.far?[0,330,430,560][D3.q]:300):55;gl.uniform1f(U.FOG0,Lx.out?fogEnd*.18:10);gl.uniform1f(U.FOG1,fogEnd);gl.uniform1f(U.SHON,shOn?1:0);gl.uniform1f(U.LAN,Lx.lan);
+  const fogEnd=Lx.out?(D3.far?[0,330,430,560][D3.q]:300):55;gl.uniform1f(U.FOG0,Lx.out?fogEnd*.18:10);gl.uniform1f(U.FOG1,fogEnd);gl.uniform1f(U.SHON,shOn?1:0);gl.uniform1f(U.LAN,Lx.lan);gl.uniform1f(U.VX,D3.vx?1:0);
   gl.uniform4f(U.HL,ph*D3TS,hz*D3ZS+1.9,pv*D3TS,hz*D3ZS);gl.uniform3f(U.HP,ph*D3TS,hz*D3ZS+1.15,pv*D3TS);
   const pl=new Float32Array(48),pc=new Float32Array(36);lights.forEach(([l],i)=>{pl.set([l[0]*D3TS,l[2]*D3ZS,l[1]*D3TS,1.6*lk],i*4);pc.set([l[3]/255*1.2,l[4]/255,l[5]/255*.8],i*3)});
   gl.uniform4fv(U.PL,pl);gl.uniform3fv(U.PC,pc);gl.uniform1i(U.NP,lights.length);

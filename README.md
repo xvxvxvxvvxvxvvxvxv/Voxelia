@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.26** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.27** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -195,6 +195,11 @@ Nel tuo insediamento apri l'editor (tasto **V**, o Registro → Insediamento): s
 case, cambi i colori, disegni strade e piazze e metti alberi, fontane, lampioni, panchine, statue, bancarelle, campi e
 staccionate. Scegli anche dove sta il banco del mercante e lo stendardo. La gente del borgo va in giro e il mercante
 resta al suo banco.
+
+### La vista 3D voxel (dalla 7.27)
+
+La vista 3D usa lo stile voxel: cubi con gli spigoli netti, la grana a cubetti di ogni materiale e l'erba fatta di cubetti,
+con luci, ombre e orizzonte di prima. Nelle opzioni della vista 3D si torna allo stile liscio.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -781,7 +786,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.26 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.27 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -834,7 +839,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zj_citta.js` | «Le vie di Aldoria», il nuovo tema della città, e le sezioni dinamiche del motore dei brani scritti |
 | `8zk_unici.js` | Oggetti unici: generatore dal seme, poteri, scheda, provenienza; scambi di unici, reperti e pozioni |
 | `8zl_aperto.js` | Tomorrow, la base: menu, salvataggio a parte, Bacheca dei Contratti, tappe dei contratti, bersagli, assedi, reputazione |
-| `8zm_3d.js` | La vista 3D: registra i disegni del gioco e li rende in WebGL 2 con luce, ombre, materiali, cielo e l'orizzonte oltre i confini; telecamera, clic e movimento in 3D |
+| `8zm_3d.js` | La vista 3D: registra i disegni del gioco e li rende in WebGL 2 con luce, ombre, materiali, cielo e l'orizzonte oltre i confini, in stile voxel o liscio; telecamera, clic e movimento in 3D |
 | `8zn_pausa.js` | Il pulsante delle impostazioni, il menu di pausa (anche con Esc) e la sezione «Vista 3D» delle impostazioni |
 | `8zo_tomorrow.js` | Tomorrow, il mondo: regioni generate senza fine, biomi, villaggi, dungeon e specie generati, contratti nuovi, mappa del mondo, orizzonte 3D |
 | `8zp_vivo.js` | Tomorrow vivo: città con mura e piazza, case con interni, abitanti, animali, viandanti, santuari; il campo, le gemme del teletrasporto e le battaglie con gli alleati |

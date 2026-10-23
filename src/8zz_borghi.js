@@ -19,9 +19,9 @@ function twLayout(C){const{n,ok}=C,ST=new Uint8Array(n*n),TK=new Uint8Array(n*n)
     take(x,y,w,h){for(let v=y;v<y+(h||1);v++)for(let u=x;u<x+(w||1);u++)if(ok(u,v))TK[v*n+u]=1},
     nearDoor(x,y){for(const d of DR)if(Math.abs(d[0]-x)<=1&&Math.abs(d[1]-y)<=1)return true;return false},
     // un arredo su una casella libera (non davanti a una porta)
-    deco(x,y,c){if(!L.free(x,y)||L.nearDoor(x,y))return false;C.Pp(x,y,c);TK[y*n+x]=1;return true},
+    deco(x,y,c){if(!L.free(x,y)||L.nearDoor(x,y))return false;M[y][x]=6;DEC[y][x]=c;C.res(x,y);TK[y*n+x]=1;return true},
     // un arredo dove serve, anche sulla strada
-    put(x,y,c){if(!ok(x,y)||M[y][x]===3)return;C.Pp(x,y,c);ST[y*n+x]=0;TK[y*n+x]=1},
+    put(x,y,c){if(!ok(x,y)||M[y][x]===3)return;M[y][x]=6;DEC[y][x]=c;C.res(x,y);ST[y*n+x]=0;TK[y*n+x]=1},
     house(b,i,kind){twHouse(b,i,C.rx,C.ry,kind);L.take(b.x,b.y,b.w,b.h);if(b.dx!=null){const dy=b.y+b.h;DR.push([b.dx,dy]);TK[dy*n+b.dx]=1}return b},
     // un edificio senza porta (fienile, magazzino)
     barn(b){for(let v=b.y;v<b.y+b.h;v++)for(let u=b.x;u<b.x+b.w;u++)if(!ok(u,v)||!L.free(u,v))return null;const k=TB.push(b)-1;

@@ -3,9 +3,10 @@
    riprendi, vista classica o 3D con le sue opzioni, impostazioni del gioco, aspetto dell'eroe, comandi, salvataggio e
    ritorno al menu principale. Le opzioni della vista 3D sono anche nelle Impostazioni, in una sezione tutta loro. */
 const D3Q=['','Bassa','Media','Alta'];
-function d3Opt(k,v){if(k==='q')D3.q=clamp(v|0,1,3);else D3[k]=v;d3Save();if(D3.ok&&(k==='q'||k==='gr'||k==='far')){d3Reset()}if(k==='q'){D3.smS=0}}
+function d3Opt(k,v){if(k==='q')D3.q=clamp(v|0,1,3);else D3[k]=v;d3Save();if(D3.ok&&(k==='q'||k==='gr'||k==='far'||k==='vx')){d3Reset()}if(k==='q'){D3.smS=0}}
 function d3OptHTML(){const chk=(k,l)=>`<div class="row"><label for="d3_${k}">${l}</label><input type="checkbox" id="d3_${k}" ${D3[k]?'checked':''} onchange="d3Opt('${k}',this.checked?1:0)"></div>`;
   return`<div class="row"><label for="d3_q">Dettaglio della vista 3D</label><select id="d3_q" onchange="d3Opt('q',+this.value)">${[1,2,3].map(i=>`<option value="${i}" ${D3.q===i?'selected':''}>${D3Q[i]}</option>`).join('')}</select></div>`
+    +`<div class="row"><label for="d3_vx">Stile della vista 3D</label><select id="d3_vx" onchange="d3Opt('vx',+this.value)"><option value="1" ${D3.vx?'selected':''}>Voxel (cubetti netti)</option><option value="0" ${D3.vx?'':'selected'}>Liscio (spigoli arrotondati)</option></select></div>`
     +chk('sh','Ombre del sole')+chk('gr','Fili d\'erba mossi dal vento')+chk('far','Orizzonte lontano (il mondo oltre i confini fino alle montagne)')
     +`<div class="row"><label for="d3_sens">Velocità della telecamera</label><input type="range" id="d3_sens" min=".3" max="2.5" step=".1" value="${D3.sens||1}" oninput="d3Opt('sens',+this.value)"></div>`
     +chk('inv','Inverti il movimento verticale della telecamera')

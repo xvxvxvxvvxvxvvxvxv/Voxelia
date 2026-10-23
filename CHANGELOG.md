@@ -5,6 +5,27 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.23 — Il reset dell'universo (23 ottobre 2026)
+
+- **Il filmato di Tomorrow**: la prima volta che cominci un mondo di Tomorrow parte un filmato di dieci scene che racconta cosa è successo.
+  - Mille anni fa la Corona di Voxel teneva insieme Aldoria e il mondo intero.
+  - La Corona va in frantumi e Aldoria si scioglie cubo dopo cubo, salendo verso il cielo.
+  - Il vuoto: i cubi del vecchio mondo vagano nel buio, in una spirale.
+  - L'universo ricomincia: i cubi ricadono in un ordine nuovo e formano mari, montagne, deserti, ghiacci e lande di cenere.
+  - I pochi sopravvissuti si svegliano in terre sconosciute e ricostruiscono villaggi e città.
+  - Mille anni dopo le fazioni si contendono le terre, e sotto la terra qualcosa del vecchio mondo brilla ancora.
+  - Infine l'alba: «Ora tocca a te. Ricostruisci ciò che è andato perduto.»
+- Due musiche nuove, **Il reset dell'universo** e **Tomorrow**, anche nel juke-box.
+- Il filmato si rivede quando vuoi dal menu di Tomorrow (**Il reset dell'universo**) e si salta con «Salta».
+- **I cimeli di Aldoria**: dodici oggetti del vecchio mondo sono sopravvissuti al reset.
+  - Si trovano nei forzieri di Tomorrow (più spesso in quelli preziosi) e sui boss dei dungeon.
+  - Sei si indossano e sono leggendari: la Lama di Aldric, lo Scudo del Faro, il Diadema della Regina Elara e altri.
+  - Gli altri sei sono reperti: un Frammento della Corona, il Diario di Malakar, il Collare di Briciola e altri.
+  - Ognuno ha la sua storia, scritta nella scheda dell'oggetto.
+  - La raccolta è nel menu di pausa (**Cimeli di Aldoria**).
+
+---
+
 ## 7.22 — Le guerre (22 ottobre 2026)
 
 - **Le fazioni attaccano:** ogni giorno una fazione può marciare su una delle tue terre. Lo fanno più spesso quelle ostili, con cui hai la reputazione sotto zero.

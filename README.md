@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.22** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.23** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -168,6 +168,13 @@ Le fazioni attaccano le tue terre: hai fino al giorno dopo per difendere lo sten
 terra passa a loro o il borgo viene saccheggiato. Con il server e il plugin **Territori**, gli eroi dello stesso mondo
 (stesso codice stanza) si contendono le terre: quelle di un altro si prendono con un assedio, i suoi insediamenti si
 saccheggiano. La cronaca è nel registro (U → Guerra).
+
+### Il reset dell'universo (dalla 7.23)
+
+All'inizio di Tomorrow un filmato racconta i mille anni dopo Aldoria: la Corona distrutta, il mondo che si scioglie e si
+ricompone in terre nuove, i sopravvissuti che ricostruiscono. Si rivede dal menu di Tomorrow. Nelle rovine, nei forzieri
+e nei dungeon si trovano i dodici **cimeli di Aldoria**, oggetti leggendari e reperti del vecchio mondo, ognuno con la
+sua storia (pausa → Cimeli di Aldoria).
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -754,7 +761,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.22 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.23 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -819,6 +826,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zv_domare.js` | Domare i mostri: sigilli, cattura, compagni in campo con la loro mossa speciale, livelli ed evoluzioni, la stalla, il bestiario |
 | `8zw_regno.js` | Tomorrow: conquista delle regioni, insediamento con edifici e tesoro, fazioni con sedi, emissari e stemmi, la tua fazione, le terre sulla mappa |
 | `8zx_guerre.js` | Le guerre: assalti delle fazioni alle tue terre, assedi e saccheggi fra giocatori con il plugin Territori, la cronaca |
+| `8zy_tw_film.js` | Il filmato del reset dell'universo all'inizio di Tomorrow, le sue musiche e i cimeli di Aldoria |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

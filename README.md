@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.29** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.30** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -213,6 +213,13 @@ Cisterna, campi, pozzi e fontane, o dal cibo che porti tu.
 
 Nell'editor del borgo ci sono tutti i pavimenti, i muri (con il colore che vuoi) e gli arredi del gioco, con la ricerca.
 Gli edifici si fanno su misura: stile, colore dei muri e del tetto, altezza, camino. Ogni cosa costa le sue risorse.
+
+### La caserma e l'esercito (dalla 7.30)
+
+Nel borgo si costruisce la Caserma e si addestrano i soldati (monete, ferro e cibo). Potenziare la caserma porta più
+soldati e più forti. La potenza dell'esercito difende il borgo e le terre: se non arrivi in tempo a un assalto combatte
+l'esercito, e con un esercito più debole del nemico la probabilità di vincere è bassa. Se sei lì, i soldati combattono
+con te; negli assedi fra giocatori le guardie sono forti quanto l'esercito di chi difende.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -799,7 +806,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.29 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.30 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -870,6 +877,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzb_editborgo.js` | L'editor dell'insediamento: edifici, case, strade, arredi, fontane, banco del mercante e stendardo; la gente che va in giro nel borgo |
 | `8zzc_gestione.js` | La gestione del borgo: risorse da raccogliere e costi degli edifici, Cisterna, Fattoria, Segheria e Cava, statistiche, cibo, acqua e abitanti che vanno e vengono |
 | `8zzd_editor2.js` | L'editor del borgo completo: tutti i pavimenti, i muri e gli arredi del gioco, edifici su misura, costi in risorse |
+| `8zze_esercito.js` | La Caserma, i soldati, la potenza dell'esercito, le battaglie risolte con le probabilità e i soldati in campo con te |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

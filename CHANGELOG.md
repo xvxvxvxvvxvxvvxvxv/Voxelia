@@ -5,6 +5,31 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.30 — La caserma e l'esercito (23 ottobre 2026)
+
+- **La Caserma**: si costruisce nel borgo con monete, legna, pietra e ferro, e si potenzia fino al livello 5.
+  - A ogni livello ci stanno 6 soldati in più e ognuno diventa più forte.
+  - Ha accanto le rastrelliere, le armature e lo stendardo.
+- **Addestrare i soldati** (U → Insediamento → Caserma ed esercito): ogni soldato costa 60 monete, 1 ferro e 2 di cibo dalle scorte.
+  - Ogni giorno i soldati mangiano e prendono la paga.
+  - Se il borgo resta senza cibo o acqua, disertano.
+  - Più soldati ci sono, più guardie fanno la ronda nel borgo.
+- **La potenza dell'esercito**: soldati per forza, più torri e palizzata. Si vede nelle statistiche del borgo e nella barra in alto.
+- **Difendersi dagli attacchi delle fazioni**:
+  - se non arrivi in tempo, combatte l'esercito, sul tuo borgo con tutta la potenza e sulle altre terre con il 60%;
+  - con un esercito più debole del nemico la probabilità di vittoria è bassa, con uno più forte è alta;
+  - i soldati caduti non tornano;
+  - nel registro (U → Guerra) c'è la probabilità di vittoria dell'assalto in corso;
+  - se sei lì, i tuoi soldati scendono in campo con te contro le ondate, con la loro barra della vita.
+- **Guerre fra giocatori**:
+  - la potenza dell'esercito viaggia con le terre;
+  - chi assedia un borgo trova più ondate di guardie, e più forti, quanto più l'esercito di chi lo difende è potente;
+  - i tuoi soldati vengono con te all'assedio;
+  - chi viene saccheggiato perde anche una parte dei soldati.
+- Server: il plugin **Territori 1.1** ricorda la potenza dell'esercito di ogni insediamento.
+
+---
+
 ## 7.29 — L'editor con tutti i materiali (23 ottobre 2026)
 
 - **Terreno**: tutti i pavimenti del gioco e di Voxelia Studio si disegnano a pennello nel borgo.

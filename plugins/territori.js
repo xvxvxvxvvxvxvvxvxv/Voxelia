@@ -4,7 +4,7 @@
 // gli insediamenti non si conquistano ma si saccheggiano, e chi viene saccheggiato lo scopre anche se era offline.
 module.exports = {
   name: 'Territori',
-  version: '1.0',
+  version: '1.1',
   description: 'Terre, insediamenti e guerre fra i giocatori di Tomorrow nello stesso mondo',
   defaults: { maxRegioni: 400, registro: 40 },
 
@@ -36,7 +36,7 @@ module.exports = {
         const k = chiave(k0); if (!k) continue; const r = M.r[k];
         if (r && r.o !== p.name) { p.send('negato', { k, o: r.o }); continue; }       // l'ha già un altro: si prende solo con un assedio
         if (!r && n >= (api.config.maxRegioni || 400)) continue;
-        const s = mie[k0] && mie[k0].s ? { n: String(mie[k0].s.n || '').replace(/[<>]/g, '').slice(0, 28), lv: Math.max(1, Math.min(5, mie[k0].s.lv | 0)), dif: Math.max(0, Math.min(12, mie[k0].s.dif | 0)) } : null;
+        const s = mie[k0] && mie[k0].s ? { n: String(mie[k0].s.n || '').replace(/[<>]/g, '').slice(0, 28), lv: Math.max(1, Math.min(5, mie[k0].s.lv | 0)), dif: Math.max(0, Math.min(12, mie[k0].s.dif | 0)), pow: Math.max(0, Math.min(100000, mie[k0].s.pow | 0)) } : null;
         M.r[k] = { o: p.name, f, s, d: r ? r.d : Date.now() }; if (!r) n++;
       }
       api.save(); manda(w); racconta(p);

@@ -5,6 +5,19 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.35 — Il legno e la città che cresce (23 ottobre 2026)
+
+- **Gli alberi si abbattono**: clic (o tocco) su un albero di Tomorrow, e l'eroe ci va e lo colpisce con l'ascia. Servono **5 colpi**, e l'albero lascia **2 legna**.
+  - Querce, pini, betulle e cespugli dei boschi, palme e cactus del deserto, abeti dei picchi.
+  - Gli alberi abbattuti restano a terra e ricrescono dopo tre giorni.
+- **Il legno serve in quantità**: gli edifici e i potenziamenti del borgo chiedono tre volte la legna di prima, e anche quelli che prima non ne chiedevano (fucina, tempio, torri, pozzo) ora ne vogliono. Nell'editor costano di più anche pavimenti, muri e arredi di legno.
+  - La legna si trova abbattendo gli alberi, nei mucchi delle terre selvagge, dalla segheria e nei mercati delle altre città.
+- **La città arriva al livello 15**: con un'Espansione dopo l'altra si allarga, fino a coprire tutta la regione.
+  - Dal livello 6 le espansioni chiedono anche ferro e marmo, e costano sempre di più.
+  - Fuori dal vecchio centro i fiumi e i laghi restano, e sull'acqua non si costruisce (le strade sì, come ponti).
+
+---
+
 ## 7.34 — Le tue città (23 ottobre 2026)
 
 - **Più città**: conquistando altre regioni si fondano altre città, fino a 8 (U → Territorio, «Fonda qui una nuova città»). Ogni città nuova costa di più: monete, legna e pietra.

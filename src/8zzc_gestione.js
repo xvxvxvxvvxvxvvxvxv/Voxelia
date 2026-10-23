@@ -80,7 +80,7 @@ setBuy=function(b){const S=P.tw.set;if(!S)return;setFix(S);const B=TWSB[b],cur=b
 function setTile(ic,n,v,sub,cls){return`<div class="sst${cls?' '+cls:''}"><i>${ic}</i><b>${v}</b><small>${n}</small>${sub?`<em>${sub}</em>`:''}</div>`}
 function setHTML2(){const S=setFix(P.tw.set);setAccrue();const st=setStats(S),here=Zk===S.k,bar=(v,mx,c)=>`<span class="sbar"><i style="width:${Math.min(100,v/Math.max(1,mx)*100)}%;background:${c}"></i></span>`;
   const df=st.fp-st.fc,dw=st.wp-st.wc;
-  let h=`<div class="rgcard rgset"><div><b>${esc(S.n)}</b> <small>livello ${S.lv} di 5</small><p class="mu">Tesoro: <b>${S.cash|0}💰</b> · ogni giorno ${st.tax}💰${Object.keys(st.prod).length?' · produce '+Object.keys(st.prod).map(k=>st.prod[k]+' '+SETMI[k]).join(' '):''}</p></div>
+  let h=`<div class="rgcard rgset"><div><b>${esc(S.n)}</b> <small>livello ${S.lv} di ${TWSB.casa.max}</small><p class="mu">Tesoro: <b>${S.cash|0}💰</b> · ogni giorno ${st.tax}💰${Object.keys(st.prod).length?' · produce '+Object.keys(st.prod).map(k=>st.prod[k]+' '+SETMI[k]).join(' '):''}</p></div>
     <span><button class="pri" onclick="setCollect()">💰 Ritira</button>${here?'':`<button onclick="setGo()">🏠 Torna a casa</button>`}<button onclick="setRename()">✎ Rinomina</button></span></div>`;
   h+=`<div class="sstg">`+setTile('👥','Abitanti',st.pop+'/'+st.cap,(S.via?S.via+' andati via':'')+bar(st.pop,st.cap,'#9ad0ff'),S.via?'warn':'')
     +setTile('🍞','Cibo',S.cibo+'/'+st.fcap,(df>=0?'+':'')+df+' al giorno'+bar(S.cibo,st.fcap,'#e8c060'),df<0?'bad':'')

@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.34** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.35** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -248,6 +248,11 @@ e musica. Dall'editor del borgo (scheda Mura) si cambiano le mura: tipo, colore,
 Conquistando altre regioni si fondano altre città (fino a 8), ognuna con livello, edifici, tesoro, abitanti ed esercito
 suoi. Si parte sempre dalla capitale, scelta nel registro. Al mercato della tua città si compra la sua gemma del
 teletrasporto; nelle altre città e nei villaggi i materiali da costruzione hanno prezzi che cambiano ogni giorno.
+
+### Il legno e la città grande (dalla 7.35)
+
+Gli alberi di Tomorrow si abbattono con 5 colpi e lasciano 2 legna; ricrescono dopo qualche giorno. Il legno ora serve in
+quantità per costruire. La città arriva al livello 15 e, potenziandola molte volte, copre tutta la regione.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -834,7 +839,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.34 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.35 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -910,6 +915,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzg_azione.js` | Il combattimento d'azione: clic verso il cursore, stamina, capriola, corsa e blocco del bersaglio |
 | `8zzh_casa.js` | 7.33: la tua casa con il deposito, gli interni su misura (modelli, colori, materiali, arredi, nome, musica) e le mura del borgo (tipo, colore, porte, torri) |
 | `8zzi_citta.js` | 7.34: più città (fino a 8) ognuna con le sue statistiche, la capitale da cui si riparte, la gemma della tua città al mercato, i materiali a prezzi del giorno nelle altre città |
+| `8zzj_legna.js` | 7.35: gli alberi si abbattono (5 colpi, 2 legna, ricrescono), il legno in quantità, la città fino al livello 15 su tutta la regione |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

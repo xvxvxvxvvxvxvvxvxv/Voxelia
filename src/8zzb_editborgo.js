@@ -18,7 +18,7 @@ const SEDK={mercato:'bottega',fucina:'fucina',tempio:'tempio',locanda:'locanda',
 const SEDKN={mercato:'🛒 Mercato',fucina:'⚒ Fucina',tempio:'⛪ Tempio',locanda:'🍺 Locanda',stalla:'🐾 Stalla',granaio:'🌾 Granaio',casa:'🏠 Casa'};
 const sedKey=(x,y)=>x+','+y,sedXY=k=>k.split(',').map(Number);
 const sedHere=()=>twOn()&&P&&P.tw&&P.tw.set&&Zk===P.tw.set.k;
-const sedR=()=>8+(P.tw.set.lv|0)*3;
+const sedR=()=>{const l=P.tw.set.lv|0;return l<=5?8+l*3:Math.round(23+(l-5)*4.5)};
 const sedMaxCase=()=>2+(P.tw.set.lv|0)*2;
 // il borgo com'è adesso diventa il punto di partenza dell'editor
 function sedCapture(){const S=P.tw.set,z=ZZ,c=z.shub||[N>>1,N>>1],R=sedR(),Ly={v:1,c:c.slice(),b:[],t:{},d:{},p:[],mk:null,bn:null,nid:1};
@@ -52,7 +52,7 @@ function sedFree(x,y){const Ly=P.tw.set.lay,mk=Ly&&Ly.mk;if(mk&&mk[0]===x&&(mk[1
 // la generazione del borgo dalla pianta disegnata con l'editor
 function twSetGenC(C,ends){const{F,rnd,n,rx,ry,bio,tg,ok,z}=C,S=P.tw.set,Ly=S.lay,c=Ly.c,cx=c[0],cy=c[1],R=sedR(),th=TWSTH[S.col|0]||TWSTH[0],gr=twGround(bio);z.ham=1;z.set=1;z.n=S.n;z.shub=[cx,cy];
   const inR=(x,y)=>ok(x,y)&&Math.hypot(x-cx,y-cy)<=R;
-  for(let y=cy-R;y<=cy+R;y++)for(let x=cx-R;x<=cx+R;x++)if(inR(x,y)){const d=Math.hypot(x-cx,y-cy);if(M[y][x]===2&&d>R-1)continue;F(x,y,gr)}
+  for(let y=cy-R;y<=cy+R;y++)for(let x=cx-R;x<=cx+R;x++)if(inR(x,y)){const d=Math.hypot(x-cx,y-cy);if(M[y][x]===2&&(d>R-1||d>23))continue;F(x,y,gr)}
   for(const k in Ly.t){const[x,y]=sedXY(k);if(!inR(x,y))continue;const v=Ly.t[k];F(x,y,v==='g'?gr:v)}
   if(typeof setApplyLay==='function')setApplyLay(C,Ly,inR);
   // le fontane

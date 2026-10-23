@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.30** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.31** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -220,6 +220,13 @@ Nel borgo si costruisce la Caserma e si addestrano i soldati (monete, ferro e ci
 soldati e più forti. La potenza dell'esercito difende il borgo e le terre: se non arrivi in tempo a un assalto combatte
 l'esercito, e con un esercito più debole del nemico la probabilità di vincere è bassa. Se sei lì, i soldati combattono
 con te; negli assedi fra giocatori le guardie sono forti quanto l'esercito di chi difende.
+
+### Le miniere (dalla 7.31)
+
+Nel borgo si costruisce la Miniera: dentro si scava a mano cliccando sulla roccia, e si trovano pietra, carbone, ferro,
+rame, marmo, pepite d'oro e gemme, sempre più preziosi man mano che si scende. Potenziandola si scava più in fondo e dal
+livello 3 si trovano i reperti storici di prima del reset (al livello 5 anche i cimeli di Aldoria). Le gallerie restano
+e ogni giorno i minatori portano un po' di minerali al magazzino.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -806,7 +813,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.30 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.31 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -878,6 +885,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzc_gestione.js` | La gestione del borgo: risorse da raccogliere e costi degli edifici, Cisterna, Fattoria, Segheria e Cava, statistiche, cibo, acqua e abitanti che vanno e vengono |
 | `8zzd_editor2.js` | L'editor del borgo completo: tutti i pavimenti, i muri e gli arredi del gioco, edifici su misura, costi in risorse |
 | `8zze_esercito.js` | La Caserma, i soldati, la potenza dell'esercito, le battaglie risolte con le probabilità e i soldati in campo con te |
+| `8zzf_miniere.js` | Le miniere del borgo: la zona sotto terra, lo scavo a mano, i minerali e le vene, i reperti storici, la produzione dei minatori |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

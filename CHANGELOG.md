@@ -5,6 +5,23 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.31 — Le miniere (23 ottobre 2026)
+
+- **La Miniera**: si costruisce nel borgo e si potenzia fino al livello 5. Ha un'entrata nella roccia, con il carrello, le rocce e la legna dei puntelli.
+- **Dentro si scava a mano**: clic (o tocco) sulla roccia accanto a te, e un colpo di piccone dopo l'altro la galleria avanza.
+  - Se la roccia è lontana, l'eroe ci va da solo e poi scava. Una barra mostra a che punto sei.
+- **Cosa si trova**: ogni blocco dà pietra e, sempre più spesso man mano che si scende, carbone, ferro, rame, marmo, pepite d'oro e gemme.
+  - Le vene colorate si vedono nella roccia che tocca le gallerie; il resto è buio finché non ci arrivi.
+  - In fondo la roccia è troppo dura: potenziando la miniera si scava più lontano, e più in fretta.
+- **I reperti storici** (dal livello 3): monete, elmi, sigilli, mosaici, mappe e altri oggetti di prima del reset, ognuno con la sua storia, nel sacco dei reperti.
+  - Al livello 5, nelle viscere della terra, anche i **cimeli di Aldoria**.
+- Le gallerie scavate restano. Nella miniera lavorano i minatori e una barra in alto mostra livello, profondità e minerali.
+- Ogni giorno i minatori portano al magazzino del borgo pietra, carbone, ferro e, ai livelli alti, rame e marmo.
+- **I minerali servono a costruire**: il Tempio dal livello 2 chiede marmo, la Fucina carbone e rame, il Mercato dal livello 3 rame; nell'editor il marmo costa marmo e il pavimento d'oro una pepita.
+- I minerali si vendono ai mercanti. Nel registro del borgo c'è la scheda della miniera, con l'entrata.
+
+---
+
 ## 7.30 — La caserma e l'esercito (23 ottobre 2026)
 
 - **La Caserma**: si costruisce nel borgo con monete, legna, pietra e ferro, e si potenzia fino al livello 5.

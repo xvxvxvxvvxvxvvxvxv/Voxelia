@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.32** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.33** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -236,6 +236,12 @@ Si combatte cliccando dove si vuole colpire: l'eroe si gira verso il cursore e f
 si carica il colpo pesante. Attacchi, capriola (Maiusc o E) e corsa (Maiusc tenuto) consumano la stamina, che si
 ricarica da sola. Tab blocca il bersaglio: l'eroe lo guarda sempre e ogni colpo va su di lui. Lontano dai nemici il clic
 fa camminare. Il combattimento classico si riattiva in Impostazioni → Comandi.
+
+### La tua casa e le mura (dalla 7.33)
+
+Nel borgo si costruisce la propria casa, con il deposito per oggetti e monete. Ogni casa del borgo si arreda da dentro
+(tasto V): uno dei dieci modelli della storia, colori e materiali di muri e pavimento, tutti gli arredi del gioco, nome
+e musica. Dall'editor del borgo (scheda Mura) si cambiano le mura: tipo, colore, porte e torri.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -822,7 +828,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.32 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.33 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -896,6 +902,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zze_esercito.js` | La Caserma, i soldati, la potenza dell'esercito, le battaglie risolte con le probabilità e i soldati in campo con te |
 | `8zzf_miniere.js` | Le miniere del borgo: la zona sotto terra, lo scavo a mano, i minerali e le vene, i reperti storici, la produzione dei minatori |
 | `8zzg_azione.js` | Il combattimento d'azione: clic verso il cursore, stamina, capriola, corsa e blocco del bersaglio |
+| `8zzh_casa.js` | 7.33: la tua casa con il deposito, gli interni su misura (modelli, colori, materiali, arredi, nome, musica) e le mura del borgo (tipo, colore, porte, torri) |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

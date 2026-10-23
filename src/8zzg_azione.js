@@ -12,7 +12,7 @@
    Lontano dai nemici il clic fa camminare come sempre; cliccare persone, porte e forzieri funziona come prima.
    Si torna al combattimento classico nelle impostazioni (Comandi → Combattimento). */
 if(SET.act==null)SET.act=1;
-const actOn=()=>!!(SET.act&&cbOn()&&MODE!=='dim');
+const actOn=()=>!!(SET.act&&cbOn()&&MODE!=='dim'&&!(typeof XR!=='undefined'&&XR&&XR.s));
 const STW={dag:10,swd:14,axe:18,ham:22,spr:14,tri:15,stf:10,scy:16};
 const stMax=()=>100+Math.min(60,P.lv|0);
 const ACT={sh:0,shT:0,run:0,lock:null,tw:-9,stT:-9};

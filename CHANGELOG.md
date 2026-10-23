@@ -5,6 +5,24 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.33 — La tua casa e le mura del borgo (23 ottobre 2026)
+
+- **La tua casa**: nel registro del borgo (U → Insediamento) c'è «Costruisci la tua casa». Si può anche scegliere una casa che c'è già, dall'editor del borgo o da dentro.
+  - Niente inquilini, il tuo nome sulla porta e un **deposito** (il forziere viola) per oggetti e monete, che restano al sicuro.
+- **Tutte le case si arredano da dentro**, come quelle della storia: tasto V o il pulsante «✏ Arreda» quando sei dentro.
+  - Il **modello** della casa: i dieci della storia (casetta di legno, cottage, villetta con giardino, baita, torre del mago, casa del pescatore, villa nobiliare, tenda del deserto, igloo, casale), ognuno con i suoi arredi.
+  - I **colori** dei muri e del pavimento (le tinte della storia o un colore qualsiasi) e i **materiali**: muri di mattoni, pietra, assi, oro..., pavimenti di marmo, parquet, tappeti e tutti gli altri.
+  - **Tutti gli arredi del gioco**: quelli di casa a portata di mano e il catalogo completo con la ricerca. I tappeti si calpestano. Nessun arredo può chiudere un pezzo della casa.
+  - Il **nome** sulla porta e la **musica**.
+  - Si arredano anche le botteghe, la locanda, la fucina e il tempio del borgo (colori, materiali, arredi, nome, musica).
+- **Le mura del borgo** si cambiano dall'editor, nella nuova scheda «🏰 Mura»:
+  - il tipo (palizzata, pietra, mura merlate, mattoni, assi, muretto basso, siepe, roccia, cripta, ghiaccio, cristalli, ossidiana, oro, roccia lavica) e il colore;
+  - le **porte**: clic su un pezzo di mura per aprirci una porta, su una porta per chiuderla;
+  - le **torri**: quante (4, 6 o 8), il colore dei muri e del tetto, lo stile e l'altezza.
+- In modalità azione, la realtà virtuale usa di nuovo i comandi del visore.
+
+---
+
 ## 7.32 — Il combattimento d'azione (23 ottobre 2026)
 
 - **Clic per colpire**: per combattere non si clicca più sul nemico, si clicca dove si vuole colpire.

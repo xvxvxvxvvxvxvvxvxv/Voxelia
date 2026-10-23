@@ -90,6 +90,7 @@ function twVillage(C){const{F,rnd,rr,n,rx,ry,bio,tg,ok,z,hub}=C;twUntrail(C);
   const pos=[[cx+3,cy],[cx-5,cy-5],[fg[0],fg[1]],[cx-2,cy-1],null,[cx+5,cy-5],[cx-4,cy+3],[cx+6,cy+4],[cx+2,cy+10]];
   for(let i=0;i<9;i++){if(i===4&&inn.to)continue;const id=twNpcId(rx,ry,i);twNpc(id);const p=pos[i]||[cx+1,cy-6],[x,y]=(i===1||i===5||i===2)?p:nearFree(p[0],p[1]);const e=mkNpc(id,x,y);if(i===1||i===5||i===2)e.lfStay=1;ents.push(e)}
   for(let j=0;j<3;j++){const id='tr_'+twEnc(rx)+'_'+twEnc(ry)+'_'+(200+j);twResident(id);const[x,y]=nearFree(cx-12+j*10,cy+4);ents.push(mkNpc(id,x,y))}
+  for(const e of ents)if(e.k==='npc'&&!e.lfStay)tg.push([e.px|0,e.py|0]);
   {const[x,y]=nearFree(cx+3,cy-1);ents.push({k:'owb',n:'Bacheca dei Contratti',px:x+.5,py:y+.5});tg.push([x,y])}
   tg.push([fg[0],fg[1]]);
   // i sentieri ripartono dalle strade del paese
@@ -159,11 +160,12 @@ function twCityGen(C){const{F,rnd,rr,n,hub,rx,ry,bio,tg,ok}=C;let[cx,cy]=hub;con
   {const id=twNpcId(rx,ry,0);twNpc(id);const[x,y]=nearFree(cx-5,cy-5);ents.push(mkNpc(id,x,y))}
   {const id=twNpcId(rx,ry,5);twNpc(id);const e=mkNpc(id,cx+3,cy+3);e.lfStay=1;ents.push(e)}
   [[cx-5,0],[cx-3,1],[cx+5,2]].forEach(([x,k])=>{const id=twVendor(rx,ry,k);const e=mkNpc(id,x,cy+3);e.lfStay=1;e.sh=NPCS[id].sh;e.nsh=t+2+Math.random()*6;ents.push(e)});
+  const stT=[];for(let i=0;i<n*n;i++)if(L.ST[i]&&WK(M[i/n|0][i%n]))stT.push([i%n,i/n|0]);const onSt=()=>stT.length?stT[Math.floor(rnd()*stT.length)]:nearFree(cx+rr(-14,14),cy+rr(-14,14));
   for(let i=6;i<9;i++){const id=twNpcId(rx,ry,i);twNpc(id);const[x,y]=nearFree(cx+rr(-5,5),cy+rr(2,6));ents.push(mkNpc(id,x,y))}
   for(let i=10;i<14;i++){const id=twNpcId(rx,ry,i);twNpc(id);const g=gates[(i-10)%Math.max(1,gates.length)]||[cx,cy+8];const[x,y]=nearFree(clamp(g[0]+Math.sign(cx-g[0])*3,1,n-2),clamp(g[1]+Math.sign(cy-g[1])*3,1,n-2));ents.push(mkNpc(id,x,y))}
-  for(let i=14;i<22;i++){const id=twNpcId(rx,ry,i);twNpc(id);const[x,y]=nearFree(cx+rr(-14,14),cy+rr(-14,14));ents.push(mkNpc(id,x,y))}
+  for(let i=14;i<22;i++){const id=twNpcId(rx,ry,i);twNpc(id);const[x,y]=onSt();ents.push(mkNpc(id,x,y))}
   {const[x,y]=nearFree(cx-6,cy-5);ents.push({k:'owb',n:'Bacheca dei Contratti',px:x+.5,py:y+.5});tg.push([x,y])}
-  for(const g of gates)tg.push(g);
+  for(const g of gates)tg.push(g);for(const e of ents)if(e.k==='npc'&&!e.lfStay)tg.push([e.px|0,e.py|0]);
   // la ronda: dalle porte alla piazza, lungo le mura
   const pat=[];for(const g of gates)pat.push([clamp(g[0]+Math.sign(cx-g[0])*2,1,n-2),clamp(g[1]+Math.sign(cy-g[1])*2,1,n-2)]);
   pat.push([x0+1,y0+1],[x1-1,y0+1],[x1-1,y1-1],[x0+1,y1-1],[cx-5,cy+6],[cx+5,cy-1],[cx-13,cy],[cx+13,cy]);

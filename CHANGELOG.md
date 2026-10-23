@@ -5,6 +5,37 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.28 — La gestione del borgo (23 ottobre 2026)
+
+- **Per costruire servono risorse**: legna, pietra, argilla e ferro, oltre alle monete. La legna mancante non si paga più in monete.
+  - Nelle terre selvagge di Tomorrow ci sono rocce, cave d'argilla e vene di ferro da raccogliere, ognuna dove è più comune; ogni raccolta dà da 1 a 3 pezzi.
+  - Il costo di ogni edificio è scritto pezzo per pezzo, in rosso quello che manca.
+- **Edifici nuovi**:
+  - la **Cisterna**, per l'acqua;
+  - la **Fattoria**, per il cibo;
+  - la **Segheria**, che produce legna ogni giorno;
+  - la **Cava**, che produce pietra e un po' d'argilla.
+  - Hanno accanto quello che serve al lavoro: pozzi, campi, cataste, rocce.
+- **Le statistiche del borgo** (U → Insediamento):
+  - abitanti e case libere, cibo, acqua (con le scorte e quanto si produce e si consuma ogni giorno), monete e tasse, potenza dell'esercito, materiali tuoi e del magazzino;
+  - gli avvisi su cosa manca, e la cronaca di chi arriva e chi se ne va;
+  - nel borgo una barra in alto mostra sempre le risorse.
+- **La vita del borgo, giorno per giorno**:
+  - gli abitanti mangiano e bevono;
+  - il cibo viene dalla fattoria, dal granaio, dai campi seminati con l'editor e da quello che porti tu (**Porta il cibo**: grano, mele, uova);
+  - l'acqua viene dalla cisterna, dai pozzi, dalle fontane, dagli zampilli e dal fiume, se passa vicino;
+  - se per due giorni il cibo o l'acqua non bastano, una parte degli abitanti se ne va, e torna solo quando ci sono di nuovo abbastanza cibo, acqua e case libere;
+  - con case libere e scorte piene arrivano abitanti nuovi;
+  - più abitanti vuol dire più tasse e più gente per le strade.
+- **Ritira** prende le monete e i materiali del magazzino; il cibo e l'acqua restano al borgo.
+- Il borgo ora usa sempre la sua pianta, quella che si modifica con l'editor.
+- **Correzioni nell'editor**:
+  - non si può più chiudere l'eroe fra le case;
+  - se un passaggio era già chiuso, si possono comunque mettere gli arredi altrove;
+  - il banco del mercante non sparisce più.
+
+---
+
 ## 7.27 — La vista 3D in stile voxel (23 ottobre 2026)
 
 - **Stile voxel** per la vista 3D, ora quello predefinito:

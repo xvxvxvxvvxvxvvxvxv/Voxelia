@@ -24,7 +24,7 @@ const HFAV=[["T","Tavolo"],["n","Panca"],["m","Sgabello"],["B","Letto"],["S","Li
 const CSE={on:0,tool:'arr',dc:'T',q:'',hv:null,tab:'arr'};
 const csHero=()=>(typeof NET!=='undefined'&&NET.name)||'l\'Eroe';
 // tutti i tuoi insediamenti (dalla 7.34 possono essere più d'uno)
-function csSets(){const L=[];if(P&&P.tw){if(P.tw.set)L.push(P.tw.set);for(const S of P.tw.sets||[])if(S&&!L.includes(S))L.push(S)}return L}
+function csSets(){const L=[];if(P&&P.tw){if(P.tw.set)L.push(P.tw.set);for(const S of P.tw.sets||[])if(S&&!L.includes(S))L.push(S);if(typeof CSW!=='undefined')for(const S of CSW.cur)if(S&&!L.includes(S))L.push(S)}return L}
 function csParse(k){const m=/^twi:(-?\d+),(-?\d+):(\d+):([a-z]+)$/.exec(String(k||''));return m?{rx:+m[1],ry:+m[2],i:+m[3],kind:m[4]}:null}
 // di quale tuo insediamento è questo interno, e quale edificio
 function csOf(k){const q=csParse(k);if(!q||q.i<60)return null;const rk=twK(q.rx,q.ry),S=csSets().find(s=>s.k===rk);if(!S||!S.lay||!S.lay.b)return null;const b=S.lay.b.find(x=>x.id===q.i-60);if(!b)return null;return{S,b,q}}

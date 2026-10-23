@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.33** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.34** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -242,6 +242,12 @@ fa camminare. Il combattimento classico si riattiva in Impostazioni → Comandi.
 Nel borgo si costruisce la propria casa, con il deposito per oggetti e monete. Ogni casa del borgo si arreda da dentro
 (tasto V): uno dei dieci modelli della storia, colori e materiali di muri e pavimento, tutti gli arredi del gioco, nome
 e musica. Dall'editor del borgo (scheda Mura) si cambiano le mura: tipo, colore, porte e torri.
+
+### Le tue città (dalla 7.34)
+
+Conquistando altre regioni si fondano altre città (fino a 8), ognuna con livello, edifici, tesoro, abitanti ed esercito
+suoi. Si parte sempre dalla capitale, scelta nel registro. Al mercato della tua città si compra la sua gemma del
+teletrasporto; nelle altre città e nei villaggi i materiali da costruzione hanno prezzi che cambiano ogni giorno.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -828,7 +834,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.33 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.34 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -903,6 +909,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzf_miniere.js` | Le miniere del borgo: la zona sotto terra, lo scavo a mano, i minerali e le vene, i reperti storici, la produzione dei minatori |
 | `8zzg_azione.js` | Il combattimento d'azione: clic verso il cursore, stamina, capriola, corsa e blocco del bersaglio |
 | `8zzh_casa.js` | 7.33: la tua casa con il deposito, gli interni su misura (modelli, colori, materiali, arredi, nome, musica) e le mura del borgo (tipo, colore, porte, torri) |
+| `8zzi_citta.js` | 7.34: più città (fino a 8) ognuna con le sue statistiche, la capitale da cui si riparte, la gemma della tua città al mercato, i materiali a prezzi del giorno nelle altre città |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

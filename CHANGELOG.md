@@ -5,6 +5,20 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.34 — Le tue città (23 ottobre 2026)
+
+- **Più città**: conquistando altre regioni si fondano altre città, fino a 8 (U → Territorio, «Fonda qui una nuova città»). Ogni città nuova costa di più: monete, legna e pietra.
+  - Ogni città ha tutto suo: livello, edifici, tesoro, magazzino, abitanti, cibo e acqua, esercito, miniera, pianta, case e mura.
+  - Nel registro (U → Insediamento) una barra in alto mostra tutte le tue città: scegli quale gestire. Quando entri in una città (o nelle sue case, o nella sua miniera) il registro passa da solo a quella.
+  - Le città che non stai guardando vanno avanti lo stesso: tasse, raccolto e lavori arrivano ogni giorno.
+  - Se un esercito marcia su una delle tue città, il registro passa a lei e la difesa è la sua.
+- **La capitale**: ogni volta che entri in Tomorrow, e quando rinasci, parti dalla tua capitale. All'inizio è la prima città; dal registro si cambia («⭐ Fanne la capitale»).
+- **Al mercato della tua città** si compra la gemma del teletrasporto della città (tasto G per usarla).
+- **Nelle altre città e nei villaggi** i mercanti vendono i materiali da costruzione (legna, pietra, argilla, ferro, carbone, rame, marmo) a prezzi che cambiano ogni giorno e da un posto all'altro: a volte convenienti, a volte cari.
+- Sulla mappa lo stemma compare su tutte le tue città. Nella partita in rete gli altri vedono tutte le tue città, con la loro forza.
+
+---
+
 ## 7.33 — La tua casa e le mura del borgo (23 ottobre 2026)
 
 - **La tua casa**: nel registro del borgo (U → Insediamento) c'è «Costruisci la tua casa». Si può anche scegliere una casa che c'è già, dall'editor del borgo o da dentro.

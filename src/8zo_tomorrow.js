@@ -164,7 +164,7 @@ function twGen(z){const n=N,rx=z.rx,ry=z.ry,bio=z.bio,rnd=twRnd('reg',rx,ry),rr=
     if(hit<0)continue;for(let c=hit;c>=0;c=pr[c]){const x=c%n,y=c/n|0;if(M[y][x]===1||M[y][x]===6){M[y][x]=0;DEC[y][x]=DN+'1'}else if(M[y][x]===2){M[y][x]=4;DEC[y][x]='~'}}d=bfs(sp[0],sp[1])}
   // 5. forzieri (quelli già aperti non tornano), nemici lontani dal villaggio, un Campione nell'accampamento
   const opened=new Set(P.tw.ch);for(const[x,y,rich]of C2){const key=Zk+':'+x+','+y;if(WK(M[y][x])&&!opened.has(key))ents.push({k:'ch',px:x+.5,py:y+.5,rich,twk:key})}
-  const far=[],safe=z.city?40:z.vil?20:z.ham?14:8;for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(WK(M[y][x])&&d[y*n+x]>safe&&!ents.some(e=>Math.abs(e.px-x-.5)<1.5&&Math.abs(e.py-y-.5)<1.5))far.push([x,y]);
+  const far=[],safe=z.city?40:z.vil?26:z.ham?14:8;for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(WK(M[y][x])&&d[y*n+x]>safe&&!ents.some(e=>Math.abs(e.px-x-.5)<1.5&&Math.abs(e.py-y-.5)<1.5))far.push([x,y]);
   for(let i=far.length-1;i>0;i--){const j=ri(0,i);[far[i],far[j]]=[far[j],far[i]]}
   for(let i=0;i<z.c&&far.length;i++){const[x,y]=far.pop();ents.push(mk(z.en[Math.floor(R()*z.en.length)],x,y))}
   for(const cp of z.camps||[]){const[x,y]=cp;for(let i=0;i<3;i++){const[u,v]=nearFree(x+(i-1)*2,y+1);const e=mk(z.en[i%z.en.length],u,v);if(i===0)eliteMk(e);ents.push(e)}}

@@ -5,6 +5,33 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.24 — Villaggi e città costruiti con criterio (23 ottobre 2026)
+
+- **I villaggi di Tomorrow, rifatti**: non più case in cerchio, ma un vero paese.
+  - Una strada maestra, due vicoli e una via che lo attraversa da nord a sud; i sentieri ripartono dalle sue strade.
+  - La piazza lastricata con la fontana (o il pozzo, dove l'acqua è poca), le panchine, i lampioni e la bacheca.
+  - Il mercato con i banchi, e chi vende dietro al banco.
+  - Le case allineate lungo le strade, ognuna con la porta sulla via; dietro ci sono orti, giardini, alberi da frutto, legna e panni stesi.
+  - La locanda sulla piazza, con l'oste dentro, e la forgia del fabbro all'aperto.
+  - Fuori dal paese i campi a strisce con i sentieri in mezzo, gli spaventapasseri e il fienile.
+- **Le città di Tomorrow, divise in isolati**:
+  - viali, strade e la circonvallazione dentro le mura;
+  - in ogni isolato una fila di case sulla strada, un cortile con pozzi, panchine e alberi, e una fila di case che si affaccia sul cortile;
+  - la piazza con la fontana, le statue e gli stendardi, e il **tempio in fondo al viale**;
+  - il mercato con le bancarelle e i suoi mercanti (fruttivendoli, fornai, pescivendoli, tessitori), che richiamano i clienti;
+  - la locanda e la bottega sul viale vicino alla piazza, la fucina verso le porte, la Casa delle Gemme sulla piazza;
+  - un **parco** con il laghetto, le aiuole e una statua, i lampioni agli incroci e un filare di alberi lungo la piazza.
+- **La gente si muove**:
+  - i paesani vanno in piazza, al mercato, nei campi, a trovare i vicini e a casa;
+  - la sera vanno alla locanda, di notte rientrano in casa e la mattina escono di nuovo;
+  - le guardie fanno la ronda fra le porte, le mura e la piazza;
+  - i mercanti restano al loro banco;
+  - chi ti parla si ferma e ti guarda, e chi stai raggiungendo ti aspetta;
+  - dentro le case chi ci abita si muove per le stanze.
+- I mostri restano più lontani dalle case dei villaggi.
+
+---
+
 ## 7.23 — Il reset dell'universo (23 ottobre 2026)
 
 - **Il filmato di Tomorrow**: la prima volta che cominci un mondo di Tomorrow parte un filmato di dieci scene che racconta cosa è successo.

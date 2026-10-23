@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.22** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.27** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -110,6 +110,7 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **Z** | Domare: lancia un Sigillo di doma sul mostro indebolito più vicino |
 | **N** | I compagni (la stalla) |
 | **U** | In Tomorrow: territorio, conquista e il tuo insediamento |
+| **V** | In Tomorrow, nel tuo insediamento: l'editor del borgo |
 | **Y** | In Tomorrow: le fazioni e la tua fazione con il suo stemma |
 | **T** | In Tomorrow, accamparsi |
 | **G** | In Tomorrow, le gemme del teletrasporto |
@@ -168,6 +169,37 @@ Le fazioni attaccano le tue terre: hai fino al giorno dopo per difendere lo sten
 terra passa a loro o il borgo viene saccheggiato. Con il server e il plugin **Territori**, gli eroi dello stesso mondo
 (stesso codice stanza) si contendono le terre: quelle di un altro si prendono con un assedio, i suoi insediamenti si
 saccheggiano. La cronaca è nel registro (U → Guerra).
+
+### Il reset dell'universo (dalla 7.23)
+
+All'inizio di Tomorrow un filmato racconta i mille anni dopo Aldoria: la Corona distrutta, il mondo che si scioglie e si
+ricompone in terre nuove, i sopravvissuti che ricostruiscono. Si rivede dal menu di Tomorrow. Nelle rovine, nei forzieri
+e nei dungeon si trovano i dodici **cimeli di Aldoria**, oggetti leggendari e reperti del vecchio mondo, ognuno con la
+sua storia (pausa → Cimeli di Aldoria).
+
+### Villaggi e città di Tomorrow (dalla 7.24)
+
+I villaggi hanno una strada maestra, i vicoli, la piazza con la fontana e il mercato, le case lungo le strade con gli orti
+dietro, la locanda, la forgia e i campi intorno. Le città sono divise in isolati con viali, cortili, il tempio in fondo al
+viale, il mercato, il parco e le mura. La gente si muove: va in piazza, al mercato, nei campi, la sera alla locanda e di
+notte a casa. Le guardie fanno la ronda e i mercanti restano al loro banco.
+
+### Il prologo (dalla 7.25)
+
+Il prologo della Storia racconta in quattordici scene la fondazione di Aldoria, la Corona e le sei terre, la caduta di
+Malakar, la Corona in frantumi e l'arrivo dell'eroe, con tre musiche nuove. Si rivede dal menu delle scene.
+
+### L'editor del borgo (dalla 7.26)
+
+Nel tuo insediamento apri l'editor (tasto **V**, o Registro → Insediamento): sposti gli edifici, aggiungi e demolisci le
+case, cambi i colori, disegni strade e piazze e metti alberi, fontane, lampioni, panchine, statue, bancarelle, campi e
+staccionate. Scegli anche dove sta il banco del mercante e lo stendardo. La gente del borgo va in giro e il mercante
+resta al suo banco.
+
+### La vista 3D voxel (dalla 7.27)
+
+La vista 3D usa lo stile voxel: cubi con gli spigoli netti, la grana a cubetti di ogni materiale e l'erba fatta di cubetti,
+con luci, ombre e orizzonte di prima. Nelle opzioni della vista 3D si torna allo stile liscio.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -754,7 +786,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.22 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.27 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -807,7 +839,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zj_citta.js` | «Le vie di Aldoria», il nuovo tema della città, e le sezioni dinamiche del motore dei brani scritti |
 | `8zk_unici.js` | Oggetti unici: generatore dal seme, poteri, scheda, provenienza; scambi di unici, reperti e pozioni |
 | `8zl_aperto.js` | Tomorrow, la base: menu, salvataggio a parte, Bacheca dei Contratti, tappe dei contratti, bersagli, assedi, reputazione |
-| `8zm_3d.js` | La vista 3D: registra i disegni del gioco e li rende in WebGL 2 con luce, ombre, materiali, cielo e l'orizzonte oltre i confini; telecamera, clic e movimento in 3D |
+| `8zm_3d.js` | La vista 3D: registra i disegni del gioco e li rende in WebGL 2 con luce, ombre, materiali, cielo e l'orizzonte oltre i confini, in stile voxel o liscio; telecamera, clic e movimento in 3D |
 | `8zn_pausa.js` | Il pulsante delle impostazioni, il menu di pausa (anche con Esc) e la sezione «Vista 3D» delle impostazioni |
 | `8zo_tomorrow.js` | Tomorrow, il mondo: regioni generate senza fine, biomi, villaggi, dungeon e specie generati, contratti nuovi, mappa del mondo, orizzonte 3D |
 | `8zp_vivo.js` | Tomorrow vivo: città con mura e piazza, case con interni, abitanti, animali, viandanti, santuari; il campo, le gemme del teletrasporto e le battaglie con gli alleati |
@@ -819,6 +851,10 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zv_domare.js` | Domare i mostri: sigilli, cattura, compagni in campo con la loro mossa speciale, livelli ed evoluzioni, la stalla, il bestiario |
 | `8zw_regno.js` | Tomorrow: conquista delle regioni, insediamento con edifici e tesoro, fazioni con sedi, emissari e stemmi, la tua fazione, le terre sulla mappa |
 | `8zx_guerre.js` | Le guerre: assalti delle fazioni alle tue terre, assedi e saccheggi fra giocatori con il plugin Territori, la cronaca |
+| `8zy_tw_film.js` | Il filmato del reset dell'universo all'inizio di Tomorrow, le sue musiche e i cimeli di Aldoria |
+| `8zz_borghi.js` | Villaggi e città di Tomorrow con strade, lotti, piazza, mercato, cortili e parco; la gente che si muove con le sue abitudini |
+| `8zza_prologo.js` | Il nuovo prologo della Storia: le scene nuove (il mare, la fondazione, le sei terre, Malakar, la Corona in frantumi, l'alba) e le sue tre musiche |
+| `8zzb_editborgo.js` | L'editor dell'insediamento: edifici, case, strade, arredi, fontane, banco del mercante e stendardo; la gente che va in giro nel borgo |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

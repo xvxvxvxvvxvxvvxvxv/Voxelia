@@ -5,6 +5,112 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.27 — La vista 3D in stile voxel (23 ottobre 2026)
+
+- **Stile voxel** per la vista 3D, ora quello predefinito:
+  - facce nette e lo spigolo scuro di ogni cubo, al posto degli spigoli arrotondati;
+  - ogni materiale ha la sua grana a cubetti: erba, pietra, legno, sabbia, neve, terra, metallo e anche l'acqua, che si increspa a quadretti;
+  - ogni cubetto ha una sfumatura sua, come nei modelli voxel;
+  - i fili d'erba sono fatti di cubetti.
+  - I dettagli restano tutti: luce del sole, ombre, torce, nebbia, orizzonte.
+  - Nelle opzioni della vista 3D (**Stile della vista 3D**) si torna allo stile liscio.
+- **Correzioni della vista 3D**:
+  - nei castelli, nelle locande, nelle cripte e in altri luoghi alcune caselle del pavimento comparivano come quadrati bianchi accesi: erano scambiate per luci;
+  - le luci troppo vicine (lampioni, torce, la lanterna dell'eroe) non bruciano più l'immagine in bianco;
+  - nei deserti e sulla neve al sole l'immagine non è più slavata: le luci forti hanno una sfumatura morbida;
+  - nei villaggi e nelle città di Tomorrow il bordo delle fontane e gli arredi fatti dal paese (bancarelle, panchine, lampioni, orti) si vedono anche in 3D.
+- Nelle città di Tomorrow i cittadini partono sempre da una strada: a volte uno nasceva chiuso in un cortile e non si poteva raggiungere.
+- Dentro questa versione ci sono anche le correzioni della manutenzione 7.17.1 (assedi, difesa dei villaggi, mondi nuovi davvero nuovi).
+
+---
+
+## 7.26 — L'editor del borgo (23 ottobre 2026)
+
+- **Editor del tuo insediamento** (Registro → Insediamento → **Modifica il borgo**, oppure il tasto **V** quando sei nel borgo).
+  - Costruisci camminando fra le case; un clic sulla mappa piazza quello che hai scelto, con l'anteprima verde (si può) o rossa (non c'è spazio).
+  - La prima volta l'editor parte dal borgo così com'è.
+- **Edifici**: sposti mercato, fucina, tempio, locanda, stalla, granaio e le case dove vuoi.
+  - Aggiungi o demolisci case, quante ne permette il livello del borgo, in cinque misure.
+  - Cambi i colori dei muri e del tetto di ogni casa.
+  - Gli edifici che costruisci dopo trovano un posto da soli, e poi li sposti.
+- **Strade**: disegni lastricati e sentieri, o rimetti l'erba, cliccando o trascinando.
+- **Arredi** (10 monete l'uno): alberi, meli, cespugli, aiuole, roseti, siepi, rocce, zampilli, pozzi, lampioni, lanterne, panchine, statue, bandiere, stendardi, vasi, bancarelle, botti, casse, carretti, grano, ortaggi, vigne, fieno, spaventapasseri, staccionate, arnie, legna, stenditoi e altro.
+  - La **fontana** 4×4 costa 120 monete.
+- **Banco del mercante**: scegli dove sta il banco; il mercante ci resta dietro.
+- **Stendardo**: scegli dove piantare lo stendardo del borgo.
+- **Gomma**: togli arredi, strade, fontane e case.
+- L'editor non ti lascia chiudere il passaggio verso una porta, la bacheca o il mercante.
+- **Ripristina** torna al borgo automatico. La palizzata e le torri seguono sempre il confine.
+- **La gente del borgo va in giro**, come nei villaggi: in piazza, sulle strade, a casa, la sera alla locanda. Il mercante e il fabbro restano al loro posto, le guardie fanno la ronda.
+- L'editor funziona anche in 3D e sui telefoni, dove il pannello sta in basso.
+
+---
+
+## 7.25 — Il nuovo prologo (23 ottobre 2026)
+
+- **Il prologo della Storia, rifatto**: quattordici scene, con scene nuove e le migliori di quello di prima rimontate in un racconto solo.
+  - Si apre sul mare di notte, con il titolo: la nave di Aldric il Primo arriva a una costa di pietra bianca.
+  - Aldoria sorge cubo dopo cubo: le mura, le torri, il mastio e gli stendardi.
+  - La Corona di Voxel, e le **sei terre** che teneva unite: sei isole che fluttuano intorno alla Corona, ognuna con la sua gemma e un raggio di luce che le lega.
+  - Ciò che dormiva sotto la città, e gli anni felici di Aldoria.
+  - **Malakar chino sui libri proibiti**, in una biblioteca a lume di candela, con un libro che fluttua e le rune viola che gli girano intorno.
+  - Il Re Lich e la notte del fuoco in Aldoria Vecchia.
+  - **La Corona va in frantumi**: trema, si incrina e sei schegge colorate attraversano il cielo, ognuna con la sua scia.
+  - I signori dei frammenti, la Cittadella del Vuoto, il quartiere murato.
+  - Infine l'alba: l'eroe sale sulla collina e guarda Aldoria all'orizzonte, mentre compare il titolo.
+- Tre musiche nuove, anche nel juke-box: **La saga di Aldoria**, **L'ombra di Malakar** e **L'alba dell'eroe**.
+- Il prologo si rivede dal menu delle scene, come prima.
+
+---
+
+## 7.24 — Villaggi e città costruiti con criterio (23 ottobre 2026)
+
+- **I villaggi di Tomorrow, rifatti**: non più case in cerchio, ma un vero paese.
+  - Una strada maestra, due vicoli e una via che lo attraversa da nord a sud; i sentieri ripartono dalle sue strade.
+  - La piazza lastricata con la fontana (o il pozzo, dove l'acqua è poca), le panchine, i lampioni e la bacheca.
+  - Il mercato con i banchi, e chi vende dietro al banco.
+  - Le case allineate lungo le strade, ognuna con la porta sulla via; dietro ci sono orti, giardini, alberi da frutto, legna e panni stesi.
+  - La locanda sulla piazza, con l'oste dentro, e la forgia del fabbro all'aperto.
+  - Fuori dal paese i campi a strisce con i sentieri in mezzo, gli spaventapasseri e il fienile.
+- **Le città di Tomorrow, divise in isolati**:
+  - viali, strade e la circonvallazione dentro le mura;
+  - in ogni isolato una fila di case sulla strada, un cortile con pozzi, panchine e alberi, e una fila di case che si affaccia sul cortile;
+  - la piazza con la fontana, le statue e gli stendardi, e il **tempio in fondo al viale**;
+  - il mercato con le bancarelle e i suoi mercanti (fruttivendoli, fornai, pescivendoli, tessitori), che richiamano i clienti;
+  - la locanda e la bottega sul viale vicino alla piazza, la fucina verso le porte, la Casa delle Gemme sulla piazza;
+  - un **parco** con il laghetto, le aiuole e una statua, i lampioni agli incroci e un filare di alberi lungo la piazza.
+- **La gente si muove**:
+  - i paesani vanno in piazza, al mercato, nei campi, a trovare i vicini e a casa;
+  - la sera vanno alla locanda, di notte rientrano in casa e la mattina escono di nuovo;
+  - le guardie fanno la ronda fra le porte, le mura e la piazza;
+  - i mercanti restano al loro banco;
+  - chi ti parla si ferma e ti guarda, e chi stai raggiungendo ti aspetta;
+  - dentro le case chi ci abita si muove per le stanze.
+- I mostri restano più lontani dalle case dei villaggi.
+
+---
+
+## 7.23 — Il reset dell'universo (23 ottobre 2026)
+
+- **Il filmato di Tomorrow**: la prima volta che cominci un mondo di Tomorrow parte un filmato di dieci scene che racconta cosa è successo.
+  - Mille anni fa la Corona di Voxel teneva insieme Aldoria e il mondo intero.
+  - La Corona va in frantumi e Aldoria si scioglie cubo dopo cubo, salendo verso il cielo.
+  - Il vuoto: i cubi del vecchio mondo vagano nel buio, in una spirale.
+  - L'universo ricomincia: i cubi ricadono in un ordine nuovo e formano mari, montagne, deserti, ghiacci e lande di cenere.
+  - I pochi sopravvissuti si svegliano in terre sconosciute e ricostruiscono villaggi e città.
+  - Mille anni dopo le fazioni si contendono le terre, e sotto la terra qualcosa del vecchio mondo brilla ancora.
+  - Infine l'alba: «Ora tocca a te. Ricostruisci ciò che è andato perduto.»
+- Due musiche nuove, **Il reset dell'universo** e **Tomorrow**, anche nel juke-box.
+- Il filmato si rivede quando vuoi dal menu di Tomorrow (**Il reset dell'universo**) e si salta con «Salta».
+- **I cimeli di Aldoria**: dodici oggetti del vecchio mondo sono sopravvissuti al reset.
+  - Si trovano nei forzieri di Tomorrow (più spesso in quelli preziosi) e sui boss dei dungeon.
+  - Sei si indossano e sono leggendari: la Lama di Aldric, lo Scudo del Faro, il Diadema della Regina Elara e altri.
+  - Gli altri sei sono reperti: un Frammento della Corona, il Diario di Malakar, il Collare di Briciola e altri.
+  - Ognuno ha la sua storia, scritta nella scheda dell'oggetto.
+  - La raccolta è nel menu di pausa (**Cimeli di Aldoria**).
+
+---
+
 ## 7.22 — Le guerre (22 ottobre 2026)
 
 - **Le fazioni attaccano:** ogni giorno una fazione può marciare su una delle tue terre. Lo fanno più spesso quelle ostili, con cui hai la reputazione sotto zero.

@@ -5,6 +5,16 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.36 — La Pietra del viaggio (23 ottobre 2026)
+
+- **La Pietra del viaggio** (una waystone): c'è in ogni tua città, vicino alla piazza, e in ogni città che vende la sua gemma, accanto alla Casa delle Gemme. Si tocca come un personaggio, e si apre anche con il tasto G.
+  - Elenca **tutti i luoghi che hanno una gemma del teletrasporto**: le tue città e le città con il Custode delle Gemme che hai visitato, con la direzione.
+  - **Ogni gemma va comprata, una volta sola**: dal Custode delle Gemme, al mercato della tua città o alla pietra di quel luogo. Poi ci viaggi quando vuoi, gratis, dalla pietra o con il tasto G.
+  - I luoghi di cui non hai ancora la gemma si vedono con il lucchetto: la gemma si compra lì.
+- Le gemme comprate prima di questa versione valgono come gemme comprate. Il prezzo di una gemma è più alto, perché ora non si consuma più.
+
+---
+
 ## 7.35 — Il legno e la città che cresce (23 ottobre 2026)
 
 - **Gli alberi si abbattono**: clic (o tocco) su un albero di Tomorrow, e l'eroe ci va e lo colpisce con l'ascia. Servono **5 colpi**, e l'albero lascia **2 legna**.

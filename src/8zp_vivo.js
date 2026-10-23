@@ -150,7 +150,7 @@ function twCampTick(dt){if(OW.camping){OW.camping.t+=dt;if(Math.hypot(P.px-OW.ca
   for(const p of PJ)if(Math.hypot(p.x-c.px,p.y-c.py)<TWCR)p.t=0}
 
 /* ---- le gemme del teletrasporto ---- */
-const twGemPrice=k=>{const z=twZ(k);return 150+(z?z.lv:1)*25};
+const twGemPrice=k=>{const z=twZ(k);return 400+(z?z.lv:1)*60};
 function twGemHTML(){const G=P.tw.gem||{},keys=Object.keys(G).filter(k=>G[k]>0);const here=twP(String(Zk).startsWith('tw:')?Zk:P.tw.at)||[0,0];
   return`<h3>💎 Gemme del teletrasporto</h3>${keys.length?keys.map(k=>{const p=twP(k),z=twZ(k);return`<div class="twgm"><span class="gi">💎</span><span><b>${twEsc(z.n)}</b><small>${twDir(p[0]-here[0],p[1]-here[1])} · ${G[k]} ${G[k]===1?'gemma':'gemme'}</small></span><button onclick="twTeleport('${k}')" ${OW.tp||OW.bat?'disabled':''}>Usa</button></div>`}).join(''):'<p class="mu">Non hai gemme. Le vende il Custode delle Gemme in molte città: ogni gemma riporta alla sua città.</p>'}<button onclick="cl()">Chiudi</button>`}
 function twGemBuy(k){const pr=twGemPrice(k);if(P.g<pr){msg('Non hai abbastanza oro');tone(150,.12);return}P.g-=pr;P.tw.gem=P.tw.gem||{};P.tw.gem[k]=(P.tw.gem[k]|0)+1;
@@ -166,7 +166,7 @@ const _pd717=cv.onpointerdown;cv.onpointerdown=ev=>{if(OW.tp)return;_pd717(ev)};
 // il Custode delle Gemme e il pulsante del campo nel dialogo
 const _npcHTML717=npcHTML;npcHTML=function(e){let h=_npcHTML717(e);if(!twOn()||!e)return h;const d=NPCS[e.nid];
   if(d&&d.tw2==='gem'){const m=/^tv_(m?\d+)_(m?\d+)_/.exec(e.nid),k=m?twK(twDec(m[1]),twDec(m[2])):null;if(k){const pr=twGemPrice(k),own=(P.tw.gem||{})[k]|0;
-    h+=`<div class="qb twgb"><b>💎 Gemma del teletrasporto di ${twEsc(twZ(k).n)}</b><p class="mu">Ti riporta qui da qualunque luogo del mondo. Si usa con il tasto G. Ne hai ${own}.</p><button onclick="twGemBuy('${k}')">Compra · ${pr}💰</button></div>`}}
+    h+=`<div class="qb twgb"><b>💎 Gemma del teletrasporto di ${twEsc(twZ(k).n)}</b><p class="mu">Comprata una volta, ti porta qui quando vuoi: dalla Pietra del viaggio o con il tasto G.${typeof csWsHas==='function'&&csWsHas(k)?' <b>È già tua.</b>':''}</p>${typeof csWsHas==='function'&&csWsHas(k)?'':`<button onclick="twGemBuy('${k}')">Compra · ${pr}💰</button>`}</div>`}}
   return h};
 
 /* ---- le battaglie epiche ---- */

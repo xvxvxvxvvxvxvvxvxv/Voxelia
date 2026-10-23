@@ -55,6 +55,10 @@ function fpTarget(r,cone){let best=null,bs=1e9;const f=FP.tf,fl=Math.hypot(f[0],
 const fpReach=e=>MODE==='dim'?dimW().r:(e.boss||e.b&&e.b.pt?2.2:1.5)+.35;
 // un colpo normale, come quando l'eroe attacca da solo il bersaglio cliccato (stessa cadenza, stessi danni)
 function fpStrike(gp){if(!started||!P||P.hp<=0||P.dm)return;const e=fpTarget(fpReach,70);
+  // 7.19: nella storia ogni colpo è la mossa seguente della catena dell'arma (src/8zu_combattimento.js), verso il nemico mirato
+  // o dove si guarda; il bersaglio non resta fissato, se no l'eroe continuerebbe a colpire da solo
+  if(typeof cbOn==='function'&&cbOn()&&MODE!=='dim'&&!(e&&e.k==='pl')){if(PM)return;const f=FP.tf,dx=e?e.px-P.px:f[0],dy=e?e.py-P.py:f[1],l=Math.hypot(dx,dy)||1;
+    P.dr=[dx/l,dy/l];P.tg=e||null;cbPress('v');P.tg=null;xrPulse(gp,e?.7:.15,e?45:12);return}
   if(!e){if(!(P.wh>t)){P.wh=t+.3;whoosh()}xrPulse(gp,.12,12);return}
   if(P.at>0){xrPulse(gp,.1,10);return}
   const d=Math.hypot(e.px-P.px,e.py-P.py)||1;P.dr=[(e.px-P.px)/d,(e.py-P.py)/d];let cr=false;
@@ -63,13 +67,15 @@ function fpStrike(gp){if(!started||!P||P.hp<=0||P.dm)return;const e=fpTarget(fpR
   else{P.at=.55;P.sw=.2;P.swc++;const r=roll();cr=r.cr;hurtE(e,r.d,0,r.cr)}
   xrPulse(gp,cr?1:.7,cr?90:45)}
 
+// le due mani giù insieme: nella storia è il colpo caricato dell'arma (al massimo, quando è pronto), altrove il colpo ad area
+function fpSlam(){if(typeof cbOn==='function'&&cbOn()&&MODE!=='dim'&&!PM){if(P.sk>0){flt(P,'Caricato tra '+Math.ceil(P.sk)+'s','#9adcff');return}const f=FP.tf,l=Math.hypot(f[0],f[1])||1;P.dr=[f[0]/l,f[1]/l];cbHeavy(1);P.tg=null;return}area()}
 /* ---- gesti: la velocità della mano (impugnatura del controller) decide fendente, stoccata e colpo ad area ---- */
 function fpGesture(src,gp,fr,now){const sp=src.gripSpace&&fr.getPose(src.gripSpace,XR.ref);if(!sp){FP.grip[src.handedness]=null;return}
   const m=sp.transform.matrix,p=[m[12],m[13],m[14]];FP.grip[src.handedness]=m;let s=FP.hs.get(src);if(!s){s={p,t:now,v:[0,0,0],arm:1,sl:0};FP.hs.set(src,s)}
   const dt=(now-s.t)/1000;if(dt>0&&dt<.1)for(let i=0;i<3;i++)s.v[i]=s.v[i]*.45+(p[i]-s.p[i])/dt*.55;else s.v=[0,0,0];s.p=p;s.t=now;
   const v=s.v,spd=Math.hypot(v[0],v[1],v[2]);if(spd<.9){s.arm=1;return}if(!s.arm||!started||!P||P.hp<=0)return;
   // due mani giù insieme (entro un quarto di secondo): colpo ad area
-  if(v[1]<-2&&-v[1]/spd>.8){s.sl=now;for(const[o,q]of FP.hs)if(o!==src&&now-q.sl<250){q.sl=0;s.sl=0;s.arm=q.arm=0;area();xrPulse(gp,.9,80);xrPulse(o.gamepad,.9,80);return}}
+  if(v[1]<-2&&-v[1]/spd>.8){s.sl=now;for(const[o,q]of FP.hs)if(o!==src&&now-q.sl<250){q.sl=0;s.sl=0;s.arm=q.arm=0;fpSlam();xrPulse(gp,.9,80);xrPulse(o.gamepad,.9,80);return}}
   // stoccata: la mano corre lungo il controller, in avanti
   const fw=[-m[8],-m[9],-m[10]],al=v[0]*fw[0]+v[1]*fw[1]+v[2]*fw[2];
   if(al>2.4&&al/spd>.8){s.arm=0;if(P.lgc>0){fpStrike(gp);return}lunge();xrPulse(gp,.8,60);return}

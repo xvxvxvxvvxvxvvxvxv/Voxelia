@@ -158,10 +158,10 @@ function twGen(z){const n=N,rx=z.rx,ry=z.ry,bio=z.bio,rnd=twRnd('reg',rx,ry),rr=
   for(let i=0;i<rr(3,6);i++){const q=spot(6,30);if(q){F(q[0],q[1],'');C2.push([q[0],q[1],0]);tg.push(q)}}
   // 4. tutto raggiungibile: un varco verso ciò che resta chiuso fra alberi e rocce
   for(const e of ents)if(e.k==='po')tg.push([e.px|0,e.py|0]);// anche le porte delle case
-  const NB=[[1,0],[-1,0],[0,1],[0,-1]];let d=bfs(sp[0],sp[1]);
+  const NB=[[1,0],[-1,0],[0,1],[0,-1]];let d=bfs(sp[0],sp[1]);z.carved=[];
   for(const[x0,y0]of tg.concat(ends)){if(d[y0*n+x0]>=0)continue;const pr=new Int32Array(n*n).fill(-2),q=[y0*n+x0];pr[q[0]]=-1;let hit=-1;
     for(let i=0;i<q.length&&hit<0;i++){const c=q[i],x=c%n,y=c/n|0;for(const[a,b]of NB){const u=x+a,v=y+b;if(u<0||v<0||u>=n||v>=n||pr[v*n+u]!==-2||M[v][u]===3)continue;pr[v*n+u]=c;if(d[v*n+u]>=0){hit=v*n+u;break}q.push(v*n+u)}}
-    if(hit<0)continue;for(let c=hit;c>=0;c=pr[c]){const x=c%n,y=c/n|0;if(M[y][x]===1||M[y][x]===6){M[y][x]=0;DEC[y][x]=DN+'1'}else if(M[y][x]===2){M[y][x]=4;DEC[y][x]='~'}}d=bfs(sp[0],sp[1])}
+    if(hit<0)continue;(z.carved=z.carved||[]).push([x0,y0]);for(let c=hit;c>=0;c=pr[c]){const x=c%n,y=c/n|0;if(M[y][x]===1||M[y][x]===6){M[y][x]=0;DEC[y][x]=DN+'1'}else if(M[y][x]===2){M[y][x]=4;DEC[y][x]='~'}}d=bfs(sp[0],sp[1])}
   // 5. forzieri (quelli già aperti non tornano), nemici lontani dal villaggio, un Campione nell'accampamento
   const opened=new Set(P.tw.ch);for(const[x,y,rich]of C2){const key=Zk+':'+x+','+y;if(WK(M[y][x])&&!opened.has(key))ents.push({k:'ch',px:x+.5,py:y+.5,rich,twk:key})}
   const far=[],safe=z.city?40:z.vil?26:z.ham?14:8;for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(WK(M[y][x])&&d[y*n+x]>safe&&!ents.some(e=>Math.abs(e.px-x-.5)<1.5&&Math.abs(e.py-y-.5)<1.5))far.push([x,y]);

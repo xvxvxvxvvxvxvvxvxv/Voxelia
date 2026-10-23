@@ -3,6 +3,10 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Territori 1.1 (gioco 7.30)
+
+- Con le terre si ricorda anche la **potenza dell'esercito** di ogni insediamento (`pow`), così chi lo assedia trova guardie forti quanto il suo esercito.
+
 ## Territori 1.0 (gioco 7.22)
 
 - **Nuovo plugin Territori:** i giocatori che giocano a Tomorrow nello stesso mondo (stesso codice stanza) condividono le terre conquistate. Il plugin le ricorda per ogni mondo, le manda a tutti e decide chi le possiede: una terra già presa da un altro si ottiene solo con un assedio.

@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.27.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.32** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -111,6 +111,8 @@ pubblica il server online: vedi [Pubblicare il server online](#pubblicare-il-ser
 | **N** | I compagni (la stalla) |
 | **U** | In Tomorrow: territorio, conquista e il tuo insediamento |
 | **V** | In Tomorrow, nel tuo insediamento: l'editor del borgo |
+| **Maiusc** | Capriola (premuto e lasciato) · corsa (tenuto mentre ti muovi) |
+| **Tab** | Blocca il bersaglio · il nemico dopo |
 | **Y** | In Tomorrow: le fazioni e la tua fazione con il suo stemma |
 | **T** | In Tomorrow, accamparsi |
 | **G** | In Tomorrow, le gemme del teletrasporto |
@@ -200,6 +202,40 @@ resta al suo banco.
 
 La vista 3D usa lo stile voxel: cubi con gli spigoli netti, la grana a cubetti di ogni materiale e l'erba fatta di cubetti,
 con luci, ombre e orizzonte di prima. Nelle opzioni della vista 3D si torna allo stile liscio.
+
+### La gestione del borgo (dalla 7.28)
+
+Per costruire nel tuo insediamento servono legna, pietra, argilla e ferro, che si raccolgono nelle terre selvagge o si
+producono con la Segheria e la Cava. Nel registro ci sono le statistiche del borgo: abitanti, cibo, acqua, monete,
+potenza dell'esercito e materiali. Ogni giorno gli abitanti mangiano e bevono: se per due giorni cibo o acqua non
+bastano, una parte se ne va e torna solo quando le condizioni migliorano. Cibo e acqua vengono da Fattoria, Granaio,
+Cisterna, campi, pozzi e fontane, o dal cibo che porti tu.
+
+### L'editor con tutti i materiali (dalla 7.29)
+
+Nell'editor del borgo ci sono tutti i pavimenti, i muri (con il colore che vuoi) e gli arredi del gioco, con la ricerca.
+Gli edifici si fanno su misura: stile, colore dei muri e del tetto, altezza, camino. Ogni cosa costa le sue risorse.
+
+### La caserma e l'esercito (dalla 7.30)
+
+Nel borgo si costruisce la Caserma e si addestrano i soldati (monete, ferro e cibo). Potenziare la caserma porta più
+soldati e più forti. La potenza dell'esercito difende il borgo e le terre: se non arrivi in tempo a un assalto combatte
+l'esercito, e con un esercito più debole del nemico la probabilità di vincere è bassa. Se sei lì, i soldati combattono
+con te; negli assedi fra giocatori le guardie sono forti quanto l'esercito di chi difende.
+
+### Le miniere (dalla 7.31)
+
+Nel borgo si costruisce la Miniera: dentro si scava a mano cliccando sulla roccia, e si trovano pietra, carbone, ferro,
+rame, marmo, pepite d'oro e gemme, sempre più preziosi man mano che si scende. Potenziandola si scava più in fondo e dal
+livello 3 si trovano i reperti storici di prima del reset (al livello 5 anche i cimeli di Aldoria). Le gallerie restano
+e ogni giorno i minatori portano un po' di minerali al magazzino.
+
+### Il combattimento d'azione (dalla 7.32)
+
+Si combatte cliccando dove si vuole colpire: l'eroe si gira verso il cursore e fa la mossa della sua arma; tenendo premuto
+si carica il colpo pesante. Attacchi, capriola (Maiusc o E) e corsa (Maiusc tenuto) consumano la stamina, che si
+ricarica da sola. Tab blocca il bersaglio: l'eroe lo guarda sempre e ogni colpo va su di lui. Lontano dai nemici il clic
+fa camminare. Il combattimento classico si riattiva in Impostazioni → Comandi.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -786,7 +822,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.27.1 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.32 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -855,6 +891,11 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zz_borghi.js` | Villaggi e città di Tomorrow con strade, lotti, piazza, mercato, cortili e parco; la gente che si muove con le sue abitudini |
 | `8zza_prologo.js` | Il nuovo prologo della Storia: le scene nuove (il mare, la fondazione, le sei terre, Malakar, la Corona in frantumi, l'alba) e le sue tre musiche |
 | `8zzb_editborgo.js` | L'editor dell'insediamento: edifici, case, strade, arredi, fontane, banco del mercante e stendardo; la gente che va in giro nel borgo |
+| `8zzc_gestione.js` | La gestione del borgo: risorse da raccogliere e costi degli edifici, Cisterna, Fattoria, Segheria e Cava, statistiche, cibo, acqua e abitanti che vanno e vengono |
+| `8zzd_editor2.js` | L'editor del borgo completo: tutti i pavimenti, i muri e gli arredi del gioco, edifici su misura, costi in risorse |
+| `8zze_esercito.js` | La Caserma, i soldati, la potenza dell'esercito, le battaglie risolte con le probabilità e i soldati in campo con te |
+| `8zzf_miniere.js` | Le miniere del borgo: la zona sotto terra, lo scavo a mano, i minerali e le vene, i reperti storici, la produzione dei minatori |
+| `8zzg_azione.js` | Il combattimento d'azione: clic verso il cursore, stamina, capriola, corsa e blocco del bersaglio |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

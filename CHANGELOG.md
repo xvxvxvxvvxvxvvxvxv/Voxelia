@@ -5,6 +5,127 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.32 — Il combattimento d'azione (23 ottobre 2026)
+
+- **Clic per colpire**: per combattere non si clicca più sul nemico, si clicca dove si vuole colpire.
+  - L'eroe si gira verso il cursore e fa la mossa della sua arma, con la catena di tre colpi e il colpo perfetto, facendo un passo avanti a ogni colpo.
+  - Se c'è un nemico in quella direzione, il colpo va su di lui.
+  - Tenendo premuto il tasto del mouse si carica il colpo pesante. Funziona anche in 3D.
+- **La stamina**, la barra verde sotto la vita:
+  - ogni attacco la consuma secondo l'arma (il pugnale poco, il martello tanto), e così il colpo pesante, la capriola e la corsa;
+  - quando finisce si resta senza fiato e bisogna aspettare un attimo;
+  - si ricarica da sola quando ti fermi.
+- **La capriola** (Maiusc premuto e lasciato, E, o il pulsante Schiva): un rotolamento veloce nella direzione in cui ti muovi, invulnerabile per un istante.
+  - Da fermo è un passo indietro.
+  - Non c'è più l'attesa di tre secondi: basta avere stamina.
+- **La corsa**: tenendo premuto Maiusc mentre ti muovi corri più veloce.
+- **Il blocco del bersaglio** (Tab, o il pulsante **Blocca** sul telefono):
+  - l'eroe resta girato verso il nemico scelto anche mentre si sposta, e ogni colpo va su di lui;
+  - Tab di nuovo passa al nemico dopo;
+  - un mirino rosso lo segna.
+- Lontano dai nemici il clic fa camminare come sempre; cliccare persone, porte, forzieri e oggetti funziona come prima.
+- Il combattimento classico si riattiva nelle impostazioni (**Comandi → Combattimento**).
+
+---
+
+## 7.31 — Le miniere (23 ottobre 2026)
+
+- **La Miniera**: si costruisce nel borgo e si potenzia fino al livello 5. Ha un'entrata nella roccia, con il carrello, le rocce e la legna dei puntelli.
+- **Dentro si scava a mano**: clic (o tocco) sulla roccia accanto a te, e un colpo di piccone dopo l'altro la galleria avanza.
+  - Se la roccia è lontana, l'eroe ci va da solo e poi scava. Una barra mostra a che punto sei.
+- **Cosa si trova**: ogni blocco dà pietra e, sempre più spesso man mano che si scende, carbone, ferro, rame, marmo, pepite d'oro e gemme.
+  - Le vene colorate si vedono nella roccia che tocca le gallerie; il resto è buio finché non ci arrivi.
+  - In fondo la roccia è troppo dura: potenziando la miniera si scava più lontano, e più in fretta.
+- **I reperti storici** (dal livello 3): monete, elmi, sigilli, mosaici, mappe e altri oggetti di prima del reset, ognuno con la sua storia, nel sacco dei reperti.
+  - Al livello 5, nelle viscere della terra, anche i **cimeli di Aldoria**.
+- Le gallerie scavate restano. Nella miniera lavorano i minatori e una barra in alto mostra livello, profondità e minerali.
+- Ogni giorno i minatori portano al magazzino del borgo pietra, carbone, ferro e, ai livelli alti, rame e marmo.
+- **I minerali servono a costruire**: il Tempio dal livello 2 chiede marmo, la Fucina carbone e rame, il Mercato dal livello 3 rame; nell'editor il marmo costa marmo e il pavimento d'oro una pepita.
+- I minerali si vendono ai mercanti. Nel registro del borgo c'è la scheda della miniera, con l'entrata.
+
+---
+
+## 7.30 — La caserma e l'esercito (23 ottobre 2026)
+
+- **La Caserma**: si costruisce nel borgo con monete, legna, pietra e ferro, e si potenzia fino al livello 5.
+  - A ogni livello ci stanno 6 soldati in più e ognuno diventa più forte.
+  - Ha accanto le rastrelliere, le armature e lo stendardo.
+- **Addestrare i soldati** (U → Insediamento → Caserma ed esercito): ogni soldato costa 60 monete, 1 ferro e 2 di cibo dalle scorte.
+  - Ogni giorno i soldati mangiano e prendono la paga.
+  - Se il borgo resta senza cibo o acqua, disertano.
+  - Più soldati ci sono, più guardie fanno la ronda nel borgo.
+- **La potenza dell'esercito**: soldati per forza, più torri e palizzata. Si vede nelle statistiche del borgo e nella barra in alto.
+- **Difendersi dagli attacchi delle fazioni**:
+  - se non arrivi in tempo, combatte l'esercito, sul tuo borgo con tutta la potenza e sulle altre terre con il 60%;
+  - con un esercito più debole del nemico la probabilità di vittoria è bassa, con uno più forte è alta;
+  - i soldati caduti non tornano;
+  - nel registro (U → Guerra) c'è la probabilità di vittoria dell'assalto in corso;
+  - se sei lì, i tuoi soldati scendono in campo con te contro le ondate, con la loro barra della vita.
+- **Guerre fra giocatori**:
+  - la potenza dell'esercito viaggia con le terre;
+  - chi assedia un borgo trova più ondate di guardie, e più forti, quanto più l'esercito di chi lo difende è potente;
+  - i tuoi soldati vengono con te all'assedio;
+  - chi viene saccheggiato perde anche una parte dei soldati.
+- Server: il plugin **Territori 1.1** ricorda la potenza dell'esercito di ogni insediamento.
+
+---
+
+## 7.29 — L'editor con tutti i materiali (23 ottobre 2026)
+
+- **Terreno**: tutti i pavimenti del gioco e di Voxelia Studio si disegnano a pennello nel borgo.
+  - Erbe, prati fioriti, sabbia, neve, ghiaccio, fango, rocce, cripta, cristallo, lava.
+  - Lastricato, ciottoli, mattoni, pontile, assi, parquet, marmo, piastrelle, tappeti, oro.
+  - I terreni, le strade e i pavimenti dei luoghi del gioco.
+  - Con la ricerca per nome.
+- **Muri**: tutti i tipi di muro, con il colore che vuoi.
+  - Pietra, mura merlate, mattoni, assi, muro di casa, roccia, cripta, ghiaccio, cristalli, ossidiana, oro, roccia lavica, muretto basso.
+- **Arredi**: oltre ai preferiti, tutto il catalogo del gioco, diviso per tipo e con la ricerca.
+  - Natura, Campagna, Città, Casa, Castello, Segrete, Guerra, Porto, Acqua, Oggetti speciali.
+  - Gli arredi d'acqua (barca, boa, zampillo) si mettono sull'acqua.
+- **Edifici su misura**:
+  - lo stile: casa, castello, tempio, arena, osservatorio, municipio, motel, mulino o faro;
+  - il colore dei muri e del tetto, scelto liberamente;
+  - l'altezza e il camino;
+  - sette misure per le case.
+- **Ogni cosa costa le sue risorse**, scritte su ogni pulsante: legna per il legno, pietra per la pietra, argilla per i mattoni, ferro per il metallo e monete per i materiali preziosi. I terreni naturali sono gratis.
+- **Correzioni**:
+  - un edificio appena costruito trova sempre un posto da cui la sua porta si raggiunge;
+  - il banco del mercante non si può più chiudere;
+  - il borgo non si può più tagliare fuori dalle strade della regione.
+
+---
+
+## 7.28 — La gestione del borgo (23 ottobre 2026)
+
+- **Per costruire servono risorse**: legna, pietra, argilla e ferro, oltre alle monete. La legna mancante non si paga più in monete.
+  - Nelle terre selvagge di Tomorrow ci sono rocce, cave d'argilla e vene di ferro da raccogliere, ognuna dove è più comune; ogni raccolta dà da 1 a 3 pezzi.
+  - Il costo di ogni edificio è scritto pezzo per pezzo, in rosso quello che manca.
+- **Edifici nuovi**:
+  - la **Cisterna**, per l'acqua;
+  - la **Fattoria**, per il cibo;
+  - la **Segheria**, che produce legna ogni giorno;
+  - la **Cava**, che produce pietra e un po' d'argilla.
+  - Hanno accanto quello che serve al lavoro: pozzi, campi, cataste, rocce.
+- **Le statistiche del borgo** (U → Insediamento):
+  - abitanti e case libere, cibo, acqua (con le scorte e quanto si produce e si consuma ogni giorno), monete e tasse, potenza dell'esercito, materiali tuoi e del magazzino;
+  - gli avvisi su cosa manca, e la cronaca di chi arriva e chi se ne va;
+  - nel borgo una barra in alto mostra sempre le risorse.
+- **La vita del borgo, giorno per giorno**:
+  - gli abitanti mangiano e bevono;
+  - il cibo viene dalla fattoria, dal granaio, dai campi seminati con l'editor e da quello che porti tu (**Porta il cibo**: grano, mele, uova);
+  - l'acqua viene dalla cisterna, dai pozzi, dalle fontane, dagli zampilli e dal fiume, se passa vicino;
+  - se per due giorni il cibo o l'acqua non bastano, una parte degli abitanti se ne va, e torna solo quando ci sono di nuovo abbastanza cibo, acqua e case libere;
+  - con case libere e scorte piene arrivano abitanti nuovi;
+  - più abitanti vuol dire più tasse e più gente per le strade.
+- **Ritira** prende le monete e i materiali del magazzino; il cibo e l'acqua restano al borgo.
+- Il borgo ora usa sempre la sua pianta, quella che si modifica con l'editor.
+- **Correzioni nell'editor**:
+  - non si può più chiudere l'eroe fra le case;
+  - se un passaggio era già chiuso, si possono comunque mettere gli arredi altrove;
+  - il banco del mercante non sparisce più.
+
+---
+
 ## 7.27.1 — La realtà virtuale al passo con il combattimento nuovo (23 ottobre 2026)
 
 - **Realtà virtuale, prima persona:** dalla 7.19 i colpi dati muovendo il braccio non facevano più danno nella storia, perché il combattimento nuovo tiene fermo il vecchio attacco. Ora ogni fendente col controller è la mossa seguente della catena dell'arma (tre colpi diversi, con il «Colpo perfetto» se lo dai al momento giusto), verso il nemico che guardi.

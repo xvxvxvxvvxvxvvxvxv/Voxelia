@@ -13,6 +13,7 @@ const SEDD=[['Natura',[['r','🌳','Albero'],['a','🍎','Melo'],['h','🌸','Ce
   ['Mercato',[['ʍ','⛺','Bancarella a strisce'],['s','🏪','Bancarella'],['H','🧺','Banco del mercato'],['b','🛢','Botte'],['k','📦','Cassa'],['x','🛒','Carretto'],['Л','🥬','Cassetta di verdure'],['i','🌾','Sacchi di farina']]],
   ['Campagna',[['g','🌾','Grano'],['q','🥕','Ortaggi'],['v','🍇','Vite'],['y','🟨','Balla di fieno'],['E','🎃','Spaventapasseri'],['f','🚧','Staccionata'],['+','🐝','Arnia'],['L','🪵','Legna'],['N','👕','Stenditoio'],[':','🪣','Abbeveratoio'],['Ω','🌀','Girandola']]]];
 const SEDDN={};for(const[,L]of SEDD)for(const[c,ic,nm]of L)SEDDN[c]=[ic,nm];
+const SETBA=['mercato','fucina','tempio','locanda','stalla','granaio'],SEDND=new Set();
 const SEDK={mercato:'bottega',fucina:'fucina',tempio:'tempio',locanda:'locanda',stalla:'casa',granaio:'casa',casa:'casa'};
 const SEDKN={mercato:'🛒 Mercato',fucina:'⚒ Fucina',tempio:'⛪ Tempio',locanda:'🍺 Locanda',stalla:'🐾 Stalla',granaio:'🌾 Granaio',casa:'🏠 Casa'};
 const sedKey=(x,y)=>x+','+y,sedXY=k=>k.split(',').map(Number);
@@ -39,29 +40,36 @@ function sedDoorAt(x,y,skip){const Ly=P.tw.set.lay;return Ly.b.some(b=>b!==skip&
 function sedBldOK(b,skip){for(let y=b.y;y<b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++){if(!sedIn(x,y)||sedBldAt(x,y,skip)||sedFoAt(x,y)||sedDoorAt(x,y,skip))return false}
   const[dx,dy]=sedDoor(b);return sedIn(dx,dy)&&!sedBldAt(dx,dy,skip)&&!sedFoAt(dx,dy)}
 // un arredo che chiuderebbe una porta, la bacheca o il mercante non si mette
-function sedBlocks(cells){const old=cells.map(([x,y])=>M[y]&&M[y][x]);for(const[x,y]of cells)if(M[y])M[y][x]=6;let bad=false;try{const d=bfs(P.px|0,P.py|0),need=[];
-    for(const e of ents)if((e.k==='po'&&e.st==='door')||e.k==='owb'||(e.k==='npc'&&e.lf==='stay'))need.push([e.px|0,e.py|0]);
-    for(const[x,y]of need){if(cells.some(c=>c[0]===x&&c[1]===y))continue;let ok2=d[y*N+x]>=0;if(!ok2)for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const u=x+a,v=y+b;if(u>=0&&v>=0&&u<N&&v<N&&d[v*N+u]>=0){ok2=true;break}}if(!ok2){bad=true;break}}}
+function sedReach(d,x,y){if(d[y*N+x]>=0)return true;for(const[a,b]of[[1,0],[-1,0],[0,1],[0,-1]]){const u=x+a,v=y+b;if(u>=0&&v>=0&&u<N&&v<N&&d[v*N+u]>=0)return true}return false}
+// si misura da dove si entra nel borgo: le uscite della regione (così conta anche il posto dove sta l'eroe)
+function sedBfs(){const R=[];if(ZZ&&ZZ.rx!=null&&typeof twEdgeY==='function'){const rx=ZZ.rx,ry=ZZ.ry;for(const[x,y]of[[N-1,twEdgeY(rx,ry)],[0,twEdgeY(rx-1,ry)],[twEdgeX(rx,ry),N-1],[twEdgeX(rx,ry-1),0]])if(WK(M[y][x]))R.push([x,y])}
+  if(!R.length)return bfs(P.px|0,P.py|0);let D=null;for(const[x,y]of R){const d=bfs(x,y);if(!D)D=d;else for(let i=0;i<d.length;i++)if(d[i]>=0&&D[i]<0)D[i]=d[i]}return D}
+function sedBlocks(cells){const d0=sedBfs(),old=cells.map(([x,y])=>M[y]&&M[y][x]);for(const[x,y]of cells)if(M[y])M[y][x]=6;let bad=false;try{const d=sedBfs(),need=[[P.px|0,P.py|0]];
+    for(const e of ents)if((e.k==='po'&&e.st==='door')||e.k==='owb'||(e.k==='npc'&&e.lf==='stay'))need.push([e.px|0,e.py|0]);if(ZZ&&ZZ.rx!=null&&typeof twEdgeY==='function'){const rx=ZZ.rx,ry=ZZ.ry;need.push([N-1,twEdgeY(rx,ry)],[0,twEdgeY(rx-1,ry)],[twEdgeX(rx,ry),N-1],[twEdgeX(rx,ry-1),0])}
+    for(const[x,y]of need){if(cells.some(c=>c[0]===x&&c[1]===y))continue;if(sedReach(d0,x,y)&&!sedReach(d,x,y)){bad=true;break}}}
   finally{cells.forEach(([x,y],i)=>{if(M[y])M[y][x]=old[i]})}return bad}
-function sedFree(x,y){return sedIn(x,y)&&!sedBldAt(x,y)&&!sedFoAt(x,y)&&!sedDoorAt(x,y)}
+function sedFree(x,y){const Ly=P.tw.set.lay,mk=Ly&&Ly.mk;if(mk&&mk[0]===x&&(mk[1]===y||mk[1]-1===y))return false;return sedIn(x,y)&&!sedBldAt(x,y)&&!sedFoAt(x,y)&&!sedDoorAt(x,y)}
 // la generazione del borgo dalla pianta disegnata con l'editor
 function twSetGenC(C,ends){const{F,rnd,n,rx,ry,bio,tg,ok,z}=C,S=P.tw.set,Ly=S.lay,c=Ly.c,cx=c[0],cy=c[1],R=sedR(),th=TWSTH[S.col|0]||TWSTH[0],gr=twGround(bio);z.ham=1;z.set=1;z.n=S.n;z.shub=[cx,cy];
   const inR=(x,y)=>ok(x,y)&&Math.hypot(x-cx,y-cy)<=R;
   for(let y=cy-R;y<=cy+R;y++)for(let x=cx-R;x<=cx+R;x++)if(inR(x,y)){const d=Math.hypot(x-cx,y-cy);if(M[y][x]===2&&d>R-1)continue;F(x,y,gr)}
   for(const k in Ly.t){const[x,y]=sedXY(k);if(!inR(x,y))continue;const v=Ly.t[k];F(x,y,v==='g'?gr:v)}
+  if(typeof setApplyLay==='function')setApplyLay(C,Ly,inR);
   // le fontane
   for(const p of Ly.p){for(let v=p.y-1;v<=p.y+2;v++)for(let u=p.x-1;u<=p.x+2;u++){if(!ok(u,v))continue;if(u>=p.x&&u<=p.x+1&&v>=p.y&&v<=p.y+1){M[v][u]=2;DEC[v][u]=''}else{M[v][u]=6;DEC[v][u]='ɸ'}C.res(u,v)}}
   // gli edifici: quelli costruiti e non ancora piazzati trovano un posto da soli
-  const have=new Set(Ly.b.map(b=>b.k));for(const k of['mercato','fucina','tempio','locanda','stalla','granaio'])if(setB(k)&&!have.has(k)){
-    let done=0;for(let r=4;r<R&&!done;r++)for(let i=0;i<24&&!done;i++){const a=i/24*6.283,b={id:Ly.nid++,k,x:Math.round(cx+Math.cos(a)*r)-2,y:Math.round(cy+Math.sin(a)*r)-1,w:4,h:3};if(sedBldOK(b)){Ly.b.push(b);done=1}}}
+  const have=new Set(Ly.b.map(b=>b.k));for(const k of SETBA)if(setB(k)&&!have.has(k)){
+    let done=0;for(const[w,h]of[[4,3],[3,3]])for(let r=3;r<R&&!done;r++)for(let i=0;i<32&&!done;i++){const a=i/32*6.283,b={id:Ly.nid,k,x:Math.round(cx+Math.cos(a)*r)-(w>>1),y:Math.round(cy+Math.sin(a)*r)-1,w,h};if(sedBldOK(b)){b.id=Ly.nid++;Ly.b.push(b);done=1}}}
   let nc=0;const mx=sedMaxCase();Ly.b=Ly.b.filter(b=>b.k!=='casa'||++nc<=mx);
-  for(const b of Ly.b){if(b.k!=='casa'&&!setB(b.k))continue;const kd=SEDK[b.k]||'casa',bb={x:b.x,y:b.y,w:b.w,h:b.h,wall:b.wall||th[1][b.id%2],roof:b.roof||th[2][b.id%3],ht:b.ht||(kd==='casa'?22:26+setB(b.k)*3),smoke:b.id%2};
-    let ok2=true;for(let y=b.y;y<=b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++)if(!ok(x,y)||M[y][x]===3)ok2=false;if(!ok2)continue;twHouse(bb,60+b.id,rx,ry,kd);tg.push([bb.x+(bb.w>>1),bb.y+bb.h])}
+  for(const b of Ly.b){if(b.k!=='casa'&&!setB(b.k))continue;const kd=SEDK[b.k]||'casa',bb={x:b.x,y:b.y,w:b.w,h:b.h,wall:b.wall||th[1][b.id%2],roof:b.roof||th[2][b.id%3],ht:b.ht||(kd==='casa'?22:26+setB(b.k)*3),smoke:b.smoke!=null?b.smoke:b.id%2,st:b.st||undefined};
+    let ok2=true;for(let y=b.y;y<b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++)if(!ok(x,y)||M[y][x]===3)ok2=false;{const dx=b.x+(b.w>>1),dy=b.y+b.h;if(!SEDND.has(b.k)&&(!ok(dx,dy)||M[dy][dx]===3))ok2=false}if(!ok2)continue;
+    if(SEDND.has(b.k)){const k=TB.push(bb)-1;for(let y=b.y;y<b.y+b.h;y++)for(let x=b.x;x<b.x+b.w;x++){M[y][x]=3;DEC[y][x]='';BM[y][x]=k}if(typeof setBProps==='function')setBProps(C,b);continue}
+    twHouse(bb,60+b.id,rx,ry,kd);tg.push([bb.x+(bb.w>>1),bb.y+bb.h])}
   // gli arredi
   for(const k in Ly.d){const[x,y]=sedXY(k);if(!inR(x,y)||M[y][x]===3||M[y][x]===2)continue;if(ents.some(e=>e.k==='po'&&(e.px|0)===x&&(e.py|0)===y))continue;const ch=Ly.d[k],I=typeof EDECI!=='undefined'&&EDECI[ch];
-    if(I&&I.walk){M[y][x]=0;DEC[y][x]=ch}else{M[y][x]=6;DEC[y][x]=ch}C.res(x,y)}
+    if(I&&I.water){M[y][x]=2;DEC[y][x]=ch}else if(I&&I.walk){M[y][x]=0;DEC[y][x]=ch}else{M[y][x]=6;DEC[y][x]=ch}C.res(x,y)}
   // il banco del mercante
-  if(Ly.mk&&setB('mercato')){const[x,y]=Ly.mk;if(inR(x,y)&&M[y][x]!==3){M[y][x]=6;DEC[y][x]='ʍ';if(ok(x,y-1)&&M[y-1][x]!==3){M[y-1][x]=0;if(DEC[y-1][x]&&DEC[y-1][x][0]!==DN)DEC[y-1][x]=''}}}
+  if(Ly.mk&&setB('mercato')){const[x,y]=Ly.mk;if(inR(x,y)&&M[y][x]!==3){M[y][x]=6;DEC[y][x]='ʍ';C.res(x,y);if(ok(x,y-1))C.res(x,y-1);if(ok(x,y-1)&&M[y-1][x]!==3){M[y-1][x]=0;if(DEC[y-1][x]&&DEC[y-1][x][0]!==DN)DEC[y-1][x]=''}}}
   // la palizzata e le torri, sempre lungo il confine
   const tra=ends.map(([x,y])=>Math.atan2(y-cy,x-cx));
   if(setB('mura'))for(let i=0;i<Math.round(R*6.3);i++){const a=i/(R*6.3)*6.283,x=Math.round(cx+.5+Math.cos(a)*(R-.5)),y=Math.round(cy+.5+Math.sin(a)*(R-.5));if(!ok(x,y)||M[y][x]!==0||DEC[y][x]===DN+'1'||DEC[y][x]===DN+'4')continue;
@@ -71,13 +79,16 @@ function twSetGenC(C,ends){const{F,rnd,n,rx,ry,bio,tg,ok,z}=C,S=P.tw.set,Ly=S.la
   // lo stendardo
   {let[x,y]=Ly.bn||[cx+3,cy-1];if(!inR(x,y)||!WK(M[y][x]))[x,y]=nearFree(x,y);ents.push({k:'twbn',n:S.n,px:x+.5,py:y+.5,cr:myCrest(),set:1})}
   // la gente
-  const ppl=[0];if(setB('mercato'))ppl.push(1);if(setB('fucina'))ppl.push(2);if(setB('tempio'))ppl.push(3);if(setB('locanda'))ppl.push(4);for(let i=0;i<S.lv+1;i++)ppl.push(i<3?6+i:14+i);for(let i=0;i<setB('torre')*2;i++)ppl.push(10+(i%4));
+  const ppl=[0];if(setB('mercato'))ppl.push(1);if(setB('fucina'))ppl.push(2);if(setB('tempio'))ppl.push(3);if(setB('locanda'))ppl.push(4);{const nw=typeof setWalkers==='function'?setWalkers():S.lv+1;for(let i=0;i<nw;i++)ppl.push(i<3?6+i:14+i)}for(let i=0;i<(typeof setGuards==='function'?setGuards():setB('torre')*2);i++)ppl.push(10+(i%4));
   ppl.forEach((i,j)=>{const id=twNpcId(rx,ry,i);const N2=twNpc(id);if(i===0&&N2){N2.n='Intendente '+N2.n.split(' ').pop();N2.ln=['Il borgo cresce, signore. Il tesoro e i lavori li trovi nel registro (tasto U).','La gente arriva da tutta la regione: qui ci si sente al sicuro.']}
     let x,y;if(i===1&&Ly.mk&&ok(Ly.mk[0],Ly.mk[1]-1)&&WK(M[Ly.mk[1]-1][Ly.mk[0]])){x=Ly.mk[0];y=Ly.mk[1]-1}else{const a=j*2.4;[x,y]=nearFree(Math.round(cx+Math.cos(a)*(2.5+j%3)),Math.round(cy+Math.sin(a)*(2.5+j%3)))}
     const e=mkNpc(id,x,y);if(i===1||i===2)e.lfStay=1;ents.push(e)});
   if(S.lv>=2){const[x,y]=nearFree(cx-2,cy+2);ents.push({k:'owb',n:'Bacheca dei Contratti',px:x+.5,py:y+.5});tg.push([x,y])}
   twLifeScan(C,cx,cy,R,{mk:Ly.mk?[[Ly.mk[0],Ly.mk[1]+1]]:[]});
-  let sp=[cx,cy+2];if(!ok(sp[0],sp[1])||!WK(M[sp[1]][sp[0]]))sp=nearFree(sp[0],sp[1]);return sp}
+  // il punto di arrivo: fra i posti del borgo, quello da cui si raggiunge più mondo (mai una sacca chiusa fra le case)
+  const cand=[[cx,cy+2]];if(Ly.bn)cand.push([Ly.bn[0],Ly.bn[1]+1]);for(const b of Ly.b)cand.push([b.x+(b.w>>1),b.y+b.h]);for(let i=0;i<8;i++){const a=i/8*6.283;cand.push([Math.round(cx+Math.cos(a)*(R-2)),Math.round(cy+Math.sin(a)*(R-2))])}
+  let sp=null,best=-1;for(let[x,y]of cand){if(!ok(x,y))continue;if(!WK(M[y][x]))[x,y]=nearFree(x,y);if(!WK(M[y][x]))continue;const d=bfs(x,y);let c2=0;for(let i=0;i<d.length;i++)if(d[i]>=0)c2++;if(c2>best*1.05){best=c2;sp=[x,y]}}
+  return sp||nearFree(cx,cy+2)}
 // i luoghi dove va la gente nel borgo
 function twLifeScan(C,cx,cy,R,o){const{n}=C,W=(x,y)=>x>0&&y>0&&x<n-1&&y<n-1&&WK(M[y][x]),pl=[],st=[],dr=[],inn=[];
   for(let y=cy-R;y<=cy+R;y++)for(let x=cx-R;x<=cx+R;x++){if(!W(x,y)||Math.hypot(x-cx,y-cy)>R)continue;const d=DEC[y][x];if(d===DN+'4'){pl.push([x,y]);st.push([x,y])}else if(d===DN+'1')st.push([x,y])}
@@ -97,6 +108,7 @@ function sedTile(ev){if(typeof D3!=='undefined'&&D3.act){const p=d3Ground(ev.cli
 function sedClear(x,y){const Ly=P.tw.set.lay,k=sedKey(x,y);delete Ly.d[k]}
 function sedClick(x,y){const S=P.tw.set,Ly=S.lay,k=sedKey(x,y),T=SED.tool;
   if(T==='bld'){if(SED.sel){const b=SED.sel.b,nb=Object.assign({},b,{x:x-(b.w>>1),y:y-(b.h>>1)});if(!sedBldOK(nb,b.id!=null&&Ly.b.includes(b)?b:null)){msg('Qui non ci sta: serve spazio libero dentro il borgo, anche davanti alla porta');tone(150,.08);return}
+      {const cl2=[];for(let v=nb.y;v<nb.y+nb.h;v++)for(let u=nb.x;u<nb.x+nb.w;u++)cl2.push([u,v]);if(sedBlocks(cl2)){msg('Così chiuderesti il passaggio verso una porta, un mercante o verso di te');tone(150,.08);return}}
       for(let v=nb.y;v<=nb.y+nb.h;v++)for(let u=nb.x;u<nb.x+nb.w;u++){if(v<nb.y+nb.h||u===sedDoor(nb)[0])sedClear(u,v)}
       if(Ly.b.includes(b))Object.assign(b,{x:nb.x,y:nb.y});else Ly.b.push(nb);SED.sel=null;tone(520,.06,'triangle');sedApply();return}
     const b=sedBldAt(x,y);if(b){SED.sel={b};tone(440,.05,'triangle');sedUI()}return}
@@ -105,7 +117,7 @@ function sedClick(x,y){const S=P.tw.set,Ly=S.lay,k=sedKey(x,y),T=SED.tool;
     if(c==='@fo'){const fo={k:'fo',x:x-1,y:y-1};for(let v=fo.y-1;v<=fo.y+2;v++)for(let u=fo.x-1;u<=fo.x+2;u++)if(!sedFree(u,v)){msg('La fontana è 4×4: qui non ci sta');tone(150,.08);return}
       const cl4=[];for(let v=fo.y-1;v<=fo.y+2;v++)for(let u=fo.x-1;u<=fo.x+2;u++)cl4.push([u,v]);if(sedBlocks(cl4)){msg('Così chiuderesti il passaggio verso una porta o un mercante');tone(150,.08);return}if(P.g<SEDFO){msg('Servono '+SEDFO+' monete');return}P.g-=SEDFO;for(let v=fo.y-1;v<=fo.y+2;v++)for(let u=fo.x-1;u<=fo.x+2;u++)sedClear(u,v);Ly.p.push(fo);tone(600,.06,'triangle');sedApply();return}
     if(Ly.d[k]===c)return;if(sedBlocks([[x,y]])){msg('Così chiuderesti il passaggio verso una porta o un mercante');tone(150,.08);return}if(P.g<SEDC){msg('Servono '+SEDC+' monete');tone(150,.08);return}P.g-=SEDC;Ly.d[k]=c;tone(560+Math.random()*80,.04,'triangle');sedApply();return}
-  if(T==='mk'){if(!setB('mercato')){msg('Prima costruisci il Mercato');return}if(!sedFree(x,y)||!sedFree(x,y-1)){msg('Il banco ha bisogno di una casella libera dietro, per il mercante');return}if(sedBlocks([[x,y]])){msg('Così chiuderesti il passaggio verso una porta');return}sedClear(x,y);sedClear(x,y-1);Ly.mk=[x,y];sedApply();return}
+  if(T==='mk'){if(!setB('mercato')){msg('Prima costruisci il Mercato');return}if(!sedFree(x,y)||!sedFree(x,y-1)){msg('Il banco ha bisogno di una casella libera dietro, per il mercante');return}if(sedBlocks([[x,y]])){msg('Così chiuderesti il passaggio verso una porta');return}{const o=M[y][x];M[y][x]=6;const d=sedBfs();M[y][x]=o;if(!sedReach(d,x,y-1)||d[(y-1)*N+x]<0){msg('Dietro il banco il mercante deve poterci arrivare');return}}sedClear(x,y);sedClear(x,y-1);Ly.mk=[x,y];sedApply();return}
   if(T==='bn'){if(!sedFree(x,y)){msg('Qui non si può');return}sedClear(x,y);Ly.bn=[x,y];sedApply();return}
   if(T==='del'){const fo=sedFoAt(x,y);if(fo){Ly.p.splice(Ly.p.indexOf(fo),1);sedApply();return}if(Ly.d[k]){delete Ly.d[k];sedApply();return}if(Ly.t[k]&&Ly.t[k]!=='g'){Ly.t[k]='g';sedApply();return}
     const b=sedBldAt(x,y);if(b){if(b.k!=='casa'){msg('Gli edifici costruiti si spostano, non si demoliscono');return}if(!confirm('Demolire questa casa?'))return;Ly.b.splice(Ly.b.indexOf(b),1);sedApply()}}}

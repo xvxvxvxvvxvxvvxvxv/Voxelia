@@ -5,6 +5,23 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.25 — Il nuovo prologo (23 ottobre 2026)
+
+- **Il prologo della Storia, rifatto**: quattordici scene, con scene nuove e le migliori di quello di prima rimontate in un racconto solo.
+  - Si apre sul mare di notte, con il titolo: la nave di Aldric il Primo arriva a una costa di pietra bianca.
+  - Aldoria sorge cubo dopo cubo: le mura, le torri, il mastio e gli stendardi.
+  - La Corona di Voxel, e le **sei terre** che teneva unite: sei isole che fluttuano intorno alla Corona, ognuna con la sua gemma e un raggio di luce che le lega.
+  - Ciò che dormiva sotto la città, e gli anni felici di Aldoria.
+  - **Malakar chino sui libri proibiti**, in una biblioteca a lume di candela, con un libro che fluttua e le rune viola che gli girano intorno.
+  - Il Re Lich e la notte del fuoco in Aldoria Vecchia.
+  - **La Corona va in frantumi**: trema, si incrina e sei schegge colorate attraversano il cielo, ognuna con la sua scia.
+  - I signori dei frammenti, la Cittadella del Vuoto, il quartiere murato.
+  - Infine l'alba: l'eroe sale sulla collina e guarda Aldoria all'orizzonte, mentre compare il titolo.
+- Tre musiche nuove, anche nel juke-box: **La saga di Aldoria**, **L'ombra di Malakar** e **L'alba dell'eroe**.
+- Il prologo si rivede dal menu delle scene, come prima.
+
+---
+
 ## 7.24 — Villaggi e città costruiti con criterio (23 ottobre 2026)
 
 - **I villaggi di Tomorrow, rifatti**: non più case in cerchio, ma un vero paese.

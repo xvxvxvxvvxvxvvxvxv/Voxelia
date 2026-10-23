@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.24** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.25** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -182,6 +182,11 @@ I villaggi hanno una strada maestra, i vicoli, la piazza con la fontana e il mer
 dietro, la locanda, la forgia e i campi intorno. Le città sono divise in isolati con viali, cortili, il tempio in fondo al
 viale, il mercato, il parco e le mura. La gente si muove: va in piazza, al mercato, nei campi, la sera alla locanda e di
 notte a casa. Le guardie fanno la ronda e i mercanti restano al loro banco.
+
+### Il prologo (dalla 7.25)
+
+Il prologo della Storia racconta in quattordici scene la fondazione di Aldoria, la Corona e le sei terre, la caduta di
+Malakar, la Corona in frantumi e l'arrivo dell'eroe, con tre musiche nuove. Si rivede dal menu delle scene.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -768,7 +773,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.24 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.25 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -835,6 +840,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zx_guerre.js` | Le guerre: assalti delle fazioni alle tue terre, assedi e saccheggi fra giocatori con il plugin Territori, la cronaca |
 | `8zy_tw_film.js` | Il filmato del reset dell'universo all'inizio di Tomorrow, le sue musiche e i cimeli di Aldoria |
 | `8zz_borghi.js` | Villaggi e città di Tomorrow con strade, lotti, piazza, mercato, cortili e parco; la gente che si muove con le sue abitudini |
+| `8zza_prologo.js` | Il nuovo prologo della Storia: le scene nuove (il mare, la fondazione, le sei terre, Malakar, la Corona in frantumi, l'alba) e le sue tre musiche |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

@@ -5,7 +5,7 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
-## 7.32.1 — Manutenzione del borgo e dell'esercito (23 ottobre 2026)
+## 7.37.1 — Manutenzione del borgo e dell'esercito (23 ottobre 2026)
 
 - **Esercito, cambiare zona:** se durante un assalto o un'incursione entravi in una casa o lasciavi la regione, tutti i soldati scesi in campo con te venivano contati come caduti. Ora tornano alla caserma, e si perdono solo quelli caduti davvero.
 - **Esercito, assalto perso sul campo:** se lo stendardo del borgo cadeva mentre combattevi, il gioco faceva combattere di nuovo l'esercito «in tua assenza». Così morivano altri soldati e spesso arrivava una vittoria con +3 di reputazione, senza saccheggio. Ora la sconfitta resta una sconfitta, come quando non c'è l'esercito.
@@ -16,6 +16,78 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 - **Fontane e acqua:** le fontane e gli arredi d'acqua messi con l'editor facevano credere al borgo di avere un fiume vicino, e l'acqua contava due volte. Ora il bonus del fiume viene solo dall'acqua vera.
 - **Editor, strade sul terreno:** una strada (o l'erba) disegnata su una casella dipinta con lo strumento Terreno non si vedeva, anche se i passanti la usavano come strada. Ora la strada prende il posto del terreno dipinto.
 - **Materiali:** se nel magazzino c'erano solo i minerali della miniera, il riquadro mostrava «nel magazzino:» senza niente dopo. Ora li elenca tutti.
+
+---
+
+## 7.37 — Più fluido, e la grafica come vuoi tu (23 ottobre 2026)
+
+- **Più fluido**:
+  - l'acqua (fiumi, laghi, mare), che era la cosa più pesante da disegnare, ora si disegna su un foglio a parte poche volte al secondo e a ogni fotogramma si copia, spostata con la telecamera (Impostazioni → Prestazioni → «Acqua veloce»);
+  - la **risoluzione dinamica**: se il computer non sta dietro allo schermo, la risoluzione scende un po' da sola (fino al 60%) e risale quando il gioco torna fluido. Si può spegnere.
+- **Impostazioni → Grafica**, molte più cose da regolare:
+  - **Immagine**: luminosità, contrasto e colori, anche mentre giochi;
+  - la **risoluzione** va dal 40% al 150% (sopra il 100% l'immagine è più fine);
+  - **Movimento**: quantità di particelle (da nessuna al doppio) e forza degli scossoni dello schermo.
+- **Vista 3D** (in Grafica e in Vista 3D):
+  - **risoluzione interna** e **upscaling con nitidezza in stile FSR**: il mondo si disegna più piccolo, poi viene ingrandito a schermo pieno e reso nitido con un filtro adattivo al contrasto. Più fotogrammi al secondo, immagine pulita;
+  - quanto rendere nitida l'immagine;
+  - il **campo visivo** (da 40° a 100°), la **distanza della nebbia**, la **qualità delle ombre** (fino a 4096) e quante **luci** (lampioni, torce) accendere insieme.
+- **DLSS**: il DLSS di NVIDIA in un browser non si può usare, perché richiede un gioco nativo (DirectX o Vulkan) e una scheda RTX. L'upscaling con nitidezza della vista 3D fa la stessa cosa in modo più semplice e funziona su qualunque scheda, anche integrata.
+
+---
+
+## 7.36 — La Pietra del viaggio (23 ottobre 2026)
+
+- **La Pietra del viaggio** (una waystone): c'è in ogni tua città, vicino alla piazza, e in ogni città che vende la sua gemma, accanto alla Casa delle Gemme. Si tocca come un personaggio, e si apre anche con il tasto G.
+  - Elenca **tutti i luoghi che hanno una gemma del teletrasporto**: le tue città e le città con il Custode delle Gemme che hai visitato, con la direzione.
+  - **Ogni gemma va comprata, una volta sola**: dal Custode delle Gemme, al mercato della tua città o alla pietra di quel luogo. Poi ci viaggi quando vuoi, gratis, dalla pietra o con il tasto G.
+  - I luoghi di cui non hai ancora la gemma si vedono con il lucchetto: la gemma si compra lì.
+- Le gemme comprate prima di questa versione valgono come gemme comprate. Il prezzo di una gemma è più alto, perché ora non si consuma più.
+
+---
+
+## 7.35 — Il legno e la città che cresce (23 ottobre 2026)
+
+- **Gli alberi si abbattono**: clic (o tocco) su un albero di Tomorrow, e l'eroe ci va e lo colpisce con l'ascia. Servono **5 colpi**, e l'albero lascia **2 legna**.
+  - Querce, pini, betulle e cespugli dei boschi, palme e cactus del deserto, abeti dei picchi.
+  - Gli alberi abbattuti restano a terra e ricrescono dopo tre giorni.
+- **Il legno serve in quantità**: gli edifici e i potenziamenti del borgo chiedono tre volte la legna di prima, e anche quelli che prima non ne chiedevano (fucina, tempio, torri, pozzo) ora ne vogliono. Nell'editor costano di più anche pavimenti, muri e arredi di legno.
+  - La legna si trova abbattendo gli alberi, nei mucchi delle terre selvagge, dalla segheria e nei mercati delle altre città.
+- **La città arriva al livello 15**: con un'Espansione dopo l'altra si allarga, fino a coprire tutta la regione.
+  - Dal livello 6 le espansioni chiedono anche ferro e marmo, e costano sempre di più.
+  - Fuori dal vecchio centro i fiumi e i laghi restano, e sull'acqua non si costruisce (le strade sì, come ponti).
+
+---
+
+## 7.34 — Le tue città (23 ottobre 2026)
+
+- **Più città**: conquistando altre regioni si fondano altre città, fino a 8 (U → Territorio, «Fonda qui una nuova città»). Ogni città nuova costa di più: monete, legna e pietra.
+  - Ogni città ha tutto suo: livello, edifici, tesoro, magazzino, abitanti, cibo e acqua, esercito, miniera, pianta, case e mura.
+  - Nel registro (U → Insediamento) una barra in alto mostra tutte le tue città: scegli quale gestire. Quando entri in una città (o nelle sue case, o nella sua miniera) il registro passa da solo a quella.
+  - Le città che non stai guardando vanno avanti lo stesso: tasse, raccolto e lavori arrivano ogni giorno.
+  - Se un esercito marcia su una delle tue città, il registro passa a lei e la difesa è la sua.
+- **La capitale**: ogni volta che entri in Tomorrow, e quando rinasci, parti dalla tua capitale. All'inizio è la prima città; dal registro si cambia («⭐ Fanne la capitale»).
+- **Al mercato della tua città** si compra la gemma del teletrasporto della città (tasto G per usarla).
+- **Nelle altre città e nei villaggi** i mercanti vendono i materiali da costruzione (legna, pietra, argilla, ferro, carbone, rame, marmo) a prezzi che cambiano ogni giorno e da un posto all'altro: a volte convenienti, a volte cari.
+- Sulla mappa lo stemma compare su tutte le tue città. Nella partita in rete gli altri vedono tutte le tue città, con la loro forza.
+
+---
+
+## 7.33 — La tua casa e le mura del borgo (23 ottobre 2026)
+
+- **La tua casa**: nel registro del borgo (U → Insediamento) c'è «Costruisci la tua casa». Si può anche scegliere una casa che c'è già, dall'editor del borgo o da dentro.
+  - Niente inquilini, il tuo nome sulla porta e un **deposito** (il forziere viola) per oggetti e monete, che restano al sicuro.
+- **Tutte le case si arredano da dentro**, come quelle della storia: tasto V o il pulsante «✏ Arreda» quando sei dentro.
+  - Il **modello** della casa: i dieci della storia (casetta di legno, cottage, villetta con giardino, baita, torre del mago, casa del pescatore, villa nobiliare, tenda del deserto, igloo, casale), ognuno con i suoi arredi.
+  - I **colori** dei muri e del pavimento (le tinte della storia o un colore qualsiasi) e i **materiali**: muri di mattoni, pietra, assi, oro..., pavimenti di marmo, parquet, tappeti e tutti gli altri.
+  - **Tutti gli arredi del gioco**: quelli di casa a portata di mano e il catalogo completo con la ricerca. I tappeti si calpestano. Nessun arredo può chiudere un pezzo della casa.
+  - Il **nome** sulla porta e la **musica**.
+  - Si arredano anche le botteghe, la locanda, la fucina e il tempio del borgo (colori, materiali, arredi, nome, musica).
+- **Le mura del borgo** si cambiano dall'editor, nella nuova scheda «🏰 Mura»:
+  - il tipo (palizzata, pietra, mura merlate, mattoni, assi, muretto basso, siepe, roccia, cripta, ghiaccio, cristalli, ossidiana, oro, roccia lavica) e il colore;
+  - le **porte**: clic su un pezzo di mura per aprirci una porta, su una porta per chiuderla;
+  - le **torri**: quante (4, 6 o 8), il colore dei muri e del tetto, lo stile e l'altezza.
+- In modalità azione, la realtà virtuale usa di nuovo i comandi del visore.
 
 ---
 

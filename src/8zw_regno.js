@@ -54,7 +54,7 @@ function twGarTick(dt){const G=OW.gar;if(!G)return;if(Zk!==G.k){OW.gar=null;retu
     e.n='Guardia di '+F.n.replace(/^(la |il |l')/i,'');e.al=1;e.hp=e.mx=Math.round(e.mx*(1+(ZZ.lv||1)*.08));if(i===0&&G.w===G.n){eliteMk(e);e.n='Capitano di '+F.n}ents.push(e)}
   msg('⚔ Arrivano le guardie di '+F.n+' (ondata '+G.w+' di '+G.n+')');tone(120,.3,'sawtooth',.05)}
 /* ---- l'insediamento ---- */
-const twSetAt=(rx,ry)=>!!(P&&P.tw&&P.tw.set&&P.tw.set.k===twK(rx,ry));
+const twSetAt=(rx,ry)=>!!(P&&P.tw&&((P.tw.set&&P.tw.set.k===twK(rx,ry))||(P.tw.sets||[]).some(s=>s&&s.k===twK(rx,ry))));
 const TWSB={
   casa:{n:'Espansione',ic:'🏘',d:'Più case e abitanti, il borgo si allarga',max:5,cost:l=>[300*l,6*l]},
   mercato:{n:'Mercato',ic:'🛒',d:'Una bottega con il mercante; più tasse ogni giorno',max:3,cost:l=>[220*l,4*l]},
@@ -136,7 +136,7 @@ function rgHTML(){rgFix();setAccrue();const T=P.tw,tab=RG.tab,tb=(k,n)=>`<button
     else if(inR)h+=`<p class="mu">Villaggi e città non si conquistano.</p>`;
     h+=`</div>`;const L=Object.keys(T.terr);h+=`<h4>Le tue terre</h4>`+(L.length?`<div class="rgls">${L.map(k=>{const z=twZ(k),p=twP(k),here=twP(String(Zk).startsWith('tw:')?Zk:T.at)||[0,0];return`<span>🏴 ${esc(z.n)} <small>${twDir(p[0]-here[0],p[1]-here[1])}</small></span>`}).join('')}</div>`:'<p class="mu">Ancora nessuna: comincia da una regione vicina.</p>')}
   else if(tab==='set'){const S=T.set;if(!S)h+=`<div class="rgcard"><b>Nessun insediamento</b><p>Conquista una regione selvaggia, poi fondaci il tuo borgo (500 monete). Diventerà la tua casa: cresce, si costruisce e ogni giorno porta tasse e raccolto.</p></div>`;
-    else{h+=`<div class="rgcard rgset"><div><b>${esc(S.n)}</b> <small>livello ${S.lv} di 5 · ${esc(twZ(S.k).n===S.n?'':'')}</small><p class="mu">Tesoro: <b>${S.cash|0}💰</b>${S.food?' · '+S.food+' tra grano e mele':''} · ogni giorno ${setRate()}💰${setB('granaio')?' e '+setB('granaio')*3+' di raccolto':''}</p></div>
+    else{h+=`<div class="rgcard rgset"><div><b>${esc(S.n)}</b> <small>livello ${S.lv} di ${TWSB.casa.max} · ${esc(twZ(S.k).n===S.n?'':'')}</small><p class="mu">Tesoro: <b>${S.cash|0}💰</b>${S.food?' · '+S.food+' tra grano e mele':''} · ogni giorno ${setRate()}💰${setB('granaio')?' e '+setB('granaio')*3+' di raccolto':''}</p></div>
       <span><button class="pri" onclick="setCollect()">💰 Ritira</button>${Zk!==S.k?`<button onclick="setGo()">🏠 Torna a casa</button>`:''}<button onclick="setRename()">✎ Rinomina</button></span></div>`;
       h+=`<h4>Costruire</h4><div class="rgbg">`+Object.keys(TWSB).map(k=>{const B=TWSB[k],cur=k==='casa'?S.lv:setB(k),mx=cur>=B.max,[g0,l0]=mx?[0,0]:B.cost(cur+1);
         return`<div class="rgb${cur?' on':''}"><b>${B.ic} ${B.n}</b><small>${B.d}</small><i>${'●'.repeat(cur)}${'○'.repeat(B.max-cur)}</i>${mx?'<em>completo</em>':`<button onclick="setBuy('${k}')">${cur?'Migliora':'Costruisci'} · ${g0}💰 · ${l0} 🪵</button>`}</div>`}).join('')+`</div><p class="mu">Legna: ${P.res.legna|0}. La legna che manca si paga 20 monete l'una.</p>`;
@@ -184,7 +184,7 @@ function twMapTerr(q,x0,x1,y0,y1,sx,sy,Z2){if(!P||!P.tw)return;rgFix();const H=t
     const nb=(dx,dy)=>{const p=twOwner(rx+dx,ry+dy);return p&&(p.me?'me':p.f)===(o.me?'me':o.f)};if(!nb(-1,0)){q.beginPath();q.moveTo(X+1,Y);q.lineTo(X+1,Y+Z2);q.stroke()}if(!nb(1,0)){q.beginPath();q.moveTo(X+Z2-1,Y);q.lineTo(X+Z2-1,Y+Z2);q.stroke()}
     if(!nb(0,-1)){q.beginPath();q.moveTo(X,Y+1);q.lineTo(X+Z2,Y+1);q.stroke()}if(!nb(0,1)){q.beginPath();q.moveTo(X,Y+Z2-1);q.lineTo(X+Z2,Y+Z2-1);q.stroke()}}
   q.globalAlpha=1;const cs=clamp(Z2*.42,16,40);for(const f in H){const[hx,hy]=H[f];if(hx<x0||hx>x1||hy<y0||hy>y1)continue;const im=crestImg(twFac(f).cr);if(im.complete)q.drawImage(im,sx(hx)+Z2*.05,sy(hy)+Z2*.05,cs,cs*1.1)}
-  if(P.tw.set){const p=twP(P.tw.set.k);if(p&&p[0]>=x0&&p[0]<=x1&&p[1]>=y0&&p[1]<=y1){const im=crestImg(myCrest());if(im.complete)q.drawImage(im,sx(p[0])+Z2*.55,sy(p[1])+Z2*.05,cs,cs*1.1)}}
+  for(const S9 of(typeof csSets==='function'?csSets():[P.tw.set]))if(S9){const p=twP(S9.k);if(p&&p[0]>=x0&&p[0]<=x1&&p[1]>=y0&&p[1]<=y1){const im=crestImg(myCrest());if(im.complete)q.drawImage(im,sx(p[0])+Z2*.55,sy(p[1])+Z2*.05,cs,cs*1.1)}}
   q.restore()}
 if(typeof twMapSide==='function'){const _ms721=twMapSide;twMapSide=function(){_ms721();const el=$('twms');if(!el||!TWM.sel)return;const[rx,ry]=TWM.sel,o=twOwner(rx,ry),f=twHomeOf(rx,ry);
   let h='';if(o)h+=`<p class="rgown">${crestSVG(o.me?myCrest():twFac(o.f).cr,22)} ${o.me?'<b>Terra tua</b>':'Terre di '+esc(twFac(o.f).n)}</p>`;if(f)h+=`<p class="rgown">🏛 Sede di ${esc(twFac(f).n)}: qui c'è il suo emissario</p>`;if(P.tw.set&&P.tw.set.k===twK(rx,ry))h+=`<p class="rgown">🏰 ${esc(P.tw.set.n)}: il tuo insediamento</p>`;

@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.32** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.37** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -236,6 +236,36 @@ Si combatte cliccando dove si vuole colpire: l'eroe si gira verso il cursore e f
 si carica il colpo pesante. Attacchi, capriola (Maiusc o E) e corsa (Maiusc tenuto) consumano la stamina, che si
 ricarica da sola. Tab blocca il bersaglio: l'eroe lo guarda sempre e ogni colpo va su di lui. Lontano dai nemici il clic
 fa camminare. Il combattimento classico si riattiva in Impostazioni → Comandi.
+
+### La tua casa e le mura (dalla 7.33)
+
+Nel borgo si costruisce la propria casa, con il deposito per oggetti e monete. Ogni casa del borgo si arreda da dentro
+(tasto V): uno dei dieci modelli della storia, colori e materiali di muri e pavimento, tutti gli arredi del gioco, nome
+e musica. Dall'editor del borgo (scheda Mura) si cambiano le mura: tipo, colore, porte e torri.
+
+### Le tue città (dalla 7.34)
+
+Conquistando altre regioni si fondano altre città (fino a 8), ognuna con livello, edifici, tesoro, abitanti ed esercito
+suoi. Si parte sempre dalla capitale, scelta nel registro. Al mercato della tua città si compra la sua gemma del
+teletrasporto; nelle altre città e nei villaggi i materiali da costruzione hanno prezzi che cambiano ogni giorno.
+
+### Il legno e la città grande (dalla 7.35)
+
+Gli alberi di Tomorrow si abbattono con 5 colpi e lasciano 2 legna; ricrescono dopo qualche giorno. Il legno ora serve in
+quantità per costruire. La città arriva al livello 15 e, potenziandola molte volte, copre tutta la regione.
+
+### La Pietra del viaggio (dalla 7.36)
+
+Nelle tue città e nelle città con il Custode delle Gemme c'è una Pietra del viaggio che elenca tutti i luoghi con una
+gemma del teletrasporto. Ogni gemma si compra una volta sola, in quel luogo: poi ci si viaggia quando si vuole, dalla
+pietra o con il tasto G.
+
+### Fluidità e grafica (dalla 7.37)
+
+L'acqua si disegna poche volte al secondo e la risoluzione dinamica tiene il gioco fluido sui computer meno potenti.
+In Impostazioni → Grafica si regolano luminosità, contrasto, colori, particelle, scossoni e risoluzione (fino al 150%);
+per la vista 3D risoluzione interna con upscaling e nitidezza in stile FSR, campo visivo, nebbia, ombre e luci.
+Il DLSS di NVIDIA non è possibile in un browser.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -822,7 +852,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.32 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.37 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -896,6 +926,11 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zze_esercito.js` | La Caserma, i soldati, la potenza dell'esercito, le battaglie risolte con le probabilità e i soldati in campo con te |
 | `8zzf_miniere.js` | Le miniere del borgo: la zona sotto terra, lo scavo a mano, i minerali e le vene, i reperti storici, la produzione dei minatori |
 | `8zzg_azione.js` | Il combattimento d'azione: clic verso il cursore, stamina, capriola, corsa e blocco del bersaglio |
+| `8zzh_casa.js` | 7.33: la tua casa con il deposito, gli interni su misura (modelli, colori, materiali, arredi, nome, musica) e le mura del borgo (tipo, colore, porte, torri) |
+| `8zzi_citta.js` | 7.34: più città (fino a 8) ognuna con le sue statistiche, la capitale da cui si riparte, la gemma della tua città al mercato, i materiali a prezzi del giorno nelle altre città |
+| `8zzj_legna.js` | 7.35: gli alberi si abbattono (5 colpi, 2 legna, ricrescono), il legno in quantità, la città fino al livello 15 su tutta la regione |
+| `8zzk_viaggio.js` | 7.36: la Pietra del viaggio con tutti i luoghi che hanno una gemma del teletrasporto; ogni gemma si compra una volta sola |
+| `8zzl_grafica.js` | 7.37: l'acqua su un foglio a parte, la risoluzione dinamica, le opzioni grafiche nuove e l'upscaling con nitidezza in stile FSR per la vista 3D |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

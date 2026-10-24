@@ -194,7 +194,7 @@ function twNpc(id){if(NPCS[id])return NPCS[id];const m=/^tv_(m?\d+)_(m?\d+)_(\d+
     `Più ti allontani da qui, più le bestie si fanno grosse. Ma anche quello che portano addosso vale di più.`,`Alla bacheca c'è sempre lavoro: qualcuno paga per ogni guaio di questa terra.`];
   const c=['#7a5a3a','#3a5a8a','#8a3a3a','#4a7a3a','#6a4a7a','#a8632f','#5a6a7a','#8a7a4a'][Math.floor(r()*8)],hat=['#333333','#7a3a2a','#d4af37','#3a3a5a','#8a6a2a','#5a2a2a'][Math.floor(r()*6)];
   if(rk==='gua2')ln.splice(0,4,`Le mura di ${vn} hanno retto a tre assedi. Al quarto ci penso io.`,'Tieni la spada nel fodero, in città. Fuori fai quello che vuoi.','Di notte le bestie si avvicinano alle porte: si sentono grattare.');
-  if(rk==='gem')ln.splice(0,4,`Una gemma di ${vn} ti riporta qui da qualunque angolo del mondo. Una volta sola, poi si spegne.`,'Le gemme si caricano alla luce della nostra fontana: per questo valgono quello che costano.');
+  if(rk==='gem')ln.splice(0,4,`Una gemma di ${vn} ti riporta qui da qualunque angolo del mondo, tutte le volte che vuoi: basta toccare una Pietra del viaggio.`,'Le gemme si caricano alla luce della nostra fontana: per questo valgono quello che costano.');
   return NPCS[id]={n:(ttl?ttl+' ':'')+nm,role:R2[2]&&R2[2]!=='gem'?R2[2]:undefined,tw2:rk,c:rk==='gua2'?'#5a6a8a':c,hat:rk==='gua2'?'#9aa4b8':hat,ln}}
 const TWDIR=[['est','sud-est','sud','sud-ovest','ovest','nord-ovest','nord','nord-est']];
 function twDir(dx,dy){if(!dx&&!dy)return'qui';const a=Math.atan2(dy,dx),i=((Math.round(a/(Math.PI/4))%8)+8)%8,d=Math.max(Math.abs(dx),Math.abs(dy));return(d===1?'una regione':d+' regioni')+' a '+TWDIR[0][i]}

@@ -42,7 +42,7 @@ function asTick(dt){const L=OW.asl,A=P.tw&&P.tw.as;if(!L||!A){return}if(Zk!==A.k
 function asWin(A){const F=twFac(A.f),z=twZ(A.k);OW.asl=null;P.tw.as=null;const g=120+P.lv*30;P.g+=g;gainXP(80+P.lv*20);P.ow.rep[A.f]=(P.ow.rep[A.f]|0)+5;twWlog('Hai respinto '+F.n+' a '+z.n);
   jingle([60,64,67,72,76,79,84],.1,'triangle');banner('Vittoria!',z.n+' resta tua · '+g+' monete','trofeo');if(cineOK())goldFly(g);music(typeof zoneMus==='function'?zoneMus():'town');save();hud()}
 /* ---- le terre degli altri eroi ---- */
-function twSync(){if(!NET.ok||!twWorld()||!P||!P.tw||!twOn())return;const mine={};for(const k in P.tw.terr||{}){mine[k]=P.tw.set&&P.tw.set.k===k?{s:{n:P.tw.set.n,lv:P.tw.set.lv,dif:setB('torre')+setB('mura')}}:{}}
+function twSync(){if(!NET.ok||!twWorld()||!P||!P.tw||!twOn())return;const mine={};for(const k in P.tw.terr||{}){const S9=typeof csSets==='function'?csSets().find(s=>s.k===k):(P.tw.set&&P.tw.set.k===k?P.tw.set:null);mine[k]=S9?(typeof csWith==='function'?csWith(S9,()=>({s:{n:S9.n,lv:S9.lv,dif:setB('torre')+setB('mura'),pow:typeof setPower==='function'?setPower(S9):0}})):{s:{n:S9.n,lv:S9.lv,dif:setB('torre')+setB('mura')}}):{}}
   const f=twMyF()?twFac(twMyF()):null,pay={w:twWorld(),mine,f:f?{n:f.n,cr:f.cr}:null},key=JSON.stringify(pay);if(key===TWX.sent)return;TWX.sent=key;VXP.send('territori','sync',pay)}
 VXP.on('territori','map',d=>{if(!d||d.w!==twWorld())return;TWX.map=d.r||{};TWX.log=d.log||[];TWX.ok=1;if(P&&P.tw&&twOn()){
     // una terra che il server dà a un altro non è più tua

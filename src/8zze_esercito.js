@@ -44,7 +44,7 @@ function armyField(mode){const S=P.tw.set,A=armyFix(S);armyClear();if(!A||!A.n)r
     e.m=hum(['#5a6a8a','#4a5a7a','#6a7a9a'][i%3],'#e8c8a0',1,[6,'#9aa4b8']);e.ally=1;e.army=1;e.hp=e.mx=Math.round((120+str*12)*(1+lv*.06));e.at=(4+str*.8)*(1+lv*.06);e.cd=1.1;e.cdt=Math.random();e.sp=2.4;e.path=[];ents.push(e);ARMY.al.push(e)}
   ARMY.k=Zk;ARMY.mode=mode;ARMY.n0=n;msg('🛡 '+n+' soldati di '+S.n+' scendono in campo con te')}
 function armyClear(){for(const a of ARMY.al){const i=ents.indexOf(a);if(i>=0)ents.splice(i,1)}ARMY.al=[];ARMY.k=null}
-function armyEnd(win){const S=P.tw.set,A=armyFix(S);if(!A||!ARMY.n0){armyClear();return}const alive=ARMY.al.filter(a=>ents.includes(a)&&a.hp>0).length,lost=Math.min(A.n,ARMY.n0-alive);A.n-=lost;
+function armyEnd(win){const S=P.tw.set,A=armyFix(S);if(!A||!ARMY.n0){armyClear();return}const alive=ARMY.al.filter(a=>a.hp>0).length,lost=Math.min(A.n,ARMY.n0-alive);A.n-=lost;
   if(lost){setLog(S,lost+(lost>1?' soldati caduti':' soldato caduto')+' in battaglia');msg('🛡 '+lost+' soldati sono caduti in battaglia')}armyClear();ARMY.n0=0;save()}
 function armyTick(dt){if(!ARMY.al.length)return;if(Zk!==ARMY.k){armyEnd(0);return}const foe=e=>e.k==='en'&&(e.asl||/^(Guardia|Capitano)/.test(e.n||''));
   const foes=ents.filter(foe),al=ARMY.al=ARMY.al.filter(a=>ents.includes(a)&&a.hp>0);
@@ -57,7 +57,7 @@ function armyTick(dt){if(!ARMY.al.length)return;if(Zk!==ARMY.k){armyEnd(0);retur
       if(tg.hp<=0){const i=ents.indexOf(tg);if(i>=0)ents.splice(i,1);if(cineOK()&&tg.m)ents.push({k:'dead',m:tg.m,px:tg.px,py:tg.py,t0:t})}}}}
 const _asStart730=asStart;asStart=function(){const had=!!OW.asl;_asStart730();if(!had&&OW.asl&&P.tw.set)armyField('as')};
 const _asWin730=asWin;asWin=function(A){_asWin730(A);if(ARMY.n0)armyEnd(1)};
-const _asLose730b=asLose;asLose=function(A){if(ARMY.n0&&OW.asl)A.fought=1;_asLose730b(A);if(ARMY.n0)armyEnd(0)};
+const _asLose730b=asLose;asLose=function(A){if(ARMY.n0&&ARMY.mode==='as'&&ARMY.k===A.k)A.fought=1;_asLose730b(A);if(ARMY.n0)armyEnd(0)};
 // l'assedio alle terre di un altro eroe: le sue guardie sono forti quanto il suo esercito; i tuoi soldati vengono con te
 const _twConqStart730=twConqStart;twConqStart=function(){const r0=OW.raid;_twConqStart730();const o=ZZ&&twOwner(ZZ.rx,ZZ.ry);if(OW.raid&&OW.raid!==r0&&o&&o.X&&o.X.s){const ep=o.X.s.pow|0,mp=setPower();OW.raid.ep=ep;
     if(OW.gar)OW.gar.n=Math.min(9,OW.gar.n+Math.round(clamp(ep/(mp+60),0,3)));if(P.tw.set)armyField('raid');if(ep)msg('L\'esercito di '+o.pl+': potenza '+ep+' · il tuo: '+mp+' ('+Math.round(armyOdds(mp+P.lv*10,ep)*100)+'% sulla carta)')}};
@@ -77,4 +77,4 @@ const _setHTML730=setHTML2;setHTML2=function(){let h=_setHTML730();const S=P.tw.
   return h.replace('<h4>Costruire</h4>',card+'<h4>Costruire</h4>')};
 // nella guerra: le probabilità del prossimo assalto
 const _twWarHTML730=twWarHTML;twWarHTML=function(){let h=_twWarHTML730();const A=P.tw.as;if(A&&P.tw.set){const home=P.tw.set.k===A.k,pw=Math.round(setPower()*(home?1:.6)),ep=armyFoe(A);
-    h=`<div class="rgcard"><div><b>🛡 Se non arrivi in tempo</b><p class="mu">Combatte il tuo esercito: potenza ${pw}${home?'':' (lontano dal borgo: 60%)'} contro ${ep}. Probabilità di vittoria: <b>${Math.round(armyOdds(pw,ep)*100)}%</b>.</p></div></div>`+h}return h};
+    const na=armyFix().n|0;h=`<div class="rgcard"><div><b>🛡 Se non arrivi in tempo</b><p class="mu">${na?`Combatte il tuo esercito: potenza ${pw}${home?'':' (lontano dal borgo: 60%)'} contro ${ep}. Probabilità di vittoria: <b>${Math.round(armyOdds(pw,ep)*100)}%</b>.`:`Non hai soldati: ${home?'il borgo verrà saccheggiato':'perderai questa terra'}. ${setB('caserma')?'Addestrali nella Caserma.':'Costruisci la Caserma per avere un esercito.'}`}</p></div></div>`+h}return h};

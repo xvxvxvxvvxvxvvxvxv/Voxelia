@@ -29,7 +29,7 @@ function sedCapture(){const S=P.tw.set,z=ZZ,c=z.shub||[N>>1,N>>1],R=sedR(),Ly={v
     if(m===0&&(d===DN+'4'||d===DN+'1'))Ly.t[sedKey(x,y)]=d[1];else if(m===6&&d&&d!=='ɸ'&&d.length<=2&&d[0]!==DN)Ly.d[sedKey(x,y)]=d}
   if(S.dec&&S.dec.fontana)Ly.p.push({k:'fo',x:c[0],y:c[1]});
   const bn=ents.find(e=>e.k==='twbn'&&e.set);Ly.bn=bn?[bn.px|0,bn.py|0]:[c[0]+3,c[1]-1];
-  if(setB('mercato'))Ly.mk=[c[0]-3,c[1]+4];S.lay=Ly;return Ly}
+  if(setB('mercato'))Ly.mk=[c[0]-3,c[1]+4];Ly.hq=Math.max(0,sedMaxCase()-Ly.b.filter(b=>b.k==='casa').length);S.lay=Ly;return Ly}
 // i controlli: dentro il borgo, fuori dagli altri edifici, porte libere
 function sedIn(x,y){const Ly=P.tw.set.lay,c=Ly.c;return x>2&&y>2&&x<N-3&&y<N-3&&Math.hypot(x-c[0],y-c[1])<=sedR()-1}
 function sedFoot(b){return[b.x,b.y,b.w,b.h]}
@@ -113,7 +113,7 @@ function sedClick(x,y){const S=P.tw.set,Ly=S.lay,k=sedKey(x,y),T=SED.tool;
       for(let v=nb.y;v<=nb.y+nb.h;v++)for(let u=nb.x;u<nb.x+nb.w;u++){if(v<nb.y+nb.h||u===sedDoor(nb)[0])sedClear(u,v)}
       if(Ly.b.includes(b))Object.assign(b,{x:nb.x,y:nb.y});else Ly.b.push(nb);SED.sel=null;tone(520,.06,'triangle');sedApply();return}
     const b=sedBldAt(x,y);if(b){SED.sel={b};tone(440,.05,'triangle');sedUI()}return}
-  if(T==='road'){Ly.t[k]=SED.rc;sedClear(x,y);return 'paint'}
+  if(T==='road'){Ly.t[k]=SED.rc;if(Ly.f)delete Ly.f[k];sedClear(x,y);return 'paint'}
   if(T==='dec'){if(!sedFree(x,y)){msg('Qui c\'è già un edificio o una porta');tone(150,.08);return}const c=SED.dc;
     if(c==='@fo'){const fo={k:'fo',x:x-1,y:y-1};for(let v=fo.y-1;v<=fo.y+2;v++)for(let u=fo.x-1;u<=fo.x+2;u++)if(!sedFree(u,v)){msg('La fontana è 4×4: qui non ci sta');tone(150,.08);return}
       const cl4=[];for(let v=fo.y-1;v<=fo.y+2;v++)for(let u=fo.x-1;u<=fo.x+2;u++)cl4.push([u,v]);if(sedBlocks(cl4)){msg('Così chiuderesti il passaggio verso una porta o un mercante');tone(150,.08);return}if(P.g<SEDFO){msg('Servono '+SEDFO+' monete');return}P.g-=SEDFO;for(let v=fo.y-1;v<=fo.y+2;v++)for(let u=fo.x-1;u<=fo.x+2;u++)sedClear(u,v);Ly.p.push(fo);tone(600,.06,'triangle');sedApply();return}
@@ -145,7 +145,7 @@ function sedUI(){let el=$('sed');if(!el){el=document.createElement('div');el.id=
 // clic, trascinamento e anteprima sulla mappa
 {const pd=cv.onpointerdown;cv.onpointerdown=ev=>{if(!SED.on||!sedHere()){if(SED.on)sedClose();pd(ev);return}if(ev.button===2||ev.button===1){pd(ev);return}auInit();
   const tl=sedTile(ev);if(!tl)return;SED.down=1;const r=sedClick(tl[0],tl[1]);if(r==='paint')SED.paint=sedKey(tl[0],tl[1]);ev.preventDefault&&ev.preventDefault()}}
-addEventListener('pointermove',ev=>{if(!SED.on)return;const tl=ev.target===cv?sedTile(ev):null;SED.hv=tl;if(SED.down&&SED.tool==='road'&&tl&&sedIn(tl[0],tl[1])&&!sedBldAt(tl[0],tl[1])){const k=sedKey(tl[0],tl[1]);if(k!==SED.paint){P.tw.set.lay.t[k]=SED.rc;sedClear(tl[0],tl[1]);SED.paint=k}}});
+addEventListener('pointermove',ev=>{if(!SED.on)return;const tl=ev.target===cv?sedTile(ev):null;SED.hv=tl;if(SED.down&&SED.tool==='road'&&tl&&sedIn(tl[0],tl[1])&&!sedBldAt(tl[0],tl[1])){const k=sedKey(tl[0],tl[1]);if(k!==SED.paint){const Ly=P.tw.set.lay;Ly.t[k]=SED.rc;if(Ly.f)delete Ly.f[k];sedClear(tl[0],tl[1]);SED.paint=k}}});
 addEventListener('pointerup',()=>{if(!SED.on)return;if(SED.down&&SED.paint){SED.paint=null;sedApply()}SED.down=0});
 function sedScr(x,y){if(typeof D3!=='undefined'&&D3.act){const q=d3Proj(x,y,0);return q?[q[0],q[1]]:null}return[(PX(x,y)-camX)*S+W/2,(PY(x,y,0)-camY)*S+H/2]}
 function sedPoly(x,y,w,h,fill,stroke){const a=sedScr(x,y),b=sedScr(x+w,y),c=sedScr(x+w,y+h),d=sedScr(x,y+h);if(!a||!b||!c||!d)return;g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.lineTo(c[0],c[1]);g.lineTo(d[0],d[1]);g.closePath();if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=2;g.stroke()}}

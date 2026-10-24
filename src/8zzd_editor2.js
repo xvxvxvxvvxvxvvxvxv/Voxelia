@@ -98,3 +98,12 @@ function setPlaceNew(k){const S=P.tw.set,Ly=S&&S.lay;if(!Ly||!Ly.v||Zk!==S.k||!S
     const cl=[];for(let v=b.y;v<b.y+h;v++)for(let u=b.x;u<b.x+w;u++)cl.push([u,v]);if(sedBlocks(cl))continue;
     if(!SEDND.has(k)){const old=cl.map(([x,y])=>M[y][x]);for(const[x,y]of cl)M[y][x]=6;const d=sedBfs();cl.forEach(([x,y],j)=>M[y][x]=old[j]);const[dx,dy]=sedDoor(b);if(!sedReach(d,dx,dy))continue}
     b.id=Ly.nid++;Ly.b.push(b);return}}
+// 7.32.1: le case promesse (l'Espansione, o quelle che il borgo aveva prima dell'editor) trovano un posto da sole, con la porta raggiungibile
+function setPlaceHouses(){const S=P.tw.set,Ly=S&&S.lay;if(!Ly||!Ly.v||Zk!==S.k||!(Ly.hq>0))return 0;const c=Ly.c,R=sedR(),tmp=[],drs=[];let n=0;
+  try{while(Ly.hq>0&&Ly.b.filter(b=>b.k==='casa').length<sedMaxCase()){let got=null;
+      for(const[w,h]of[[4,3],[3,3]]){for(let r=3;r<R&&!got;r++)for(let i=0;i<32&&!got;i++){const a=i/32*6.283,b={id:Ly.nid,k:'casa',x:Math.round(c[0]+Math.cos(a)*r)-(w>>1),y:Math.round(c[1]+Math.sin(a)*r)-1,w,h};if(!sedBldOK(b))continue;
+          const cl=[];for(let v=b.y;v<b.y+h;v++)for(let u=b.x;u<b.x+w;u++)cl.push([u,v]);if(sedBlocks(cl))continue;
+          const old=cl.map(([x,y])=>M[y][x]);for(const[x,y]of cl)M[y][x]=6;const d=sedBfs();cl.forEach(([x,y],j)=>M[y][x]=old[j]);const dr=sedDoor(b);if(!sedReach(d,dr[0],dr[1])||drs.some(q=>!sedReach(d,q[0],q[1])))continue;got=[b,cl,dr]}if(got)break}
+      if(!got)break;const[b,cl,dr]=got;b.id=Ly.nid++;Ly.b.push(b);for(const[x,y]of cl){tmp.push([x,y,M[y][x]]);M[y][x]=6}drs.push(dr);Ly.hq--;n++}}
+  finally{for(let i=tmp.length-1;i>=0;i--){const[x,y,m]=tmp[i];M[y][x]=m}}
+  if(Ly.b.filter(b=>b.k==='casa').length>=sedMaxCase())Ly.hq=0;return n}

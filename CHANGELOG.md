@@ -5,8 +5,9 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
-## 7.37.1 — Manutenzione del borgo e dell'esercito (23 ottobre 2026)
+## 7.37.1 — Manutenzione del borgo, dell'esercito e della tua casa (24 ottobre 2026)
 
+- **La tua casa, i modelli e gli arredi:** nelle case del borgo alcuni arredi si vedevano come mobili diversi. Le colonne della Villa nobiliare erano mappamondi, i cristalli della Torre del mago erano letti, il pupazzo di neve dell'Igloo era un recinto, e così gli arredi «Colonna», «Cristalli» e «Pupazzo di neve» messi con ✏ Arreda. Ora si vedono come nel catalogo.
 - **Esercito, cambiare zona:** se durante un assalto o un'incursione entravi in una casa o lasciavi la regione, tutti i soldati scesi in campo con te venivano contati come caduti. Ora tornano alla caserma, e si perdono solo quelli caduti davvero.
 - **Esercito, assalto perso sul campo:** se lo stendardo del borgo cadeva mentre combattevi, il gioco faceva combattere di nuovo l'esercito «in tua assenza». Così morivano altri soldati e spesso arrivava una vittoria con +3 di reputazione, senza saccheggio. Ora la sconfitta resta una sconfitta, come quando non c'è l'esercito.
 - **Guerra, senza soldati:** il riquadro «Se non arrivi in tempo» mostrava una probabilità di vittoria anche con la caserma vuota, contando solo torri e mura, ma senza soldati non combatte nessuno. Ora dice che il borgo verrà saccheggiato (o che perderai la terra).

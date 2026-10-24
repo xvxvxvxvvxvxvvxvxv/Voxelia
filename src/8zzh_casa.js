@@ -47,6 +47,9 @@ function csApply(k,z){const o=csOf(k);if(!o)return;const{S,b,q}=o,C=csData(S,b),
   if(C&&C.ws&&EWALI[C.ws]!=null)L.forEach((r,y)=>r.forEach((c,x)=>{if(c==='#'&&(x===0||y===0))z.smw.set(y*n+x,[EWALI[C.ws],C.mu||''])}));
   if(mine){const dp=(C&&C.dp)||z.dp0||[1,1];z.ex=[{k:'ch',hd:1,rich:1,n:'Deposito',px:dp[0]+.5,py:dp[1]+.5}];z.dpp=dp}else{z.ex=null;z.dpp=null}}
 const _twInt733=twInt;twInt=function(k){if(Z[k])return Z[k];const z=_twInt733(k);if(z)try{csApply(k,z)}catch(e){console.error(e)}return z};
+// 7.37.1: negli interni le cifre e !%?<> disegnano mobili «da interno» (letti, mappamondi, armadi...). I modelli e gli arredi
+// delle case del tuo insediamento usano i segni della storia: lì le colonne, i cristalli e il pupazzo di neve restano quelli
+{const d0=dec;dec=function(x,y,c){const z=ZZ;if(!(z&&z.int&&z.hb!=null&&z.twi&&DUP52.includes(c)))return d0.apply(this,arguments);const i=z.int;z.int=0;try{return d0.apply(this,arguments)}finally{z.int=i}}}
 function csRefresh(){const k=Zk;if(!csOf(k))return;const ox=P.px,oy=P.py;delete Z[k];twInt(k);load(k);if(M[oy|0]&&WK(M[oy|0][ox|0])){P.px=ox;P.py=oy}FC=null;const o=csOf(k);if(o&&typeof TWW!=='undefined')TWW.cache.delete(o.S.k)}
 // gli arredi calpestabili (i tappeti) si calpestano anche in casa
 const _loadPost733=loadPost;loadPost=function(k){_loadPost733(k);if(ZZ&&ZZ.hb!=null&&ZZ.twi){for(let y=0;y<N;y++)for(let x=0;x<N;x++){const d=DEC[y][x];if(M[y][x]===6&&d&&EDECI[d]&&EDECI[d].walk)M[y][x]=0}

@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.38** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.39** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -273,6 +273,12 @@ La musica si sceglie dalle Impostazioni o dal menu di pausa: automatica, un bran
 brani nuovi. Le mappe disegnano ogni casella, anche quella del mondo di Tomorrow, avvicinandosi. Nel borgo si costruisce
 l'Allevamento: rende più forti i compagni, li addestra e vende creature dal suo catalogo. Dopo il boss di un dungeon il
 portale non porta fuori da solo: chiede sempre.
+
+### Le fazioni dei giocatori (dalla 7.39)
+
+In rete, nello stesso mondo di Tomorrow, i giocatori si uniscono in una fazione (U → Fazione) e costruiscono insieme la
+città che il capo mette in comune. Chi entra parte come recluta, senza permessi: solo il capo decide i permessi dei ruoli
+e ne crea di nuovi, mentre lo staff invita, accoglie, cambia i ruoli ed espelle al posto suo. Serve il plugin Fazioni.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -775,6 +781,7 @@ e si accendono e spengono senza riavviare. Come scriverne uno è spiegato in [pl
 | **Speedrun dei dungeon** (`speedrun.js`) | Cronometro dei dungeon, classifiche, record e sfida della settimana (`/speedrun`) |
 | **Stress test** (`stress.js`) | Bot finti che giocano sul server per misurare latenza, memoria ed errori |
 | **Taglie del giorno** (`taglie.js`) | Nuove taglie ogni giorno (`/taglie`) |
+| **Fazioni** (`fazioni.js`) | Le fazioni dei giocatori di Tomorrow: ruoli, permessi e una città da costruire insieme (`/fazione`) |
 | **Territori** (`territori.js`) | Le terre di Tomorrow condivise fra gli eroi dello stesso mondo: assedi, saccheggi e cronaca (`/terre`) |
 | **Caccia al tesoro** (`tesoro.js`) | Un tesoro nascosto in città con indizi a tappe (`/tesoro`) |
 | **Torneo dell'arena** (`torneo.js`) | Tornei a eliminazione diretta nel Colosseo, con tabellone e premi |
@@ -859,7 +866,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.38 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.39 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -939,6 +946,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzk_viaggio.js` | 7.36: la Pietra del viaggio con tutti i luoghi che hanno una gemma del teletrasporto; ogni gemma si compra una volta sola |
 | `8zzl_grafica.js` | 7.37: l'acqua su un foglio a parte, la risoluzione dinamica, le opzioni grafiche nuove e l'upscaling con nitidezza in stile FSR per la vista 3D |
 | `8zzm_novita.js` | 7.38: il portale dopo il boss che chiede prima di uscire, la musica a scelta con otto brani nuovi, le mappe casella per casella, l'Allevamento dei compagni |
+| `8zzn_fazione.js` | 7.39: le fazioni dei giocatori (scheda Fazione del registro, permessi, città comune da costruire insieme; con il plugin Fazioni) |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

@@ -37,7 +37,7 @@ const _rgHTML734=rgHTML;rgHTML=function(){const T=P.tw;try{csAccrueAll()}catch(e
   if(RG.tab==='terr'&&L.length&&String(Zk).startsWith('tw:')&&T.terr[Zk]&&!L.some(s=>s.k===Zk)&&twCanConq()){const c=csFoundCost();
     h=h.replace('<p>I mostri non tornano più qui.</p>',`<p>I mostri non tornano più qui.</p>${L.length<CSMAX?`<button class="pri" onclick="twSetFound()">🏙 Fonda qui una nuova città · ${sedCostTxt(c)}</button>`:`<p class="mu">Hai ${CSMAX} città: è il massimo.</p>`}`)}
   if(RG.tab==='set'&&L.length){const cap=csCap(),here=twP(String(Zk).startsWith('tw:')?Zk:T.at)||[0,0];const all=[T.set].concat(T.sets||[]).filter(Boolean);
-    const bar=`<div class="csbar">${all.map(S=>{const p=twP(S.k),on=S===T.set;return`<button class="${on?'on':''}" onclick="csUse('${S.k}')">${S.k===cap?'⭐ ':''}<b>${esc(S.n)}</b><small>liv. ${S.lv} · ${(S.pop|0)||''}${S.pop?' ab. · ':''}${twDir(p[0]-here[0],p[1]-here[1])}</small></button>`}).join('')}</div>
+    const bar=`<div class="csbar">${all.map(S=>{const p=twP(S.k),on=S===T.set;return`<button class="${on?'on':''}" onclick="csUse('${S.k}')">${S.k===cap?'⭐ ':''}${S.fz?'🤝 ':''}<b>${esc(S.n)}</b><small>liv. ${S.lv} · ${(S.pop|0)||''}${S.pop?' ab. · ':''}${twDir(p[0]-here[0],p[1]-here[1])}</small></button>`}).join('')}</div>
       <p class="mu csbm">${all.length} ${all.length===1?'città':'città'} · stai gestendo <b>${esc(T.set.n)}</b>${T.set.k===cap?' (la capitale: qui rinasci e da qui riparti)':` · <button onclick="csSetCap('${T.set.k}')">⭐ Fanne la capitale</button>`}${all.length<CSMAX?' · altre città si fondano nelle regioni conquistate':''}</p>`;
     h=h.replace('<div class="rgc">','<div class="rgc">'+bar)}
   return h};

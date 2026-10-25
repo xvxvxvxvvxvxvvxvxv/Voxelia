@@ -5,6 +5,22 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.39 — Le fazioni dei giocatori: costruire insieme (25 ottobre 2026)
+
+- **Le fazioni dei giocatori** (in rete, nello stesso mondo di Tomorrow): nel registro (tasto U) c'è la nuova scheda **🤝 Fazione**.
+  - Si fonda una fazione, o si chiede di entrare in una di quelle del mondo; gli inviti arrivano con un avviso e si accettano dalla stessa scheda.
+  - Il capo **mette in comune una delle sue città**: tutti i membri la trovano fra le loro città (con 🤝), ci vanno, la vedono crescere e la costruiscono insieme. Nella città comune non ci sono mostri, e le terre dei compagni non si assediano.
+- **Chi entra parte con il potere limitato**: è una *recluta*, visita la città comune e la difende con gli altri, ma non la cambia.
+- **Ruoli e permessi**: capo, staff, membro, recluta e tutti i ruoli che il capo vuole creare (costruttori, tesorieri...).
+  - **Solo il capo** decide cosa può fare ogni ruolo, con una tabella di caselle, e passa il comando a un altro.
+  - Lo **staff** fa il lavoro al posto suo: invita, accoglie, cambia i ruoli dei membri ed espelle.
+  - I permessi: costruire e potenziare (anche l'editor del borgo e delle mura), arredare le case, ritirare il tesoro e il magazzino, addestrare l'esercito, dare il nome alla città, invitare, cambiare i ruoli ed espellere.
+- **Con i permessi si fa tutto, insieme**: chi costruisce paga con le sue risorse, e le modifiche arrivano subito a tutti i membri online. Le parti che il ruolo non può toccare restano come sono. Tasse, raccolto e abitanti della città comune li fa andare avanti il gioco del capo.
+- Una cronaca racconta chi è entrato, chi ha cambiato cosa, i ruoli dati e tolti.
+- Serve il nuovo plugin del server **Fazioni** (incluso nello zip del server, in `plugins/fazioni.js`).
+
+---
+
 ## 7.38 — Il portale dopo il boss, la musica a scelta, le mappe in dettaglio e l'Allevamento (25 ottobre 2026)
 
 - **Il portale dopo il boss**: sconfitto il boss di un dungeon si apre il portale, ma non si viene più portati fuori per sbaglio (mentre si combatte, si raccoglie il bottino o si preme il tasto per interagire). Toccando il portale il gioco chiede sempre se uscire o restare. Un messaggio avvisa quando il portale è aperto.

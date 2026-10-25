@@ -5,6 +5,28 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.38 — Il portale dopo il boss, la musica a scelta, le mappe in dettaglio e l'Allevamento (25 ottobre 2026)
+
+- **Il portale dopo il boss**: sconfitto il boss di un dungeon si apre il portale, ma non si viene più portati fuori per sbaglio (mentre si combatte, si raccoglie il bottino o si preme il tasto per interagire). Toccando il portale il gioco chiede sempre se uscire o restare. Un messaggio avvisa quando il portale è aperto.
+- **La musica si sceglie** (Impostazioni → Audio, o il menu di pausa con Esc):
+  - **automatica**: ogni luogo ha la sua musica, come sempre;
+  - **un brano fisso**, che suona ovunque, anche contro i boss;
+  - **la radio**: un brano dopo l'altro, con il pulsante «⏭ Prossimo brano»;
+  - **spenta**.
+  - **Otto brani nuovi**: Alba sulle colline, Il viandante, Notturno di stelle, Giga della taverna, Marcia degli eroi, Sabbie dorate, Vento di mare, Tempesta d'acciaio. Ci sono anche venti brani del gioco.
+- **Le mappe in dettaglio**: la mappa della zona (tasto M) disegna ogni casella.
+  - Erba con i ciuffi, sentieri e lastricati con le pietre, l'acqua con le onde e le rive.
+  - Alberi con la chioma, la luce e l'ombra, rocce, muri, pavimenti e muri su misura, lampioni accesi e arredi.
+  - Gli edifici con il tetto, il colmo, il camino e la porta.
+  - Nella **mappa del mondo di Tomorrow**, avvicinandosi (ora si ingrandisce molto di più), le regioni visitate si vedono casella per casella: strade, case, piazze, fiumi, boschi e le tue città come sono davvero.
+- **L'Allevamento dei compagni**, un edificio nuovo del borgo (U → Insediamento → Costruire), fino al livello 5:
+  - a ogni livello **tutti i compagni** diventano più forti (+6% di vita e di forza per livello);
+  - **addestramento**: un livello in più a un compagno, per monete, fino a un tetto che sale con l'allevamento (fino al 40);
+  - **catalogo**: trenta creature da comprare, in cinque file (comuni, insolite, rare, leggendarie, mitiche) che si aprono potenziando l'allevamento. Arrivano a un livello che sale con l'allevamento;
+  - davanti all'edificio c'è l'allevatrice Gioia, con il recinto, il fieno e l'abbeveratoio; l'allevamento si apre anche dal registro del borgo.
+
+---
+
 ## 7.37.1 — Manutenzione del borgo, dell'esercito e della tua casa (24 ottobre 2026)
 
 - **La tua casa, i modelli e gli arredi:** nelle case del borgo alcuni arredi si vedevano come mobili diversi. Le colonne della Villa nobiliare erano mappamondi, i cristalli della Torre del mago erano letti, il pupazzo di neve dell'Igloo era un recinto, e così gli arredi «Colonna», «Cristalli» e «Pupazzo di neve» messi con ✏ Arreda. Ora si vedono come nel catalogo.

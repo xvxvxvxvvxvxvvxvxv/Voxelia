@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.37.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.38** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -266,6 +266,13 @@ L'acqua si disegna poche volte al secondo e la risoluzione dinamica tiene il gio
 In Impostazioni → Grafica si regolano luminosità, contrasto, colori, particelle, scossoni e risoluzione (fino al 150%);
 per la vista 3D risoluzione interna con upscaling e nitidezza in stile FSR, campo visivo, nebbia, ombre e luci.
 Il DLSS di NVIDIA non è possibile in un browser.
+
+### Musica, mappe e Allevamento (dalla 7.38)
+
+La musica si sceglie dalle Impostazioni o dal menu di pausa: automatica, un brano fisso, la radio o spenta, con otto
+brani nuovi. Le mappe disegnano ogni casella, anche quella del mondo di Tomorrow, avvicinandosi. Nel borgo si costruisce
+l'Allevamento: rende più forti i compagni, li addestra e vende creature dal suo catalogo. Dopo il boss di un dungeon il
+portale non porta fuori da solo: chiede sempre.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -852,7 +859,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.37.1 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.38 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -931,6 +938,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzj_legna.js` | 7.35: gli alberi si abbattono (5 colpi, 2 legna, ricrescono), il legno in quantità, la città fino al livello 15 su tutta la regione |
 | `8zzk_viaggio.js` | 7.36: la Pietra del viaggio con tutti i luoghi che hanno una gemma del teletrasporto; ogni gemma si compra una volta sola |
 | `8zzl_grafica.js` | 7.37: l'acqua su un foglio a parte, la risoluzione dinamica, le opzioni grafiche nuove e l'upscaling con nitidezza in stile FSR per la vista 3D |
+| `8zzm_novita.js` | 7.38: il portale dopo il boss che chiede prima di uscire, la musica a scelta con otto brani nuovi, le mappe casella per casella, l'Allevamento dei compagni |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

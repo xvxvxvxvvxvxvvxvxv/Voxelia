@@ -15,7 +15,7 @@ const DOMF={bes:{n:'Belva',sp:'Morso feroce',d:'fa sanguinare'},gue:{n:'Guerrier
 const DOMEV=['','Grande ','Antico '];
 function domFix(){P.pets=Array.isArray(P.pets)?P.pets.filter(p=>p&&E[p.t]||p&&String(p.t).startsWith('tw.')):[];P.seal=P.seal|0;P.bst=P.bst||{};if(P.pet!=null&&!P.pets[P.pet])P.pet=null;
   for(const p of P.pets)if(String(p.t).startsWith('tw.')&&typeof twType==='function')twType(p.t)}
-const domStats=p=>{const b=E[p.t]||{hp:40,at:6,sp:2,cd:1.2},ev=p.lv>=20?2:p.lv>=10?1:0,k=1+p.lv*.12+ev*.25;return{mx:Math.round(Math.max(30,b.hp*.9)*k*(1+P.lv*.02)),at:+(Math.max(3,b.at*.85)*k*(1+P.lv*.02)).toFixed(1),sp:Math.max(2.4,Math.min(4.2,(b.sp||2)*1.15)),cd:Math.max(.7,(b.cd||1.2)),ev}};
+const domStats=p=>{const b=E[p.t]||{hp:40,at:6,sp:2,cd:1.2},ev=p.lv>=20?2:p.lv>=10?1:0,k=(1+p.lv*.12+ev*.25)*(typeof allevBonus==='function'?allevBonus():1);return{mx:Math.round(Math.max(30,b.hp*.9)*k*(1+P.lv*.02)),at:+(Math.max(3,b.at*.85)*k*(1+P.lv*.02)).toFixed(1),sp:Math.max(2.4,Math.min(4.2,(b.sp||2)*1.15)),cd:Math.max(.7,(b.cd||1.2)),ev}};
 const domName=p=>DOMEV[domStats(p).ev]+p.n;
 /* ---- la cattura ---- */
 function domCanTake(e){return e&&e.k==='en'&&!e.boss&&!e.np&&!e.owt&&!e.bt&&e.hp>0&&e.hp<=e.mx*.34&&ents.includes(e)}

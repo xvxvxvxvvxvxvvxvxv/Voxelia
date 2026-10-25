@@ -5,6 +5,23 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.40 — Il pannello sviluppatore fa tutto (25 ottobre 2026)
+
+- **Pannello sviluppatore** (🛠, tasto F9), due schede nuove:
+- **🎁 Dai e crea**:
+  - monete (fino a 10 milioni alla volta, o a zero), pozioni, esperienza, il livello esatto che vuoi, i sigilli di doma;
+  - **tutte le risorse e i minerali**, una per una o tutte insieme (grano, legna, mele, pietra, argilla, ferro, carbone, rame, marmo, pepite, gemme, erbe, scarabei, fiori di ghiaccio...), anche per azzerarle; tutti i pesci;
+  - **oggetti** di ogni tipo (armi, elmi, corazze, scudi), rarità (fino ad Arena), livello e quantità; gli **unici** della storia e quelli di Tomorrow con i poteri; tutti i cimeli e i reperti della miniera;
+  - **compagni** di qualunque specie (anche i boss) e livello, nella stalla o subito in campo;
+  - **nemici e boss** da far comparire intorno a te, del livello e nel numero che vuoi, e un pulsante per sconfiggerli tutti.
+- **🏰 Tomorrow**:
+  - conquistare subito la regione in cui sei e fondarci una città;
+  - portare la città al livello che vuoi, costruire tutti gli edifici al massimo (uno alla volta, ognuno nel suo posto), riempire tesoro, magazzino, cibo, acqua, abitanti ed esercito;
+  - scoprire la mappa, avere tutte le gemme del teletrasporto, far passare i giorni.
+- Il pannello resta allo stesso punto dopo ogni clic.
+
+---
+
 ## 7.39 — Le fazioni dei giocatori: costruire insieme (25 ottobre 2026)
 
 - **Le fazioni dei giocatori** (in rete, nello stesso mondo di Tomorrow): nel registro (tasto U) c'è la nuova scheda **🤝 Fazione**.

@@ -3,6 +3,16 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Fazioni 1.0 (gioco 7.39)
+
+- **Nuovo plugin Fazioni:** nello stesso mondo di Tomorrow (stesso codice stanza) i giocatori fondano una fazione e costruiscono insieme un insediamento.
+- Il capo fonda la fazione, invita (o accoglie chi chiede di entrare) e mette in comune una delle sue città. Chi entra parte come **recluta**, senza permessi.
+- Ruoli: capo, staff, membro, recluta e quelli che crea il capo. **Solo il capo** cambia i permessi dei ruoli e ne crea di nuovi; lo **staff** invita, accoglie, cambia i ruoli dei membri ed espelle al posto suo.
+- Permessi: costruire (edifici, potenziamenti, editor del borgo e delle mura), arredare, tesoro, esercito, nome della città, invitare, espellere.
+- La città comune la tiene il server: chi la cambia manda solo le parti cambiate, e passano solo quelle che il suo ruolo può toccare; tutti i membri online la vedono cambiare subito. La vita di tutti i giorni della città (tasse, raccolto, abitanti) la fa andare avanti il gioco del capo.
+- Ogni membro ha una chiave segreta che il gioco tiene nel browser: un altro giocatore con lo stesso nome non può agire al suo posto.
+- La città arriva a pezzi da 30 KB (un messaggio del server non supera i 64 KB). Comando `/fazione`, pagina admin `/plugins/fazioni/admin`. Config: `maxMembri` (30), `maxFazioni` (80), `maxRuoli` (10), `maxCittaKB` (1500).
+
 ## Territori 1.1 (gioco 7.30)
 
 - Con le terre si ricorda anche la **potenza dell'esercito** di ogni insediamento (`pow`), così chi lo assedia trova guardie forti quanto il suo esercito.

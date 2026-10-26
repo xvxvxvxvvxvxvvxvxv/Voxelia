@@ -96,7 +96,7 @@ const uqNear=(x,y,r,not)=>{let b=null,bd=r;for(const o of ents)if(o.k==='en'&&o!
 const uqNearN=(x,y,r,n,not)=>ents.filter(o=>o.k==='en'&&o!==not&&o.hp>0&&!(o.b&&o.b.np)&&Math.hypot(o.px-x,o.py-y)<r).sort((a,b)=>Math.hypot(a.px-x,a.py-y)-Math.hypot(b.px-x,b.py-y)).slice(0,n);
 function uqZap(a,b){if(!cineOK())return;sfx({k:'ring',x:b.px,y:b.py,c:'150,200,255',d:.35,r:.9});sparks(b.px,b.py,8,['#bfe0ff','#ffffff'],70)}
 // un colpo «di contorno» (fuoco, veleno, fulmine, onda): niente parata, niente maestria, ma passa al server come gli altri
-function uqHit(e,d,c){if(!e||!ents.includes(e)||e.hp<=0)return;d=Math.max(1,Math.round(d));if(NET.code){NET.hits.push([e.id,+(d/e.mx).toFixed(4),++NET.seq]);if(NET.hits.length>14)NET.hits.shift()}_hurtE714(e,d,1,false);if(c&&ents.includes(e))e.fl=.12}
+function uqHit(e,d,c){if(!e||!ents.includes(e)||e.hp<=0)return;d=Math.max(1,Math.round(d));if(NET.code){if(e.pup)e.hme=t;NET.hits.push([e.sg||e.id,+(d/e.mx).toFixed(4),++NET.seq]);if(NET.hits.length>14)NET.hits.shift()}_hurtE714(e,d,1,false);if(c&&ents.includes(e))e.fl=.12}
 const _hurtE714=hurtE;hurtE=function(e,d,rem,cr){if(rem||!uqOn()||!e||e.k!=='en'||!P.eq){_hurtE714(e,d,rem,cr);return}const S=uqS();
   if(S.caccia&&(e.elite||e.boss||e.owt))d*=1+S.caccia/100;if(cr&&S.feroce)d*=1+S.feroce/100;d=Math.max(1,Math.round(d));
   const hp0=e.hp;_hurtE714(e,d,rem,cr);const done=Math.max(0,Math.min(hp0,hp0-Math.max(0,e.hp)));

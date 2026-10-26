@@ -72,9 +72,9 @@ function twSetGenC(C,ends){const{F,rnd,n,rx,ry,bio,tg,ok,z}=C,S=P.tw.set,Ly=S.la
   if(Ly.mk&&setB('mercato')){const[x,y]=Ly.mk;if(inR(x,y)&&M[y][x]!==3){M[y][x]=6;DEC[y][x]='ʍ';C.res(x,y);if(ok(x,y-1))C.res(x,y-1);if(ok(x,y-1)&&M[y-1][x]!==3){M[y-1][x]=0;if(DEC[y-1][x]&&DEC[y-1][x][0]!==DN)DEC[y-1][x]=''}}}
   // la palizzata e le torri, sempre lungo il confine
   const tra=ends.map(([x,y])=>Math.atan2(y-cy,x-cx));
-  if(setB('mura'))for(let i=0;i<Math.round(R*6.3);i++){const a=i/(R*6.3)*6.283,x=Math.round(cx+.5+Math.cos(a)*(R-.5)),y=Math.round(cy+.5+Math.sin(a)*(R-.5));if(!ok(x,y)||M[y][x]!==0||DEC[y][x]===DN+'1'||DEC[y][x]===DN+'4')continue;
-    if(tra.some(t2=>Math.abs(((a-t2)%6.283+9.425)%6.283-3.14159)<.16))continue;M[y][x]=1;DEC[y][x]=DN+'W'}
-  if(setB('torre')){const tn=typeof csMuraTn==='function'?csMuraTn():4;for(let i=0;i<tn;i++){const a=.785+i*6.283/tn,x=Math.round(cx+Math.cos(a)*(R-2.5))-1,y=Math.round(cy+Math.sin(a)*(R-2.5))-1;let bad=0;for(let v=y;v<y+2;v++)for(let u=x;u<x+2;u++)if(!ok(u,v)||M[v][u]!==0)bad=1;if(bad)continue;
+  if(setB('mura')){if(typeof setMuraRing==='function')setMuraRing(C,Ly,cx,cy,R,ends);else for(let i=0;i<Math.round(R*6.3);i++){const a=i/(R*6.3)*6.283,x=Math.round(cx+.5+Math.cos(a)*(R-.5)),y=Math.round(cy+.5+Math.sin(a)*(R-.5));if(!ok(x,y)||M[y][x]!==0||DEC[y][x]===DN+'1'||DEC[y][x]===DN+'4')continue;
+    if(tra.some(t2=>Math.abs(((a-t2)%6.283+9.425)%6.283-3.14159)<.16))continue;M[y][x]=1;DEC[y][x]=DN+'W'}}
+  if(setB('torre')){const tn=typeof csMuraTn==='function'?csMuraTn():4;const Rt=typeof murRad==='function'?murRad(Ly,R):R;for(let i=0;i<tn;i++){const a=.785+i*6.283/tn,x=Math.round(cx+Math.cos(a)*(Rt-2.5))-1,y=Math.round(cy+Math.sin(a)*(Rt-2.5))-1;let bad=0;for(let v=y;v<y+2;v++)for(let u=x;u<x+2;u++)if(!ok(u,v)||M[v][u]!==0)bad=1;if(bad)continue;
     const b={x,y,w:2,h:2,wall:'#9a9284',roof:th[2][0],ht:40+setB('torre')*8,twr:1};const k=TB.push(b)-1;for(let v=y;v<y+2;v++)for(let u=x;u<x+2;u++){M[v][u]=3;DEC[v][u]='';BM[v][u]=k}}}
   if(typeof setMuraPost==='function')setMuraPost(C,Ly,cx,cy,R);
   // lo stendardo

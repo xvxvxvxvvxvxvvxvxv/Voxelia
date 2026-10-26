@@ -17,8 +17,8 @@ const dist=(a,b)=>Math.hypot(a.px-b.px,a.py-b.py);
 const flt=(o,s,c)=>pop.push({x:o.px,y:o.py,s,c,t:1});
 function blk(x,y){const i=Math.floor(x),j=Math.floor(y);return i<0||j<0||i>=N||j>=N||!WK(M[j][i])}
 function mv(o,dx,dy){if(!blk(o.px+dx,o.py))o.px+=dx;if(!blk(o.px,o.py+dy))o.py+=dy}
-function hurtE(e,d,rem,cr){if(e.shd&&e.shd>t){flt(e,'Immune','#9adcff');return}if(!rem)wmHit();d=tryParry(e,d,rem);if(!rem){NET.hits.push([e.id,+(d/e.mx).toFixed(4),++NET.seq]);if(NET.hits.length>14)NET.hits.shift()}
-  e.hp-=d;e.fl=.12;e.al=1;flt(e,(cr?'💥':'')+d,cr?'#ffd84a':'#ffffff');tone(cr?330:220,.05);if(e.hp<=0)kill(e)}
+function hurtE(e,d,rem,cr){if(e.shd&&e.shd>t){flt(e,'Immune','#9adcff');return}if(!rem)wmHit();d=tryParry(e,d,rem);if(!rem){NET.hits.push([e.sg||e.id,+(d/e.mx).toFixed(4),++NET.seq]);if(NET.hits.length>14)NET.hits.shift()}
+  e.hp-=d;e.fl=.12;e.al=1;if(e.pup)e.hme=t;flt(e,(cr?'💥':'')+d,cr?'#ffd84a':'#ffffff');tone(cr?330:220,.05);if(e.hp<=0){if(e.pup)e.hp=1;else kill(e)}}
 // 7.11: nella storia l'armatura protegge un po' meno (2 invece di 2,5): con l'equipaggiamento leggendario l'eroe non è più quasi intoccabile
 function hurtP(at){if(P.iv>0){flt(P,'Schivata!','#8ce7ff');P.pf=3;tone(900,.05,'triangle');return}const d=Math.max(1,Math.round(at*(.8+Math.random()*.4)*100/(100+def()*(MODE==='story'?2:2.5))));P.hp-=d;P.fl=.15;flt(P,d,'#ff6666');tone(110,.08);if(P.hp<=0)die()}
 function kill(e){const i=ents.indexOf(e);if(i<0)return;ents.splice(i,1);if(cineOK()&&e.m)ents.push({k:'dead',m:e.m,px:e.px,py:e.py,t0:t,boss:e.boss,fc:e.m.rg?faceOf(...(e.fd||[0,1])):null});if(Zk==='arrembaggio'&&!ARRW&&!ents.some(x=>x.k==='en')){ARRW=1;navHatch()}if(Zk==='stiva'&&!ARRW&&!ents.some(x=>x.k==='en')){ARRW=1;setTimeout(navWin,900)}if(MODE==='dim'&&e.dtag)dimKill(e);const z=ZZ;gainXP(Math.round(e.xp*DF.x*(NET.cfg.xpm||1)*nightXP()));
@@ -159,16 +159,16 @@ function upd(dt){t+=dt;timeTick(dt);if(Zk==='mare'&&NAV)navTick(dt);gateTick(dt)
   for(const e of ents){if(e.k!=='npc'||!(e.wd||e.go))continue;
     if(e.path.length){const w=e.path[0],dx=w.x+.5-e.px,dy=w.y+.5-e.py,d=Math.hypot(dx,dy),s=1.6*dt;if(d<=s){e.px=w.x+.5;e.py=w.y+.5;e.path.shift()}else{e.px+=dx/d*s;e.py+=dy/d*s}}
     else if((e.wt-=dt)<=0){e.wt=2+Math.random()*5;const x=(e.px|0)+Math.floor(Math.random()*13)-6,y=(e.py|0)+Math.floor(Math.random()*13)-6;if(x>0&&y>0&&x<N-1&&y<N-1&&(M[y][x]===4||(e.wg&&M[y][x]===0)))e.path=path(e.px|0,e.py|0,x,y).slice(0,e.wg?6:14)}}
-  const zk0=Zk;for(const e of ents.slice()){if(Zk!==zk0||!started)break;if(e.k!=='en'||e.tr)continue;e.fl-=dt;e.cdt-=dt;e.slt-=dt;
+  const zk0=Zk;for(const e of ents.slice()){if(Zk!==zk0||!started)break;if(e.k!=='en'||e.tr||e.pup)continue;e.fl-=dt;e.cdt-=dt;e.slt-=dt;
     let tp=P,d=dist(e,P);for(const o of NET.list){const q=dist(e,o);if(q<d){d=q;tp=o}}
     if(d<e.ag||e.al){e.al=d<e.ag*2.5;if(e.boss&&!e.intro&&tp===P){e.intro=1;sceneBoss(e)}
       if(e.boss&&!e.enr&&e.hp<e.mx*.5){e.enr=1;e.sp*=1.3;e.cd*=.7;msg(e.n+' si infuria!');tone(90,.4,'sawtooth',.08);
         if(e.b.sum)for(let i=0;i<3;i++){const a=i*2.1,[x,y]=nearFree(clamp(Math.floor(e.px+Math.cos(a)*1.7),1,N-2),clamp(Math.floor(e.py+Math.sin(a)*1.7),1,N-2));if(WK(M[y][x])){const m=mk(e.b.sum,x,y,10000+e.id*10+i);m.al=1;ents.push(m)}}}
       if(e.b.slam&&e.slt<=0&&d<5){e.slt=e.enr?5:7;fx.push({k:'warn',x:e.px,y:e.py,r:2.6,t:1.1,mx:1.1,dmg:e.at*1.5});tone(70,.3,'sawtooth',.05)}
       if(d>e.r*.9)enMove(e,tp,d,dt)
-      else if(e.cdt<=0){e.cdt=e.cd;const dd=Math.hypot(tp.px-e.px,tp.py-e.py)||1;e.atkT=t;e.atkD=[(tp.px-e.px)/dd,(tp.py-e.py)/dd];if(e.b.rng)shoot(e,tp);else if(tp===P)hurtP(e.at)}}}
+      else if(e.cdt<=0){e.cdt=e.cd;const dd=Math.hypot(tp.px-e.px,tp.py-e.py)||1;e.atkT=t;e.atkD=[(tp.px-e.px)/dd,(tp.py-e.py)/dd];if(e.b.rng){shoot(e,tp);if(tp!==P&&tp.k==='pl'&&typeof syncEH==='function')syncEH(tp.id,e.at)}else if(tp===P)hurtP(e.at);else if(tp.k==='pl'&&typeof syncEH==='function')syncEH(tp.id,e.at)}}}
   for(const p of PJ){p.t-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;if(blk(p.x,p.y))p.t=0;else if(Math.hypot(p.x-P.px,p.y-P.py)<.45&&started){p.t=0;hurtP(p.d)}}PJ=PJ.filter(p=>p.t>0);
-  for(const f of fx){f.t-=dt;if(f.k==='warn'&&f.t<=0){fx.push({k:'boom',x:f.x,y:f.y,r:f.r,t:.4});tone(60,.25,'sawtooth',.08);if(Math.hypot(P.px-f.x,P.py-f.y)<f.r)hurtP(f.dmg)}}
+  for(const f of fx){f.t-=dt;if(f.k==='warn'&&f.t<=0){fx.push({k:'boom',x:f.x,y:f.y,r:f.r,t:.4});tone(60,.25,'sawtooth',.08);if(Math.hypot(P.px-f.x,P.py-f.y)<f.r)hurtP(f.dmg);if(typeof syncEH==='function'&&!f.pup)for(const o of NET.list)if(Math.hypot(o.px-f.x,o.py-f.y)<f.r)syncEH(o.id,f.dmg)}}
   fx=fx.filter(f=>f.t>0);for(const p of pop)p.t-=dt;pop=pop.filter(p=>p.t>0);
   netTick(dt);partUpd(dt);ffUpd(dt);
   if((bossT-=dt)<=0){bossT=.5;const b=ents.find(e=>e.boss&&e.al&&dist(e,P)<14);music(b?'boss':zoneMus());npcMarks()}

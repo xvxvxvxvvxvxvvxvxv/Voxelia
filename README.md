@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.40** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.41** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -285,6 +285,13 @@ e ne crea di nuovi, mentre lo staff invita, accoglie, cambia i ruoli ed espelle 
 Nel pannello sviluppatore (F9) la scheda «Dai e crea» dà monete, risorse, pesci, oggetti di ogni rarità e livello,
 unici, cimeli, compagni di qualunque specie e livello e fa comparire nemici e boss; la scheda «Tomorrow» conquista la
 regione, fonda e completa la città, scopre la mappa, dà le gemme e fa passare i giorni.
+
+### Nemici condivisi, città in ordine e mura (dalla 7.41)
+
+In rete tutti i giocatori della stessa zona vedono gli stessi nemici, nello stesso posto: li guida chi è nella zona da
+più tempo, i colpi arrivano a tutti e quando un nemico cade cade per tutti. In Tomorrow la città cresce in ordine, con
+piazza, viali, sentieri e isolati (e «Riordina il borgo» nell'editor). Le mura coprono il perimetro della città, si
+spostano e si cancellano a pezzi o tutte.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -872,7 +879,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.40 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.41 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -954,6 +961,8 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzm_novita.js` | 7.38: il portale dopo il boss che chiede prima di uscire, la musica a scelta con otto brani nuovi, le mappe casella per casella, l'Allevamento dei compagni |
 | `8zzn_fazione.js` | 7.39: le fazioni dei giocatori (scheda Fazione del registro, permessi, città comune da costruire insieme; con il plugin Fazioni) |
 | `8zzo_dev2.js` | 7.40: il pannello sviluppatore dà e crea tutto (risorse, oggetti, unici, compagni, nemici) e ha gli strumenti di Tomorrow |
+| `8zzp_sync.js` | 7.41: in rete ogni nemico ha un padrone che lo guida, e tutti ne vedono la stessa copia |
+| `8zzq_ordine.js` | 7.41: la città che cresce in ordine (piazza, viali, sentieri, isolati, Riordina il borgo) e le mura sul perimetro, da spostare e cancellare |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

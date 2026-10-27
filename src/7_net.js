@@ -50,7 +50,7 @@ const rmKey=()=>NET.code+'-'+Zk+(ZZ&&ZZ.dg?'#'+ZZ.run:'');
 function netJoin(){NET.pl={};NET.list=[];NET.lt=1;if(NET.ok)NET.send({t:'gget',rm:rmKey()})}
 function netTick(dt){if(!NET.ok)return;NET.lt+=dt;const q0=P.eq;
   if(NET.lt>.1){NET.lt=0;NET.ws&&NET.ws.readyState===1&&NET.ws.send(JSON.stringify({t:'p',d:{rm:rmKey(),zk:Zk,df:DFS.indexOf(DF),g:P.g,n:NET.name,x:+P.px.toFixed(2),y:+P.py.toFixed(2),hp:Math.max(0,P.hp|0),mx:P.mx,lv:P.lv,ap:apPack(P.ap||APD),fa:P.fc|0,
-    c:q0.c?q0.c.r:-1,h:q0.h?q0.h.r:-1,w:q0.w?q0.w.r:0,wv:q0.w?iv(q0.w):3,s:q0.s?q0.s.r:-1,ty:tyPack(eqTy(q0)),sw:P.swc,hit:NET.hits,say:NET.say}}))}
+    c:q0.c?q0.c.r:-1,h:q0.h?q0.h.r:-1,w:q0.w?q0.w.r:0,wv:q0.w?iv(q0.w):3,s:q0.s?q0.s.r:-1,ty:tyPack(eqTy(q0)),sw:P.swc,hit:NET.hits,say:NET.say,...(typeof syncPack==='function'?syncPack():{})}}))}
   const seen={},rk=rmKey();
   for(const id in NET.peers){const q=NET.peers[id];if(!q||q.rm!==rk||typeof q.x!=='number'||typeof q.y!=='number')continue;seen[id]=1;let o=NET.pl[id];
     if(!o){o=NET.pl[id]={k:'pl',id,px:q.x,py:q.y,ls:Array.isArray(q.hit)?q.hit.reduce((a,h)=>Math.max(a,(h&&h[2])||0),0):0,sn:q.say?q.say.n:0,swc:q.sw,sw:0,bt:0,hp:1,mx:1,fl:0,mv:0};msg(String(q.n||'Un eroe').slice(0,14)+' è qui')}
@@ -58,7 +58,7 @@ function netTick(dt){if(!NET.ok)return;NET.lt+=dt;const q0=P.eq;
     o.n=String(q.n||'Eroe').slice(0,14);o.hp=q.hp;o.mx=q.mx||1;o.lv=q.lv;o.c=q.c;o.h=q.h;o.w=q.w;o.wv=q.wv;o.s=q.s;o.ty=typeof q.ty==='string'?q.ty.slice(0,40):'';o.fc=(q.fa|0)&7;if(Array.isArray(q.ap)&&String(q.ap)!==o.aps){o.aps=String(q.ap);o.ap=apFix(q.ap)}o.sw-=dt;o.bt-=dt;o.fl-=dt;
     if(q.sw!==o.swc){o.swc=q.sw;o.sw=.2}
     if(q.say&&q.say.n!==o.sn){o.sn=q.say.n;o.bub=String(q.say.s).slice(0,60);o.bt=5}
-    if(Array.isArray(q.hit)){const ls=o.ls;for(const h of q.hit){if(!Array.isArray(h))continue;if(h[2]>ls){const e=ents.find(x=>x.k==='en'&&x.id===h[0]);if(e)hurtE(e,Math.max(1,Math.round(h[1]*e.mx)),1)}o.ls=Math.max(o.ls,h[2]||0)}}}
+    if(Array.isArray(q.hit)){const ls=o.ls;for(const h of q.hit){if(!Array.isArray(h))continue;if(h[2]>ls){const e=ents.find(x=>x.k==='en'&&(x.sg?x.sg===h[0]:x.id===h[0]));if(e&&!e.pup)hurtE(e,Math.max(1,Math.round(h[1]*e.mx)),1)}o.ls=Math.max(o.ls,h[2]||0)}}}
   for(const id in NET.pl)if(!seen[id])delete NET.pl[id];NET.list=Object.values(NET.pl)}
 /* ---- registro della chat (in basso a sinistra): messaggi di tutta la stanza e avvisi importanti ---- */
 let clT=0;

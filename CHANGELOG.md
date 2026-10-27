@@ -5,6 +5,27 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.41 — Tutti vedono gli stessi nemici, la città in ordine e le mura sul confine (26 ottobre 2026)
+
+- **In rete tutti vedono gli stessi nemici.** Prima ogni giocatore muoveva i nemici per conto suo: lo stesso lupo poteva essere in due posti diversi, e chi arrivava vedeva nemici che gli altri non vedevano. Ora:
+  - i nemici di una zona li guida chi ci è da più tempo, e gli altri vedono la stessa cosa: stessi nemici, nello stesso posto, con la stessa vita;
+  - se chi li guida esce, li prende chi resta, senza farli sparire; chi entra dopo trova i nemici com'erano;
+  - anche quelli che nascono dopo (contratti, conquiste, assedi, rinforzi dei boss) li vedono tutti;
+  - i nemici attaccano chi hanno più vicino, e i colpi arrivano a chi li prende; i colpi di tutti arrivano ai nemici;
+  - quando un nemico cade, cade per tutti: chi ha combattuto (o era vicino) prende la sua parte di esperienza e bottino, e il portale dopo il boss si apre per tutti.
+  - Vale nella storia e in Tomorrow. Con chi ha una versione vecchia del gioco si gioca come prima.
+- **La città cresce in ordine** (Tomorrow):
+  - una piazza lastricata al centro, due viali a croce e un reticolo di sentieri;
+  - isolati con quattro case ciascuno, e gli edifici più importanti vicino alla piazza;
+  - ogni Espansione allarga il reticolo e mette le case nuove negli isolati liberi, senza toccare quello che hai fatto tu nell'editor;
+  - le città nuove nascono già in ordine; nell'editor c'è «📐 Riordina il borgo» per rimettere tutto in ordine quando vuoi (gli edifici tengono colori, interni e chi ci abita).
+- **Le mura sul confine** (editor → Mura):
+  - coprono tutto il perimetro della città, anche dove arriva al bordo della regione, con una porta dove passano le strade;
+  - si **spostano**, più vicine o più lontane dal centro;
+  - si **cancellano** a pezzi (clic, con «Clic = cancella/rimetti») o tutte insieme, e si rimettono.
+
+---
+
 ## 7.40 — Il pannello sviluppatore fa tutto (25 ottobre 2026)
 
 - **Pannello sviluppatore** (🛠, tasto F9), due schede nuove:

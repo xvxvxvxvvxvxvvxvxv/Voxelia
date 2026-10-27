@@ -22,7 +22,7 @@ module.exports = {
     const C = api.config, chiave = n => String(n).toLowerCase();
     const st = () => api.store;   // st().ev = evento in corso: { notte, xpPrima, xpEvento, punti: { chiave: { nome, p } } }
     const RARITA = ['comune', 'non comune', 'raro', 'epico'];
-    const testo = pr => [pr.oro && pr.oro + ' oro', pr.pozioni && pr.pozioni + ' pozioni', pr.xp && pr.xp + ' XP', pr.oggetto != null && 'un oggetto ' + (RARITA[pr.oggetto] || 'raro')].filter(Boolean).join(', ');
+    const testo = pr => [pr.oro && pr.oro + ' oro', pr.pozioni && pr.pozioni + (pr.pozioni === 1 ? ' pozione' : ' pozioni'), pr.xp && pr.xp + ' XP', pr.oggetto != null && 'un oggetto ' + (RARITA[pr.oggetto] || 'raro')].filter(Boolean).join(', ');
     function dai(p, pr) {
       if (!pr || !p) return;
       if (globalThis.VoxeliaGuardiano) globalThis.VoxeliaGuardiano.grazia(p.name);

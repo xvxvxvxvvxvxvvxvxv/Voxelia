@@ -45,7 +45,7 @@ module.exports = {
     };
     const RARITA = ['comune', 'non comune', 'raro', 'epico'], POSTI = ['primo', 'secondo', 'terzo'], MED = ['🥇', '🥈', '🥉'];
     const premi = () => Array.isArray(C.premi) ? C.premi : module.exports.defaults.premi;
-    const testoPremio = pr => [pr.oro && pr.oro + ' oro', pr.pozioni && pr.pozioni + ' pozioni', pr.xp && pr.xp + ' XP',
+    const testoPremio = pr => [pr.oro && pr.oro + ' oro', pr.pozioni && pr.pozioni + (pr.pozioni === 1 ? ' pozione' : ' pozioni'), pr.xp && pr.xp + ' XP',
       pr.oggetto != null && 'un oggetto ' + (RARITA[pr.oggetto] || 'raro')].filter(Boolean).join(', ');
     const etichetta = room => room ? 'stanza ' + room : 'senza stanza';
     const nomePubblico = room => (C.nomiStanze && C.nomiStanze[room]) || 'Stanza ' + (Object.keys(S.t).sort().indexOf(room) + 1 || '');

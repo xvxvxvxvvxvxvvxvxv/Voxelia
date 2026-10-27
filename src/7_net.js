@@ -81,7 +81,7 @@ $('ch').onkeydown=e=>{if(e.key==='Enter'){const raw=e.target.value.trim(),v=raw.
 
 /* ---- comandi dell'admin del server (regali, cura, teletrasporto) ---- */
 function admCmd(m){if(!P||!started)return;const n=Math.max(1,m.n|0),r=Math.max(0,Math.min(3,m.r|0));let t='';
-  switch(m.a){case 'gold':P.g+=n;t='+'+n+' oro';break;case 'xp':gainXP(n);t='+'+n+' XP';break;case 'pot':P.pot+=n;t='+'+n+' pozioni';break;
+  switch(m.a){case 'gold':P.g+=n;t='+'+n+' oro';break;case 'xp':gainXP(n);t='+'+n+' XP';break;case 'pot':P.pot+=n;t='+'+n+(n===1?' pozione':' pozioni');break;
     case 'lv':for(let i=0;i<n;i++)gainXP(Math.max(1,need()-P.xp));t='+'+n+(n>1?' livelli':' livello');break;
     case 'item':{let it=null;for(let k=0;k<60&&(!it||it.r!==r);k++)it=item(P.lv+1,r);gain(it);t='un oggetto: '+iname(it);break}
     case 'heal':P.hp=P.mx;t='cura completa';break;case 'tp':load('town');t='teletrasporto ad Aldoria';break;default:return}

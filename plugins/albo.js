@@ -142,7 +142,7 @@ module.exports = {
       const r = [e.nome + (e.lv ? ' · livello ' + e.lv : '') + (e.online ? ' · online ora' : e.visto ? ' · visto ' + quando(e.visto) : '') + (e.minuti != null ? ' · ' + ore(e.minuti) + ' di gioco' : '')];
       if (e.arena) r.push('Arena: ' + e.arena.punti + ' punti (' + e.arena.pos + '° posto), ' + e.arena.vinte + (e.arena.vinte === 1 ? ' vinta' : ' vinte') + ' e ' + e.arena.perse + (e.arena.perse === 1 ? ' persa' : ' perse'));
       const x = [e.tornei && e.tornei + (e.tornei > 1 ? ' tornei vinti' : ' torneo vinto'), e.tesori && e.tesori + (e.tesori > 1 ? ' tesori trovati' : ' tesoro trovato'),
-        e.giornaliero && 'premio giornaliero: ' + (e.giornaliero.serie > 1 ? e.giornaliero.serie + ' giorni di fila, ' : '') + e.giornaliero.totale + ' ritirati'].filter(Boolean);
+        e.giornaliero && 'premio giornaliero: ' + (e.giornaliero.serie > 1 ? e.giornaliero.serie + ' giorni di fila, ' : '') + e.giornaliero.totale + (e.giornaliero.totale === 1 ? ' ritirato' : ' ritirati')].filter(Boolean);
       if (x.length) r.push(x.join(' · '));
       if (e.pesca) r.push('Pesca: ' + [e.pesca.pesci && e.pesca.pesci + ' pesci, ' + kg(e.pesca.kg), e.pesca.leggendari && e.pesca.leggendari + (e.pesca.leggendari > 1 ? ' leggendari' : ' leggendario'),
         e.pesca.record.length && 'record: ' + e.pesca.record.join(', ')].filter(Boolean).join(' · '));
@@ -245,7 +245,7 @@ function card(x,i,podio){let h='<article class="c" id="e-'+encodeURIComponent(x.
   if(x.arena)h+=R("swords","<b>Arena</b> "+x.arena.punti+" punti · "+x.arena.pos+"° posto<small>"+x.arena.vinte+(x.arena.vinte===1?" vinta":" vinte")+" · "+x.arena.perse+(x.arena.perse===1?" persa":" perse")+"</small>");
   if(x.tornei)h+=R("trophy","<b>Tornei vinti</b> "+x.tornei);
   if(x.tesori)h+=R("key","<b>Tesori trovati</b> "+x.tesori);
-  if(x.giornaliero)h+=R("chest","<b>Premio giornaliero</b> "+x.giornaliero.totale+" ritirati"+(x.giornaliero.serie>1?"<small>"+x.giornaliero.serie+" giorni di fila</small>":""));
+  if(x.giornaliero)h+=R("chest","<b>Premio giornaliero</b> "+x.giornaliero.totale+(x.giornaliero.totale===1?" ritirato":" ritirati")+(x.giornaliero.serie>1?"<small>"+x.giornaliero.serie+" giorni di fila</small>":""));
   if(x.pesca)h+=R("fish","<b>Pesca</b> "+[x.pesca.pesci?x.pesca.pesci+" pesci · "+kg(x.pesca.kg):"",x.pesca.leggendari?x.pesca.leggendari+(x.pesca.leggendari>1?" leggendari":" leggendario"):""].filter(Boolean).join(" · ")+(x.pesca.record.length?"<small>Record: "+x.pesca.record.map(nn).join(", ")+"</small>":""));
   if(x.casa)h+=R("house","<b>"+nn(x.casa.nome||"Casa")+"</b> "+(x.casa.aperta?"":"· chiusa")+"<small>"+nn(x.casa.modello)+"</small>");
   if(x.pet)h+=R("heart","<b>"+nn(x.pet.nome)+"</b> "+nn(x.pet.specie).toLowerCase()+" di livello "+x.pet.lv);

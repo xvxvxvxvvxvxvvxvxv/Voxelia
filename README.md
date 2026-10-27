@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.41** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.42** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -292,6 +292,13 @@ In rete tutti i giocatori della stessa zona vedono gli stessi nemici, nello stes
 più tempo, i colpi arrivano a tutti e quando un nemico cade cade per tutti. In Tomorrow la città cresce in ordine, con
 piazza, viali, sentieri e isolati (e «Riordina il borgo» nell'editor). Le mura coprono il perimetro della città, si
 spostano e si cancellano a pezzi o tutte.
+
+### La Corona, le scene disegnate e la vista 3D (dalla 7.42)
+
+Il menu è la Corona di Voxel in 3D: gira su se stessa e ogni gemma porta a una modalità. Si sceglie una gemma, la
+telecamera le si avvicina e, quando si entra, la gemma si accende del suo colore. I filmati sono quadri in pixel art
+con il testo lettera per lettera, come in Undertale (si tornano a vedere come prima da Impostazioni → Animazioni).
+Nella vista 3D tetti, finestre e facce non tremano più, il fumo è trasparente e i nomi non si accavallano.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -879,7 +886,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.41 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.42 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -963,6 +970,8 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzo_dev2.js` | 7.40: il pannello sviluppatore dà e crea tutto (risorse, oggetti, unici, compagni, nemici) e ha gli strumenti di Tomorrow |
 | `8zzp_sync.js` | 7.41: in rete ogni nemico ha un padrone che lo guida, e tutti ne vedono la stessa copia |
 | `8zzq_ordine.js` | 7.41: la città che cresce in ordine (piazza, viali, sentieri, isolati, Riordina il borgo) e le mura sul perimetro, da spostare e cancellare |
+| `8zzr_corona.js` | 7.42: il menu della Corona di Voxel in 3D (le sei gemme, la telecamera sulla gemma scelta, la gemma che si accende) |
+| `8zzs_disegnate.js` | 7.42: le scene disegnate in pixel art come in Undertale (quadro, contorni, retinatura, testo con il «bip») |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

@@ -17,7 +17,7 @@ const SETMAT=['legna','pietra','argilla','ferro'],SETMI={legna:'🪵',pietra:'�
 for(const[b,L]of[['prato',['pietra','argilla']],['bosco',['pietra','ferro','legna']],['deserto',['pietra','argilla']],['neve',['pietra','ferro']],['cenere',['ferro','pietra']]])if(TWRES[b])TWRES[b].push(...L);
 if(typeof twGenExtra==='function'){const _ge728=twGenExtra;twGenExtra=function(C,spot,C2){_ge728(C,spot,C2);const{rnd,rr,bio,tg,z}=C;if(z.vil||z.city)return;
   const M2={prato:['pietra','argilla','legna','pietra'],bosco:['legna','legna','pietra','ferro'],deserto:['pietra','argilla','pietra'],neve:['pietra','ferro','pietra'],cenere:['ferro','pietra','ferro']}[bio]||['pietra'];
-  for(let i=0,n=rr(4,7);i<n;i++){const q=spot(5,30);if(!q)continue;const r=M2[Math.floor(rnd()*M2.length)];C.F(q[0],q[1],'');ents.push({k:'res',r,n:RESN[r],px:q[0]+.5,py:q[1]+.5});tg.push(q)}}}
+  for(let i=0,n=rr(4,7);i<n;i++){const q=spot(5,30,1);if(!q)continue;const r=M2[Math.floor(rnd()*M2.length)];C.F(q[0],q[1],'');ents.push({k:'res',r,n:RESN[r],px:q[0]+.5,py:q[1]+.5});tg.push(q)}}}
 // raccogliere i materiali dà da 1 a 3 pezzi
 const _gather728=gather;gather=function(e){const r=e&&e.r;_gather728(e);if(!SETMAT.includes(r))return;const x=r==='ferro'?Math.floor(Math.random()*2):1+Math.floor(Math.random()*2);if(x>0){P.res[r]=(P.res[r]|0)+x;flt(e,'+'+x+' '+RESN[r],'#ffe08a');hud()}};
 /* ---- gli edifici nuovi e i costi in risorse ---- */

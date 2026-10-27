@@ -27,9 +27,11 @@ const d3Want=()=>!!(D3.on&&started&&P&&M&&D3.ok!==false&&!(typeof XR!=='undefine
 /* ---- registrare i disegni del gioco: box con colore, bagliore e materiale ---- */
 let D3B=null,D3E=null,D3CTX=0;   // box registrate (10 valori: x,y,z,w,d,h,r,g,b,bagliore), entità corrente, materiale imposto
 const D3G=Object.create(REC);
-const _box715=box;box=function(x,y,z,w,d,h,c,f){if(D3B){if(D3G.globalAlpha<.12||!(w>0)||!(d>0))return;const k=x3Col(c);D3B.push(x,y,z,w,d,Math.max(0,h),k[0],k[1],k[2],(f===undefined?1:f)+D3CTX*10);return}_box715(x,y,z,w,d,h,c,f)};
+// 7.42: quello che in 2D si disegna dopo, in 3D vince sulle facce allineate (niente più tremolio di tetti, finestre, facce)
+function d3Rk(B,n0,base,neg,len){if(!B.rk)B.rk=[];while(B.rk.length<n0/10)B.rk.push(0);const n=(len==null?B.length-n0:len)/10,cap=neg?31:15;for(let j=0;j<n;j++){const r=base+Math.min(j,cap)+1;B.rk.push(neg?-r:r)}}
+const _box715=box;box=function(x,y,z,w,d,h,c,f){if(D3B){if(D3G.globalAlpha<.12||!(w>0)||!(d>0))return;const k=x3Col(c);D3B.push(x,y,z,w,d,Math.max(0,h),k[0],k[1],k[2],(f===undefined?1:f)+D3CTX*10);if(D3G.globalAlpha<.9)(D3B.al||(D3B.al=[]))[D3B.length/10-1]=D3G.globalAlpha<.4?2:1;return}_box715(x,y,z,w,d,h,c,f)};
 const _rbox715=rbox;rbox=function(x,y,z,w,d,h,c,ca,sa,ox,oy){if(!D3B){_rbox715(x,y,z,w,d,h,c,ca,sa,ox,oy);return}if(D3G.globalAlpha<.12||!(w>0)||!(d>0))return;
-  const u=x+w/2,v=y+d/2,k=x3Col(c);D3B.push(ox+u*ca-v*sa-w/2,oy+u*sa+v*ca-d/2,z,-w,d,Math.max(0,h),k[0],k[1],k[2],1+D3CTX*10)};
+  const u=x+w/2,v=y+d/2,k=x3Col(c);D3B.push(ox+u*ca-v*sa-w/2,oy+u*sa+v*ca-d/2,z,-w,d,Math.max(0,h),k[0],k[1],k[2],1+D3CTX*10);if(D3G.globalAlpha<.9)(D3B.al||(D3B.al=[]))[D3B.length/10-1]=D3G.globalAlpha<.4?2:1};
 // le scritte sopra le teste (nomi, «!», «★ Campione»): si ricordano con la loro altezza e si scrivono sopra la vista 3D
 const _label715=label;label=function(s,x,y,c){if(D3B&&D3E){D3.labs.push([D3E,s,PY(D3E.px,D3E.py,0)-y,c||'#fff',g.font]);return}_label715(s,x,y,c)};
 function d3Rec(fn,fix,tt){const og=g,ot=t,onl=nlight,gl=GLOW.length,B=[];let rnd=0;D3B=B;g=D3G;D3G.globalAlpha=1;D3G.font='bold 11px Georgia,serif';
@@ -56,7 +58,7 @@ const D3FC=[[4,5,6,7,0,1,0],[3,2,6,7,0,0,1],[0,1,5,4,0,0,-1],[1,2,6,5,1,0,0],[0,
 function d3Mesh(B,ctx0){let nf=0;for(let i=0;i<B.length;i+=10)nf+=B[i+5]>0?(B[i+2]>4?6:5):1;d3Grow(nf*4,nf*6);
   const F=new Float32Array(D3BUF.b),U=new Uint8Array(D3BUF.b),I8=new Int8Array(D3BUF.b),IX=D3BUF.i;let v=0,ix=0;const C=new Array(8);
   for(let i=0;i<B.length;i+=10){const x=B[i],y=B[i+1],z=B[i+2],ro=B[i+3]<0,w=Math.abs(B[i+3]),d=B[i+4],h=B[i+5],fr=B[i+9],ctx=Math.floor(fr/10)||ctx0||0,fl=fr-Math.floor(fr/10)*10;
-    const m=d3Mat(B[i+6],B[i+7],B[i+8],fl,ctx),cr=Math.min(255,B[i+6]*(m===6?1:Math.min(fl,1.15))),cg=Math.min(255,B[i+7]*(m===6?1:Math.min(fl,1.15))),cb=Math.min(255,B[i+8]*(m===6?1:Math.min(fl,1.15)));
+    const rk0=(B.rk&&B.rk[i/10])||0,al=(B.al&&B.al[i/10])||0,rk=(rk0<0?-1:1)*(Math.abs(rk0)+33*al),m=d3Mat(B[i+6],B[i+7],B[i+8],fl,ctx),cr=Math.min(255,B[i+6]*(m===6?1:Math.min(fl,1.15))),cg=Math.min(255,B[i+7]*(m===6?1:Math.min(fl,1.15))),cb=Math.min(255,B[i+8]*(m===6?1:Math.min(fl,1.15)));
     const cx=x+w/2,cy=y+d/2;
     for(let k=0;k<8;k++){const qx=k&1^(k>>1&1),qy=k>>1&1,qz=k>>2;let px,py;if(ro){const a=(qx-.5)*w,c=(qy-.5)*d;px=cx+(a-c)*Math.SQRT1_2;py=cy+(a+c)*Math.SQRT1_2}else{px=x+qx*w;py=y+qy*d}C[k]=[px,py,z+qz*h]}
     const nfc=h>0?(z>4?6:5):1;
@@ -68,7 +70,7 @@ function d3Mesh(B,ctx0){let nf=0;for(let i=0;i<B.length;i+=10)nf+=B[i+5]>0?(B[i+
       let u0=1e9,u1=-1e9,v0=1e9,v1=-1e9;for(const p of P){u0=Math.min(u0,p[0]);u1=Math.max(u1,p[0]);v0=Math.min(v0,p[1]);v1=Math.max(v1,p[1])}
       const Wm=u1-u0,Hm=v1-v0,nob=(ro&&!vert)||m===11||m===5||m===12||Wm>25||Hm>25,WW=nob?255:Math.max(1,Math.round(Wm*10)),HH=nob?255:Math.max(1,Math.round(Hm*10));
       for(let j=0;j<4;j++){const c=C[q[j]],o=v*24,o4=o>>2;F[o4]=c[0];F[o4+1]=c[1];F[o4+2]=c[2];U[o+12]=cr;U[o+13]=cg;U[o+14]=cb;U[o+15]=m;
-        I8[o+16]=Math.round(nx*127);I8[o+17]=Math.round(ny*127);I8[o+18]=Math.round(nz*127);I8[o+19]=0;
+        I8[o+16]=Math.round(nx*127);I8[o+17]=Math.round(ny*127);I8[o+18]=Math.round(nz*127);I8[o+19]=rk;
         U[o+20]=Wm>0?Math.round((P[j][0]-u0)/Wm*255):0;U[o+21]=Hm>0?Math.round((P[j][1]-v0)/Hm*255):0;U[o+22]=WW;U[o+23]=HH;v++}
       const b0=v-4;IX[ix++]=b0;IX[ix++]=b0+1;IX[ix++]=b0+2;IX[ix++]=b0;IX[ix++]=b0+2;IX[ix++]=b0+3}}
   return{nv:v,ni:ix}}
@@ -80,18 +82,20 @@ function d3Free(o){const gl=D3.gl;if(o&&gl){gl.deleteBuffer(o.vb);gl.deleteBuffe
 const D3NOISE=`float h3(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
 float vn(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(h3(i),h3(i+vec3(1,0,0)),f.x),mix(h3(i+vec3(0,1,0)),h3(i+vec3(1,1,0)),f.x),f.y),mix(mix(h3(i+vec3(0,0,1)),h3(i+vec3(1,0,1)),f.x),mix(h3(i+vec3(0,1,1)),h3(i+vec3(1,1,1)),f.x),f.y),f.z);}
 float fb(vec3 p){return vn(p)*.55+vn(p*2.03)*.28+vn(p*4.1)*.17;}`;
-const D3VS=`uniform mat4 VP,LM;uniform float TM;in vec3 a;in vec4 c;in vec4 n;in vec4 l;out vec3 wp;out vec4 vc;out vec3 vn3;out vec4 vl;out vec4 ls;
+const D3VS=`uniform mat4 VP,LM;uniform float TM;in vec3 a;in vec4 c;in vec4 n;in vec4 l;out vec3 wp;out vec4 vc;out vec3 vn3;out vec4 vl;out vec4 ls;out float vk;out float va;
 void main(){vec3 w=vec3(a.x*${D3TS},a.z*${D3ZS},a.y*${D3TS});float m=floor(c.a*255.+.5);
  if(m==11.){float s=sin(TM*2.1+w.x*.9+w.z*.6)+.5*sin(TM*3.3+w.x*2.1);w.xz+=vec2(.07,.04)*s*l.y;}
- wp=w;vc=c;vn3=n.xyz;vl=l;ls=LM*vec4(w+n.xyz*.06,1.);gl_Position=VP*vec4(w,1.);}`;
+ wp=w;vc=c;vn3=n.xyz;vl=l;ls=LM*vec4(w+n.xyz*.06,1.);vk=n.w;float rv=floor(abs(n.w)*127.+.5),al=floor(rv/33.);va=al;gl_Position=VP*vec4(w,1.);gl_Position.z-=(rv-al*33.)*(1.0e-4/127.)*gl_Position.w;}`;
 const D3FS=`uniform vec3 SUN,SUNC,AU,AD,FOGC,CAM,HZC,HP;uniform float FOG0,FOG1,TM,SHON,LAN,VX;uniform highp sampler2DShadow SM;uniform vec4 PL[12];uniform vec3 PC[12];uniform int NP;uniform vec4 HL;
-in vec3 wp;in vec4 vc;in vec3 vn3;in vec4 vl;in vec4 ls;out vec4 o;
+in vec3 wp;in vec4 vc;in vec3 vn3;in vec4 vl;in vec4 ls;in float vk;in float va;out vec4 o;
 ${D3NOISE}
 float shd(){if(SHON<.5)return 1.;vec3 p=ls.xyz/ls.w*.5+.5;if(p.x<0.||p.y<0.||p.x>1.||p.y>1.||p.z>1.)return 1.;float s=0.;vec2 tx=vec2(1.)/vec2(textureSize(SM,0));
  for(int i=-1;i<=1;i++)for(int j=-1;j<=1;j++)s+=texture(SM,vec3(p.xy+vec2(i,j)*tx*1.2,p.z-.0015));return s/9.;}
 void main(){vec3 base=vc.rgb;float m=floor(vc.a*255.+.5);vec3 N=normalize(vn3);bool vert=abs(N.y)<.5;
+ // 7.42: fumo, fantasmi e cose semitrasparenti del 2D: una trama fine invece di un blocco pieno
+ if(va>.5){vec2 f=floor(gl_FragCoord.xy);if(va<1.5){if(mod(f.x+f.y,2.)<1.)discard;}else if(mod(f.x,2.)+mod(f.y,2.)*2.>.5)discard;}
  // ciò che sta fra la telecamera e l'eroe si apre a trama fine, così l'eroe si vede sempre
- {vec3 cd=HP-CAM;float L=length(cd);vec3 dr=cd/L;float tt=dot(wp-CAM,dr);if(tt>.2&&tt<L-.7&&wp.y>HP.y-1.1){float r=length(wp-CAM-dr*tt),rad=1.25+.6*tt/L;if(r<rad){float k=smoothstep(rad,rad*.55,r);vec2 f=floor(gl_FragCoord.xy);if(k>.9||mod(f.x+f.y,2.)<1.||(k>.6&&mod(f.x,2.)<1.))discard;}}}
+ {vec3 cd=HP-CAM;float L=length(cd);vec3 dr=cd/L;float tt=dot(wp-CAM,dr);if(vk>-.004&&tt>.2&&tt<L-.7&&wp.y>HP.y-1.1){float r=length(wp-CAM-dr*tt),rad=1.25+.6*tt/L;if(r<rad){float k=smoothstep(rad,rad*.55,r);vec2 f=floor(gl_FragCoord.xy);if(k>.9||mod(f.x+f.y,2.)<1.||(k>.6&&mod(f.x,2.)<1.))discard;}}}
  vec3 T=vert?normalize(cross(vec3(0,1,0),N)):vec3(1,0,0);vec3 B=vert?vec3(0,1,0):vec3(0,0,1);
  // spigoli arrotondati: vicino ai bordi la normale si piega verso l'esterno
  float W=vl.z*25.5,H=vl.w*25.5,eg=1.;if(vl.z<.999&&vl.w<.999&&VX>.5){float u=vl.x*W,v=vl.y*H,e=min(min(u,W-u),min(v,H-v)),r=min(.045,.18*min(W,H));eg=mix(vert?.72:.82,1.,smoothstep(r*.25,r,e));}
@@ -171,7 +175,7 @@ function d3Tile(x,y,S,D,L,G){const c=M[y][x];if(c===9)return;const h=HHc&&HHc.le
       if(D3.vx){if(i%2===0)S.push(bx,by,fl[2]+fl[5],.06,.06,hgt*.7,r*cm*.95,gg*cm*1.08,b*cm*.8,1+110)}else for(let j=0;j<3;j++)S.push(bx+(j-1)*.03,by+(j%2)*.025,fl[2]+fl[5],.018,.018,hgt*(j===1?1.25:.85),r*cm*.95,gg*cm*1.05,b*cm*.8,1+110)}}}
   if(!a.length)return;const b=d3Rec(()=>fObj(x,y),1,.731);
   if(a.rnd||b.rnd||a.length!==b.length||d3Hash(a)!==d3Hash(b)){D.push(x,y);return}
-  for(let i=0;i<a.length;i+=10){S.push(a[i],a[i+1],a[i+2],a[i+3],a[i+4],a[i+5],a[i+6],a[i+7],a[i+8],a[i+9]);const f=a[i+9]%10;if(f>1.16&&a[i+5]>0)L.push([a[i]+Math.abs(a[i+3])/2,a[i+1]+a[i+4]/2,a[i+2]+a[i+5]/2,a[i+6],a[i+7],a[i+8]])}}
+  d3Rk(S,S.length,((x+y)&1)*16,0,a.length);for(let i=0;i<a.length;i+=10){if(a.al&&a.al[i/10])(S.al||(S.al=[]))[S.length/10]=a.al[i/10];S.push(a[i],a[i+1],a[i+2],a[i+3],a[i+4],a[i+5],a[i+6],a[i+7],a[i+8],a[i+9]);const f=a[i+9]%10;if(f>1.16&&a[i+5]>0)L.push([a[i]+Math.abs(a[i+3])/2,a[i+1]+a[i+4]/2,a[i+2]+a[i+5]/2,a[i+6],a[i+7],a[i+8]])}}
 function d3Chunk(k){const gl=D3.gl,nc=Math.ceil(N/D3CS),X0=(k%nc)*D3CS,Y0=(k/nc|0)*D3CS,S=[],D=[],L=[],G=D3.gr?[0,2,4,7][D3.q]||4:0;
   for(let y=Y0;y<Math.min(N,Y0+D3CS);y++)for(let x=X0;x<Math.min(N,X0+D3CS);x++)d3Tile(x,y,S,D,L,G);
   const hs=d3Hash(S);let c=D3.ch.get(k);if(c&&c.hs===hs&&c.D.join()===D.join())return c;
@@ -262,8 +266,8 @@ function d3Frame(){const gl=D3.gl,cvs=D3.cv;const now=performance.now(),fdt=D3.l
   if(!D3.bd){const t0=performance.now(),B=d3Backdrop();D3.bd=B.length?d3Upload(gl,null,B,0,0):{n:0};D3.bdt=performance.now()-t0}
   // cose che si muovono: personaggi, nemici, oggetti a terra, caselle animate, proiettili, particelle del gioco
   D3.labs.length=0;const R=D3.q>=3?40:30,dl=[];
-  const B=d3Rec(()=>{for(const c of D3.ch.values())for(let i=0;i<c.D.length;i+=2)fObj(c.D[i],c.D[i+1]);
-    D3CTX=3;for(const e of ents.concat(P,NET.list)){if(!e||e.px==null)continue;if(e.k!=='ship'&&(Math.abs(e.px-P.px)>R||Math.abs(e.py-P.py)>R))continue;D3E=e;const n0=D3B.length;try{ent(e)}catch(_){}
+  const B=d3Rec(()=>{for(const c of D3.ch.values())for(let i=0;i<c.D.length;i+=2){const n0=D3B.length;fObj(c.D[i],c.D[i+1]);d3Rk(D3B,n0,((c.D[i]+c.D[i+1])&1)*16,0)}
+    D3CTX=3;for(const e of ents.concat(P,NET.list)){if(!e||e.px==null)continue;if(e.k!=='ship'&&(Math.abs(e.px-P.px)>R||Math.abs(e.py-P.py)>R))continue;D3E=e;const n0=D3B.length;try{ent(e)}catch(_){}d3Rk(D3B,n0,0,1);
       if(e.torch||e.k==='tc'){for(let i=n0;i<D3B.length;i+=10)if(D3B[i+9]%10>1.16){dl.push([D3B[i],D3B[i+1],D3B[i+2]+D3B[i+5]/2,D3B[i+6],D3B[i+7],D3B[i+8]]);break}}}
     D3E=null;D3CTX=0;for(const p of PJ)box(p.x-.08,p.y-.08,18,.16,.16,8,p.c,1.2);if(typeof PPJ!=='undefined'&&PPJ.length)ppjDraw()},0);
   // effetti: scintille e anelli del gioco diventano piccole luci nel mondo
@@ -311,7 +315,12 @@ function d3Draw(gl,o,depth){if(!o||!o.n)return;gl.bindBuffer(gl.ARRAY_BUFFER,o.v
 
 /* ---- le scritte sopra la vista 3D: nomi, «!», barre della vita, numeri dei colpi, tasto R ---- */
 function d3Overlay(){g.setTransform(DPR,0,0,DPR,0,0);g.clearRect(0,0,W,H);g.textAlign='center';
-  for(const[e,s,zp,c,font]of D3.labs){const q=d3Proj(e.px,e.py,zp);if(!q||q[2]>(s==='!'||s==='?'?48:e.k==='en'||e===P?40:26))continue;g.font=font||'bold 11px Georgia,serif';_label715(s,q[0],q[1],c)}
+  // 7.42: i nomi non si accavallano più: prima i più vicini; uno che toccherebbe un altro sale di una riga, e se non c'è posto si salta
+  const LQ=[];for(const[e,s2,zp,c,font]of D3.labs){const q=d3Proj(e.px,e.py,zp);if(!q||q[2]>(s2==='!'||s2==='?'?48:e.k==='en'||e===P?40:26))continue;LQ.push([q,s2,c,font,e])}
+  LQ.sort((a,b)=>(b[1]==='!'||b[1]==='?')-(a[1]==='!'||a[1]==='?')||a[0][2]-b[0][2]);const PL=[],hit=(x0,y0,x1,y1)=>PL.some(r=>x0<r[2]&&x1>r[0]&&y0<r[3]&&y1>r[1]);
+  for(const[q,s2,c,font,e]of LQ){g.font=font||'bold 11px Georgia,serif';const hw=g.measureText(s2).width/2+3,mark=s2==='!'||s2==='?';let y=q[1],ok=mark||e===P;
+    if(!ok)for(let k=0;k<3&&!ok;k++){if(!hit(q[0]-hw,y-12,q[0]+hw,y+3))ok=true;else y-=13}
+    if(!ok)continue;PL.push([q[0]-hw,y-12,q[0]+hw,y+3]);_label715(s2,q[0],y,c)}
   for(const e of ents.concat(NET.list)){if(!(e.k==='en'||e.k==='tr'||e.k==='pl')||e.hp==null||!e.mx)continue;if(e.k==='en'&&!e.al&&e.hp>=e.mx)continue;const top=(e.m&&e.m.top?e.m.top:e.boss?70:40)+6,q=d3Proj(e.px,e.py,top);if(!q||q[2]>45)continue;
     const w=(e.boss||(e.b&&e.b.pt)?60:30)*clamp(14/q[2],.6,1.6);g.fillStyle='#000a';g.fillRect(q[0]-w/2,q[1],w,5);g.fillStyle=e.k==='pl'?'#44aaff':e.k==='tr'?'#4a8aff':e.enr?'#ff7a2a':'#ee3333';g.fillRect(q[0]-w/2,q[1],w*Math.max(0,e.hp/e.mx),5)}
   if(SET.dmg){g.font='bold 16px Georgia,serif';g.lineWidth=3;g.strokeStyle='#000';for(const p of pop){const q=d3Proj(p.x,p.y,48+(1-p.t)*24);if(!q)continue;g.globalAlpha=Math.min(1,p.t*2);g.fillStyle=p.c;if(typeof vxText==='function')vxText(p.s,q[0],q[1],1,1);else{g.strokeText(p.s,q[0],q[1]);g.fillText(p.s,q[0],q[1])}}g.globalAlpha=1}

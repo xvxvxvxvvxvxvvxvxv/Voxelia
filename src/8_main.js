@@ -2227,7 +2227,9 @@ function isoOrder(R,odd){const n=R.length;if(n<2)return R;const K2=Math.SQRT2,e=
 let LFP=0;
 function heroPut(x,y){P.px=x+.5;P.py=y+.5;P.path=[];P.tg=null;camX=PX(P.px,P.py);camY=PY(P.px,P.py,10)}
 function heroFix(from){if(!P||!M||!M.length)return;
-  if(from&&!LFP){const ps=ents.filter(e=>e.k==='po'&&e.to===from);if(ps.length){const p=ps.reduce((a,b)=>dist(P,b)<dist(P,a)?b:a);const[x,y]=nearFree(p.px|0,p.py|0);if(WK(M[y][x])){heroPut(x,y);LFP=1}}}
+  // 7.41.1: uscendo dal portale dopo il boss (from = ultimo piano, es. «tana@2») non c'è una porta che porti proprio lì:
+  // si arriva accanto all'ingresso dello stesso dungeon, come quando si esce dal primo piano
+  if(from&&!LFP){let ps=ents.filter(e=>e.k==='po'&&e.to===from);const fb=String(from).split('@');if(!ps.length&&fb.length>1)ps=ents.filter(e=>e.k==='po'&&typeof e.to==='string'&&e.to.split('@')[0]===fb[0]&&e.to.includes('@'));if(ps.length){const p=ps.reduce((a,b)=>dist(P,b)<dist(P,a)?b:a);const[x,y]=nearFree(p.px|0,p.py|0);if(WK(M[y][x])){heroPut(x,y);LFP=1}}}
   const x=P.px|0,y=P.py|0;if(!(M[y]&&WK(M[y][x]))){const q=nearFree(x,y);if(WK(M[q[1]][q[0]]))heroPut(q[0],q[1]);else for(let r=1;r<N;r++){let ok=0;for(let v=y-r;v<=y+r&&!ok;v++)for(let u=x-r;u<=x+r&&!ok;u++)if(u>0&&v>0&&u<N-1&&v<N-1&&WK(M[v][u])){heroPut(u,v);ok=1}if(ok)break}}}
 function poFade(e){if(e.k!=='po'||!P||!(e.st==='up'||e.st==='down'||e.st==='tap'))return 1;const d=(e.px+e.py)-(P.px+P.py);if(d<=0)return 1;const k=Math.abs((e.px-e.py)-(P.px-P.py));return k<1.6&&d<2.6?.38:1}
 /* ================= 7.5: VOXELIA STUDIO — il Parco giochi diventa un editor di mondi =================

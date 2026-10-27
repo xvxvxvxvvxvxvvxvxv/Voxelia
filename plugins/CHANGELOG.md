@@ -3,6 +3,12 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Manutenzione del gioco 7.41.1 (senza cambio di versione)
+
+- **Premio giornaliero 1.0:** il promemoria all'ingresso controlla di nuovo, dopo 3 secondi, se il premio è già stato ritirato; `/serie` dice «1 premio in tutto».
+- **Albo degli eroi 1.2:** «1 ritirato» al posto di «1 ritirati» (chat e pagina web).
+- **Notti di caccia, Taglie, Torneo, Gara di pesca:** «1 pozione» al posto di «1 pozioni» nel testo dei premi.
+
 ## Fazioni 1.0 (gioco 7.39)
 
 - **Nuovo plugin Fazioni:** nello stesso mondo di Tomorrow (stesso codice stanza) i giocatori fondano una fazione e costruiscono insieme un insediamento.

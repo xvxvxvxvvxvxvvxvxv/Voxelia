@@ -5,6 +5,14 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.41.1 — Manutenzione: si esce dal dungeon accanto all'ingresso (27 ottobre 2026)
+
+- **Il portale dopo il boss ti riporta all'ingresso del dungeon.** Prima, uscendo dal portale che si apre quando cade il boss, si arrivava al punto di partenza della zona, anche a 30–50 caselle dal dungeon (per esempio all'altro capo del Deserto di Khem o dei Picchi Gelidi). Ora si arriva accanto all'ingresso, come quando si esce dal primo piano. Vale per i sette dungeon della storia e per quelli di Tomorrow.
+- **Plurali giusti:** quando il server ti regala una sola pozione (per esempio il primo Premio giornaliero) il gioco scrive «+1 pozione», non più «+1 pozioni». Lo stesso nei premi delle Notti di caccia, delle Taglie, del Torneo e della Gara di pesca, in «/serie» («1 premio in tutto») e nell'Albo degli eroi («1 ritirato»), in chat e nella pagina web.
+- **Premio giornaliero:** il promemoria «Il premio di oggi ti aspetta» non arriva più se il premio l'hai già ritirato nei primi secondi dopo l'ingresso.
+
+---
+
 ## 7.41 — Tutti vedono gli stessi nemici, la città in ordine e le mura sul confine (26 ottobre 2026)
 
 - **In rete tutti vedono gli stessi nemici.** Prima ogni giocatore muoveva i nemici per conto suo: lo stesso lupo poteva essere in due posti diversi, e chi arrivava vedeva nemici che gli altri non vedevano. Ora:

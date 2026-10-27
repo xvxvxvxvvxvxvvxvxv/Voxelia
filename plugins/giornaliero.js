@@ -59,14 +59,14 @@ module.exports = {
     api.command('serie', 'i tuoi giorni di fila col premio giornaliero', p => {
       const g = oggi(), e = st().eroi[chiave(p.name)], n = serieDi(e, g);
       if (!e) return 'Non hai ancora ritirato nessun premio. Scrivi /giornaliero!';
-      return 'Serie: ' + n + (n === 1 ? ' giorno' : ' giorni') + ' di fila, ' + e.totale + ' premi in tutto. ' +
+      return 'Serie: ' + n + (n === 1 ? ' giorno' : ' giorni') + ' di fila, ' + e.totale + (e.totale === 1 ? ' premio' : ' premi') + ' in tutto. ' +
         (e.ultimo === g ? 'Il premio di oggi è già ritirato.' : 'Il premio di oggi ti aspetta: /giornaliero');
     });
 
     api.on('join', p => {
       if (!api.config.promemoria) return;
       const e = st().eroi[chiave(p.name)];
-      if (!e || e.ultimo !== oggi()) api.after(3000, () => { if (p.online) p.tell('Il premio di oggi ti aspetta: scrivi /giornaliero!'); });
+      if (!e || e.ultimo !== oggi()) api.after(3000, () => { const e2 = st().eroi[chiave(p.name)]; if (p.online && !(e2 && e2.ultimo === oggi())) p.tell('Il premio di oggi ti aspetta: scrivi /giornaliero!'); });
     });
   }
 };

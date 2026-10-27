@@ -83,7 +83,7 @@ module.exports = {
       if (pr.oro > 0) p.give('gold', pr.oro);
       if (pr.xp > 0) p.give('xp', pr.xp);
       if (pr.pozioni > 0) p.give('pot', pr.pozioni);
-      p.tell('Premio della gara di pesca (' + pos + '° posto): ' + [pr.oro > 0 && pr.oro + ' oro', pr.xp > 0 && pr.xp + ' xp', pr.pozioni > 0 && pr.pozioni + ' pozioni'].filter(Boolean).join(', ') + '.');
+      p.tell('Premio della gara di pesca (' + pos + '° posto): ' + [pr.oro > 0 && pr.oro + ' oro', pr.xp > 0 && pr.xp + ' xp', pr.pozioni > 0 && pr.pozioni + (pr.pozioni === 1 ? ' pozione' : ' pozioni')].filter(Boolean).join(', ') + '.');
     }
     function chiudi(perche) {
       const g = S.gara; if (!g) return 'Non c\'è nessuna gara in corso.';

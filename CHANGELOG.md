@@ -5,6 +5,16 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.42.3 — Il pannello sviluppatore, sui server, solo per gli admin (28 ottobre 2026)
+
+- **Sbloccato dal server, non dal browser.** Prima il codice del pannello sviluppatore si controllava solo nel gioco: bastava un comando nella console del browser per aprirlo, anche sul server ufficiale, e da lì dare oro, livelli e oggetti che poi finivano nel mondo condiviso. Ora, quando il gioco arriva da un server, il pannello chiede la **password admin del server** e la controlla il server stesso (con lo stesso limite di tentativi del pannello admin). Lo sblocco vale finché non ricarichi la pagina e non si ricorda nel browser.
+- **Il pulsante 🛠 sui server non si vede.** Gli admin aprono la richiesta della password con **F9**, oppure aggiungendo `#dev` in fondo all'indirizzo.
+- **Tutto nel registro.** Ogni pulsante premuto nel pannello finisce nel registro del pannello admin (chi, cosa). Chi manda al server azioni del pannello senza averlo sbloccato viene registrato come «usato SENZA password».
+- **Guardiano 2.7:** non segnala l'admin che ha sbloccato il pannello con la password, per 12 ore e solo con lo stesso nome e lo stesso indirizzo. Chiunque altro faccia le stesse cose viene segnalato come sempre.
+- Aprendo `voxelia.html` dal disco, da soli, il pannello resta com'era.
+
+---
+
 ## 7.42.2 — La stamina a zero lascia davvero senza fiato (28 ottobre 2026)
 
 - **Con la stamina a zero non si scatta più.** Prima bastava che se ne ricaricasse un filo (anche meno di 1) per tornare a correre, rotolare o attaccare, e così si poteva continuare quasi all'infinito. Ora, quando la stamina arriva a zero, l'eroe resta **senza fiato** finché non torna almeno al 30%: niente corsa, capriole, attacchi o colpi caricati. La barra diventa rossa e dice «Senza fiato».

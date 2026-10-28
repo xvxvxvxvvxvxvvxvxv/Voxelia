@@ -3,6 +3,10 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Guardiano 2.7 (gioco 7.42.3)
+
+- Nuova funzione `VoxeliaGuardiano.sviluppatore(nome, secondi, ip)`, che chiama il server quando un admin sblocca il pannello sviluppatore del gioco con la password: per quel tempo (al massimo 12 ore) il Guardiano non segnala quel giocatore, ma solo se ha lo stesso nome **e** lo stesso indirizzo di chi ha dato la password.
+
 ## Manutenzione del gioco 7.41.1 (senza cambio di versione)
 
 - **Premio giornaliero 1.0:** il promemoria all'ingresso controlla di nuovo, dopo 3 secondi, se il premio è già stato ritirato; `/serie` dice «1 premio in tutto».

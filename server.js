@@ -1,4 +1,4 @@
-// Server di Voxelia 7.42.2: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Server di Voxelia 7.42.3: serve il gioco e fa da ponte WebSocket tra i giocatori.
 // Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
 // rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
 // i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
@@ -9,7 +9,7 @@
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
 const http = require('http'), https = require('https'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
-const VER = '7.42.2';
+const VER = '7.42.3';
 const PORT = process.env.PORT || 3000;
 // certificato e chiave in formato PEM: se ci sono entrambi il server parla solo https/wss
 const TLS = (() => {
@@ -71,6 +71,11 @@ let ADM = null;
 function setPw(pw) { const salt = crypto.randomBytes(16); ADM = { salt, hash: crypto.scryptSync(pw, salt, 32) }; }
 function checkPw(pw) { if (!ADM || typeof pw !== 'string' || pw.length > 200) return false; const h = crypto.scryptSync(pw, ADM.salt, 32); return crypto.timingSafeEqual(h, ADM.hash); }
 const SESS = new Map(), FAILS = new Map();
+// 7.43: il pannello sviluppatore del gioco, quando il gioco arriva da questo server, si sblocca solo con la password admin,
+// controllata qui. Chi la sa riceve un gettone (12 ore, solo in memoria) con cui il server riconosce i suoi regali.
+const DEVT = new Map();
+const devOk = tok => { if (typeof tok !== 'string' || tok.length > 64) return null; const d = DEVT.get(tok); if (!d) return null; if (d.exp < Date.now()) { DEVT.delete(tok); return null; } return d; };
+function devGrace(n, ms, ip) { const G = globalThis.VoxeliaGuardiano; if (!n || !G) return; try { if (G.sviluppatore) G.sviluppatore(n, ms / 1000, ip); else G.grazia(n, Math.min(600, ms / 1000)); } catch (e) {} }
 // Legge una riga dal terminale mostrando * al posto dei caratteri (i caratteri in più restano per la riga dopo)
 let pend = '';
 function askHidden(q) {
@@ -454,7 +459,7 @@ function parse(c) {
     c.buf = b.subarray(o + m + l);
     if (op === 8) { c.sock.end(); return; }
     if (op === 9) { c.sock.write(Buffer.from([0x8A, 0])); continue; }
-    if (op === 1) { ST.msgs++; let j; try { j = JSON.parse(d.toString()); } catch (e) { continue; } if (j && typeof j === 'object' && !Array.isArray(j) && !c.gone) try { if (plugMsg(c, j) !== false) onMsg(c, j); } catch (e) { console.error(e); } }
+    if (op === 1) { ST.msgs++; let j; try { j = JSON.parse(d.toString()); } catch (e) { continue; } if (j && typeof j === 'object' && !Array.isArray(j) && !c.gone) try { if (j.t === 'devauth' || j.t === 'devuse' || plugMsg(c, j) !== false) onMsg(c, j); } catch (e) { console.error(e); } }
   }
 }
 
@@ -597,6 +602,23 @@ function onMsg(c, j) {
       break;
     }
     // ---- chat: arriva a tutta la stanza (stesso codice), in qualunque zona si trovino ----
+    // ---- pannello sviluppatore: sblocco con la password admin e registro di quello che si usa ----
+    case 'devauth': { // (non passa dai plugin: contiene la password)
+      const ip = c.ip, f = FAILS.get(ip) || { n: 0, until: 0 }, n = str(j.n, 14) || c.name || '';
+      if (f.until > Date.now()) { send(c, { t: 'devno', s: 'Troppi tentativi: riprova tra ' + Math.ceil((f.until - Date.now()) / 1000) + ' secondi' }); return; }
+      if (!checkPw(j.pw)) { f.n++; if (f.n >= 5) f.until = Date.now() + 60000 * Math.min(10, f.n - 4); FAILS.set(ip, f); log('admin', 'Pannello sviluppatore: password errata da ' + (n || '?') + ' (' + ip + ')'); send(c, { t: 'devno', s: 'Password errata' }); return; }
+      FAILS.delete(ip);
+      for (const [k, d] of DEVT) if (d.exp < Date.now()) DEVT.delete(k);
+      const tok = crypto.randomBytes(24).toString('hex'), exp = Date.now() + 12 * 3600e3; DEVT.set(tok, { n, ip, exp });
+      log('admin', 'Pannello sviluppatore sbloccato da ' + (n || '?') + ' (' + ip + ')'); devGrace(n, exp - Date.now(), ip);
+      send(c, { t: 'devok', tok, exp }); break;
+    }
+    case 'devuse': {
+      const d = devOk(j.tok), n = str(j.n, 14) || c.name || '?', s2 = str(j.s, 120) || 'azione';
+      if (!d) { log('admin', 'Pannello sviluppatore usato SENZA password: ' + n + ' (' + c.ip + ') · ' + s2); return; }
+      const now = Date.now(); if (now - (c.dl || 0) < 300) return; c.dl = now;
+      d.n = n; log('admin', 'Pannello sviluppatore · ' + n + ': ' + s2); devGrace(n, d.exp - now, c.ip); break;
+    }
     case 'chat': {
       let s = str(j.s, 200); if (!/\b(?:https?:\/\/|www\.)\S/i.test(s)) s = s.slice(0, 60); const now = Date.now(); if (!s || !c.code || now - (c.lc || 0) < 400) return; c.lc = now;
       if (s[0] === '/') { runCommand(c, s); return; }

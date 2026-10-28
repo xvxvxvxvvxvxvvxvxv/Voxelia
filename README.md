@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.42.2** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.42.3** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -286,6 +286,13 @@ e ne crea di nuovi, mentre lo staff invita, accoglie, cambia i ruoli ed espelle 
 Nel pannello sviluppatore (F9) la scheda «Dai e crea» dà monete, risorse, pesci, oggetti di ogni rarità e livello,
 unici, cimeli, compagni di qualunque specie e livello e fa comparire nemici e boss; la scheda «Tomorrow» conquista la
 regione, fonda e completa la città, scopre la mappa, dà le gemme e fa passare i giorni.
+
+**Sui server (dalla 7.42.3)** il pannello è solo per gli admin: il pulsante 🛠 non si vede, F9 (o `#dev` in fondo
+all'indirizzo) chiede la **password admin del server**, che controlla il server stesso, e lo sblocco vale finché non si
+ricarica la pagina. Ogni pulsante premuto nel pannello finisce nel registro del pannello admin, e il Guardiano non segnala
+l'admin che l'ha sbloccato (stesso nome e stesso indirizzo) per 12 ore. Chi manda al server azioni del pannello senza
+password finisce nel registro come «usato SENZA password». Aprendo il file `voxelia.html` dal disco resta il codice di
+sempre.
 
 ### Nemici condivisi, città in ordine e mura (dalla 7.41)
 
@@ -887,7 +894,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.42.2 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.42.3 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose

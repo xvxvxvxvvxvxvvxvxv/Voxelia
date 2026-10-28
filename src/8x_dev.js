@@ -6,21 +6,37 @@
    Le partite aperte dal pannello sono "di prova": non si salvano e non toccano il salvataggio della storia.
    Il codice non sta scritto qui in chiaro: si confronta solo la sua impronta. */
 const DEVH=0x82db348b;   // impronta del codice (FNV-1a a 32 bit del codice in maiuscolo, senza spazi)
-const DEV={on:LS.get('voxelia_dev',0)===1,sess:0,god:0,speed:1,tab:'film',q:''};
+// 7.43: se il gioco arriva da un server (server ufficiale o node server.js) il pannello si sblocca solo con la password
+// admin di quel server, controllata dal server: niente codice nel file, niente sblocco ricordato nel browser.
+// Da soli (il file aperto dal disco) resta il codice di sempre.
+const DEVSRV=!!window.GAME_WS;
+if(DEVSRV)LS.del('voxelia_dev');
+const DEV={on:!DEVSRV&&LS.get('voxelia_dev',0)===1,sess:0,god:0,speed:1,tab:'film',q:'',tok:''};
 function devHash(s){let h=0x811c9dc5;for(const c of String(s).toUpperCase().replace(/\s+/g,''))h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0}
 // il pulsante nel menu e quello durante il gioco (solo con la modalità attiva)
 (function(){const b=document.createElement('button');b.id='devbtn';b.title='Pannello sviluppatore';b.setAttribute('aria-label','Pannello sviluppatore');b.textContent='🛠';b.onclick=()=>DEV.on?devOpen():devAsk();
   const m=$('menu');(m||document.body).appendChild(b);
   const f=document.createElement('button');f.id='devfab';f.title='Pannello sviluppatore (F9)';f.textContent='🛠';f.onclick=()=>devOpen();document.body.appendChild(f);
   const r=document.createElement('div');r.id='devbar';r.textContent='🛠 MODALITÀ SVILUPPATORE · questa partita non si salva';document.body.appendChild(r);devMark()})();
-function devMark(){document.body.classList.toggle('devon',DEV.on);document.body.classList.toggle('devsess',!!DEV.sess)}
+function devMark(){document.body.classList.toggle('devsrv',DEVSRV);document.body.classList.toggle('devon',DEV.on);document.body.classList.toggle('devsess',!!DEV.sess)}
 function devAsk(){let el=$('devp');if(!el){el=document.createElement('div');el.id='devp';document.body.appendChild(el)}el.hidden=false;
-  el.innerHTML=`<div class="dvb dvask" role="dialog" aria-label="Codice sviluppatore"><h3>🛠 Modalità sviluppatore</h3><p class="mu">Inserisci il codice per sbloccare il pannello.</p>
-  <form onsubmit="event.preventDefault();devTry(this.c.value)"><input name="c" type="password" autocomplete="off" placeholder="Codice" aria-label="Codice"><button class="gold">Entra</button></form><p id="dverr" class="dverr" aria-live="polite"></p><button onclick="devClose()">Annulla</button></div>`;
+  el.innerHTML=`<div class="dvb dvask" role="dialog" aria-label="Codice sviluppatore"><h3>🛠 Modalità sviluppatore</h3><p class="mu">${DEVSRV?'Su questo server il pannello è solo per gli amministratori: inserisci la password admin del server.':'Inserisci il codice per sbloccare il pannello.'}</p>
+  <form onsubmit="event.preventDefault();devTry(this.c.value)"><input name="c" type="password" autocomplete="off" placeholder="${DEVSRV?'Password admin':'Codice'}" aria-label="${DEVSRV?'Password admin':'Codice'}"><button class="gold">Entra</button></form><p id="dverr" class="dverr" aria-live="polite"></p><button onclick="devClose()">Annulla</button></div>`;
   setTimeout(()=>{const i=el.querySelector('input');if(i)i.focus()},30)}
-function devTry(c){if(devHash(c)===DEVH){DEV.on=true;LS.set('voxelia_dev',1);devMark();jingle([60,64,67,72],.08,'square');devOpen();return}
+function devTry(c){if(DEVSRV){devSrvAuth(c);return}if(devHash(c)===DEVH){DEV.on=true;LS.set('voxelia_dev',1);devMark();jingle([60,64,67,72],.08,'square');devOpen();return}
   const e=$('dverr');if(e){e.textContent='Codice errato';const b=e.parentNode;if(b.animate)b.animate([{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'none'}],{duration:260})}tone(140,.15,'sawtooth',.05)}
 function devClose(){const el=$('devp');if(el){el.hidden=true;el.innerHTML=''}}
+function devErr(s){const e=$('dverr');if(e){e.textContent=s;const b=e.parentNode;if(b.animate)b.animate([{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'none'}],{duration:260})}tone(140,.15,'sawtooth',.05)}
+// il server controlla la password: una connessione apposta, che si chiude subito dopo la risposta
+function devWs(o,cb){let ws;try{ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/ws')}catch(e){if(cb)cb(null);return}let done=0;
+  const end=m=>{if(done)return;done=1;try{ws.close()}catch(_){}if(cb)cb(m)};ws.onopen=()=>{ws.send(JSON.stringify(o));if(!cb)setTimeout(()=>end(null),400)};
+  ws.onmessage=ev=>{let m=null;try{m=JSON.parse(ev.data)}catch(_){}if(m&&(m.t==='devok'||m.t==='devno'||m.t==='kick'))end(m)};ws.onerror=()=>end(null);setTimeout(()=>end(null),8000)}
+function devName(){const i=$('nm');return(NET&&NET.name&&started?NET.name:(i&&i.value.trim())||NET.name||'').slice(0,14)}
+function devSrvAuth(pw){const e=$('dverr');if(e)e.textContent='Controllo…';
+  devWs({t:'devauth',pw:String(pw||''),n:devName()},m=>{if(!m)return devErr('Il server non risponde');if(m.t!=='devok')return devErr(m.s||'Password errata');
+    DEV.on=true;DEV.tok=String(m.tok||'');devMark();jingle([60,64,67,72],.08,'square');devOpen();msg('🛠 Pannello sbloccato dal server (vale finché non ricarichi la pagina)')})}
+// sul server, ogni cosa fatta dal pannello finisce nel registro dell'admin (e il Guardiano sa che è autorizzata)
+function devUse(s){if(!DEVSRV||!DEV.on||DEV.sess)return;const o={t:'devuse',tok:DEV.tok,n:devName(),s:String(s).slice(0,120)};if(NET.ok&&NET.ws)try{NET.ws.send(JSON.stringify(o));return}catch(_){}devWs(o)}
 const devIsOpen=()=>{const el=$('devp');return!!(el&&!el.hidden)};
 function devOpen(){if(!DEV.on){devAsk();return}let el=$('devp');if(!el){el=document.createElement('div');el.id='devp';document.body.appendChild(el)}el.hidden=false;devRender()}
 function devRender(){const el=$('devp');if(!el||el.hidden)return;const T=[['film','🎬 Filmati'],['zone','🗺 Zone'],['eroe','⚔ Eroe e storia'],['altro','⚙ Altro']];
@@ -62,7 +78,7 @@ function devBody(){switch(DEV.tab){
     <div class="dvr"><span>Voxelia Dimension (nascosta dal menu)</span><button onclick="devClose();if(started)toMenu();setTimeout(()=>mode('dim'),60)">🌀 Apri</button></div>
     <div class="dvr"><span>Rivedi il tour di benvenuto</span><button onclick="LS.del('voxelia_tour');msg('Il tour ripartirà alla prossima partita in città')">↺</button></div>
     ${DEV.sess?`<div class="dvr"><span>Partita di prova</span><button onclick="devClose();toMenu()">⏏ Termina e torna al menu</button></div>`:''}
-    <div class="dvr"><span>Modalità sviluppatore</span><button class="danger" onclick="DEV.on=false;DEV.god=0;DEV.speed=1;LS.del('voxelia_dev');devMark();devClose();msg('Modalità sviluppatore disattivata')">Disattiva</button></div>`}return''}
+    <div class="dvr"><span>Modalità sviluppatore</span><button class="danger" onclick="DEV.on=false;DEV.tok='';DEV.god=0;DEV.speed=1;LS.del('voxelia_dev');devMark();devClose();msg('Modalità sviluppatore disattivata')">Disattiva</button></div>`}return''}
 // partita di prova: un eroe nuovo, niente salvataggi
 function devStart(){if(started)return;DEV.sess=1;devMark();const rc=$('rc'),rv=rc?rc.value:'';if(rc)rc.value='';const tv=LS.get('voxelia_tour',0);LS.set('voxelia_tour',1);
   try{begin(1,null)}finally{if(rc)rc.value=rv;if(!tv)LS.del('voxelia_tour')}if(typeof tourEnd==='function')try{tourEnd()}catch(e){}cl();P.lv=Math.max(P.lv,10);recalc();P.hp=P.mx;P.g+=2000;P.pot+=10;hud()}
@@ -81,11 +97,16 @@ const _saveDev=save;save=function(){if(DEV.sess)return;_saveDev()};
 const _dieDev=die;die=function(){if(DEV.god&&P){P.hp=P.mx;return}_dieDev()};
 const _updDev=upd;upd=function(dt){if(DEV.god&&P&&P.hp<P.mx*.5)P.hp=P.mx;_updDev(dt*(DEV.speed||1))};
 const _toMenuDev=toMenu;toMenu=function(){const s=DEV.sess;_toMenuDev();if(s){DEV.sess=0;DEV.god=0;DEV.speed=1;MODE='story';DIM=null;document.body.classList.remove('dimm');devMark()}};
-addEventListener('keydown',e=>{if(devIsOpen()){if(e.key==='Escape')devClose();e.stopImmediatePropagation();return}if(e.key==='F9'&&DEV.on){e.preventDefault();devOpen()}},true);
+addEventListener('keydown',e=>{if(devIsOpen()){if(e.key==='Escape')devClose();e.stopImmediatePropagation();return}if(e.key==='F9'&&(DEV.on||DEVSRV)){e.preventDefault();DEV.on?devOpen():devAsk()}},true);
+// sul server il pulsante 🛠 non si vede: l'admin apre la richiesta della password con F9, oppure con #dev in fondo all'indirizzo
+if(DEVSRV&&location.hash==='#dev')setTimeout(devAsk,600);
+// ogni pulsante premuto nel pannello (sul server) va nel registro
+document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('#devp button');if(!b||!DEV.on||!DEVSRV)return;const t=(b.textContent||'').trim();if(!t||/^(✕|Annulla|Chiudi)$/.test(t)||b.closest('.dvt'))return;
+  const row=b.closest('.dvr'),lab=row&&row.firstElementChild?row.firstElementChild.textContent.trim():'';devUse((DEV.tab||'')+' · '+(lab&&lab!==t?lab+' → ':'')+t)},true);
 
 (function(){const st=document.createElement('style');st.textContent=`
 #devbtn,#menu #devbtn{position:fixed;right:14px;bottom:14px;z-index:6;width:38px;height:38px;padding:0;border-radius:50%;font-size:17px;opacity:.38;background:#0b0e18cc;border:1px solid #ffffff33;transition:opacity .2s,transform .2s}
-#devbtn:hover,#devbtn:focus-visible{opacity:1;transform:rotate(-20deg)}body.devon #devbtn{opacity:.85;border-color:#5ad0ff}
+#devbtn:hover,#devbtn:focus-visible{opacity:1;transform:rotate(-20deg)}body.devsrv:not(.devon) #devbtn{display:none!important}body.devon #devbtn{opacity:.85;border-color:#5ad0ff}
 #devfab{position:fixed;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:26;display:none;width:36px;height:36px;padding:0;border-radius:50%;font-size:16px;background:#0b0e18cc;border:1px solid #5ad0ff}
 body.devon.ig #devfab{display:block}body.edm #devfab{display:none!important}
 #devbar{position:fixed;left:50%;top:0;transform:translateX(-50%);z-index:27;display:none;background:#5ad0ff;color:#06202c;font:bold 11px system-ui,sans-serif;letter-spacing:.5px;padding:2px 12px;border-radius:0 0 8px 8px;pointer-events:none}body.devsess.ig #devbar{display:block}

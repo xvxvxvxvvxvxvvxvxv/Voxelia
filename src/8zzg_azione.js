@@ -60,11 +60,19 @@ function lockToggle(){if(ACT.lock)ACT.lock=null;else lockNext()}
   const tg0=P.tg,pr0=CMB.press;pd(ev);const tg=P.tg;
   if(tg&&tg!==tg0&&tg.k!=='en'&&tg.k!=='pl')return;           // una persona, una porta, un forziere: come sempre
   if(tg&&tg.k==='pl')return;
-  P.path=[];if(!tg||tg.k==='en')P.tg=null;const a=actAim(ev);if(a){ACT.aim=a;ACT.aimT=t}
+  // 7.42.1: un nemico cliccato fuori portata si raggiunge camminando, e il colpo parte quando si arriva
+  if(tg&&tg.k==='en'&&tg!==tg0&&dist(tg,P)>actReach(tg)){ACT.go=tg;ACT.goT=t;return}
+  ACT.go=null;P.path=[];if(!tg||tg.k==='en')P.tg=null;const a=actAim(ev);if(a){ACT.aim=a;ACT.aimT=t}
   if(CMB.press!==pr0)return;                                    // il colpo è già partito
   cbPress('m');CMB.th=1}}
+// fin dove arriva la prossima mossa dell'arma contro questo nemico
+function actReach(e){const W=cbW(),mv=W.c3[Math.max(0,CMB.step+1)%3]||W.c3[0];return mv.r+cbRad(e)-.05}
 /* ---- ogni fotogramma: stamina, corsa, blocco ---- */
-const _upd732=upd;upd=function(dt){const on=actOn()&&started&&P&&P.hp>0;const ox=P&&P.px,oy=P&&P.py;_upd732(dt);if(!on)return;stCur();
+const _upd732=upd;upd=function(dt){const on=actOn()&&started&&P&&P.hp>0;const ox=P&&P.px,oy=P&&P.py;
+  // l'avvicinamento al nemico cliccato: finisce se si fa altro (tasti, altro clic, capriola) o se il nemico non c'è più
+  const G=ACT.go;if(G){if(!on||P.tg!==G||!ents.includes(G)||G.hp<=0||P.dm||PM||t-ACT.goT>20)ACT.go=null;
+    else if(dist(G,P)<=actReach(G)){ACT.go=null;P.tg=null;P.path=[];const dx=G.px-P.px,dy=G.py-P.py,d=Math.hypot(dx,dy)||1;ACT.aim=[dx/d,dy/d];ACT.aimT=t;cbPress('m')}}
+  _upd732(dt);if(!on)return;stCur();
   // la corsa
   const kd=keyDir();ACT.run=0;if(ACT.sh&&t-ACT.shT>=.24&&kd&&!P.dm&&!CMB.cur&&P.sta>0&&!PM){ACT.run=1;ACT.ran=1;const[dx,dy]=kd,s=1.95*dt,r=.24;
     if(!blk(P.px+dx*s+Math.sign(dx)*r,P.py))P.px+=dx*s;if(!blk(P.px,P.py+dy*s+Math.sign(dy)*r))P.py+=dy*s;P.sta=Math.max(0,P.sta-16*dt);ACT.stT=t;if(cineOK()&&Math.random()<dt*8)sparks(P.px,P.py,1,['#c8b890','#a89870'],20)}

@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.42.1 — Il clic su un nemico lontano fa camminare l'eroe (28 ottobre 2026)
+
+- **Cliccando un nemico lontano l'eroe ci va camminando, e attacca quando arriva.** Con il combattimento d'azione il clic su un nemico fuori portata faceva partire subito l'animazione del colpo nel vuoto, senza muoversi. Ora l'eroe raggiunge il nemico aggirando gli ostacoli e colpisce appena è a portata dell'arma (il bastone, che colpisce da lontano, attacca subito come prima). L'avvicinamento si annulla se ti muovi con i tasti, clicchi altrove o fai una capriola. Il clic sul terreno vicino ai nemici resta un colpo verso il cursore.
+- **Via la dicitura «punta e clicca».** Il gioco ormai si comanda tutto anche con la tastiera (e con il touch): nel menu e nel README ora è «gioco di ruolo in grafica voxel isometrica, con mouse, tastiera o touch», anche in inglese.
+
+---
+
 ## 7.42 — La Corona di Voxel, le scene disegnate e la vista 3D sistemata (27 ottobre 2026)
 
 - **Un menu tutto nuovo: la Corona di Voxel in 3D.** Nella scelta della modalità c'è la Corona, in vero 3D, che gira su se stessa sopra un cuscino di velluto, con le scintille che le volano intorno. Ogni gemma è una modalità:

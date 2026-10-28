@@ -894,7 +894,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.42.3 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 4.5 alla 7.42.3, con l'elenco in releases/LEGGIMI.md
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -998,7 +998,7 @@ Poi si apre `voxelia.html` nel browser, oppure si avvia `node server.js` per pro
    - `<title>` e `<sup id="ver">` in `src/head.html`;
    - `VER` e il commento iniziale in `server.js`.
 2. Scrivi la voce in cima a `CHANGELOG.md`, in italiano, dalla più recente.
-3. Esegui `sh build.sh` e copia la build in `releases/voxelia_v<versione>.html`.
+3. Esegui `sh build.sh`, copia la build in `releases/voxelia_v<versione>.html` e aggiungi la riga in `releases/LEGGIMI.md`.
 4. Fai commit e push su `main`: Suga ricostruisce e pubblica da solo.
 
 ### Convenzioni

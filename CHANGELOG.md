@@ -5,6 +5,24 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.42 — La Corona di Voxel, le scene disegnate e la vista 3D sistemata (27 ottobre 2026)
+
+- **Un menu tutto nuovo: la Corona di Voxel in 3D.** Nella scelta della modalità c'è la Corona, in vero 3D, che gira su se stessa sopra un cuscino di velluto, con le scintille che le volano intorno. Ogni gemma è una modalità:
+  - **Rubino** → Modalità Storia · **Smeraldo** → Tomorrow · **Zaffiro** → Voxelia Dimension (ancora sigillata) · **Ametista** → Parco giochi · **Topazio** → Mondi della community · **Diamante** → Prologo e scene della storia;
+  - clic su una gemma (oppure sui bottoni sotto la Corona, o le frecce ◀ ▶ e A/D): la Corona si ferma con quella gemma davanti e la telecamera le si avvicina; la scheda dice che cosa c'è dentro;
+  - **Entra** (o Invio, o un altro clic sulla gemma) e la gemma **si accende del suo colore**: la sua luce illumina la Corona, lo schermo si colora e si entra nella modalità;
+  - Esc torna alla Corona intera; trascinando con il mouse o con il dito la si fa girare a mano;
+  - Impostazioni, Novità e Comandi restano in basso. Senza WebGL 2 resta il menu a schede di prima.
+- **Le scene diventano disegnate, come in Undertale.** Il prologo, le scene della storia, l'arrivo in Tomorrow e i viaggi della Dimension non si vedono più a tutto schermo: ogni inquadratura è un quadro in pixel art (pochi colori, retinatura leggera, contorni scuri) su fondo nero, e sotto c'è il riquadro bianco del testo, che si scrive lettera per lettera con il suo «bip». Ogni personaggio ha la sua voce, e il suo nome compare con l'asterisco, come nei dialoghi di Undertale. Si torna ai filmati di prima da Impostazioni → Animazioni.
+- **Vista 3D, edifici sistemati:**
+  - niente più tremolio su tetti, finestre, porte, insegne e facce dei personaggi: dove due facce combaciano vince quella che la vista classica disegna sopra (prima le due facce si contendevano gli stessi pixel e i tetti si riempivano di strisce);
+  - il fumo dei camini, i fantasmi e le cose semitrasparenti non sono più blocchi grigi pieni che galleggiano: in 3D si vedono trasparenti, a trama fine;
+  - le persone vicine all'eroe non diventano più «a puntini»: davanti alla telecamera si apre solo ciò che è costruito (muri, tetti, alberi);
+  - i nomi sopra le teste non si accavallano più: prima quelli più vicini, gli altri salgono di una riga o si nascondono.
+- **Le mura della città non hanno più buchi** (Tomorrow): accampamenti, rovine, santuari e falò non nascono più dentro la tua città (prima, quando la città era grande, ci finivano dentro e aprivano varchi nelle mura); le raccolte di pietra, legna e ferro possono stare in città, ma mai al posto di un pezzo di mura.
+
+---
+
 ## 7.41.1 — Manutenzione: si esce dal dungeon accanto all'ingresso (27 ottobre 2026)
 
 - **Il portale dopo il boss ti riporta all'ingresso del dungeon.** Prima, uscendo dal portale che si apre quando cade il boss, si arrivava al punto di partenza della zona, anche a 30–50 caselle dal dungeon (per esempio all'altro capo del Deserto di Khem o dei Picchi Gelidi). Ora si arriva accanto all'ingresso, come quando si esce dal primo piano. Vale per i sette dungeon della storia e per quelli di Tomorrow.

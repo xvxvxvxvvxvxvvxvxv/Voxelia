@@ -144,8 +144,10 @@ function twGen(z){const n=N,rx=z.rx,ry=z.ry,bio=z.bio,rnd=twRnd('reg',rx,ry),rr=
   else if(typeof twSetGen==='function'&&twSetAt(rx,ry))sp=twSetGen(CX,ends);
   else if(typeof twHamlet==='function')sp=twHamlet(CX,ends);
   else{disc(hub[0]+.5,hub[1]+.5,2.2,(x,y)=>{if(M[y][x]!==4)F(x,y,'1')})}
-  const sc6=n/64,spot=(minD,maxD)=>{minD*=sc6;maxD*=sc6;if(z.city)minD=Math.max(minD,34);for(let k=0;k<200;k++){const a=rnd()*6.283,d=minD+rnd()*(maxD-minD),x=Math.round(hub[0]+Math.cos(a)*d),y=Math.round(hub[1]+Math.sin(a)*d);if(x>4&&y>4&&x<n-5&&y<n-5&&!RS[y*n+x]&&M[y][x]!==2&&M[y][x]!==3)return[x,y]}return null};
-  if(twDun(rx,ry)){const q=spot(12,24);if(q){const[x,y]=q,id=twDid(rx,ry);twDG(id);disc(x+.5,y+.5,2.6,(u,v)=>{if(M[v][u]!==3)F(u,v,bio==='deserto'?'4':bio==='cenere'?'9':'4')});
+  // 7.42: accampamenti e rovine non nascono dentro la propria città (prima ne bucavano le mura); le raccolte sì, ma mai sulle mura
+  const sh0=z.set?(z.shub||hub):null,shR=sh0?(typeof sedR==='function'&&P.tw&&P.tw.set&&P.tw.set.lay&&P.tw.set.lay.v?sedR():8+((P.tw&&P.tw.set&&P.tw.set.lv)|0)*3)+6:0;
+  const sc6=n/64,spot=(minD,maxD,inCity)=>{minD*=sc6;maxD*=sc6;if(z.city)minD=Math.max(minD,34);for(let k=0;k<200;k++){const a=rnd()*6.283,d=minD+rnd()*(maxD-minD),x=Math.round(hub[0]+Math.cos(a)*d),y=Math.round(hub[1]+Math.sin(a)*d);if(x>4&&y>4&&x<n-5&&y<n-5&&!RS[y*n+x]&&M[y][x]!==2&&M[y][x]!==3&&!(sh0&&M[y][x]===1&&DEC[y][x]===DN+'W')&&(inCity||!sh0||Math.hypot(x-sh0[0],y-sh0[1])>shR))return[x,y]}return null};
+  if(twDun(rx,ry)){const q=spot(12,24,1);if(q){const[x,y]=q,id=twDid(rx,ry);twDG(id);disc(x+.5,y+.5,2.6,(u,v)=>{if(M[v][u]!==3)F(u,v,bio==='deserto'?'4':bio==='cenere'?'9':'4')});
       for(let i=0;i<8;i++){const a=i/8*6.283,u=Math.round(x+Math.cos(a)*3.4),v=Math.round(y+Math.sin(a)*3.4);if(ok(u,v)&&i%2&&M[v][u]!==3)W(u,v,'W',bio==='cenere'?'9':'')}
       ents.push(po(x,y,id+'@1',{st:'dun'}));tg.push([x,y])}}
   const C2=[];
@@ -153,9 +155,9 @@ function twGen(z){const n=N,rx=z.rx,ry=z.ry,bio=z.bio,rnd=twRnd('reg',rx,ry),rr=
       C2.push([x,y+2,1]);tg.push([x,y+2]);(z.camps=z.camps||[]).push([x,y])}}
   for(let ri2=0;ri2<(rnd()<.5?2:1);ri2++){const q=spot(8,28);if(q){const[x,y]=q;disc(x+.5,y+.5,3.2,(u,v,d)=>{if(M[v][u]===3)return;if(d>2.3&&hh(u*7,v*3)>.3)W(u,v,'W',bio==='cenere'?'9':'');else F(u,v,'4')});C2.push([x,y,1]);tg.push([x,y])}}
   // raccolte del bioma
-  const RL=TWRES[bio]||[];for(let i=0;i<(RL.length?rr(5,9):0);i++){const q=spot(5,28);if(!q)continue;const r=RL[Math.floor(rnd()*RL.length)];F(q[0],q[1],'');ents.push({k:'res',r,n:RESN[r],px:q[0]+.5,py:q[1]+.5});tg.push(q)}
+  const RL=TWRES[bio]||[];for(let i=0;i<(RL.length?rr(5,9):0);i++){const q=spot(5,28,1);if(!q)continue;const r=RL[Math.floor(rnd()*RL.length)];F(q[0],q[1],'');ents.push({k:'res',r,n:RESN[r],px:q[0]+.5,py:q[1]+.5});tg.push(q)}
   if(typeof twGenExtra==='function')twGenExtra(CX,spot,C2);
-  for(let i=0;i<rr(3,6);i++){const q=spot(6,30);if(q){F(q[0],q[1],'');C2.push([q[0],q[1],0]);tg.push(q)}}
+  for(let i=0;i<rr(3,6);i++){const q=spot(6,30,1);if(q){F(q[0],q[1],'');C2.push([q[0],q[1],0]);tg.push(q)}}
   // 4. tutto raggiungibile: un varco verso ciò che resta chiuso fra alberi e rocce
   for(const e of ents)if(e.k==='po')tg.push([e.px|0,e.py|0]);// anche le porte delle case
   const NB=[[1,0],[-1,0],[0,1],[0,-1]];let d=bfs(sp[0],sp[1]);z.carved=[];

@@ -5,7 +5,7 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
-## 7.43 — Combattimento e dungeon: boss a fasi, leve, maledizioni, armi con un nome, la Torre e la pala (28 ottobre 2026)
+## 7.44 — Combattimento e dungeon: boss a fasi, leve, maledizioni, armi con un nome, la Torre e la pala (28 ottobre 2026)
 
 - **I boss combattono in tre fasi.** A due terzi e a un terzo della vita ruggiscono (per un attimo sono immuni), cambiano mosse e attaccano più spesso; nell'ultima fase chiamano rinforzi.
   - **Il punto debole:** ogni tanto sopra la testa del boss si accende un nucleo luminoso. Finché brilla i colpi fanno il doppio, e quattro colpi a segno lo **stordiscono** per tre secondi: resta fermo, non attacca e prende più danni.
@@ -27,6 +27,40 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
   - **Classifica del giorno** in rete con il nuovo plugin **Torre** del server (`/torre` in chat e una pagina web).
 - **La pala.** All'aperto (intorno ad Aldoria e nelle regioni di Tomorrow) ogni giorno ci sono tre punti dove la terra luccica appena: avvicinati e scava (R o clic). Sotto c'è oro, una pozione, un oggetto, a volte un tesoro e, ogni tanto, **un passaggio segreto** che porta in una grotta nascosta con i suoi forzieri e i suoi abitanti.
 - **Le frasi del titolo, come in Minecraft.** Accanto a VOXELIA compare una frase gialla, storta, che pulsa: una diversa ogni volta (cliccandola cambia), e in certi giorni dell'anno ne arrivano di speciali.
+
+---
+
+## 7.43 — Le versioni precedenti, da rigiocare (28 ottobre 2026)
+
+- **Si possono giocare le versioni vecchie di Voxelia.** Nel menu c'è il pulsante **Versioni precedenti** (anche nella gemma Diamante della Corona): si sceglie una delle 69 versioni conservate, dalla 4.5 alla 7.42.3, con titolo e data, e si gioca nel browser. C'è anche la ricerca per numero, parola o data.
+- **Solo da soli.** Le versioni vecchie non hanno multigiocatore né funzioni online: non si collegano al server, e il browser impedisce loro qualunque connessione. Il codice stanza è spento. Le funzioni online restano nella versione attuale.
+- **Salvataggi separati.** Ogni versione vecchia ha i suoi salvataggi, che non vedono e non toccano la partita, le impostazioni e i mondi di Voxelia Studio della versione attuale.
+- In alto c'è una fascia con il numero della versione e il collegamento per tornare a quella attuale.
+- Il selettore c'è quando il gioco arriva dal server; aprendo il file dal disco non compare.
+
+---
+
+## 7.42.3 — Il pannello sviluppatore, sui server, solo per gli admin (28 ottobre 2026)
+
+- **Sbloccato dal server, non dal browser.** Prima il codice del pannello sviluppatore si controllava solo nel gioco: bastava un comando nella console del browser per aprirlo, anche sul server ufficiale, e da lì dare oro, livelli e oggetti che poi finivano nel mondo condiviso. Ora, quando il gioco arriva da un server, il pannello chiede la **password admin del server** e la controlla il server stesso (con lo stesso limite di tentativi del pannello admin). Lo sblocco vale finché non ricarichi la pagina e non si ricorda nel browser.
+- **Il pulsante 🛠 sui server non si vede.** Gli admin aprono la richiesta della password con **F9**, oppure aggiungendo `#dev` in fondo all'indirizzo.
+- **Tutto nel registro.** Ogni pulsante premuto nel pannello finisce nel registro del pannello admin (chi, cosa). Chi manda al server azioni del pannello senza averlo sbloccato viene registrato come «usato SENZA password».
+- **Guardiano 2.7:** non segnala l'admin che ha sbloccato il pannello con la password, per 12 ore e solo con lo stesso nome e lo stesso indirizzo. Chiunque altro faccia le stesse cose viene segnalato come sempre.
+- Aprendo `voxelia.html` dal disco, da soli, il pannello resta com'era.
+
+---
+
+## 7.42.2 — La stamina a zero lascia davvero senza fiato (28 ottobre 2026)
+
+- **Con la stamina a zero non si scatta più.** Prima bastava che se ne ricaricasse un filo (anche meno di 1) per tornare a correre, rotolare o attaccare, e così si poteva continuare quasi all'infinito. Ora, quando la stamina arriva a zero, l'eroe resta **senza fiato** finché non torna almeno al 30%: niente corsa, capriole, attacchi o colpi caricati. La barra diventa rossa e dice «Senza fiato».
+- La barra ora mostra anche il massimo (per esempio «Stamina 62/109»). Che superi 100 è voluto: il massimo è 100 più il livello dell'eroe, fino a 160.
+
+---
+
+## 7.42.1 — Il clic su un nemico lontano fa camminare l'eroe (28 ottobre 2026)
+
+- **Cliccando un nemico lontano l'eroe ci va camminando, e attacca quando arriva.** Con il combattimento d'azione il clic su un nemico fuori portata faceva partire subito l'animazione del colpo nel vuoto, senza muoversi. Ora l'eroe raggiunge il nemico aggirando gli ostacoli e colpisce appena è a portata dell'arma (il bastone, che colpisce da lontano, attacca subito come prima). L'avvicinamento si annulla se ti muovi con i tasti, clicchi altrove o fai una capriola. Il clic sul terreno vicino ai nemici resta un colpo verso il cursore.
+- **Via la dicitura «punta e clicca».** Il gioco ormai si comanda tutto anche con la tastiera (e con il touch): nel menu e nel README ora è «gioco di ruolo in grafica voxel isometrica, con mouse, tastiera o touch», anche in inglese.
 
 ---
 
@@ -1670,6 +1704,30 @@ Questa versione unisce due rami di Voxelia: tutte le novità dalla 6.8 alla 6.10
   - Gli alberi ondeggiano al vento.
 - **Menu più vivo:** il titolo brilla, i pannelli entrano in dissolvenza e i pulsanti si sollevano al passaggio. In più ci sono scintille, uccelli in volo, stelle cadenti e i sei frammenti che orbitano sullo sfondo.
 - **Ottimizzazione:** le entità fuori dallo schermo non vengono più ordinate né disegnate, e il rumore delle caselle si calcola una volta per zona invece che a ogni fotogramma.
+
+---
+
+## 5.3 — Plugin per il server (8 ottobre 2026)
+
+### Aggiunto
+- **Plugin del server.** All'avvio, `node server.js` carica i plugin della cartella `plugins/`, accanto a server.js. Se la cartella non c'è la crea, con dentro le istruzioni (`LEGGIMI.md`) e un plugin di esempio spento (`_esempio.js`).
+  - Un plugin è un file `nome.js` oppure una cartella `nome/` con `index.js`. Basta metterlo nella cartella: niente da installare.
+  - I nomi che iniziano con `_` restano spenti.
+  - Un plugin che va in errore viene segnato nel registro e non ferma il server; gli altri continuano a funzionare.
+  - Cosa può fare un plugin:
+    - reagire agli eventi del server: ingresso e uscita, cambio di zona, chat, vittorie nell'arena, boss dei dungeon, oggetti a terra, scambi;
+    - aggiungere **comandi di chat** come `/dado`, e filtrare o bloccare i messaggi;
+    - dare oro, esperienza, pozioni, livelli e oggetti, curare, riportare in città o disconnettere un giocatore;
+    - mandare messaggi privati, in chat e annunci;
+    - salvare dati che restano tra un riavvio e l'altro, e leggere una configurazione modificabile (`nome.config.json`);
+    - usare timer, aggiungere pagine web su `/plugins/<nome>/` (anche riservate all'admin) e cambiare le impostazioni del server;
+    - aggiungere codice al gioco e scambiare messaggi con esso.
+- **Comandi di chat:** in multigiocatore, un messaggio che inizia con `/` va al server e non compare sopra l'eroe. `/aiuto` elenca i comandi dei plugin e `/plugin` mostra i plugin attivi.
+- **Pannello admin, pagina Plugin:** ogni plugin con stato, versione, comandi, pagine ed errori. Ogni plugin si può spegnere e riaccendere, e il pulsante **Ricarica** carica subito plugin nuovi o modificati, senza riavviare il server. Nel registro c'è il filtro "Plugin".
+
+### Modificato
+- I regali che arrivano da un plugin dicono da quale plugin vengono ("Da Esempio: +50 oro").
+- Il cookie del pannello admin vale anche per le pagine dei plugin riservate all'admin.
 
 ---
 

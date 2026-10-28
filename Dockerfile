@@ -12,6 +12,8 @@ WORKDIR /app
 COPY server.js admin.html voxelia.html ./
 # I plugin stanno nell'immagine (cartella plugins/ del repository), non nel volume.
 COPY plugins ./plugins
+# Le versioni precedenti del gioco (si giocano da /versioni/<versione>/, solo da soli).
+COPY releases ./releases
 
 # I dati persistenti (classifica, dungeon, ban, mondi) stanno in /data: montarlo come volume.
 RUN mkdir -p /data && chown -R node:node /data /app

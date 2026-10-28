@@ -1,4 +1,4 @@
-/* ================= 7.43: i boss a fasi, con il punto debole =================
+/* ================= 7.44: i boss a fasi, con il punto debole =================
    Ogni boss combatte in tre fasi: a due terzi e a un terzo della vita ruggisce (per un attimo è immune), cambia mosse e
    attacca più spesso. Ogni tanto scopre il suo punto debole (un nucleo luminoso sopra la testa): i colpi in quel momento
    fanno il doppio, e quattro colpi a segno lo stordiscono per tre secondi (fermo, senza attacchi, e i colpi fanno di più). */

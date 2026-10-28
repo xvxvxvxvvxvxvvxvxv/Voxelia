@@ -1,4 +1,4 @@
-/* ================= 7.43: la Torre della Corona, la sfida del giorno =================
+/* ================= 7.44: la Torre della Corona, la sfida del giorno =================
    Una porta di pietra con la luce dorata, in piazza ad Aldoria e nella tua città di Tomorrow. Dentro, dieci piani:
    in ognuno una sala con i nemici; ripulita la sala si sceglie una di tre benedizioni (valgono solo nella Torre) e
    si sale. Ai piani 5 e 10 aspetta un boss. Ogni giorno la Torre cambia, ma è uguale per tutti: stessi nemici, stesse

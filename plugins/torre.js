@@ -1,4 +1,4 @@
-// Torre della Corona (Voxelia 7.43): la classifica della sfida del giorno.
+// Torre della Corona (Voxelia 7.44): la classifica della sfida del giorno.
 // La Torre ha dieci piani, uguali per tutti i giocatori nello stesso giorno (UTC). Il gioco manda qui, alla fine di ogni
 // salita, quanti piani sono stati superati e in quanto tempo; il plugin tiene il miglior risultato di ogni eroe per ogni
 // giorno (gli ultimi 14 giorni), lo rimanda a chi apre l'ingresso della Torre e lo mostra in /torre e nella pagina web.

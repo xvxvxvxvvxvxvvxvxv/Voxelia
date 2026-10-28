@@ -1,4 +1,4 @@
-/* ================= 7.43: le leve dei dungeon, da tirare insieme =================
+/* ================= 7.44: le leve dei dungeon, da tirare insieme =================
    Nei piani dei dungeon (non in quello del boss) la scala che scende è chiusa da una grata. Per aprirla servono due
    leve, in due stanze lontane, tirate insieme: ogni leva resta giù 18 secondi. In gruppo uno tira e l'altro corre
    (le leve degli altri si vedono e contano), da soli bisogna fare in fretta. Quando si tira una leva, dall'ombra

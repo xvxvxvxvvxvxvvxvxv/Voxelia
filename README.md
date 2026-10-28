@@ -1,10 +1,10 @@
 # Voxelia – Il Regno Perduto
 
-**Un gioco di ruolo punta e clicca in grafica voxel isometrica, che gira nel browser.** Si gioca da soli o con gli amici, si
+**Un gioco di ruolo in grafica voxel isometrica, che gira nel browser e si gioca con mouse, tastiera o touch.** Si gioca da soli o con gli amici, si
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.43** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.44** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -234,7 +234,8 @@ e ogni giorno i minatori portano un po' di minerali al magazzino.
 
 Si combatte cliccando dove si vuole colpire: l'eroe si gira verso il cursore e fa la mossa della sua arma; tenendo premuto
 si carica il colpo pesante. Attacchi, capriola (Maiusc o E) e corsa (Maiusc tenuto) consumano la stamina, che si
-ricarica da sola. Tab blocca il bersaglio: l'eroe lo guarda sempre e ogni colpo va su di lui. Lontano dai nemici il clic
+ricarica da sola (il massimo è 100 più il livello, fino a 160). Se arriva a zero si resta senza fiato: niente
+attacchi, capriole o corsa finché non torna al 30%. Tab blocca il bersaglio: l'eroe lo guarda sempre e ogni colpo va su di lui. Lontano dai nemici il clic
 fa camminare. Il combattimento classico si riattiva in Impostazioni → Comandi.
 
 ### La tua casa e le mura (dalla 7.33)
@@ -286,6 +287,13 @@ Nel pannello sviluppatore (F9) la scheda «Dai e crea» dà monete, risorse, pes
 unici, cimeli, compagni di qualunque specie e livello e fa comparire nemici e boss; la scheda «Tomorrow» conquista la
 regione, fonda e completa la città, scopre la mappa, dà le gemme e fa passare i giorni.
 
+**Sui server (dalla 7.42.3)** il pannello è solo per gli admin: il pulsante 🛠 non si vede, F9 (o `#dev` in fondo
+all'indirizzo) chiede la **password admin del server**, che controlla il server stesso, e lo sblocco vale finché non si
+ricarica la pagina. Ogni pulsante premuto nel pannello finisce nel registro del pannello admin, e il Guardiano non segnala
+l'admin che l'ha sbloccato (stesso nome e stesso indirizzo) per 12 ore. Chi manda al server azioni del pannello senza
+password finisce nel registro come «usato SENZA password». Aprendo il file `voxelia.html` dal disco resta il codice di
+sempre.
+
 ### Nemici condivisi, città in ordine e mura (dalla 7.41)
 
 In rete tutti i giocatori della stessa zona vedono gli stessi nemici, nello stesso posto: li guida chi è nella zona da
@@ -300,7 +308,7 @@ telecamera le si avvicina e, quando si entra, la gemma si accende del suo colore
 con il testo lettera per lettera, come in Undertale (si tornano a vedere come prima da Impostazioni → Animazioni).
 Nella vista 3D tetti, finestre e facce non tremano più, il fumo è trasparente e i nomi non si accavallano.
 
-### Combattimento e dungeon (dalla 7.43)
+### Combattimento e dungeon (dalla 7.44)
 
 I boss combattono in tre fasi e hanno un punto debole che, colpito, li stordisce. Nei piani dei dungeon la scala si
 apre tirando insieme due leve. Prima di entrare si possono scegliere maledizioni che rendono il dungeon più duro e il
@@ -390,6 +398,19 @@ sue opzioni, impostazioni, aspetto dell'eroe, comandi, salva ora e ritorno al me
 | **Parco giochi · Voxelia Studio** | L'editor per costruire e giocare i propri mondi. |
 | **Mondi della community** | I mondi pubblicati dagli altri giocatori sul server: si giocano, si votano e si commentano. |
 | **Voxelia Dimension** | Un'avventura a parte attraverso le epoche (Far West, Londra vittoriana, Rivoluzione francese, Grande Guerra). Per ora è nascosta dal menu ed è raggiungibile dal pannello sviluppatore. |
+
+### Versioni precedenti (dalla 7.43)
+
+Sul server, dal menu (pulsante **Versioni precedenti**, o la gemma Diamante della Corona) si sceglie una versione vecchia
+e la si gioca nel browser. Il server la serve da `releases/` all'indirizzo `/versioni/<versione>/`, con due garanzie:
+- **solo da soli**: la pagina non riceve il collegamento al multigiocatore e il browser le vieta qualunque connessione
+  (`Content-Security-Policy: connect-src 'none'`), quindi niente chat, arena, scambi, mondi della community o plugin;
+- **salvataggi separati**: ogni versione vecchia scrive in una sua parte del salvataggio del browser
+  (`voxelia-v<versione>:…`) e non vede né tocca la partita, le impostazioni e i mondi della versione attuale. Se un browser
+  non permettesse di separarli, la versione vecchia non si apre.
+
+L'elenco arriva da `/versioni` (titoli e date da `releases/LEGGIMI.md`); la versione attuale non c'è, perché è quella di
+sempre su `/`. Aprendo il gioco dal disco il selettore non compare.
 
 ---
 
@@ -895,7 +916,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.43 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 4.5 alla 7.44, con l'elenco in releases/LEGGIMI.md
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose
@@ -981,14 +1002,15 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzq_ordine.js` | 7.41: la città che cresce in ordine (piazza, viali, sentieri, isolati, Riordina il borgo) e le mura sul perimetro, da spostare e cancellare |
 | `8zzr_corona.js` | 7.42: il menu della Corona di Voxel in 3D (le sei gemme, la telecamera sulla gemma scelta, la gemma che si accende) |
 | `8zzs_disegnate.js` | 7.42: le scene disegnate in pixel art come in Undertale (quadro, contorni, retinatura, testo con il «bip») |
-| `8zzt_aiuti.js` | 7.43: aiuti comuni per le novità (campi da salvare, pannelli nuovi, giorno della sfida) |
-| `8zzta_frasi.js` | 7.43: le frasi gialle del titolo, come in Minecraft |
-| `8zzu_boss.js` | 7.43: i boss a tre fasi, con il punto debole e lo stordimento |
-| `8zzv_leve.js` | 7.43: le due leve dei piani dei dungeon, da tirare insieme (anche in rete) |
-| `8zzw_maledizioni.js` | 7.43: le maledizioni a scelta prima dei dungeon, con il bottino in più |
-| `8zzx_armi.js` | 7.43: le armi che crescono (nome, mossa speciale, leggendaria) |
-| `8zzy_torre.js` | 7.43: la Torre della Corona, la sfida del giorno con le benedizioni e la classifica |
-| `8zzz_scavo.js` | 7.43: la pala, i tesori sepolti e le grotte segrete |
+| `8zzt_aiuti.js` | 7.44: aiuti comuni per le novità (campi da salvare, pannelli nuovi, giorno della sfida) |
+| `8zzta_frasi.js` | 7.44: le frasi gialle del titolo, come in Minecraft |
+| `8zzu_boss.js` | 7.44: i boss a tre fasi, con il punto debole e lo stordimento |
+| `8zzv_leve.js` | 7.44: le due leve dei piani dei dungeon, da tirare insieme (anche in rete) |
+| `8zzw_maledizioni.js` | 7.44: le maledizioni a scelta prima dei dungeon, con il bottino in più |
+| `8zzx_armi.js` | 7.44: le armi che crescono (nome, mossa speciale, leggendaria) |
+| `8zzy_torre.js` | 7.44: la Torre della Corona, la sfida del giorno con le benedizioni e la classifica |
+| `8zzz_scavo.js` | 7.44: la pala, i tesori sepolti e le grotte segrete |
+| `8zzt_versioni.js` | 7.43: il selettore delle versioni precedenti, da giocare solo da soli (le serve il server da `/versioni/`) |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---
@@ -1007,7 +1029,7 @@ Poi si apre `voxelia.html` nel browser, oppure si avvia `node server.js` per pro
    - `<title>` e `<sup id="ver">` in `src/head.html`;
    - `VER` e il commento iniziale in `server.js`.
 2. Scrivi la voce in cima a `CHANGELOG.md`, in italiano, dalla più recente.
-3. Esegui `sh build.sh` e copia la build in `releases/voxelia_v<versione>.html`.
+3. Esegui `sh build.sh`, copia la build in `releases/voxelia_v<versione>.html` e aggiungi la riga in `releases/LEGGIMI.md`.
 4. Fai commit e push su `main`: Suga ricostruisce e pubblica da solo.
 
 ### Convenzioni

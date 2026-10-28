@@ -9,6 +9,7 @@
 // Il sensore gira nel browser del giocatore, quindi un baro esperto può zittirlo: il Guardiano segnala anche quello.
 // Regali che NON vanno segnalati: quelli del pannello admin e di tutti i plugin (p.give) li vede da solo, gli scambi pure.
 // globalThis.VoxeliaGuardiano.grazia(nome, sec) resta per i plugin che regalano in altri modi.
+// 2.7: chi sblocca il pannello sviluppatore del gioco con la password admin non viene segnalato finché vale lo sblocco (12 ore).
 // Di base segnala e basta: le azioni (ripristino, riporto in città, disconnessione) si accendono in guardiano.config.json.
 // Automoderazione (spenta di base, si accende dalla pagina admin o in config): ogni segnalazione dà punti all'eroe,
 // e superate le soglie scattano le sanzioni scelte (avviso, ripristino, città, silenzio, espulsione, sospensione a tempo).
@@ -117,7 +118,7 @@ function sensore(ID, INT) {
 
 module.exports = {
   name: 'Guardiano',
-  version: '2.6',
+  version: '2.7',
   author: 'Voxelia',
   description: 'Riconosce oro, livelli, statistiche e oggetti ottenuti con trucchi o cheat esterni; pagina admin con le prove',
   defaults: {
@@ -177,23 +178,27 @@ module.exports = {
   },
 
   setup(api) {
-    const C = api.config, stato = new Map(), grazie = new Map(), chiave = n => String(n).toLowerCase();
+    const C = api.config, stato = new Map(), grazie = new Map(), svil = new Map(), chiave = n => String(n).toLowerCase();
     const st = () => { const s = api.store; if (!Array.isArray(s.lista)) s.lista = []; for (const k of ['storico', 'stat', 'statSegn', 'copie', 'mod', 'sospesi', 'silenziati']) if (!s[k] || typeof s[k] !== 'object') s[k] = {}; return s; };
     const X = p => { let x = stato.get(p.id); if (!x) stato.set(p.id, x = { id: p.id, nome: p.name, crediti: [], guadagni: [], livelli: [], chiavi: new Set(), gravi: 0, entrato: Date.now() }); return x; };
     const fmt = n => Math.round(n).toLocaleString('it-IT');
 
     globalThis.VoxeliaGuardiano = {
       grazia: (nome, sec) => grazie.set(chiave(nome), Date.now() + 1000 * (sec || C.graziaSec || 30)),
+      // 2.7: chi ha sbloccato il pannello sviluppatore con la password admin (lo chiama il server): per quel tempo non si segnala
+      sviluppatore: (nome, sec, ip) => { const k = chiave(nome), u = Date.now() + 1000 * Math.min(12 * 3600, +sec || 3600); svil.set(k, { u, ip: ip || '' }); },
       // per i plugin che vogliono dire esattamente quanto hanno dato
       credito: (nome, oro, livelli) => { const p = api.player(nome); if (p) credita(X(p), oro, livelli); }
     };
-    const inGrazia = p => (grazie.get(chiave(p.name)) || 0) > Date.now();
+    const devAut = p => { const d = svil.get(chiave(p.name)); return !!(d && d.u > Date.now() && (!d.ip || d.ip === p.ip)); };
+    const inGrazia = p => (grazie.get(chiave(p.name)) || 0) > Date.now() || devAut(p);
     // i bot del plugin Stress test non si salvano
     const finto = p => !!(globalThis.VoxeliaStress && globalThis.VoxeliaStress.bot(p));
     const credita = (x, oro, livelli, fonte) => x.crediti.push({ t: Date.now(), oro: Math.max(0, +oro || 0), lv: Math.max(0, +livelli || 0), fonte: fonte || 'plugin' });
 
     function segnala(p, tipo, dettaglio, o) {
       o = o || {}; if (finto(p)) return;
+      if (devAut(p)) return;   // sviluppatore autorizzato dal server (stesso nome e stesso indirizzo di chi ha dato la password)
       const x = X(p), g = o.g || 'media';
       if (o.chiave) { if (x.chiavi.has(o.chiave)) return; x.chiavi.add(o.chiave); }
       const s = st();

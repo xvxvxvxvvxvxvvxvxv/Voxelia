@@ -1,4 +1,4 @@
-/* ================= 7.43: aiuti comuni per le novità dalla 7.43 in poi =================
+/* ================= 7.44: aiuti comuni per le novità dalla 7.44 in poi =================
    - XSV: i campi dell'eroe da mettere nel salvataggio (storia e Tomorrow), basta aggiungerne il nome;
    - X43P: pannelli nuovi (nome → funzione che dà l'HTML), aperti con pn(nome) come tutti gli altri;
    - dayKey(): il giorno di oggi (UTC), uguale per tutti i giocatori: serve per le sfide del giorno. */

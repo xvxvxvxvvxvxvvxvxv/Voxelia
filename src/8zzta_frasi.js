@@ -1,4 +1,4 @@
-/* ================= 7.43: le frasi del titolo, come in Minecraft =================
+/* ================= 7.44: le frasi del titolo, come in Minecraft =================
    Accanto a VOXELIA compare una frase gialla, storta, che pulsa: una diversa a ogni apertura (cliccandola cambia).
    Alcune arrivano solo in certi giorni. */
 const FRASI43=['Ora con il 100% di voxel in più!','Il vaso di terra ti saluta!','Non toccare il pulsante rosso!','Anche in 3D!','Fatto con amore e cubetti!',

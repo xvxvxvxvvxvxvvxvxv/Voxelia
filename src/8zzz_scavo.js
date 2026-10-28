@@ -1,4 +1,4 @@
-/* ================= 7.43: scavare =================
+/* ================= 7.44: scavare =================
    All'aperto (nelle zone intorno ad Aldoria e nelle regioni di Tomorrow) ogni giorno ci sono tre punti dove il terreno
    luccica appena: avvicinati e scava (R o clic). Sotto c'è oro, una pozione, un oggetto, a volte una pietra preziosa
    e, una volta ogni tanto, un passaggio segreto che porta in una grotta nascosta con i suoi forzieri e i suoi abitanti. */

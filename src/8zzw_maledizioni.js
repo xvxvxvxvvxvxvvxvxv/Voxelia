@@ -1,4 +1,4 @@
-/* ================= 7.43: le maledizioni, a scelta, prima di entrare in un dungeon =================
+/* ================= 7.44: le maledizioni, a scelta, prima di entrare in un dungeon =================
    Sulla soglia di un dungeon si possono accettare una o più maledizioni: rendono il dungeon più duro ma danno più oro,
    più esperienza e più oggetti. Valgono fino a quando si esce dal dungeon. Si può entrare anche senza, e si può smettere
    di farsi chiedere (la scelta resta nelle Impostazioni → Gioco del pannello). */

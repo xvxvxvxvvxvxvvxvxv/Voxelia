@@ -3,11 +3,15 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
-## Torre 1.0 (gioco 7.43)
+## Torre 1.0 (gioco 7.44)
 
 - **Nuovo plugin Torre:** la classifica della Torre della Corona, la sfida del giorno (dieci piani uguali per tutti i giocatori fino a mezzanotte UTC).
 - Il gioco manda, alla fine di ogni salita, i piani superati e il tempo; il plugin tiene il miglior risultato di ogni eroe per ogni giorno (gli ultimi 14), lo rimanda a chi apre l'ingresso della Torre e annuncia chi arriva in cima per primo.
 - Non accetta risultati di altri giorni, più di dieci piani o tempi troppo brevi. Comando `/torre`, pagina web `/plugins/torre/`. Config: `giorni` (14), `inClassifica` (20), `annunciaVetta` (sì).
+
+## Guardiano 2.7 (gioco 7.42.3)
+
+- Nuova funzione `VoxeliaGuardiano.sviluppatore(nome, secondi, ip)`, che chiama il server quando un admin sblocca il pannello sviluppatore del gioco con la password: per quel tempo (al massimo 12 ore) il Guardiano non segnala quel giocatore, ma solo se ha lo stesso nome **e** lo stesso indirizzo di chi ha dato la password.
 
 ## Manutenzione del gioco 7.41.1 (senza cambio di versione)
 

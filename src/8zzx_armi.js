@@ -1,4 +1,4 @@
-/* ================= 7.43: le armi che crescono =================
+/* ================= 7.44: le armi che crescono =================
    La maestria c'era già (ogni colpo la fa salire, fino a 10). Ora l'arma cresce anche di carattere:
    - a maestria 3 prende un nome tutto suo («Morso d'Inverno», «Ultima Parola»…), scelto dal suo seme;
    - a maestria 5 sblocca la sua mossa speciale, che parte insieme all'affondo (F): ogni tipo d'arma ha la sua;

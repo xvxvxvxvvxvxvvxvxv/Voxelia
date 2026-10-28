@@ -17,8 +17,11 @@ const STW={dag:10,swd:14,axe:18,ham:22,spr:14,tri:15,stf:10,scy:16};
 const stMax=()=>100+Math.min(60,P.lv|0);
 const ACT={sh:0,shT:0,run:0,lock:null,tw:-9,stT:-9};
 function stCur(){if(P.sta==null)P.sta=stMax();return P.sta}
-function stUse(n){P.sta=Math.max(0,stCur()-n);ACT.stT=t}
-function stTired(){if(stCur()>0)return false;if(t-ACT.tw>.8){ACT.tw=t;flt(P,'Senza fiato','#9adcff');tone(200,.05,'triangle',.03)}return true}
+// 7.42.2: arrivati a zero si resta SENZA FIATO finché la stamina non torna almeno al 30%: niente corsa, capriole, attacchi.
+// Prima bastava un filo di stamina ricaricata (anche 0,4) per scattare, rotolare o colpire di nuovo, all'infinito.
+const ST_OK=.3;
+function stUse(n){P.sta=Math.max(0,stCur()-n);ACT.stT=t;if(P.sta<=0)ACT.ex=1}
+function stTired(){if(ACT.ex&&stCur()>=stMax()*ST_OK)ACT.ex=0;if(!ACT.ex&&stCur()>0)return false;if(t-ACT.tw>.8){ACT.tw=t;flt(P,'Senza fiato','#9adcff');tone(200,.05,'triangle',.03)}return true}
 // dove punta il cursore, sul terreno (anche in 3D)
 function actAim(ev){let wx,wy;if(typeof D3!=='undefined'&&D3.act){const p=d3Ground(ev.clientX,ev.clientY);if(!p)return null;wx=p[0];wy=p[1]}
   else{const[mx,my]=toWorld(ev.clientX,ev.clientY),m2=my+14;wx=(mx/32+m2/16)/2;wy=(m2/16-mx/32)/2}const dx=wx-P.px,dy=wy-P.py,d=Math.hypot(dx,dy);if(d<.05)return null;return[dx/d,dy/d]}
@@ -32,7 +35,7 @@ const _cbDir732=cbDir;cbDir=function(r){if(!actOn())return _cbDir732(r);
   if(tg){const dx=tg.px-P.px,dy=tg.py-P.py,d=Math.hypot(dx,dy)||1;return{dx:dx/d,dy:dy/d,tg}}const d=Math.hypot(aim[0],aim[1])||1;return{dx:aim[0]/d,dy:aim[1]/d,tg:null}};
 // la stamina: ogni mossa ha il suo costo
 const _cbPress732=cbPress;cbPress=function(src){if(actOn()&&cbOn()&&!PM&&!P.dm&&!CMB.cur&&stTired())return;_cbPress732(src)};
-const _cbDo732=cbDo;cbDo=function(step,o){if(actOn()&&!(o&&o.auto)&&stCur()<=0&&o&&!o.first){CMB.buf=0;stTired();return}_cbDo732(step,o);if(!actOn()||(o&&o.auto))return;if(P.tg&&P.tg.k==='en')P.tg=null;stUse((STW[cbCls()]||14)*(step===2?1.3:1));
+const _cbDo732=cbDo;cbDo=function(step,o){if(actOn()&&!(o&&o.auto)&&!(o&&o.first)&&stTired()){CMB.buf=0;return}_cbDo732(step,o);if(!actOn()||(o&&o.auto))return;if(P.tg&&P.tg.k==='en')P.tg=null;stUse((STW[cbCls()]||14)*(step===2?1.3:1));
   // il passo in avanti con il colpo
   const c=CMB.cur;if(c&&!P.dm){const s=.22;if(!blk(P.px+c.dx*s,P.py))P.px+=c.dx*s;if(!blk(P.px,P.py+c.dy*s))P.py+=c.dy*s}};
 const _cbHeavy732=cbHeavy;cbHeavy=function(lv){if(actOn()){if(stTired())return;stUse(26+lv*14)}_cbHeavy732(lv)};
@@ -74,16 +77,16 @@ const _upd732=upd;upd=function(dt){const on=actOn()&&started&&P&&P.hp>0;const ox
     else if(dist(G,P)<=actReach(G)){ACT.go=null;P.tg=null;P.path=[];const dx=G.px-P.px,dy=G.py-P.py,d=Math.hypot(dx,dy)||1;ACT.aim=[dx/d,dy/d];ACT.aimT=t;cbPress('m')}}
   _upd732(dt);if(!on)return;stCur();
   // la corsa
-  const kd=keyDir();ACT.run=0;if(ACT.sh&&t-ACT.shT>=.24&&kd&&!P.dm&&!CMB.cur&&P.sta>0&&!PM){ACT.run=1;ACT.ran=1;const[dx,dy]=kd,s=1.95*dt,r=.24;
-    if(!blk(P.px+dx*s+Math.sign(dx)*r,P.py))P.px+=dx*s;if(!blk(P.px,P.py+dy*s+Math.sign(dy)*r))P.py+=dy*s;P.sta=Math.max(0,P.sta-16*dt);ACT.stT=t;if(cineOK()&&Math.random()<dt*8)sparks(P.px,P.py,1,['#c8b890','#a89870'],20)}
+  const kd=keyDir();ACT.run=0;if(ACT.sh&&t-ACT.shT>=.24&&kd&&!P.dm&&!CMB.cur&&P.sta>0&&!ACT.ex&&!PM){ACT.run=1;ACT.ran=1;const[dx,dy]=kd,s=1.95*dt,r=.24;
+    if(!blk(P.px+dx*s+Math.sign(dx)*r,P.py))P.px+=dx*s;if(!blk(P.px,P.py+dy*s+Math.sign(dy)*r))P.py+=dy*s;P.sta=Math.max(0,P.sta-16*dt);ACT.stT=t;if(P.sta<=0){ACT.ex=1;stTired()}if(cineOK()&&Math.random()<dt*8)sparks(P.px,P.py,1,['#c8b890','#a89870'],20)}
   // si ricarica quando non fai niente di faticoso
-  if(!ACT.run&&!CMB.cur&&!CMB.ch&&!P.dm&&t-ACT.stT>.65)P.sta=Math.min(stMax(),P.sta+dt*(kd?30:42));
+  if(!ACT.run&&!CMB.cur&&!CMB.ch&&!P.dm&&t-ACT.stT>.65){P.sta=Math.min(stMax(),P.sta+dt*(kd?30:42));if(ACT.ex&&P.sta>=stMax()*ST_OK)ACT.ex=0}
   // il bersaglio bloccato: si guarda sempre lui
   const L=ACT.lock;if(L){if(!ents.includes(L)||L.hp<=0||dist(L,P)>15){ACT.lock=null}else if(!P.dm){const dx=L.px-P.px,dy=L.py-P.py;P.fc=faceOf(dx,dy);if(!kd)P.dr=[dx,dy]}}
   stBar()};
 // la barra della stamina, sotto la vita
 function stBar(){const f=$('stamf');if(!f){const hb=document.querySelectorAll('#hud .hb');if(hb.length>=2&&actOn())hb[1].insertAdjacentHTML('afterend',`<div class="hb" id="stamb">${ico('vortice')||''}<div class="b"><i id="stamf" style="background:#4cc070"></i><span id="stamt"></span></div></div>`);return}
-  const k=clamp(stCur()/stMax(),0,1);f.style.width=(k*100)+'%';f.style.background=k<.25?'#c0a040':'#4cc070';const s=$('stamt');if(s)s.textContent='Stamina '+Math.round(P.sta);const b=$('stamb');if(b)b.style.display=actOn()?'':'none'}
+  const k=clamp(stCur()/stMax(),0,1);f.style.width=(k*100)+'%';f.style.background=ACT.ex?'#c05040':k<.25?'#c0a040':'#4cc070';const s=$('stamt');if(s)s.textContent=(ACT.ex?'Senza fiato ':'Stamina ')+Math.floor(P.sta)+'/'+stMax();const b=$('stamb');if(b)b.style.display=actOn()?'':'none'}
 const _hud732=hud;hud=function(){_hud732();stBar()};
 // il mirino sul bersaglio bloccato
 function lockMark(){const L=ACT.lock;if(!L||!ents.includes(L))return;let sx,sy;if(typeof D3!=='undefined'&&D3.act){const q=d3Proj(L.px,L.py,(L.m&&L.m.top||40)*.6);if(!q)return;sx=q[0];sy=q[1]}else{sx=(PX(L.px,L.py)-camX)*S+W/2;sy=(PY(L.px,L.py,(L.m&&L.m.top||40)*.6)-camY)*S+H/2}
@@ -91,7 +94,7 @@ function lockMark(){const L=ACT.lock;if(!L||!ents.includes(L))return;let sx,sy;i
   for(let i=0;i<4;i++){const a=i*Math.PI/2+t*1.5;g.beginPath();g.moveTo(sx+Math.cos(a)*(r+3),sy+Math.sin(a)*(r+3));g.lineTo(sx+Math.cos(a)*(r+9),sy+Math.sin(a)*(r+9));g.stroke()}g.restore()}
 const _draw732=draw;draw=function(){_draw732();if(actOn()&&!(typeof D3!=='undefined'&&D3.act))lockMark()};
 if(typeof d3Overlay==='function'){const _d3o732=d3Overlay;d3Overlay=function(){_d3o732();if(actOn())lockMark()}}
-const _loadPost732=loadPost;loadPost=function(k){_loadPost732(k);ACT.lock=null;if(P)P.sta=stMax()};
+const _loadPost732=loadPost;loadPost=function(k){_loadPost732(k);ACT.lock=null;ACT.ex=0;if(P)P.sta=stMax()};
 // sul telefono: il pulsante per bloccare il bersaglio
 if(typeof touchBuild==='function'){const _tb732=touchBuild;touchBuild=function(){_tb732();const tc=$('tc');if(!tc||$('t-lock'))return;
   tc.insertAdjacentHTML('beforeend',`<button id="t-lock" class="tb" aria-label="Blocca"><img src="${ICON('mira',3).u}" alt=""><b>Blocca</b><i class="tcd"></i></button>`);

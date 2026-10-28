@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.42.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.42.2** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -234,7 +234,8 @@ e ogni giorno i minatori portano un po' di minerali al magazzino.
 
 Si combatte cliccando dove si vuole colpire: l'eroe si gira verso il cursore e fa la mossa della sua arma; tenendo premuto
 si carica il colpo pesante. Attacchi, capriola (Maiusc o E) e corsa (Maiusc tenuto) consumano la stamina, che si
-ricarica da sola. Tab blocca il bersaglio: l'eroe lo guarda sempre e ogni colpo va su di lui. Lontano dai nemici il clic
+ricarica da sola (il massimo è 100 più il livello, fino a 160). Se arriva a zero si resta senza fiato: niente
+attacchi, capriole o corsa finché non torna al 30%. Tab blocca il bersaglio: l'eroe lo guarda sempre e ogni colpo va su di lui. Lontano dai nemici il clic
 fa camminare. Il combattimento classico si riattiva in Impostazioni → Comandi.
 
 ### La tua casa e le mura (dalla 7.33)
@@ -886,7 +887,7 @@ build.sh                unisce i sorgenti in voxelia.html
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md)
-releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.42.1 (voxelia_orig75.html è la 7.5)
+releases/               le build delle versioni pubblicate, dalla 7.4.1 alla 7.42.2 (voxelia_orig75.html è la 7.5)
 docs/                   immagini di questo README
 Dockerfile              immagine del server
 docker-compose.yml      avvio con Docker Compose

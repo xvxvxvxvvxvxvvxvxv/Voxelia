@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.42.2 — La stamina a zero lascia davvero senza fiato (28 ottobre 2026)
+
+- **Con la stamina a zero non si scatta più.** Prima bastava che se ne ricaricasse un filo (anche meno di 1) per tornare a correre, rotolare o attaccare, e così si poteva continuare quasi all'infinito. Ora, quando la stamina arriva a zero, l'eroe resta **senza fiato** finché non torna almeno al 30%: niente corsa, capriole, attacchi o colpi caricati. La barra diventa rossa e dice «Senza fiato».
+- La barra ora mostra anche il massimo (per esempio «Stamina 62/109»). Che superi 100 è voluto: il massimo è 100 più il livello dell'eroe, fino a 160.
+
+---
+
 ## 7.42.1 — Il clic su un nemico lontano fa camminare l'eroe (28 ottobre 2026)
 
 - **Cliccando un nemico lontano l'eroe ci va camminando, e attacca quando arriva.** Con il combattimento d'azione il clic su un nemico fuori portata faceva partire subito l'animazione del colpo nel vuoto, senza muoversi. Ora l'eroe raggiunge il nemico aggirando gli ostacoli e colpisce appena è a portata dell'arma (il bastone, che colpisce da lontano, attacca subito come prima). L'avvicinamento si annulla se ti muovi con i tasti, clicchi altrove o fai una capriola. Il clic sul terreno vicino ai nemici resta un colpo verso il cursore.

@@ -5,6 +5,31 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.43 — Combattimento e dungeon: boss a fasi, leve, maledizioni, armi con un nome, la Torre e la pala (28 ottobre 2026)
+
+- **I boss combattono in tre fasi.** A due terzi e a un terzo della vita ruggiscono (per un attimo sono immuni), cambiano mosse e attaccano più spesso; nell'ultima fase chiamano rinforzi.
+  - **Il punto debole:** ogni tanto sopra la testa del boss si accende un nucleo luminoso. Finché brilla i colpi fanno il doppio, e quattro colpi a segno lo **stordiscono** per tre secondi: resta fermo, non attacca e prende più danni.
+- **Le leve dei dungeon, da tirare insieme.** Nei piani dei dungeon (non in quello del boss) la scala che scende è chiusa da una grata. La aprono due leve, in due stanze lontane, tirate nello stesso momento: ogni leva resta giù 18 secondi.
+  - In gruppo uno tira e l'altro corre: le leve degli altri si vedono e contano.
+  - Quando tiri una leva escono dei guardiani: chi resta alla leva deve difendersi.
+  - Le leve sono nello stesso posto per tutti i giocatori della stanza.
+- **Le maledizioni, a scelta.** Sulla soglia di un dungeon puoi entrare maledetto: Nemici veloci, Furia, Orda, Gola secca (niente pozioni) e Fragile (vita −30%).
+  - Ogni maledizione aumenta oro, esperienza e oggetti (dal 20% al 35% l'una, si sommano); con il 60% o più il boss lascia anche un oggetto epico.
+  - Valgono finché resti nel dungeon. Si può entrare anche senza, e smettere di farsi chiedere.
+- **Le armi crescono.** Oltre alla maestria che c'era già:
+  - a maestria 3 l'arma prende **un nome tutto suo** («Morso d'Inverno», «Ultima Parola», «Ala della Fenice»…);
+  - a maestria 5 sblocca la sua **mossa speciale**, che parte insieme all'affondo (F): Lama del vento (spade, stocchi, pugnali), Terremoto (asce e martelli, stordisce), Mulinello (lance e falci, respinge), Nova arcana (bastoni);
+  - a maestria 10 diventa **leggendaria** e la mossa speciale colpisce più forte e più lontano. Le armi già cresciute nei salvataggi di prima prendono subito nome e mossa.
+- **La Torre della Corona, la sfida del giorno.** Una porta di pietra con la luce d'oro, in piazza ad Aldoria e nella tua città di Tomorrow.
+  - Dieci piani: ripulisci la sala, scegli una di tre **benedizioni** (Forza, Vigore, Sete, Fortuna, Scorta, Pelle di pietra, Scoppio, Occhio fino, Rigenerazione, Riflessi) e sali. Ai piani 5 e 10 c'è un boss.
+  - Ogni giorno la Torre cambia, ma è **uguale per tutti**: stessi nemici, stesse sale, stesse benedizioni.
+  - Cadere nella Torre non costa niente: la prova finisce e prendi il premio dei piani fatti (oro, esperienza, un oggetto raro dal quinto piano, uno epico in cima).
+  - **Classifica del giorno** in rete con il nuovo plugin **Torre** del server (`/torre` in chat e una pagina web).
+- **La pala.** All'aperto (intorno ad Aldoria e nelle regioni di Tomorrow) ogni giorno ci sono tre punti dove la terra luccica appena: avvicinati e scava (R o clic). Sotto c'è oro, una pozione, un oggetto, a volte un tesoro e, ogni tanto, **un passaggio segreto** che porta in una grotta nascosta con i suoi forzieri e i suoi abitanti.
+- **Le frasi del titolo, come in Minecraft.** Accanto a VOXELIA compare una frase gialla, storta, che pulsa: una diversa ogni volta (cliccandola cambia), e in certi giorni dell'anno ne arrivano di speciali.
+
+---
+
 ## 7.42 — La Corona di Voxel, le scene disegnate e la vista 3D sistemata (27 ottobre 2026)
 
 - **Un menu tutto nuovo: la Corona di Voxel in 3D.** Nella scelta della modalità c'è la Corona, in vero 3D, che gira su se stessa sopra un cuscino di velluto, con le scintille che le volano intorno. Ogni gemma è una modalità:

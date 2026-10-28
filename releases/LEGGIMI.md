@@ -15,7 +15,7 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-68 versioni, dalla più recente.
+69 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
@@ -82,6 +82,7 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 | [6.10](voxelia_v6.10.html) | 8 ottobre 2026 | Mappa nuova, zoom e tema scuro | 555 KB |
 | [6.9](voxelia_v6.9.html) | 8 ottobre 2026 | Impostazioni divise per categoria | 541 KB |
 | [6.7](voxelia_v6.7.html) | 8 ottobre 2026 | Plugin per il server | 527 KB |
+| [5.3](voxelia_v5.3.html) | 8 ottobre 2026 | Plugin per il server | 351 KB |
 | [5.2](voxelia_v5.2.html) | 7 ottobre 2026 | Aldoria più grande, eroe che si gira, arredi unici | 348 KB |
 | [4.7.2](voxelia_v4.7.2.html) | 7 ottobre 2026 | Menu iniziale nuovo | 258 KB |
 | [4.7](voxelia_v4.7.html) | 7 ottobre 2026 | Giorno e notte, orologio, bussola, icone nuove, scene, aspetto dell'eroe e HUD su misura | 249 KB |

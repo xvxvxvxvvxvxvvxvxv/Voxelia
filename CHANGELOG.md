@@ -1672,6 +1672,30 @@ Questa versione unisce due rami di Voxelia: tutte le novità dalla 6.8 alla 6.10
 
 ---
 
+## 5.3 — Plugin per il server (8 ottobre 2026)
+
+### Aggiunto
+- **Plugin del server.** All'avvio, `node server.js` carica i plugin della cartella `plugins/`, accanto a server.js. Se la cartella non c'è la crea, con dentro le istruzioni (`LEGGIMI.md`) e un plugin di esempio spento (`_esempio.js`).
+  - Un plugin è un file `nome.js` oppure una cartella `nome/` con `index.js`. Basta metterlo nella cartella: niente da installare.
+  - I nomi che iniziano con `_` restano spenti.
+  - Un plugin che va in errore viene segnato nel registro e non ferma il server; gli altri continuano a funzionare.
+  - Cosa può fare un plugin:
+    - reagire agli eventi del server: ingresso e uscita, cambio di zona, chat, vittorie nell'arena, boss dei dungeon, oggetti a terra, scambi;
+    - aggiungere **comandi di chat** come `/dado`, e filtrare o bloccare i messaggi;
+    - dare oro, esperienza, pozioni, livelli e oggetti, curare, riportare in città o disconnettere un giocatore;
+    - mandare messaggi privati, in chat e annunci;
+    - salvare dati che restano tra un riavvio e l'altro, e leggere una configurazione modificabile (`nome.config.json`);
+    - usare timer, aggiungere pagine web su `/plugins/<nome>/` (anche riservate all'admin) e cambiare le impostazioni del server;
+    - aggiungere codice al gioco e scambiare messaggi con esso.
+- **Comandi di chat:** in multigiocatore, un messaggio che inizia con `/` va al server e non compare sopra l'eroe. `/aiuto` elenca i comandi dei plugin e `/plugin` mostra i plugin attivi.
+- **Pannello admin, pagina Plugin:** ogni plugin con stato, versione, comandi, pagine ed errori. Ogni plugin si può spegnere e riaccendere, e il pulsante **Ricarica** carica subito plugin nuovi o modificati, senza riavviare il server. Nel registro c'è il filtro "Plugin".
+
+### Modificato
+- I regali che arrivano da un plugin dicono da quale plugin vengono ("Da Esempio: +50 oro").
+- Il cookie del pannello admin vale anche per le pagine dei plugin riservate all'admin.
+
+---
+
 ## 5.2 — Aldoria più grande, eroe che si gira, arredi unici (7 ottobre 2026)
 
 ### Aggiunto

@@ -1,4 +1,4 @@
-// Server di Voxelia 7.42.3: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Server di Voxelia 7.43: serve il gioco e fa da ponte WebSocket tra i giocatori.
 // Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
 // rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
 // i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
@@ -9,7 +9,7 @@
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
 const http = require('http'), https = require('https'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
-const VER = '7.42.3';
+const VER = '7.43';
 const PORT = process.env.PORT || 3000;
 // certificato e chiave in formato PEM: se ci sono entrambi il server parla solo https/wss
 const TLS = (() => {
@@ -128,6 +128,48 @@ function authed(req) { const t = cookie(req, 'vxadm'), e = t && SESS.get(t); if 
 const json = (res, code, o, h) => { res.writeHead(code, Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, h || {})); res.end(JSON.stringify(o)); };
 function body(req, cb) { let d = ''; req.on('data', x => { d += x; if (d.length > 20000) req.destroy(); }); req.on('end', () => { let j = {}; try { j = JSON.parse(d || '{}'); } catch (e) {} cb(j && typeof j === 'object' ? j : {}); }); }
 
+/* ---------- 7.43: le versioni precedenti del gioco, da giocare solo da soli ----------
+   Le build di releases/ si aprono da /versioni/<versione>/. Il server le serve senza il collegamento al multigiocatore
+   (niente window.GAME_WS) e con Content-Security-Policy connect-src 'none': la pagina non può aprire connessioni di nessun
+   tipo, quindi niente chat, arena, scambi, mondi della community né altro di online. I salvataggi di ogni versione vecchia
+   finiscono in una parte separata del localStorage ("voxelia-v<versione>:..."), così non toccano quelli della versione attuale. */
+const REL_DIR = path.join(__dirname, 'releases');
+const relCmp = (a, b) => { const x = a.split('.').map(Number), y = b.split('.').map(Number); for (let i = 0; i < 3; i++) { const d = (x[i] || 0) - (y[i] || 0); if (d) return d; } return 0; };
+let REL = null, RELT = 0;
+function relList() {
+  if (REL && Date.now() - RELT < 60000) return REL;
+  const L = [];
+  try {
+    const info = {}; let idx = ''; try { idx = fs.readFileSync(path.join(REL_DIR, 'LEGGIMI.md'), 'utf8'); } catch (e) {}
+    for (const m of idx.matchAll(/^\| \[([0-9.]+)\]\([^)]*\) \| ([^|]*) \| ([^|]*) \|/gm)) info[m[1]] = { d: m[2].trim(), t: m[3].trim() };
+    for (const f of fs.readdirSync(REL_DIR)) {
+      const m = f.match(/^voxelia_v(\d+(?:\.\d+){1,2})\.html$/); if (!m || m[1] === VER) continue;
+      L.push({ v: m[1], t: (info[m[1]] || {}).t || '', d: (info[m[1]] || {}).d || '' });
+    }
+    L.sort((a, b) => relCmp(b.v, a.v));
+  } catch (e) {}
+  REL = L; RELT = Date.now(); return L;
+}
+function relPage(v) {
+  if (!relList().some(o => o.v === v)) return null;
+  let h; try { h = fs.readFileSync(path.join(REL_DIR, 'voxelia_v' + v + '.html'), 'utf8'); } catch (e) { return null; }
+  const P = JSON.stringify('voxelia-v' + v + ':');
+  // prima di ogni altro script: il localStorage della versione vecchia è una sua parte separata di quello vero
+  const shim = '<script>(function(){var R,P=' + P + ';try{R=window.localStorage}catch(e){return}function ks(){var a=[];for(var j=0;j<R.length;j++){var k=R.key(j);if(k&&k.indexOf(P)===0)a.push(k)}return a}'
+    + 'var S={getItem:function(k){return R.getItem(P+k)},setItem:function(k,x){R.setItem(P+k,String(x))},removeItem:function(k){R.removeItem(P+k)},key:function(i){var a=ks();return i<a.length?a[i].slice(P.length):null},clear:function(){ks().forEach(function(k){R.removeItem(k)})}};'
+    + 'Object.defineProperty(S,"length",{get:function(){return ks().length}});var ok=false;try{Object.defineProperty(window,"localStorage",{configurable:true,get:function(){return S}});ok=window.localStorage===S}catch(e){}'
+    + 'if(!ok){window.VXOLD_BLOCK=1;try{window.stop()}catch(e){}document.documentElement.innerHTML="<body style=\\"font:16px sans-serif;padding:20px\\">Questo browser non permette di separare i salvataggi: per non rovinare la tua partita, le versioni vecchie qui non si aprono. <a href=\\"/\\">Torna a Voxelia</a></body>";throw new Error("voxelia: salvataggi non separabili")}})()</script>';
+  // in fondo: la fascia della versione vecchia e il codice stanza spento
+  const bar = '<script>(function(){if(window.VXOLD_BLOCK)return;function go(){var r=document.getElementById("rc");if(r){r.value="";r.disabled=true;r.placeholder="Solo in singolo";r.title="Le versioni vecchie si giocano solo da soli"}'
+    + 'var b=document.createElement("div");b.id="vxold";b.innerHTML="Voxelia ' + v + ' · versione vecchia, solo in singolo · <a href=\\"/\\">Torna alla versione attuale</a>";'
+    + 'b.style.cssText="position:fixed;left:50%;top:max(6px,env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:2147483000;background:rgba(10,12,24,.88);color:#ffe7a8;font:12px/1.4 Georgia,serif;padding:4px 12px;border:1px solid #f5b94266;border-radius:12px;pointer-events:auto;max-width:92vw;text-align:center";'
+    + 'var a=b.querySelector("a");a.style.color="#9fd0ff";document.body.appendChild(b)}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()})()</script>';
+  const m = h.match(/<meta charset=[^>]*>/i), i = m ? h.indexOf(m[0]) + m[0].length : (h.indexOf('<head>') + 6);
+  h = h.slice(0, i) + shim + h.slice(i);
+  const j = h.lastIndexOf('</body>'); h = j < 0 ? h + bar : h.slice(0, j) + bar + h.slice(j);
+  return h;
+}
+
 const srv = (TLS ? https.createServer.bind(null, TLS) : http.createServer)((req, res) => {
   const u = req.url.split('?')[0];
   if (u === '/' || u === '/index.html') {
@@ -135,6 +177,13 @@ const srv = (TLS ? https.createServer.bind(null, TLS) : http.createServer)((req,
     catch (e) { res.writeHead(500); res.end('file del gioco (voxelia*.html) non trovato: mettilo nella stessa cartella di server.js'); }
     return;
   }
+  if (u === '/versioni' || u === '/versioni/') return json(res, 200, { attuale: VER, versioni: relList() });
+  { const m = u.match(/^\/versioni\/(\d+(?:\.\d+){1,2})\/?$/); if (m) {
+    if (!u.endsWith('/')) { res.writeHead(301, { Location: '/versioni/' + m[1] + '/' }); res.end(); return; }
+    const h = relPage(m[1]); if (!h) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('Versione non trovata'); return; }
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=3600', 'Content-Security-Policy': "connect-src 'none'; form-action 'none'; base-uri 'none'", 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' });
+    res.end(h); return;
+  } }
   if (u === '/admin' || u === '/admin/') {
     try { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Frame-Options': 'DENY' }); res.end(adminPage()); }
     catch (e) { res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('admin.html non trovato: mettilo nella stessa cartella di server.js'); }

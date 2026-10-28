@@ -5,20 +5,22 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Come si giocano
 
-- Si apre il file nel browser e si gioca **da soli**.
+- **Dal sito**: nel menu del gioco, «Versioni precedenti». Il server le apre solo da soli e con i salvataggi separati.
+- Dal disco: si apre il file nel browser e si gioca **da soli**.
 - Il multigiocatore di una versione vecchia funziona solo con il server di quella stessa versione, che qui non c'è: il
   server di oggi parla con il gioco di oggi.
-- **Attenzione ai salvataggi.** Il browser tiene i salvataggi per indirizzo, non per versione: una versione vecchia
+- **Attenzione ai salvataggi, aprendo i file dal disco.** Il browser tiene i salvataggi per indirizzo, non per versione: una versione vecchia
   aperta dallo stesso posto della versione attuale (per esempio dalla stessa cartella del disco) vede e può riscrivere la
   stessa partita, le impostazioni e i mondi di Voxelia Studio. Prima di provarla esporta i mondi che ti servono, oppure
   apri la versione vecchia in una finestra privata o in un altro profilo del browser.
 
 ## Elenco
 
-69 versioni, dalla più recente.
+70 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
+| [7.43](voxelia_v7.43.html) | 28 ottobre 2026 | Le versioni precedenti. da rigiocare | 2.544 KB |
 | [7.42.3](voxelia_v7.42.3.html) | 28 ottobre 2026 | Il pannello sviluppatore, sui server, solo per gli admin | 2.535 KB |
 | [7.42.2](voxelia_v7.42.2.html) | 28 ottobre 2026 | La stamina a zero lascia davvero senza fiato | 2.531 KB |
 | [7.42.1](voxelia_v7.42.1.html) | 28 ottobre 2026 | Il clic su un nemico lontano fa camminare l'eroe | 2.529 KB |

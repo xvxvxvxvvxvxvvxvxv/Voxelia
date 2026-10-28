@@ -5,6 +5,16 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.43 — Le versioni precedenti, da rigiocare (28 ottobre 2026)
+
+- **Si possono giocare le versioni vecchie di Voxelia.** Nel menu c'è il pulsante **Versioni precedenti** (anche nella gemma Diamante della Corona): si sceglie una delle 69 versioni conservate, dalla 4.5 alla 7.42.3, con titolo e data, e si gioca nel browser. C'è anche la ricerca per numero, parola o data.
+- **Solo da soli.** Le versioni vecchie non hanno multigiocatore né funzioni online: non si collegano al server, e il browser impedisce loro qualunque connessione. Il codice stanza è spento. Le funzioni online restano nella versione attuale.
+- **Salvataggi separati.** Ogni versione vecchia ha i suoi salvataggi, che non vedono e non toccano la partita, le impostazioni e i mondi di Voxelia Studio della versione attuale.
+- In alto c'è una fascia con il numero della versione e il collegamento per tornare a quella attuale.
+- Il selettore c'è quando il gioco arriva dal server; aprendo il file dal disco non compare.
+
+---
+
 ## 7.42.3 — Il pannello sviluppatore, sui server, solo per gli admin (28 ottobre 2026)
 
 - **Sbloccato dal server, non dal browser.** Prima il codice del pannello sviluppatore si controllava solo nel gioco: bastava un comando nella console del browser per aprirlo, anche sul server ufficiale, e da lì dare oro, livelli e oggetti che poi finivano nel mondo condiviso. Ora, quando il gioco arriva da un server, il pannello chiede la **password admin del server** e la controlla il server stesso (con lo stesso limite di tentativi del pannello admin). Lo sblocco vale finché non ricarichi la pagina e non si ricorda nel browser.

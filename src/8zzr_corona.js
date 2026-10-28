@@ -153,7 +153,7 @@ setInterval(()=>{if(CRW.vis&&!crWant())crShow(0);if(!CRW.vis){if(CRW.ok==null){c
 // mouse e dita: passare sopra una gemma la illumina, cliccarla la sceglie, trascinare fa girare la corona
 function crHit(x,y){let best=-1,bd=1e9;for(let i=0;i<6;i++){const p=crGemW(i,CRW.th);if(p[2]<4)continue;const s=crProj(p);if(!s)continue;const dd=Math.hypot(s[0]-x,s[1]-y);
   const R=Math.max(26,40*150/Math.max(30,CRW.cam.d));if(dd<R&&dd<bd){bd=dd;best=i}}return best}
-const crOnUi=e=>!!(e.target&&e.target.closest&&e.target.closest('button,a,input,select,textarea,#crcard,.mfoot,.mhead,#mb,#set,#chg,#look,#fmenu,dialog'));
+const crOnUi=e=>!!(e.target&&e.target.closest&&e.target.closest('button,a,input,select,textarea,#crcard,.mfoot,.mhead,#mb,#set,#chg,#look,#fmenu,#vmenu,dialog'));
 addEventListener('pointermove',e=>{if(!CRW.vis)return;if(CRW.drag){const dx=e.clientX-CRW.drag.x;CRW.drag.x=e.clientX;if(Math.abs(e.clientX-CRW.drag.x0)>6)CRW.drag.m=1;CRW.th-=dx*.008;return}
   const h=crOnUi(e)?-1:crHit(e.clientX,e.clientY);if(h!==CRW.hov){CRW.hov=h;document.body.classList.toggle('crhov',h>=0);if(h>=0)try{tone(900+h*40,.03,'sine',.015)}catch(_){}}});
 addEventListener('pointerdown',e=>{if(!CRW.vis||crOnUi(e)||crBusy()||CRW.go)return;CRW.drag={x:e.clientX,x0:e.clientX,m:0}});

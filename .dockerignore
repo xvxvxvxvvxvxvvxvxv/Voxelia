@@ -1,5 +1,4 @@
 .git
-releases
 src
 build.sh
 CHANGELOG.md

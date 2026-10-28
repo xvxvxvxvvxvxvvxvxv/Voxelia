@@ -14,7 +14,7 @@ const WPN43N=['Morso d\'Inverno','Ultima Parola','Canto della Tempesta','Zanna d
   'Ultimo Saluto','Luna Spezzata','Voce del Tuono','Silenzio d\'Argento','Alba Rossa','Gelo Eterno','Lingua di Fuoco','Pianto della Montagna','Sigillo del Sole','Coda della Cometa',
   'Dente del Leviatano','Corona di Spine','Passo dell\'Ombra','Ruggito del Grifone','Ala della Fenice','Pugno del Gigante','Bacio del Ghiaccio','Ira del Cielo','Patto di Sangue',
   'Faro nella Notte','Speranza Ostinata'];
-function wpnKind(n){n=n||'';const k=Object.keys(LG).find(x=>n.includes(x))||LGA[Object.keys(LGA).find(x=>n.includes(x))]||'Spada';return WPN43T[k]||'vento'}
+function wpnKind(n){n=String(n||'').replace(/«[^»]*»/g,'');const k=Object.keys(LG).find(x=>n.includes(x))||LGA[Object.keys(LGA).find(x=>n.includes(x))]||'Spada';return WPN43T[k]||'vento'}
 function wpnTitle(w){const r=sd(hs(String(w.u||w.n)+'|titolo'));return WPN43N[Math.floor(r()*WPN43N.length)]}
 function wpnGrow(w){if(!w)return;const ml=w.ml||0;
   if(ml>=3&&!w.wt){w.wt=wpnTitle(w);if(!String(w.n).includes('«'))w.n=w.n+' «'+w.wt+'»';const s='La tua arma ha un nome: «'+w.wt+'»';if(cineOK())setTimeout(()=>banner('Un nome per l\'arma',s,'spada'),900);else msg(s)}

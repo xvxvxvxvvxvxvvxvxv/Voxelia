@@ -65,7 +65,9 @@ const _lunge743t=lunge;lunge=function(){const c0=P?P.lgc:0;_lunge743t();if(torOn
 const _die743t=die;die=function(){if(torOn()){if(typeof sceneDeath==='function')sceneDeath();P.hp=P.mx;torEnd(0);return}_die743t()};
 // uscire: dalla porta della Torre (la prova finisce) o in altri modi (la prova si perde)
 const _act743t=act;act=function(e){if(e&&e.k==='po'&&e.torEx&&TOR.run){torEnd(0);return}if(e&&e.k==='torre43'){pn('torre');tone(330,.1,'triangle');return}_act743t(e)};
-const _loadPost743t=loadPost;loadPost=function(k){_loadPost743t(k);if(TOR.run&&!(ZZ&&ZZ.torre)){const v=torN('vita');TOR.run=null;if(v)recalc()}torDoor()};
+const _loadPost743t=loadPost;loadPost=function(k){_loadPost743t(k);if(TOR.run&&!(ZZ&&ZZ.torre)){const v=torN('vita');TOR.run=null;if(v)recalc()}torDoor();
+  // 7.44.1: uscendo dalla Torre si torna davanti alla sua porta, non al punto di partenza della zona
+  if(/^torre\d+$/.test(String(LFROM))&&!(ZZ&&ZZ.torre)){const d=ents.find(e=>e.k==='torre43');if(d){let x=d.px|0,y=(d.py|0)+1;if(!(M[y]&&WK(M[y][x])))[x,y]=nearFree(x,y);if(M[y]&&WK(M[y][x])){heroPut(x,y);LFP=1}}}};
 // la porta della Torre: in piazza ad Aldoria e nella tua città di Tomorrow
 ITK.add('torre43');
 function torDoor(){if(!ZZ||ents.some(e=>e.k==='torre43'))return;let c=null;

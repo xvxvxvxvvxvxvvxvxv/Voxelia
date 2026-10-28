@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.44.1** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.45** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -315,6 +315,14 @@ apre tirando insieme due leve. Prima di entrare si possono scegliere maledizioni
 bottino più ricco. Le armi prendono un nome e una mossa speciale crescendo. La Torre della Corona è la sfida del giorno
 (dieci piani uguali per tutti, con le benedizioni e la classifica del plugin Torre). La pala trova tesori e grotte
 segrete. Nel menu c'è la frase del giorno, come in Minecraft.
+
+### Guerre, carovane, cittadini, meteo e blocchi (dalla 7.45)
+
+In Tomorrow le fazioni si dichiarano guerra: all'ora stabilita c'è l'assedio, con catapulte, brecce da riparare e la
+piazza da tenere (serve il plugin Fazioni 1.1). Dal registro partono le carovane, che portano merci alle altre tue città
+o le vendono ai villaggi, e i banditi le possono assaltare. I cittadini vogliono lavoro e felicità, e protestano se non li
+hanno; le tasse si scelgono nel registro. Le stagioni cambiano ogni settimana e il tempo ogni giorno, con effetti sui
+raccolti e sulle carovane. Nell'editor del borgo lo strumento Blocchi mette cubi colorati uno sopra l'altro.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -1011,6 +1019,11 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzy_torre.js` | 7.44: la Torre della Corona, la sfida del giorno con le benedizioni e la classifica |
 | `8zzz_scavo.js` | 7.44: la pala, i tesori sepolti e le grotte segrete |
 | `8zzt_versioni.js` | 7.43: il selettore delle versioni precedenti, da giocare solo da soli (le serve il server da `/versioni/`) |
+| `8zzza_cittadini.js` | 7.45: i bisogni dei cittadini (lavoro, felicità, tasse, proteste in piazza) |
+| `8zzzb_meteo.js` | 7.45: meteo e stagioni di Tomorrow, con effetti sui borghi e sullo schermo |
+| `8zzzc_carovane.js` | 7.45: le carovane fra le città e i villaggi, gli assalti dei banditi |
+| `8zzzd_blocchi.js` | 7.45: costruire a blocchi nell'editor del borgo |
+| `8zzze_assedi.js` | 7.45: le guerre programmate fra le fazioni e gli assedi (plugin Fazioni 1.1) |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

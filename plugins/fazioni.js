@@ -16,9 +16,9 @@ const RUOLI0 = () => ({ staff: { p: PERMS.slice() }, membro: { p: ['costruire', 
 
 module.exports = {
   name: 'Fazioni',
-  version: '1.0',
-  description: 'Fazioni dei giocatori di Tomorrow: ruoli, permessi e un insediamento da costruire insieme',
-  defaults: { maxMembri: 30, maxFazioni: 80, maxRuoli: 10, maxCittaKB: 1500 },
+  version: '1.1',
+  description: 'Fazioni dei giocatori di Tomorrow: ruoli, permessi, un insediamento da costruire insieme e le guerre programmate',
+  defaults: { maxMembri: 30, maxFazioni: 80, maxRuoli: 10, maxCittaKB: 1500, guerraMinuti: 20, bottinoGuerra: 0.3, pausaGuerraOre: 2, preavvisoMinimo: 5 },
 
   setup(api) {
     const S = api.store;
@@ -186,6 +186,67 @@ module.exports = {
       const w = wDi(p), M = S.w[w], id = M && M.chi[K(p.name)], F = id && M.f[id];
       if (!F) return 'Non sei in una fazione. Nel registro (tasto U → Fazione) puoi fondarne una o chiedere di entrare.';
       return 'Fazione ' + F.n + ' · capo ' + F.capo + ' · ' + Object.keys(F.m).length + ' membri' + (F.set ? ' · città comune: ' + F.set.n : '');
+    });
+    // 1.1 (gioco 7.45): le guerre programmate. Il capo (o chi può addestrare l'esercito) dichiara guerra a una fazione che ha
+    // una città comune, con qualche minuto di preavviso. All'ora stabilita la città diventa un campo di battaglia per
+    // guerraMinuti: gli attaccanti abbattono le mura con le catapulte e devono tenere la piazza (30 secondi senza difensori
+    // vicini). Se ce la fanno prendono bottinoGuerra del tesoro della città; se no vincono i difensori.
+    const guerre = M => (M.g = M.g || []);
+    const vistaG = G => ({ id: G.id, a: G.a, an: G.an, d: G.d, dn: G.dn, k: G.k, cn: G.cn, at: G.at, end: G.end, st: G.st, presa: G.presa, win: G.win, bot: G.bot || 0, mura: Object.keys(G.mura) });
+    const elencoF = M => Object.values(M.f).map(F => ({ id: F.id, n: F.n, citta: F.set ? { k: F.set.k, n: F.set.n } : null }));
+    const mandaG = (w, M, solo) => { const d = { w, L: guerre(M).map(vistaG), fz: elencoF(M), now: Date.now() }; for (const q of solo ? [solo] : online(w)) q.send('guerre', d); };
+    const diAMondo = (w, testo) => { for (const q of online(w)) q.tell(testo); };
+    api.onClient('guerre', (p, d) => { if (bot(p)) return; const x = chi(p, d); if (!x.M) return; mandaG(x.w, x.M, p); });
+    api.onClient('guerra', (p, d) => {
+      const x = chi(p, d); if (!x.F) return; const { F, M, m } = x;
+      if (!(m.r === 'capo' || puo(F, m, 'esercito'))) return fallo(p, 'Solo il capo (o chi comanda l\'esercito) può dichiarare guerra.');
+      const T = M.f[String(d && d.id || '')]; if (!T || T === F) return; if (!T.set) return fallo(p, T.n + ' non ha una città comune da assediare.');
+      if (!F.set) return fallo(p, 'Prima la tua fazione deve mettere in comune una città.');
+      const now = Date.now(), L = guerre(M);
+      if (L.some(G => G.st !== 'fine' && (G.a === F.id || G.d === F.id))) return fallo(p, 'La tua fazione è già in guerra (o ne ha una in programma).');
+      if (L.some(G => G.st !== 'fine' && (G.a === T.id || G.d === T.id))) return fallo(p, T.n + ' è già in guerra con qualcun altro.');
+      const pausa = (+C().pausaGuerraOre || 0) * 3600000; if (L.some(G => G.st === 'fine' && ((G.a === F.id && G.d === T.id) || (G.a === T.id && G.d === F.id)) && now - G.end < pausa)) return fallo(p, 'Avete già combattuto da poco: aspettate qualche ora.');
+      const pm = Math.max(0, +C().preavvisoMinimo || 0), min = Math.max(pm, Math.min(180, Math.round(d.min == null ? 15 : +d.min))), at = now + min * 60000, dur = Math.max(5, +C().guerraMinuti || 20) * 60000;
+      const G = { id: crypto.randomBytes(4).toString('hex'), a: F.id, an: F.n, d: T.id, dn: T.n, k: T.set.k, cn: T.set.n, at, end: at + dur, st: 'attesa', mura: {}, presa: 0, win: null, t: now, by: p.name };
+      L.push(G); reg(F, p.name + ' ha dichiarato guerra a ' + T.n + ' (assedio di ' + T.set.n + ' fra ' + min + ' minuti)'); reg(T, F.n + ' ci ha dichiarato guerra: assedio di ' + T.set.n + ' fra ' + min + ' minuti');
+      api.save(); diAMondo(x.w, '⚔ ' + F.n + ' ha dichiarato guerra a ' + T.n + ': l\'assedio di ' + T.set.n + ' comincia fra ' + min + ' minuti.'); mandaG(x.w, M); aggiorna(x.w, M, F); aggiorna(x.w, M, T);
+    });
+    const ultimo = new Map();
+    api.onClient('colpo', (p, d) => {
+      const x = chi(p, d); if (!x.F || !d) return; const G = guerre(x.M).find(g => g.id === String(d.id || '')); if (!G || G.st !== 'corso' || G.a !== x.F.id) return;
+      const L = (Array.isArray(d.c) ? d.c : []).map(String).filter(c => /^\d{1,3},\d{1,3}$/.test(c)).slice(0, 6), k = p.name + '|c', now = Date.now();
+      if (!L.length || now - (ultimo.get(k) || 0) < 2500 || Object.keys(G.mura).length > 500) return; ultimo.set(k, now);
+      for (const c of L) G.mura[c] = 1; for (const q of online(x.w)) q.send('mura', { w: x.w, id: G.id, c: L });
+    });
+    api.onClient('ripara', (p, d) => {
+      const x = chi(p, d); if (!x.F || !d) return; const G = guerre(x.M).find(g => g.id === String(d.id || '')); if (!G || G.st !== 'corso' || G.d !== x.F.id) return;
+      const c = String(d.c || ''), k = p.name + '|r', now = Date.now(); if (!G.mura[c] || now - (ultimo.get(k) || 0) < 1500) return; ultimo.set(k, now);
+      delete G.mura[c]; for (const q of online(x.w)) q.send('mura', { w: x.w, id: G.id, r: [c] });
+    });
+    api.onClient('presa', (p, d) => {
+      const x = chi(p, d); if (!x.F || !d) return; const M = x.M, G = guerre(M).find(g => g.id === String(d.id || '')); if (!G || G.st !== 'corso' || G.a !== x.F.id) return;
+      const now = Date.now(); if (d.dif) { if (G.presa > 0) { G.presa = Math.max(0, G.presa - 2); mandaG(x.w, M); } return; }
+      if (now - (G.ultP || 0) < 1800) return; G.ultP = now; G.presa = Math.min(30, G.presa + 2);
+      if (G.presa >= 30) {
+        G.st = 'fine'; G.win = 'a'; G.end = now; const D = M.f[G.d], A = M.f[G.a]; let bot = 0;
+        if (D && D.set && D.set.S) { const c = D.set.S.cash | 0; bot = Math.floor(c * Math.max(0, Math.min(1, +C().bottinoGuerra || 0))); D.set.S.cash = c - bot; D.set.v++; reg(D, 'Assedio perduto: ' + G.an + ' ha preso ' + bot + ' monete dal tesoro'); }
+        if (A && A.set && A.set.S && bot) { A.set.S.cash = (A.set.S.cash | 0) + bot; A.set.v++; } if (A) reg(A, 'Assedio vinto contro ' + G.dn + (bot ? ': +' + bot + ' monete' : ''));
+        G.bot = bot; api.save(); diAMondo(x.w, '🏴 ' + G.an + ' ha conquistato la piazza di ' + G.cn + '!' + (bot ? ' Bottino: ' + bot + ' monete.' : ''));
+        if (D) mandaCitta(x.w, M, D); if (A) mandaCitta(x.w, M, A);
+      }
+      mandaG(x.w, M);
+    });
+    api.every(5000, () => {
+      const now = Date.now();
+      for (const w in S.w) {
+        const M = S.w[w], L = guerre(M); let ch = false;
+        for (const G of L) {
+          if (G.st === 'attesa' && now >= G.at) { G.st = 'corso'; ch = true; diAMondo(w, '⚔ È cominciato l\'assedio di ' + G.cn + ': ' + G.an + ' contro ' + G.dn + '!'); }
+          else if (G.st === 'corso' && now >= G.end) { G.st = 'fine'; G.win = 'd'; ch = true; const D = M.f[G.d]; if (D) reg(D, 'Assedio respinto: ' + G.an + ' si ritira'); const A = M.f[G.a]; if (A) reg(A, 'Assedio fallito contro ' + G.dn); diAMondo(w, '🛡 ' + G.dn + ' ha respinto l\'assedio di ' + G.an + '!'); }
+        }
+        const keep = L.filter(G => G.st !== 'fine' || now - G.end < 86400000); if (keep.length !== L.length) { M.g = keep; ch = true; }
+        if (ch) { api.save(); mandaG(w, M); }
+      }
     });
     // pagina per l'admin
     api.route('GET', 'admin', (req, res, x) => {

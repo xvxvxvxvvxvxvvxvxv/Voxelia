@@ -5,6 +5,28 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.45 — Tomorrow: guerre fra fazioni, carovane, cittadini, meteo e stagioni, blocchi (28 ottobre 2026)
+
+- **Le guerre programmate fra le fazioni.** Dal registro (U → 🤝 Fazione → Guerre) il capo, o chi comanda l'esercito, dichiara guerra a una fazione che ha una città comune, con un preavviso da 5 minuti a 2 ore. All'ora stabilita comincia l'assedio, per 20 minuti, su un campo di battaglia uguale per tutti:
+  - gli attaccanti aprono brecce nelle mura e nella porta con le catapulte, poi devono tenere la piazza, vicino allo stendardo, per 30 secondi senza difensori intorno: se ci riescono prendono il 30% del tesoro della città;
+  - i difensori riparano le brecce (2 pietre l'una) e restano in piazza: finché c'è un difensore la piazza non cade. Allo scadere dei 20 minuti vincono loro;
+  - in alto compare il conto alla rovescia dell'assedio, con il pulsante per andarci. Serve il plugin Fazioni 1.1 del server.
+- **Le carovane e il commercio fra le città.** Dal registro del borgo (Insediamento → Carovane) parte una carovana carica di legna, pietra, argilla, ferro, grano, mele o uova:
+  - verso un'altra tua città le merci finiscono nel suo magazzino; verso un villaggio vengono vendute, e ogni villaggio paga di più quello che gli manca (nel deserto la legna, al nord il grano), con prezzi che cambiano ogni settimana;
+  - il viaggio dura qualche minuto (di più con la neve) e continua anche quando non giochi;
+  - per strada i banditi possono assaltarla: hai tre minuti per raggiungerla e difenderla, se no metà del carico è perduta. Con la scorta armata il rischio è molto più basso.
+- **I cittadini hanno bisogni.** Oltre a cibo e acqua, la gente del borgo vuole **lavorare** ed essere **contenta**:
+  - ogni edificio dà posti di lavoro; chi resta senza è scontento;
+  - la felicità (da 0 a 100) sale con il tempio, la locanda, le fontane e il borgo curato (alberi, aiuole, panchine, lampioni, statue) e scende con la disoccupazione, la fame, la sete e le tasse alte. Le tasse (basse, giuste, alte) si scelgono nel registro;
+  - con la gente contenta arrivano abitanti in più e le tasse rendono il 15% in più; sotto 35 c'è **protesta in piazza**, con i cartelli, e se dura una parte della gente se ne va.
+- **Meteo e stagioni.** In Tomorrow le stagioni cambiano ogni settimana, uguali per tutti: primavera, estate, autunno (la domenica è festa del raccolto) e inverno, ognuna con i suoi colori. Il tempo cambia ogni giorno del gioco ed è adattato al bioma (nel deserto non nevica, ma c'è la tempesta di sabbia). E conta:
+  - la pioggia fa rendere di più i campi e riempie le cisterne; il temporale (lampi e tuoni) dimezza il raccolto; la siccità toglie cibo e acqua; la neve rallenta le carovane;
+  - pioggia, neve, sabbia e nebbia si vedono, anche nella vista 3D; il tempo e la stagione sono sotto l'orologio e nel registro del borgo.
+- **Costruire liberamente, a blocchi.** Nell'editor del borgo (V) c'è lo strumento «🧲 Blocchi»: cubi di pietra, mattone, legno, marmo, basalto, colori e lanterne, uno sopra l'altro fino a otto, dove vuoi dentro il borgo (mai sugli edifici o davanti alle porte). Torri, muretti, sculture, scritte: quello che vuoi. In una città della fazione li mette chi può costruire, e li vedono tutti. Si vedono anche in 3D.
+- **Più frasi gialle accanto al titolo**, più da meme: «Skill issue!», «GG EZ!», «Stonks!», «Quel boss è sus», «POV: sei un cubo» e altre cinquanta.
+
+---
+
 ## 7.44.1 — Manutenzione: si esce dalla Torre davanti alla porta (28 ottobre 2026)
 
 - **Uscendo dalla Torre della Corona si torna davanti alla sua porta.** Prima, finita la prova (dalla porta della sala o cadendo), l'eroe ricompariva al punto di partenza della zona: ad Aldoria all'ingresso sud della città, a una dozzina di caselle dalla Torre. Ora riappare proprio davanti all'arco, ad Aldoria come nella città di Tomorrow.

@@ -3,6 +3,11 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Fazioni 1.1 (gioco 7.45)
+
+- **Le guerre programmate:** il capo (o chi comanda l'esercito) dichiara guerra a una fazione con una città comune, con un preavviso (minimo `preavvisoMinimo` minuti, massimo 2 ore). All'ora stabilita l'assedio dura `guerraMinuti` (20): il server tiene le brecce nelle mura, la presa della piazza (30 secondi senza difensori vicini) e alla fine dà agli attaccanti `bottinoGuerra` (30%) del tesoro della città assediata, o la vittoria ai difensori.
+- Una fazione fa una guerra alla volta; fra le stesse due fazioni serve una pausa di `pausaGuerraOre` (2) ore. Annunci a tutto il mondo all'inizio e alla fine.
+
 ## Torre 1.0 (gioco 7.44)
 
 - **Nuovo plugin Torre:** la classifica della Torre della Corona, la sfida del giorno (dieci piani uguali per tutti i giocatori fino a mezzanotte UTC).

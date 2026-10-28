@@ -16,11 +16,12 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-70 versioni, dalla più recente.
+71 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
-| [7.43](voxelia_v7.43.html) | 28 ottobre 2026 | Le versioni precedenti. da rigiocare | 2.544 KB |
+| [7.44](voxelia_v7.44.html) | 28 ottobre 2026 | Combattimento e dungeon: boss a fasi, leve, maledizioni, armi con un nome, la Torre e la pala | 2.589 KB |
+| [7.43](voxelia_v7.43.html) | 28 ottobre 2026 | Le versioni precedenti, da rigiocare | 2.544 KB |
 | [7.42.3](voxelia_v7.42.3.html) | 28 ottobre 2026 | Il pannello sviluppatore, sui server, solo per gli admin | 2.535 KB |
 | [7.42.2](voxelia_v7.42.2.html) | 28 ottobre 2026 | La stamina a zero lascia davvero senza fiato | 2.531 KB |
 | [7.42.1](voxelia_v7.42.1.html) | 28 ottobre 2026 | Il clic su un nemico lontano fa camminare l'eroe | 2.529 KB |

@@ -49,7 +49,7 @@ function die(){sceneDeath();if(MODE==='dim'){dimDie();return}if(DF.pm){started=0
 // Affondo per tipo di arma: portata (caselle), moltiplicatore di danno, ricarica (secondi), nome. Schivata: ricarica DODGE_CD secondi.
 const DODGE_CD=3;
 const LG={Pugnale:{r:2.4,m:1.3,cd:4.5,n:'Fendente rapido'},Spada:{r:2.8,m:1.6,cd:6,n:'Affondo'},Stocco:{r:3.4,m:1.7,cd:6,n:'Affondo di stocco'},Lancia:{r:4,m:1.8,cd:7,n:'Stoccata'},Ascia:{r:2.2,m:2.1,cd:8,n:'Fendente'},Martello:{r:2.2,m:2.3,cd:9.5,n:'Schianto'},Bastone:{r:3,m:1.5,cd:6,n:'Colpo di bastone'},Falce:{r:2.6,m:1.8,cd:7,n:'Falciata'}},LGA={Lama:'Spada',Clava:'Martello',Tridente:'Lancia',Mannaia:'Ascia',Pungiglione:'Stocco',Daga:'Pugnale',Coltello:'Pugnale',Mazza:'Martello',Randello:'Martello',Maglio:'Martello',Alabarda:'Lancia',Picca:'Lancia',Scettro:'Bastone',Bacchetta:'Bastone',Verga:'Bastone'};
-function lgTypeOf(n){n=n||'';const k=Object.keys(LG).find(x=>n.includes(x))||LGA[Object.keys(LGA).find(x=>n.includes(x))]||'Spada';return LG[k]}
+function lgTypeOf(n){n=String(n||'').replace(/«[^»]*»/g,'');const k=Object.keys(LG).find(x=>n.includes(x))||LGA[Object.keys(LGA).find(x=>n.includes(x))]||'Spada';return LG[k]}
 function lgType(){return lgTypeOf(P.eq.w?P.eq.w.n:'')}
 // direzione dei tasti WASD/frecce sullo schermo → direzione nel mondo isometrico (destra = (1,-1), giù = (1,1)); null se nessun tasto è premuto
 function keyDir(){if(!SET.wasd)return null;const kx=((KEYS.d||KEYS.arrowright)?1:0)-((KEYS.a||KEYS.arrowleft)?1:0),ky=((KEYS.s||KEYS.arrowdown)?1:0)-((KEYS.w||KEYS.arrowup)?1:0);

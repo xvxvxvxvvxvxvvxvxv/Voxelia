@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.44.1 — Manutenzione: si esce dalla Torre davanti alla porta (28 ottobre 2026)
+
+- **Uscendo dalla Torre della Corona si torna davanti alla sua porta.** Prima, finita la prova (dalla porta della sala o cadendo), l'eroe ricompariva al punto di partenza della zona: ad Aldoria all'ingresso sud della città, a una dozzina di caselle dalla Torre. Ora riappare proprio davanti all'arco, ad Aldoria come nella città di Tomorrow.
+- **Il nome dell'arma non ne cambia più il tipo.** Quando un'arma prende il suo nome (maestria 3), il nome finisce fra « » accanto a quello dell'oggetto, e il gioco riconosceva il tipo dell'arma dalle parole del nome: con «Lama Lucente», per esempio, una Mannaia, una Clava, una Daga o un Tridente diventavano una spada, con l'affondo e la mossa speciale della spada al posto dei loro. Ora per il tipo conta solo il nome dell'oggetto, e le armi già battezzate tornano subito come prima.
+
+---
+
 ## 7.44 — Combattimento e dungeon: boss a fasi, leve, maledizioni, armi con un nome, la Torre e la pala (28 ottobre 2026)
 
 - **I boss combattono in tre fasi.** A due terzi e a un terzo della vita ruggiscono (per un attimo sono immuni), cambiano mosse e attaccano più spesso; nell'ultima fase chiamano rinforzi.

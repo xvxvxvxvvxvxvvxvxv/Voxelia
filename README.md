@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.45** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.46** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -323,6 +323,13 @@ piazza da tenere (serve il plugin Fazioni 1.1). Dal registro partono le carovane
 o le vendono ai villaggi, e i banditi le possono assaltare. I cittadini vogliono lavoro e felicità, e protestano se non li
 hanno; le tasse si scelgono nel registro. Le stagioni cambiano ogni settimana e il tempo ogni giorno, con effetti sui
 raccolti e sulle carovane. Nell'editor del borgo lo strumento Blocchi mette cubi colorati uno sopra l'altro.
+
+### Cavalli, navi, eventi, scoperte e immersioni (dalla 7.46)
+
+I cavalli si comprano allo Stallo dei Campi (e nelle città di Tomorrow) e si montano con H; accanto c'è la corsa a
+cavallo. Al Cantiere Navale si progetta la propria nave e dal molo si salpa verso isole sempre nuove. Ogni mezz'ora
+c'è un evento del mondo (un drago, una meteora o un mercante raro). Il Diario delle scoperte tiene luoghi, creature,
+risorse, pesci e isole. Dalla Boa dei tuffatori del Porto ci si immerge sul fondo del mare, con l'ossigeno contato.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -1024,6 +1031,11 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzzc_carovane.js` | 7.45: le carovane fra le città e i villaggi, gli assalti dei banditi |
 | `8zzzd_blocchi.js` | 7.45: costruire a blocchi nell'editor del borgo |
 | `8zzze_assedi.js` | 7.45: le guerre programmate fra le fazioni e gli assedi (plugin Fazioni 1.1) |
+| `8zzzf_cavalli.js` | 7.46: i cavalli (H per montare), lo stallo e la corsa a cavallo |
+| `8zzzg_navi.js` | 7.46: la nave da progettare al cantiere, il molo e le isole da scoprire |
+| `8zzzh_eventi.js` | 7.46: gli eventi del mondo ogni mezz'ora (drago, meteora, mercante raro) |
+| `8zzzi_scoperte.js` | 7.46: il diario delle scoperte, con i premi |
+| `8zzzj_immersioni.js` | 7.46: le immersioni sul fondo del mare, con l'ossigeno |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

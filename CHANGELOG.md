@@ -5,6 +5,22 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.46 — Il mondo: cavalli, la tua nave e le isole, eventi a orario, il diario delle scoperte, le immersioni (29 ottobre 2026)
+
+- **Cavalli e corse.** Allo Stallo dei Campi (Aldoria Est) e nelle tue città di Tomorrow si comprano il Puledro, il Destriero e il Corsiero d'oro, sempre più veloci, in quattro mantelli. Con **H** si sale e si scende, all'aperto (non nei dungeon, negli interni o in mare). Gli altri giocatori ti vedono a cavallo.
+  - Accanto allo stallo c'è la **Corsa**: otto porte di luce da attraversare in ordine e di nuovo al traguardo. Il tuo record resta, e sul cartello si vedono i record degli altri giocatori della zona.
+- **La tua nave e le isole da scoprire.** Nel Cantiere Navale del Porto (e in Tomorrow nelle tue città sul mare) c'è il banco del progetto: scegli lo scafo (barca, caravella o galeone), i colori di scafo, vele e bandiera e il nome. La nave resta ormeggiata accanto al molo, con i tuoi colori.
+  - Dal molo si salpa: ogni viaggio verso l'ignoto scopre un'isola nuova, con spiagge, palme, rovine, forzieri, tesori sepolti, messaggi in bottiglia e qualche abitante poco amichevole. Le isole restano nel giornale di bordo e si può tornarci quando vuoi (4, 8 o 14 secondo la nave).
+- **Gli eventi del mondo, a orario.** Ogni mezz'ora, all'ora in punto e alla mezza, per dodici minuti succede qualcosa, nello stesso momento per tutti:
+  - 🐉 un **drago** attacca una zona: chi lo abbatte prende un premio grande e un oggetto epico;
+  - ☄ cade una **meteora**: nel cratere c'è il forziere della stella e del ferro, ma anche le creature arrivate con lei;
+  - 🛒 arriva un **mercante raro** in piazza, con tre oggetti preziosi.
+  - In alto si vede che cosa succede, dove e per quanto. Nella storia gli eventi sono intorno ad Aldoria; in Tomorrow arrivano nella tua città.
+- **Il diario delle scoperte.** Nel Diario (K): luoghi visitati, creature vinte, risorse raccolte, pesci pescati e isole trovate, con quanto manca a ogni pagina. Ogni dieci scoperte c'è un premio, e una pagina completa vale 1500 oro.
+- **Le immersioni.** Al Porto c'è la Boa dei tuffatori (in Tomorrow nelle regioni con tanta acqua): ci si tuffa sul fondo del mare, fra rovine sommerse, coralli, forzieri e creature degli abissi. L'aria è poca: la barra blu dell'ossigeno scende e si riempie solo nelle colonne di bolle; senza ossigeno si perde vita. Si risale dalla cima. Il fondale cambia ogni giorno.
+
+---
+
 ## 7.45 — Tomorrow: guerre fra fazioni, carovane, cittadini, meteo e stagioni, blocchi (28 ottobre 2026)
 
 - **Le guerre programmate fra le fazioni.** Dal registro (U → 🤝 Fazione → Guerre) il capo, o chi comanda l'esercito, dichiara guerra a una fazione che ha una città comune, con un preavviso da 5 minuti a 2 ore. All'ora stabilita comincia l'assedio, per 20 minuti, su un campo di battaglia uguale per tutti:

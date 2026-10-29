@@ -5,6 +5,25 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.48 — Storia e studio: le scelte che cambiano la storia, la bacheca delle missioni, il regno oltre il mare, le classifiche della settimana (29 ottobre 2026)
+
+- **Le scelte che cambiano la storia.** Quando il boss di un dungeon sta per cadere, **si arrende**: lo **risparmi** o lo **finisci**. Il bottino è lo stesso, la storia no.
+  - Chi risparmi diventa un **alleato**: lo ritrovi ad Aldoria, nella **Casa degli alleati**, e ogni giorno ti fa un dono (oro e una pozione).
+  - Ogni giorno in piazza c'è il **Viandante** con un dilemma (un ragazzino che ha rubato una mela, una vedova, un goblin ferito, una spada rubata…): una risposta più generosa e una più dura, ognuna con il suo piccolo premio. Una scelta al giorno.
+  - Le scelte fanno la tua **via**: 🕊 **della misericordia** (prezzi -10%, doni degli alleati più ricchi), ⚔ **della spada** (vita massima +6%, ma prezzi +10%) o ⚖ **dell'equilibrio**.
+  - Il **vero finale** ha un **epilogo** diverso per ogni via, con il suo titolo («il Misericordioso», «la Spada di Aldoria», «il Custode dell'Equilibrio»).
+  - La **Cronaca** (Diario, K) racconta i boss risparmiati e finiti, i dilemmi, gli alleati, il nuovo capitolo e tiene i **titoli**: quello scelto si vede sopra il tuo eroe, anche dagli altri giocatori.
+  - In rete, quando il mondo è condiviso con altri giocatori, i boss cadono come sempre: la scelta è per chi gioca da solo.
+- **Nuovo capitolo: il regno oltre il mare.** Dal livello 10 la **Capitana Marina**, al Porto di Aldoria, porta l'eroe a **Thalassa**, una città bianca sul mare con il palazzo della Regina, il mercato del Mercante Zefiro e il molo. La Regina Nerea è scomparsa nel **Tempio di Giada**, nel cuore della **Giungla di Smeraldo** (fiume, guadi, rovine, scimmie ladre, pantere d'ombra, serpi di giada).
+  - Il Cancelliere Oreste racconta la storia; nella giungla tre santuari custodiscono i **Sigilli di Giada**, ognuno difeso da due Custodi; con i tre sigilli si apre il tempio (tre piani, guerrieri e sacerdotesse di giada) e in fondo c'è **Quetzal, il Serpente di Giada**, che lascia la Zanna di Quetzal.
+  - Anche Quetzal si può risparmiare o finire, e la Regina ne parla in modo diverso. In premio: 4000 oro, 3000 esperienza, cinque pozioni, la **Corona di Corallo** e il titolo «Eroe di Thalassa».
+- **La bacheca delle missioni dei giocatori (Tomorrow).** Nelle città di Tomorrow c'è la **Bacheca**: appendi una **consegna** («portami 20 legna») o una **caccia** («abbatti 10 lupi») con un premio in oro, che il server tiene da parte. Un altro eroe dello stesso mondo la prende e la porta a termine: il premio va a lui, le risorse a te (anche se sei offline). Se nessuno la prende in tre giorni, l'oro torna indietro. Serve il nuovo plugin **Bacheca**.
+- **Le classifiche della settimana.** 🎣 Pesca (i chili pescati), ⚔ Colosseo (le vittorie nell'arena), 🗝 Dungeon (i dungeon completati) e 🏰 Città (i livelli degli edifici delle tue città di Tomorrow), dall'**Albo dei campioni** davanti al Colosseo e dal Diario. Ogni lunedì si riparte: i primi tre di ogni gara vincono un **titolo**, il primo anche un **mantello** che non si trova altrove (del mare, di fiamma, stellato, d'avorio). Serve il nuovo plugin **Classifiche**.
+- **Server:** il Tempio di Giada entra tra i dungeon con i cicli.
+- **Plugin:** nuovi **Bacheca 1.0** e **Classifiche 1.0**.
+
+---
+
 ## 7.47 — La vita: mestieri, la casa, la modalità foto, gli animali, le carte, gli incroci (29 ottobre 2026)
 
 - **I mestieri: cucina, alchimia e fabbro.** Al **Banco dei mestieri** (in piazza ad Aldoria, nelle Cucine del castello e nelle città di Tomorrow) si lavora con quello che hai raccolto, pescato e scavato. Le ricette non si comprano: si **scoprono** scegliendo due ingredienti e provando (se non esiste, gli ingredienti vanno persi ma si impara qualcosa).

@@ -67,12 +67,12 @@ function alGift(id){const s=stFix(),k=dayKey();s.g={[k]:s.g[k]||{}};if(s.g[k][id
   msg(E[DG[id].boss].n+' ti regala '+g2+' monete e una pozione');tone(700,.08,'triangle');hud();save();pn('al48')}
 X43P.al48=()=>{const L=stAllies(),s=stFix(),G=s.g[dayKey()]||{};return`<h3>🕊 Casa degli alleati</h3><p class="x43t">Qui vivono i nemici che hai risparmiato. Ogni giorno ognuno ti fa un dono${stPath()==='pace'?' (più ricco, per la tua via)':''}.</p>
   ${L.length?L.map(id=>{const b=E[DG[id].boss];return`<div class="x43r"><span><b>${esc(b.n)}</b> <small class="mu">da ${esc(DG[id].n)}</small></span>${G[id]?'<i class="mu">ci vediamo domani</i>':`<button onclick="alGift('${id}')">🎁 Ritira il dono</button>`}</div>`}).join(''):'<p class="mu">La casa è vuota: quando un boss si arrende, risparmialo.</p>'}<button onclick="cl()">Chiudi</button>`};
-function stPlace(){if(!ZZ||!started||Zk!=='town'||(typeof OW!=='undefined'&&OW.on))return;if(!ents.some(e=>e.k==='dil48')){const q=spot47([34,36],2);if(q)ents.push({k:'dil48',px:q[0]+.5,py:q[1]+.5,n:'Il Viandante',m:hum('#6a5a3a',SKIN,1,[5,'#4a3a2a'])})}
+function stPlace(){if(!ZZ||!started||Zk!=='town'||(typeof OW!=='undefined'&&OW.on))return;if(!ents.some(e=>e.k==='dil48')){const q=spot47([34,36],2);if(q){const e={k:'dil48',px:q[0]+.5,py:q[1]+.5,n:'Il Viandante'};try{e.m=npcModel('viandante',{},e)}catch(_){e.m=hum('#6a5a3a',SKIN,1,[5,'#4a3a2a'])}ents.push(e)}}
   if(!ents.some(e=>e.k==='al48')){const q=spot47([26,44],2.2);if(q)ents.push({k:'al48',px:q[0]+.5,py:q[1]+.5,n:'Casa degli alleati'})}}
 const _loadPost748q=loadPost;loadPost=function(k){_loadPost748q(k);try{stPlace()}catch(e){console.warn('scelte',e)}if(P&&P.st48)ST48.path=stPath()};
 ITK.add('dil48');ITK.add('al48');
 const _act748q=act;act=function(e){if(e&&e.k==='dil48'){pn('dil48');return}if(e&&e.k==='al48'){pn('al48');return}_act748q(e)};
-const _ent748q=ent;ent=function(e){if(e.k==='dil48'){const L=typeof idleA==='function'?idleA(e.m,e):e.m;drawL(L,e.px,e.py,0);if(stFix().d[dayKey()]==null){g.font='bold 18px Georgia,serif';g.textAlign='center';label('!',PX(e.px,e.py),PY(e.px,e.py,0)-44-Math.abs(Math.sin(t*4))*3,'#ffd84a')}return}
+const _ent748q=ent;ent=function(e){if(e.k==='dil48'){const fc=faceOf(P.px-e.px,P.py-e.py);if(e.m.rg)drawHero(typeof idleA==='function'?idleA(e.m,e):e.m,e.px,e.py,0,0,fc);else drawL(e.m,e.px,e.py,0);if(stFix().d[dayKey()]==null){g.font='bold 18px Georgia,serif';g.textAlign='center';label('!',PX(e.px,e.py),PY(e.px,e.py,0)-44-Math.abs(Math.sin(t*4))*3,'#ffd84a')}return}
   if(e.k==='al48'){const L=stAllies();drawL([[-.5,-.4,0,1,.8,14,'#e8e0d0'],[-.55,-.45,14,1.1,.9,3,'#5a8ac8'],[-.4,-.45,17,.8,.9,3,'#5a8ac8'],[-.12,-.41,0,.24,.02,9,'#6a4a2a'],[.5,-.05,0,.04,.04,26,'#6a4a2a'],[.54,-.05,18,.3,.02,8,'#ffffff']],e.px,e.py,0);
     L.slice(0,4).forEach((id,i)=>box(e.px-.4+i*.25,e.py+.45,0,.14,.14,5,'#ffe08a',1.2));return}
   _ent748q(e);

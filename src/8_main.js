@@ -502,9 +502,14 @@ function truthLoad(k){if(!P)return;
     reach(wx,wy+1);if(P.tru&&!P.s7)ents.push({k:'shard7',n:'',px:wx+.5,py:wy+1.5})}
   if(k==='cella'&&P.te===1)ghostSpawn(4,3);
   if(k==='cas_prigioni'){if(P.te===1&&!P.key)ghostSpawn(6,5);if(P.te>=2){const pr=ents.find(e=>e.nid==='prigioniero');if(pr)ents.splice(ents.indexOf(pr),1);ents.push(mkNpc('aldric_p',2,2))}}
-  if(k==='in_castle'&&P.te>=2){const r=ents.find(e=>e.nid==='re');if(r){r.nid='malakar_re';r.n='Re Malakar';r.m=hum('#3a2a6a',SKIN,1.1,[6,'#d4af37'])}const c=ents.find(e=>e.nid==='ciambellano');if(c)ents.splice(ents.indexOf(c),1)}
+  if(k==='in_castle'&&P.te>=2){const r=ents.find(e=>e.nid==='re');if(r){r.nid='malakar_re';r.n='Re Malakar';r.m=npcModel('malakar_re',{},r)}const c=ents.find(e=>e.nid==='ciambellano');if(c)ents.splice(ents.indexOf(c),1)}
   if(k==='occhio')occEnter()}
-function ghostSpawn(x,y){if(ents.some(e=>e.nid==='malakar_g'))return;const e=mkNpc('malakar_g',x,y);e.m=hum('#bfe6ff','#e8f6ff',1.15,[6,'#9ac4e8']);e.ghost=1;ents.push(e);if(P.key)ghostGate()}
+// 7.49: il fantasma di Malakar ha il suo modello nuovo (quello del Re Malakar, trasparente e azzurro)
+let MGM=null;function malakarGhostM(){if(!MGM){try{MGM=ghostL(npcModel('malakar_re',{},{px:1,py:1}),.6,'#bfe6ff')}catch(_){MGM=hum('#bfe6ff','#e8f6ff',1.15,[6,'#9ac4e8'])}}return MGM}
+// 7.49: i personaggi dei filmati hanno i modelli nuovi (prima erano gli omini vecchi)
+const CFM={};function cFig(id,o){const k=id+'|'+JSON.stringify(o||{});if(!CFM[k]){try{CFM[k]=npcModel(id,o||{},{px:3,py:(o&&o.seed)||3})}catch(_){CFM[k]=hum('#888',SKIN)}}return CFM[k]}
+const CROWD49=['mv_frutta','mv_pesce','mv_fiori','gerald','tommaso','rosa','nino','marta','giacomo','lucia','ottavia','gemma'];
+function ghostSpawn(x,y){if(ents.some(e=>e.nid==='malakar_g'))return;const e=mkNpc('malakar_g',x,y);e.m=malakarGhostM();e.ghost=1;ents.push(e);if(P.key)ghostGate()}
 function ghostGate(){if(ents.some(e=>e.k==='po'&&e.to==='culto'))return;const g2=ents.find(e=>e.nid==='malakar_g');const[x,y]=g2?nearFree(g2.px|0,g2.py|0):[P.px|0,P.py|0];ents.push(Object.assign(po(x,y,'culto',{st:'void'}),{n:'Il varco di Malakar',col:'#9ad0ff'}))}
 const SH7L=()=>{const u=Math.sin(t*2)*1.5;return[[-.1,-.1,2+u,.2,.2,8,'#8a1020',1.2],[-.05,-.05,10+u,.1,.1,3,'#ffd0d0',1.5]]};
 function shard7(e){ents.splice(ents.indexOf(e),1);P.s7=1;flash('#ffffff',.6,700);jingle([57,60,64,69,72],.2,'sawtooth');
@@ -649,22 +654,22 @@ function drawLB(L,x,y,zo,f){for(const b of L)box(x+b[0],y+b[1],b[2]+zo,b[3],b[4]
 const TCF=new Set(['throne','throne2','cell','abofall','ghostlight','trial','coronation','dawn']);
 function truthCine(lt,f){g.setTransform(DPR,0,0,DPR,0,0);const G={throne:['#1a1420','#3a2a30'],throne2:['#1a1420','#3a2a30'],cell:['#05060c','#141826'],abofall:['#0a0404','#2a0a0a'],ghostlight:['#06080c','#1a2430'],trial:['#2a2a38','#7a6a5a'],coronation:['#4a7ad0','#f5d08a'],dawn:['#5a8ad0','#f8b878']}[f];
   const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,G[0]);gr.addColorStop(1,G[1]);g.fillStyle=gr;g.fillRect(0,0,W,H);const sc=Math.min(W,H)/440;introSc(sc,0,0);
-  const floor=(c1,c2)=>{for(let i=-6;i<=6;i++)for(let j=-6;j<=6;j++)box(i,j,-6,1,1,6,(i+j)&1?c1:c2)};const K=(x,y,z)=>drawL(hum('#7a1a2a',SKIN,1.1,[6,'#d4af37']),x,y,z||0);const HERO=(x,y,fc)=>drawHero(heroL(APM,1,APM.hh?2:-1,1,20,0,0),x,y,0,0,fc||5);const GU=(x,y)=>drawL(hum('#5a6a8a',SKIN,1,[4,'#9aa4b8']),x,y,0);
+  const floor=(c1,c2)=>{for(let i=-6;i<=6;i++)for(let j=-6;j<=6;j++)box(i,j,-6,1,1,6,(i+j)&1?c1:c2)};const K=(x,y,z)=>drawHero(cFig('re'),x,y,z||0,0,faceOf(0,1));const HERO=(x,y,fc)=>drawHero(heroL(APM,1,APM.hh?2:-1,1,20,0,0),x,y,0,0,fc||5);const GU=(x,y)=>drawHero(cFig('guardia'),x,y,0,0,faceOf(-x,-y));
   if(f==='throne'||f==='throne2'){floor('#6a6a74','#62626c');for(let j=-6;j<=6;j++)box(-.6,j,0,1.2,1,.3,'#8a1a2a');box(-1,-4.5,0,2,1,10,'#d4af37');box(-1,-4.5,10,2,.3,26,'#a8303a');K(0,-3.6,10);
     const p=Math.sin(lt*3)*.5+.5;g.save();g.globalAlpha=.25+p*.2;box(-.6,-4,42,1.2,1,10,'#ff3a2a',1.6);g.restore();HERO(0,1.5);box(.25,0,12+Math.sin(lt*2),.15,.15,4,'#8a1020',1.3);
     const k=f==='throne2'?Math.min(1,lt/3):0;GU(-3+k*2.2,-1+k*2);GU(3-k*2.2,-1+k*2)}
   if(f==='cell'){floor('#3a3a42','#34343c');for(let i=-3;i<=3;i++)box(i+.4,3,0,.08,.08,34,'#4a4a52');box(-3,3,30,7,.1,2,'#3a3a42');box(-3,-3,0,2,1.2,2,'#c8a858');HERO(0,0,4);
-    const a=Math.max(0,Math.min(1,(lt-2.5)/2));if(a>0){g.save();g.globalAlpha=a*.8;drawLB(hum('#bfe6ff','#e8f6ff',1.15,[6,'#9ac4e8']),-1.5,-1.5,Math.sin(lt*2)*2,1.5);g.restore()}}
+    const a=Math.max(0,Math.min(1,(lt-2.5)/2));if(a>0){g.save();g.globalAlpha=a*.8;drawHero(malakarGhostM(),-1.5,-1.5,Math.sin(lt*2)*2,0,faceOf(1,1));g.restore()}}
   if(f==='abofall'){const k=Math.min(1,lt/4.5),q=1-k,sh=lt<3?Math.sin(lt*40)*.06*(1-lt/3):0;floor('#2a2422','#262020');
     ABT.forEach(([r,z,h,c],i)=>{const rr=r*.62*(1+k*.15*i);box(-rr+sh,-rr-2,z*.62*q,rr*2,rr*2,Math.max(1,h*.62*q),c)});
     for(let i=0;i<6;i++){const a=i*1.05+lt*.3,d=2+k*1.5;for(let s2=0;s2<6;s2++)box(Math.cos(a)*(d-s2*.25)-.2,Math.sin(a)*(d-s2*.25)-2.2,Math.max(0,(60-s2*8)*q),.4,.4,4,s2%2?'#4a2026':'#5a2a30')}
     if(q>.3){box(-1+sh,.3-2,95*.62*q,2,.05,14*q,'#e8dcc8',1.1);box(-.25+sh,.33-2,98*.62*q,.5,.04,9*q,'#8a0a0a',1.2)}
     g.setTransform(DPR,0,0,DPR,0,0);g.fillStyle=`rgba(255,255,255,${Math.max(0,.6-lt*.15)})`;g.fillRect(0,0,W,H);for(let i=0;i<10;i++){const x=W*(.1+i*.09);g.fillStyle=`rgba(255,240,200,${(.06+.04*Math.sin(lt+i))*k})`;g.fillRect(x,0,W*.02,H)}}
-  if(f==='ghostlight'){floor('#2a2422','#262020');HERO(1,1,5);const w=Math.min(1,lt/4);drawLB(hum(w>.5?'#3a2a6a':'#bfe6ff',w>.5?SKIN:'#e8f6ff',1.15,[6,w>.5?'#d4af37':'#9ac4e8']),-1,-1,Math.sin(lt*2)*(1-w)*3,1.5-w*.5)}
-  if(f==='trial'){floor('#6a6a74','#62626c');drawL(hum('#5a5a5a',SKIN,1.1,[2,'#3a3a3a']),0,-1,0);box(-.4,-1.05,8,.8,.1,1.5,'#4a4a52');GU(-1.2,-1.6);GU(1.2,-1.6);
-    for(let i=0;i<7;i++)drawL(hum(['#a85a3a','#3a7a5a','#7a3a8a','#3a5a9a','#9a8a3a','#8a3a3a','#3a8a8a'][i],SKIN,1,[4,'#553']),-4+i*1.3,3,Math.abs(Math.sin(lt*4+i))*1.5);drawL(hum('#3a2a2a',SKIN,1,[4,'#222']),2.5,-1,0);box(2.2,-1.05,8,.6,.1,1.5,'#4a4a52')}
-  if(f==='coronation'){floor('#8a1a2a','#7a1626');drawL(hum('#3a2a6a',SKIN,1.15,[6,'#3a2a6a']),0,-1,0);const k=Math.min(1,lt/4);introCrown(0,-1,90-k*44,lt*.6,['#d4af37']);
-    for(let i=0;i<9;i++)drawL(hum(['#a85a3a','#3a7a5a','#7a3a8a','#3a5a9a','#9a8a3a','#8a3a3a','#3a8a8a','#5a4a8a','#8a6a3a'][i],SKIN,1,[4,'#553']),-5+i*1.25,3.4,Math.abs(Math.sin(lt*5+i))*3*(k>=1?1:0));
+  if(f==='ghostlight'){floor('#2a2422','#262020');HERO(1,1,5);const w=Math.min(1,lt/4);g.save();if(w<=.5)g.globalAlpha=.85;drawHero(w>.5?cFig('malakar_re'):malakarGhostM(),-1,-1,Math.sin(lt*2)*(1-w)*3,0,faceOf(1,1));g.restore()}
+  if(f==='trial'){floor('#6a6a74','#62626c');drawHero(cFig('aldric_p'),0,-1,0,0,faceOf(0,1));box(-.4,-1.05,8,.8,.1,1.5,'#4a4a52');GU(-1.2,-1.6);GU(1.2,-1.6);
+    for(let i=0;i<7;i++)drawHero(cFig(CROWD49[i]),-4+i*1.3,3,Math.abs(Math.sin(lt*4+i))*1.5,0,faceOf(0,-1));drawHero(cFig('ciambellano'),2.5,-1,0,0,faceOf(0,1));box(2.2,-1.05,8,.6,.1,1.5,'#4a4a52')}
+  if(f==='coronation'){floor('#8a1a2a','#7a1626');drawHero(cFig('malakar_re'),0,-1,0,0,faceOf(0,1));const k=Math.min(1,lt/4);introCrown(0,-1,90-k*44,lt*.6,['#d4af37']);
+    for(let i=0;i<9;i++)drawHero(cFig(CROWD49[i+2]||CROWD49[i]),-5+i*1.25,3.4,Math.abs(Math.sin(lt*5+i))*3*(k>=1?1:0),0,faceOf(0,-1));
     if(k>=1&&cineOK()){g.setTransform(DPR,0,0,DPR,0,0);for(let i=0;i<40;i++){const x=(i*97+lt*80)%W,y=((i*53)+lt*120)%H;g.fillStyle=['#f5c342','#e0304a','#ffffff','#4aa3ff'][i%4];g.fillRect(x,y,5,8)}}}
   if(f==='dawn'){introGroundD(sc*.9,0,0,[0,0,.9]);introSc(sc*.9,0,0);introCastle(0,-3,0);g.setTransform(DPR,0,0,DPR,0,0);const a=Math.min(1,Math.max(0,(lt-2.5)/1.5));g.globalAlpha=a;g.textAlign='center';g.font=`bold ${Math.round(Math.min(W,H)/10)}px Georgia,serif`;g.lineWidth=6;g.strokeStyle='#3a1a08';g.strokeText('VOXELIA',W/2,H*.3);g.fillStyle='#ffd88a';g.fillText('VOXELIA',W/2,H*.3);g.font=`italic ${Math.round(Math.min(W,H)/26)}px Georgia,serif`;g.fillStyle='#fff6dc';g.fillText('La verità sarà nei tuoi occhi',W/2,H*.3+Math.min(W,H)/14);g.globalAlpha=1}}
 // ---- la musica della zona: di notte, in città, il notturno (corregge l'alternanza della 6.8) ----

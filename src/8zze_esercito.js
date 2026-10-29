@@ -41,8 +41,10 @@ const _asLose730=asLose;asLose=function(A){const T=P.tw,S=T.set;if(!S){_asLose73
 const ARMY={al:[],k:null};
 function armyField(mode){const S=P.tw.set,A=armyFix(S);armyClear();if(!A||!A.n)return;const n=Math.min(A.n,6+setB('caserma')*2),lv=Math.max(P.lv,ZZ&&ZZ.lv||1),str=armyStr();
   for(let i=0;i<n;i++){const a=i/n*6.283,[x,y]=nearFree(clamp(Math.round(P.px+Math.cos(a)*2),2,N-3),clamp(Math.round(P.py+Math.sin(a)*2),2,N-3));const e=mkNpc('tw_sold',x,y,{n:'Soldato di '+S.n});
-    e.m=hum(['#5a6a8a','#4a5a7a','#6a7a9a'][i%3],'#e8c8a0',1,[6,'#9aa4b8']);e.ally=1;e.army=1;e.hp=e.mx=Math.round((120+str*12)*(1+lv*.06));e.at=(4+str*.8)*(1+lv*.06);e.cd=1.1;e.cdt=Math.random();e.sp=2.4;e.path=[];ents.push(e);ARMY.al.push(e)}
+    e.m=armySoldierM(i%3);e.ally=1;e.army=1;e.hp=e.mx=Math.round((120+str*12)*(1+lv*.06));e.at=(4+str*.8)*(1+lv*.06);e.cd=1.1;e.cdt=Math.random();e.sp=2.4;e.path=[];ents.push(e);ARMY.al.push(e)}
   ARMY.k=Zk;ARMY.mode=mode;ARMY.n0=n;msg('🛡 '+n+' soldati di '+S.n+' scendono in campo con te')}
+// 7.49: i soldati hanno il modello nuovo, con l'elmo, la cotta e la lancia
+const ASM={};function armySoldierM(i){return ASM[i]||(ASM[i]=mHum({s:1,tp:['#5a6a8a','#4a5a7a','#6a7a9a'][i],lg:'#3a3a44',x:[...HT.helmet('#9aa4b8','#c0392b'),['bd',-.22,-.12,14,.44,.26,2,'#c8c8d0'],...WP.spear()]}))}
 function armyClear(){for(const a of ARMY.al){const i=ents.indexOf(a);if(i>=0)ents.splice(i,1)}ARMY.al=[];ARMY.k=null}
 function armyEnd(win){const S=P.tw.set,A=armyFix(S);if(!A||!ARMY.n0){armyClear();return}const alive=ARMY.al.filter(a=>a.hp>0).length,lost=Math.min(A.n,ARMY.n0-alive);A.n-=lost;
   if(lost){setLog(S,lost+(lost>1?' soldati caduti':' soldato caduto')+' in battaglia');msg('🛡 '+lost+' soldati sono caduti in battaglia')}armyClear();ARMY.n0=0;save()}

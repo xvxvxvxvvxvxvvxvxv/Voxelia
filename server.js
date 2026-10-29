@@ -1,4 +1,4 @@
-// Server di Voxelia 7.47: serve il gioco e fa da ponte WebSocket tra i giocatori.
+// Server di Voxelia 7.48: serve il gioco e fa da ponte WebSocket tra i giocatori.
 // Gestisce anche: arena PvP (vittorie verificate), punti arena e negozio, classifica, scambi,
 // rigenerazione condivisa dei dungeon, il PANNELLO ADMIN (http://localhost:3000/admin)
 // i PLUGIN: all'avvio carica i moduli della cartella plugins/ (la crea se manca; istruzioni in plugins/LEGGIMI.md)
@@ -9,7 +9,7 @@
 // All'avvio chiede la password del pannello admin (oppure la legge da ADMIN_PASSWORD).
 // I dati (classifica, punti arena, cicli dei dungeon, impostazioni, ban) vengono salvati in voxelia-data.json.
 const http = require('http'), https = require('https'), fs = require('fs'), path = require('path'), crypto = require('crypto'), os = require('os');
-const VER = '7.47';
+const VER = '7.48';
 const PORT = process.env.PORT || 3000;
 // certificato e chiave in formato PEM: se ci sono entrambi il server parla solo https/wss
 const TLS = (() => {
@@ -28,7 +28,7 @@ const adminPage = () => fs.readFileSync(path.join(__dirname, 'admin.html'), 'utf
 
 // Costi del negozio dell'arena (devono coincidere con la tabella AR nel gioco)
 const AR_COST = [40, 25, 35, 25, 120, 150, 90, 90];
-const DUNGEONS = ['tana', 'cripta', 'piramide', 'cristallo', 'fucina', 'abisso', 'cittadella'];
+const DUNGEONS = ['tana', 'cripta', 'piramide', 'cristallo', 'fucina', 'abisso', 'cittadella', 'tempio48'];
 
 /* ---------- dati persistenti ---------- */
 const CFG_DEF = { maxp: 20, lock: 0, pvp: 1, trade: 1, chat: 1, motd: '', xpm: 1, gm: 1, mondi: 1 };

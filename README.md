@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.47** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.48** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -338,6 +338,14 @@ pozioni e si forgia: le ricette si scoprono provando due ingredienti. In casa ci
 coinquilini) e la Mensola dei trofei. F8 apre la modalità foto, con pose, filtri e cornice. Al Negozio degli animali si
 prende un amico che ti segue e scava per te. Nella Taverna si gioca il duello delle carte elementali. Dal pannello dei
 compagni (N) si incrociano due compagni per far nascere una specie nuova.
+
+### Scelte, bacheca, il regno oltre il mare e classifiche (dalla 7.48)
+
+I boss dei dungeon si arrendono: risparmiarli o finirli cambia la tua via (misericordia, spada o equilibrio), i prezzi, gli
+alleati della Casa degli alleati e l'epilogo del vero finale. Ogni giorno il Viandante in piazza porta un dilemma. Dal
+livello 10 la Capitana Marina, al Porto, porta a Thalassa: il nuovo capitolo con la Giungla di Smeraldo, i Sigilli di
+Giada e il Tempio di Quetzal. In Tomorrow la Bacheca delle missioni tiene le consegne e le cacce che i giocatori si danno
+tra loro. Le classifiche della settimana (pesca, Colosseo, dungeon, città) premiano i primi tre con titoli e mantelli.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -854,6 +862,8 @@ e si accendono e spengono senza riavviare. Come scriverne uno è spiegato in [pl
 | **Torre** (`torre.js`) | Classifica del giorno della Torre della Corona: piani superati e tempo (`/torre`) |
 | **Lavagna** (`lavagna.js`) | La lavagna dei messaggi nelle case, con i coinquilini (`/lavagna`) |
 | **Foto** (`foto.js`) | La Galleria del server per le foto della modalità foto (`/foto`) |
+| **Bacheca** (`bacheca.js`) | Le missioni dei giocatori di Tomorrow: consegne e cacce con un premio in oro (`/bacheca`) |
+| **Classifiche** (`classifiche.js`) | Le classifiche della settimana (pesca, Colosseo, dungeon, città) con titoli e mantelli (`/classifiche`) |
 | **Stress test** (`stress.js`) | Bot finti che giocano sul server per misurare latenza, memoria ed errori |
 | **Taglie del giorno** (`taglie.js`) | Nuove taglie ogni giorno (`/taglie`) |
 | **Fazioni** (`fazioni.js`) | Le fazioni dei giocatori di Tomorrow: ruoli, permessi e una città da costruire insieme (`/fazione`) |
@@ -1052,6 +1062,10 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzzn_animali.js` | 7.47: gli animali da compagnia che ti seguono e scavano |
 | `8zzzo_carte.js` | 7.47: il duello delle carte elementali in taverna |
 | `8zzzp_incroci.js` | 7.47: gli incroci dei compagni, con le uova e le specie nuove |
+| `8zzzq_scelte.js` | 7.48: le scelte (boss risparmiati o finiti, dilemmi del Viandante), la via, gli alleati, l'epilogo, i titoli |
+| `8zzzr_bacheca.js` | 7.48: la bacheca delle missioni dei giocatori di Tomorrow |
+| `8zzzs_oltremare.js` | 7.48: il capitolo del regno oltre il mare (Thalassa, la Giungla di Smeraldo, il Tempio di Giada) |
+| `8zzzt_classifiche.js` | 7.48: le classifiche della settimana, con i titoli e i mantelli dei campioni |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

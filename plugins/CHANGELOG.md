@@ -3,6 +3,12 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Bacheca 1.0 e Classifiche 1.0 (gioco 7.48)
+
+- **Nuovo plugin Bacheca:** le missioni che i giocatori dello stesso mondo di Tomorrow si danno tra loro. Una **consegna** (risorse) o una **caccia** (creature da abbattere) con un premio in oro che il server tiene da parte; chi la prende la porta a termine e il premio gli arriva con `p.give`, le risorse vanno al committente (anche offline, alla prossima entrata). Le missioni non prese tornano indietro dopo `giorni` (3), le cacce prese e non finite tornano aperte dopo `oreCaccia` (24). Limiti: `maxAperte` (3) per eroe, `maxPrese` (2), `maxMondo` (40), premio fra `premioMin` (10) e `premioMax` (50000). Comando `/bacheca`, pagina web `/plugins/bacheca/`.
+- **Nuovo plugin Classifiche:** quattro gare che ripartono ogni lunedì (settimana ISO, UTC): pesca (i chili mandati dal gioco), Colosseo (le vittorie nell'arena, dall'evento `arena`), dungeon (dall'evento `dungeon`) e città (il valore delle città di Tomorrow, il migliore della settimana). A settimana chiusa i primi tre di ogni gara ricevono un titolo e il primo un mantello; il premio arriva al gioco all'entrata o aprendo l'albo. Tiene `settimane` (8) settimane; `inClassifica` (10); `annuncia` (sì) i campioni. Comando `/classifiche`, pagina web `/plugins/classifiche/`.
+- **Server:** il Tempio di Giada (`tempio48`) entra fra i dungeon con i cicli.
+
 ## Lavagna 1.0 e Foto 1.0 (gioco 7.47)
 
 - **Nuovo plugin Lavagna:** la lavagna dei messaggi nelle case (stanza del Motel, case di Tomorrow, case del Borgo). Chi entra scrive; il padrone di casa (chi reclama per primo la lavagna dalla sua casa; per il Motel chi ha quel nome) e i suoi coinquilini fissano e cancellano i messaggi; il padrone sceglie fino a `maxCoinquilini` (6) coinquilini. Le lavagne di Tomorrow sono separate per mondo. Comando `/lavagna`, pagina web `/plugins/lavagna/`. Config: `maxMessaggi` (40), `maxLunghezza` (160), `pausaSecondi` (4), `maxLavagne` (3000).

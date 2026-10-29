@@ -5,6 +5,14 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.49.1 — Manutenzione: la Torre senza vicoli ciechi, l'elenco delle versioni completo (29 ottobre 2026)
+
+- **Il guardiano della Torre sta sul pavimento.** Ai piani 5 e 10 il guardiano compariva sempre nello stesso punto, anche quando lì la sala aveva una colonna, il vuoto dell'anello o una pozza di lava: in circa un piano 5 su cinque restava dentro il muro o sospeso nel vuoto. Ora, se quel punto non è calpestabile, compare sulla casella libera più vicina.
+- **Le pozze di lava non tagliano più la sala.** Dal piano 6 una pozza poteva finire su un ponte dell'anello o in un passaggio stretto e lasciare la scala del centro o qualche nemico irraggiungibili (la sala non si poteva finire e si doveva uscire dalla Torre). Ora una pozza che taglierebbe la sala non viene messa.
+- **Le versioni precedenti dalla 7.45 alla 7.49** hanno di nuovo titolo e data nel menu «Versioni precedenti»: mancavano nell'elenco di `releases/LEGGIMI.md`.
+
+---
+
 ## 7.49 — Le rifiniture: carte con i personaggi, modelli nuovi, la Torre vera, la Bottega dei mestieri, Thalassa più ricca, animali più vivi (29 ottobre 2026)
 
 - **Il duello delle carte con i personaggi di Aldoria.** Ogni carta ora è un personaggio della città, con il suo **ritratto** (lo stesso modello che si vede per strada): 54 personaggi divisi fra 🔥 fuoco (chi lavora col fuoco e chi combatte: Borin, il Generale Arturo, Kael, Gilda…), 💧 acqua (la gente del porto e del sapere: l'Ammiraglio Corvo, la Sacerdotessa Lia, il Capitano Baldo…) e 🌿 natura (campi, boschi e bambini: Ulrico, la Vecchia Ada, Mira…), più tre speciali: il **Re Aldric** (10), l'**Attore Fabio** (il giullare) e il **Saggio Elandor** (sempre l'elemento giusto).

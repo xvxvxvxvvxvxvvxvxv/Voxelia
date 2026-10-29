@@ -16,10 +16,16 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-72 versioni, dalla più recente.
+78 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
+| [7.49.1](voxelia_v7.49.1.html) | 29 ottobre 2026 | Manutenzione: la Torre senza vicoli ciechi, l'elenco delle versioni completo | 2.850 KB |
+| [7.49](voxelia_v7.49.html) | 29 ottobre 2026 | Le rifiniture: carte con i personaggi, modelli nuovi, la Torre vera, la Bottega dei mestieri, Thalassa più ricca | 2.849 KB |
+| [7.48](voxelia_v7.48.html) | 29 ottobre 2026 | Storia e studio: le scelte, la bacheca delle missioni, il regno oltre il mare, le classifiche della settimana | 2.791 KB |
+| [7.47](voxelia_v7.47.html) | 29 ottobre 2026 | La vita: mestieri, la casa, la modalità foto, gli animali, le carte, gli incroci | 2.742 KB |
+| [7.46](voxelia_v7.46.html) | 29 ottobre 2026 | Il mondo: cavalli, la tua nave e le isole, eventi a orario, il diario delle scoperte, le immersioni | 2.681 KB |
+| [7.45](voxelia_v7.45.html) | 28 ottobre 2026 | Tomorrow: guerre fra fazioni, carovane, cittadini, meteo e stagioni, blocchi | 2.638 KB |
 | [7.44.1](voxelia_v7.44.1.html) | 28 ottobre 2026 | Manutenzione: si esce dalla Torre davanti alla porta | 2.591 KB |
 | [7.44](voxelia_v7.44.html) | 28 ottobre 2026 | Combattimento e dungeon: boss a fasi, leve, maledizioni, armi con un nome, la Torre e la pala | 2.589 KB |
 | [7.43](voxelia_v7.43.html) | 28 ottobre 2026 | Le versioni precedenti, da rigiocare | 2.544 KB |

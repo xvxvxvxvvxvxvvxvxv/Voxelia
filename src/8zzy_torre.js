@@ -51,7 +51,9 @@ const _genWild743t=genWild;genWild=function(z){if(!z.torre)return _genWild743t(z
   torWalls(ty,c);for(let x=0;x<N;x++){M[0][x]=M[0][x]===0?1:M[0][x];M[N-1][x]=M[N-1][x]===0?1:M[N-1][x]}
   // le torce e i bracieri lungo i muri; dal piano 6 qualche pozza di lava (che non si può attraversare)
   let nt=0;for(let y=2;y<N-2&&nt<16;y++)for(let x=2;x<N-2&&nt<16;x++)if(M[y][x]===0&&((x*7+y*11)%9===0)&&[[1,0],[-1,0],[0,1],[0,-1]].some(([a,b])=>M[y+b][x+a]===1)){ents.push({k:'tc',px:x+.5,py:y+.5});nt++}
-  z.pool=f>=6?'#ff6a1a':'#3a6ab0';if(f>=6&&ty!=='labirinto')for(let k=0;k<3;k++){const x=4+Math.floor(r()*(N-8)),y=4+Math.floor(r()*(N-10));if(Math.hypot(x-c,y-c)<4||Math.hypot(x-sp[0],y-sp[1])<6)continue;for(const[a,b]of[[0,0],[1,0],[0,1],[1,1]])if(M[y+b]&&M[y+b][x+a]===0)M[y+b][x+a]=2}
+  z.pool=f>=6?'#ff6a1a':'#3a6ab0';if(f>=6&&ty!=='labirinto')for(let k=0;k<3;k++){const x=4+Math.floor(r()*(N-8)),y=4+Math.floor(r()*(N-10));if(Math.hypot(x-c,y-c)<4||Math.hypot(x-sp[0],y-sp[1])<6)continue;const pc=[];for(const[a,b]of[[0,0],[1,0],[0,1],[1,1]])if(M[y+b]&&M[y+b][x+a]===0){M[y+b][x+a]=2;pc.push([x+a,y+b])}
+    // 7.49.1: la pozza non deve tagliare la sala (un ponte dell'anello, un passaggio stretto): se lo fa, non c'è
+    if(pc.length){const d2=bfs(sp[0],sp[1]);let cut=false;for(let v=1;v<N-1&&!cut;v++)for(let u=1;u<N-1;u++)if(M[v][u]===0&&d2[v*N+u]<0){cut=true;break}if(cut)for(const[u,v]of pc)M[v][u]=0}}
   ents.push(Object.assign(po(c,N-3,R.from||'town',{st:'exit',n:'Esci dalla Torre'}),{torEx:1}));R.st=[c,c];
   // la legge del piano e i nemici
   const law=f>=4&&f!==TOR_N?TORL[Math.floor(r()*TORL.length)].k:null;R.law=law;
@@ -60,7 +62,9 @@ const _genWild743t=genWild;genWild=function(z){if(!z.torre)return _genWild743t(z
   const spots=[];for(let y=2;y<N-2;y++)for(let x=2;x<N-2;x++)if(M[y][x]===0&&Math.hypot(x-sp[0],y-sp[1])>7)spots.push([x,y]);for(let i=spots.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[spots[i],spots[j]]=[spots[j],spots[i]]}
   const pump=m=>{const k=1+.1*(f-1);m.hp=m.mx=Math.round(m.mx*k*(law==='corazzati'?1.35:law==='sciame'?.7:1));m.at*=(1+.06*(f-1))*(law==='furiosi'?1.25:1);if(law==='veloci')m.sp=(m.sp||2)*1.3;
     if((law==='campioni'||f>=3&&r()<.06*f)&&!m.boss&&typeof eliteMk==='function')eliteMk(m);m.tor=1;return m};
-  if(boss){const b=P2.bo[Math.floor(r()*P2.bo.length)]||'troll',m=mk(b,c,c-3);pump(m);ents.push(m);if(f===TOR_N){const b2=P2.bo.filter(q=>q!==b)[Math.floor(r()*(P2.bo.length-1))];if(b2){const m2=mk(b2,c+3,c-1);pump(m2);m2.hp=m2.mx=Math.round(m2.mx*.6);ents.push(m2)}}}
+  // 7.49.1: il guardiano su una casella del pavimento (non dentro una colonna, nel vuoto dell'anello o nella lava)
+  const bfr=(x,y)=>M[y][x]===0?[x,y]:nearFree(x,y);
+  if(boss){const b=P2.bo[Math.floor(r()*P2.bo.length)]||'troll',m=mk(b,...bfr(c,c-3));pump(m);ents.push(m);if(f===TOR_N){const b2=P2.bo.filter(q=>q!==b)[Math.floor(r()*(P2.bo.length-1))];if(b2){const m2=mk(b2,...bfr(c+3,c-1));pump(m2);m2.hp=m2.mx=Math.round(m2.mx*.6);ents.push(m2)}}}
   for(let i=0;i<n&&spots.length;i++){const q=spots.pop();ents.push(pump(mk(tys[i%tys.length],q[0],q[1])))}
   R.n0=ents.filter(e=>e.k==='en').length;R.spots=spots.slice(0,10);R.tys=tys;
   setTimeout(()=>{if(torOn()&&TOR.run.f===f)banner('Piano '+f+' · '+(TORT.find(q=>q[0]===ty)||['',''])[1],law?'⚠ '+TORL.find(q=>q.k===law).n:boss?'Il guardiano del piano ti aspetta':(f>=3?'I nemici sono più forti':'Ripulisci la sala'),'stella')},500);

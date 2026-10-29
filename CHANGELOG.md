@@ -5,6 +5,30 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.49 — Le rifiniture: carte con i personaggi, modelli nuovi, la Torre vera, la Bottega dei mestieri, Thalassa più ricca, animali più vivi (29 ottobre 2026)
+
+- **Il duello delle carte con i personaggi di Aldoria.** Ogni carta ora è un personaggio della città, con il suo **ritratto** (lo stesso modello che si vede per strada): 54 personaggi divisi fra 🔥 fuoco (chi lavora col fuoco e chi combatte: Borin, il Generale Arturo, Kael, Gilda…), 💧 acqua (la gente del porto e del sapere: l'Ammiraglio Corvo, la Sacerdotessa Lia, il Capitano Baldo…) e 🌿 natura (campi, boschi e bambini: Ulrico, la Vecchia Ada, Mira…), più tre speciali: il **Re Aldric** (10), l'**Attore Fabio** (il giullare) e il **Saggio Elandor** (sempre l'elemento giusto).
+  - Gli avversari sono il Bardo Lino, l'Oste Gilda, il Moreau e il Conte Lucrezio, con il loro ritratto e le loro battute. A ogni mano si legge perché si è vinto («+3, elemento giusto»), la collezione si sfoglia per elemento e le buste mostrano le carte trovate.
+  - Le carte che avevi già diventano i personaggi con lo stesso elemento e valore.
+- **Basta modelli vecchi.** Le creature di Thalassa (scimmie, pantere, serpi, guerrieri e sacerdotesse di giada, Quetzal), il **Re Malakar** a palazzo dopo il vero finale, il **fantasma di Malakar**, il Viandante, i soldati del tuo esercito di Tomorrow e tutti i personaggi dei filmati del vero finale (Aldric, le guardie, la folla, l'incoronazione) hanno i modelli nuovi con le animazioni.
+- **I cancelli delle zone nuove** sono come quelli dei quartieri di Aldoria: il cancello di marmo e turchese di Thalassa e quello di giada e liane della giungla, con le ante che si aprono.
+- **La Torre della Corona è una torre vera.** In piazza c'è una torre di pietra di tre caselle, con le paraste, le finestre accese, gli stendardi, i merli, il tetto a punta e la corona che gira in cima.
+  - Dentro, **ogni piano si costruisce a caso a ogni salita**: sala rotonda, delle colonne, a croce, ad anello sul vuoto, le quattro stanze, il labirinto, la sala dei ponti, con le torce e, più in alto, la lava.
+  - **Ogni piano è più difficile**: più nemici e di più tipi, più vita e più forza a ogni piano, campioni dal piano 3, e dal piano 4 una **legge del piano** (nemici più veloci, corazzati, furiosi, uno sciame, i rinforzi a metà sala, tutti campioni). Al piano 10 i guardiani sono due. I colori della Torre cambiano salendo.
+- **La Bottega dei mestieri, rifatta.** Tre postazioni con un senso chiaro:
+  - 🍲 il **Fornello**: un **pasto** alla volta, che dura dieci minuti e si vede in alto (vita massima, attacco, difesa, rigenerazione, esperienza, oro, o il Banchetto del cavaliere);
+  - ⚗ l'**Alambicco**: pozioni, Sigilli di doma, la Pietra del ritorno e gli **elisir** (aria doppia sott'acqua, fortuna, esperienza);
+  - ⚒ l'**Incudine**: **forgia** armi, elmi, corazze e scudi con il tuo nome, **tempra** quello che indossi (fino a tre volte) e **fonde** quello che non ti serve per riavere ferro, carbone, rame e gemme.
+  - Il **Ricettario** mostra tutte le ricette con gli ingredienti, dove si trovano e quanti ne hai; i livelli del mestiere sbloccano ricette nuove; tre ricette segrete si trovano solo sperimentando. Al **Mercato** del banco si comprano gli ingredienti di base.
+- **Thalassa più ricca di dettagli e di storia.**
+  - In città: la piazza con la **fontana del Serpente**, il **Santuario del Mare** con Fratel Corallo, il **faro** sullo scoglio con il guardiano Basilio, le **lanterne** colorate sopra il viale (di notte si accendono), gabbiani e gatti, la **Nonna Marea**, il **Mozzo Tito**, e battute nuove per tutti.
+  - Nella giungla: l'**accampamento dell'Esploratrice Ilva**, le **teste di pietra** degli antichi re, i **pappagalli** che volano, le **lucciole** di notte, l'**altare della Perla** davanti al tempio.
+  - Le **sei Tavolette di Giada** (tre in città e tre nella giungla) raccontano la storia di Thalassa, dal primo approdo al patto con Quetzal: trovarle tutte vale il titolo «Storico di Thalassa».
+  - **Il mistero della Perla** (dopo aver liberato la Regina): chi ha rubato la Perla di Giada, il cuore calmo di Quetzal? Il pescatore Ilio, un relitto dalla vela arancione sugli scogli, la sciarpa di Zefiro, una capanna nella giungla e **Scirocco il contrabbandiere**. Riportata la Perla sull'altare, il tempio si risveglia; se Quetzal è vivo, ti benedice (+5% di vita massima per sempre). In premio lo Scudo della Perla e il titolo «Custode della Perla».
+- **Animali da compagnia più vivi.** Si girano verso dove vanno, da fermi si siedono, annusano e si guardano intorno, si addormentano se stai fermo a lungo (con le zeta), saltano di gioia quando li accarezzi, scavano con le zampe; battono le palpebre e scodinzolano; il coniglio saltella, il pinguino scivola sulla pancia, il gufo sbatte le ali e gira la testa, il draghetto sbuffa fumo.
+
+---
+
 ## 7.48 — Storia e studio: le scelte che cambiano la storia, la bacheca delle missioni, il regno oltre il mare, le classifiche della settimana (29 ottobre 2026)
 
 - **Le scelte che cambiano la storia.** Quando il boss di un dungeon sta per cadere, **si arrende**: lo **risparmi** o lo **finisci**. Il bottino è lo stesso, la storia no.

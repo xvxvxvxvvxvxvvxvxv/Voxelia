@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.48** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.49** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -346,6 +346,15 @@ alleati della Casa degli alleati e l'epilogo del vero finale. Ogni giorno il Via
 livello 10 la Capitana Marina, al Porto, porta a Thalassa: il nuovo capitolo con la Giungla di Smeraldo, i Sigilli di
 Giada e il Tempio di Quetzal. In Tomorrow la Bacheca delle missioni tiene le consegne e le cacce che i giocatori si danno
 tra loro. Le classifiche della settimana (pesca, Colosseo, dungeon, città) premiano i primi tre con titoli e mantelli.
+
+### Rifiniture (dalla 7.49)
+
+Le carte del duello sono i personaggi di Aldoria, con il loro ritratto. Le creature di Thalassa, Malakar e i personaggi
+dei filmati hanno i modelli nuovi. I cancelli di Thalassa e della giungla sono come quelli dei quartieri. La Torre della
+Corona è un edificio vero e dentro i piani si costruiscono a caso, sempre più difficili, con le leggi del piano. La Bottega
+dei mestieri ha il Fornello (pasti), l'Alambicco (pozioni ed elisir) e l'Incudine (forgia, tempra, fonde), il Ricettario e il
+Mercato. Thalassa ha nuovi luoghi e personaggi, le Tavolette di Giada e il mistero della Perla. Gli animali da compagnia
+hanno molte animazioni nuove.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -1066,6 +1075,7 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzzr_bacheca.js` | 7.48: la bacheca delle missioni dei giocatori di Tomorrow |
 | `8zzzs_oltremare.js` | 7.48: il capitolo del regno oltre il mare (Thalassa, la Giungla di Smeraldo, il Tempio di Giada) |
 | `8zzzt_classifiche.js` | 7.48: le classifiche della settimana, con i titoli e i mantelli dei campioni |
+| `8zzzu_thalassa2.js` | 7.49: Thalassa più ricca: luoghi e personaggi nuovi, le Tavolette di Giada, il mistero della Perla |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

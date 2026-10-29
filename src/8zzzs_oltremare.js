@@ -18,6 +18,15 @@ Object.assign(E,{
   guerriero48:{n:'Guerriero di Giada',hp:230,at:34,xp:48,sp:1.9,r:1.3,cd:1.2,ag:8,m:hum('#2a8a5a','#c8a070',1.25,[6,'#d4af37'])},
   sacerdotessa48:{n:'Sacerdotessa di Giada',hp:130,at:30,xp:44,sp:1.6,r:5,cd:1.8,ag:9,rng:'#6affc0',m:hum('#3a6a5a','#e0b090',1,[10,'#6affc0'])},
   quetzal48:{n:'Quetzal, il Serpente di Giada',hp:1500,at:40,xp:900,sp:1.8,r:3,cd:1.5,ag:12,boss:1,slam:1,rng:'#6affc0',sum:'serpe48',m:drake('#2ab87a','#8affc8',1.9)}});
+// 7.49: le creature di Thalassa hanno i modelli nuovi, con lo scheletro e le animazioni (camminata, attesa, attacco)
+{const set=(k,m)=>{if(E[k]&&m)E[k].m=m};try{
+  set('scimmia48',mHum({s:.72,sk:'#d8a87a',tp:'#8a5a2a',lg:'#7a4a22',ar:'#8a5a2a',hd:'#9a6a3a',ey:'#ffd040',mouth:'#3a1a0a',hunch:1,belt:0,x:[...HT.ears('#d8a87a'),['hd',-.09,.12,21,.18,.03,4,'#d8a87a'],['bd',-.04,-.3,8,.08,.2,2,'#8a5a2a'],['bd',-.04,-.46,9,.08,.08,7,'#8a5a2a'],['bd',-.04,-.48,15,.08,.14,2,'#8a5a2a'],['ar',.24,0,6,.12,.12,3,'#ffd84a']]}));
+  set('pantera48',mQuad({s:1.2,c:'#1e1e2a',c2:'#14141c',ey:'#ffe040',round:1,ttail:'#1e1e2a',low:1,top:24}));
+  set('serpe48',mFloat({kind:'eel',c:'#2a9a5a',s:1.5,x:[['hd',-.09,.38,8,.18,.02,1.5,'#ffe84a'],['s0',-.07,.3,6,.14,.13,2,'#3ab86a'],['s3',-.07,0,4,.14,.13,1.5,'#3ab86a']]}));
+  set('guerriero48',mHum({s:1.22,sk:'#c8a070',tp:'#2a8a5a',lg:'#1f5a3a',ey:'#111',mouth:'#5a3a2a',x:[...HT.helmet('#d4af37','#6affc0'),['bd',-.23,-.13,15,.46,.28,3,'#6affc0'],['bd',-.24,.12,10,.48,.03,6,'#1f6a4a'],...WP.spear('#6affc0'),...WP.shield('#2a8a5a')]}));
+  set('sacerdotessa48',mHum({s:1,sk:'#e0b090',tp:'#3a6a5a',robe:'#2a8a6a',ey:'#2a2a2a',x:[...HT.hood('#2a8a6a'),['hd',-.17,-.14,28,.34,.28,2,'#6affc0'],['bd',-.22,.12,14,.44,.03,4,'#d4af37'],...WP.staff('#6affc0')]}));
+  set('quetzal48',mDrake({s:1.95,c:'#2ab87a',c2:'#1f8a5a',w:'#8affc8',wc:'#6affc0',ey:'#ffe040',cl:'#f4ecd0',sp:'#ff6a3a',mane:'#ff4a6a',top:56}));
+}catch(e){console.warn('modelli di Thalassa',e)}}
 UQ.quetzal48=['w','Zanna di Quetzal',14,0];BAB.quetzal48=['charge','rain','summon:serpe48','nova'];
 TH.jade={a:'#3a6a5a',b:'#34604f',o:'#1f4a3a',bg:'#020a06',tc:'#6affc0',pool:'#2a8a6a',pt:'mote'};
 DG.tempio48={n:'Tempio di Giada',lv:14,fls:3,en:['guerriero48','sacerdotessa48','serpe48'],boss:'quetzal48',th:'jade',ent:'giungla48'};
@@ -30,6 +39,11 @@ Object.assign(NPCS,{
   coral48:{n:'Piccola Coral',c:'#e8a0b0',hat:'#ffd84a',ln:['Mia nonna dice che il Serpente di Giada era buono, una volta. Proteggeva la giungla.','Hai visto le scimmie? Mi hanno rubato il pane!','Quando sarò grande farò la capitana come Marina.']},
   ilio48:{n:'Pescatore Ilio',c:'#4a6a8a',hat:'#d8c070',ln:['Da quando il Serpente si è svegliato, i pesci scappano verso il largo.','Nella giungla c\'è un fiume che porta al tempio. Nessuno lo risale più.']},
   guardia48:{n:'Guardia del Palazzo',c:'#2a8a8a',hat:'#d4af37',ln:['Il palazzo è chiuso finché la Regina non torna.','Il Cancelliere Oreste ti aspetta, straniero.']}});
+// 7.49: l'aspetto dei personaggi di Thalassa (pelle|capelli|barba|cappello|vestiti|oggetto|animazione|corporatura)
+Object.assign(NPS,{capitanomarina48:'c|tail:#1a1a1a|none|tricorn:#1a1a2a|cape:#2a3a6a,earring|telescope|proud|f,tall',
+  oreste48:'b|bald2:#e8e8e8|long:#e8e8e8|none|robe:#2a6a6a,collar,necklace|scroll|read|old,tall',nerea48:'b|long:#e8d8a0|none|crown|cape:#3a8ab0,collar,necklace|staff:#6affc0|proud|f,tall',
+  zefiro48:'d|short:#2a1a10|bigmous:#2a1a10|turban|sash:#c86a2a,vest:#e8d8a0,earring|basket|shout|fat',coral48:'c|tail:#5a2a1a|none|flower|apron:#e8a0b0|bread|idle|kid,f',
+  ilio48:'c|short:#5a5a5a|full:#5a5a5a|straw|vest:#4a6a8a,patches|rod|idle|old',guardia48:'c|short:#1a1a1a|none|helmet:#d4af37|armor:#2a8a8a,cape:#2a8a8a|spear|guard|n'});
 const OL={};
 function olFix(){P.ol48=P.ol48||{s:0,sig:[0,0,0]};const o=P.ol48;o.sig=Array.isArray(o.sig)?o.sig:[0,0,0];return o}
 const olSig=()=>olFix().sig.filter(Boolean).length;
@@ -45,7 +59,7 @@ function genThal({R4,D,F,H,gate,N2,FS,scat,n}){
   for(const[x,y]of[[2,12],[14,12],[33,12],[45,12],[2,24],[20,24],[27,24],[45,24],[8,34],[18,34],[29,34],[40,34],[13,22],[34,22]])D(x,y,'ꞁ');
   for(const[x,y,c]of[[27,20,'Ы'],[28,20,'Щ'],[29,20,'Ы'],[19,20,'Щ'],[20,20,'Ы']])F(x,y,c);
   for(const[x,y]of[[21,22],[26,22]])D(x,y,'o');scat(3,12,42,2,'h',.06);
-  R4(1,26,3,3,4);gate(1,27,'giungla48',{n:'Verso la Giungla di Smeraldo'});
+  R4(1,26,3,3,4);Object.assign(gate(1,27,'giungla48',{n:'Verso la Giungla di Smeraldo'}),{st:'cancello',dir:'y',span:3,off:-1.5,eo:-1,sw:1,sty:'thalassa'});
   ents.push(mkShip('caravella',29,40,'y'),mkShip('barca',13.5,39,'y'),mkShip('gozzo',40,40,'y'));ents.push({k:'trag48b',px:23.5,py:43.5,n:'La Stella del Sud · per Aldoria'});
   FS(10,40,0,1);FS(37,40,0,1);
   N2('oreste48',24,13);N2('guardia48',21,12);N2('guardia48',27,12);N2('zefiro48',24,21);N2('coral48',14,27,{wd:1});N2('ilio48',36,37);
@@ -66,7 +80,7 @@ function genGiungla({R4,D,RS,EN,gate,scat,n}){const r=sd(hs('giungla48|'+dayKey(
   for(let y=2;y<=9;y++)for(let x=c-5;x<=c+5;x++){M[y][x]=0;DEC[y][x]='';if((y===2||x===c-5||x===c+5)&&r()<.85){M[y][x]=6;DEC[y][x]='ꞅ'}}
   const tp=po(c,4,'tempio48@1',{st:'dun',n:'Tempio di Giada'});if(!(P.unl&&P.unl.tempio48)){tp.lock='tempio48';tp.lockMsg='Le porte del tempio sono sigillate: servono i tre Sigilli di Giada.'}ents.push(tp);
   S.forEach((s,i)=>{for(let y=s[1]-2;y<=s[1]+2;y++)for(let x=s[0]-2;x<=s[0]+2;x++)if(x>0&&y>0&&x<n-1&&y<n-1&&M[y][x]!==2){M[y][x]=0;DEC[y][x]=''}ents.push({k:'sig48',i,px:s[0]+.5,py:s[1]+.5,n:'Santuario del Sigillo di Giada'})});
-  gate(c,n-2,'thal48',{n:'Verso Thalassa'});
+  for(let y=n-4;y<n-1;y++)for(let x=c-2;x<=c+2;x++){M[y][x]=0;DEC[y][x]=''}Object.assign(gate(c,n-2,'thal48',{n:'Verso Thalassa'}),{st:'cancello',dir:'x',span:3,off:-1.5,eo:1,sw:-1,sty:'giada'});
   // creature, forzieri, raccolte
   const fr=[];for(let y=3;y<n-3;y++)for(let x=2;x<n-2;x++)if(M[y][x]===0&&Math.hypot(x-ent0[0],y-ent0[1])>9&&!S.some(s=>Math.hypot(x-s[0],y-s[1])<4))fr.push([x,y]);for(let i=fr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[fr[i],fr[j]]=[fr[j],fr[i]]}
   const pool=['scimmia48','pantera48','serpe48','scimmia48','serpe48'];for(let i=0;i<16&&fr.length;i++){const q=fr.pop();EN(pool[i%pool.length],q[0],q[1])}
@@ -75,6 +89,17 @@ function genGiungla({R4,D,RS,EN,gate,scat,n}){const r=sd(hs('giungla48|'+dayKey(
   return LFROM&&String(LFROM).startsWith('tempio48')?[c,8]:[c,n-5]}
 Z.giungla48={n:'Giungla di Smeraldo',lv:13,N:56,a:'#4f9a4c',b:'#47904a',bg:'#8fd0b0',mus:'forest',pt:'leaf',gen:genGiungla,rd:['#7a6a48','#726244'],wl:'#2f5a2a',wh:14,dist:1,nolamp:1,en:['scimmia48','pantera48','serpe48']};
 for(const k of['thal48','giungla48'])SKY[k]=SKY.porto||SKY.town;
+/* ---- 7.49: i cancelli di Thalassa e della giungla, come quelli dei quartieri di Aldoria ---- */
+Object.assign(GSTY,{thalassa:{p:'#f4f0e8',c:'#2ab8a8',l:'#2a6a8a',l2:'#1f5a7a',h:'#d4af37',bars:1,ex:(Q,o,sp,eo)=>{
+    for(const a of[o,o+sp]){Q(a-.24,eo-.24,58,.48,.48,3,'#f4f0e8');Q(a-.18,eo-.18,61,.36,.36,5,'#2ab8a8');Q(a-.1,eo-.1,66,.2,.2,4,'#f4f0e8');Q(a-.05,eo-.05,70,.1,.1,4,'#d4af37')}
+    Q(o+sp/2-.45,eo-.25,44,.9,.06,12,'#2a6a8a');Q(o+sp/2-.3,eo-.27,47,.6,.05,6,'#f4f0e8');Q(o+sp/2-.12,eo-.28,48,.24,.04,4,'#2ab8a8');Q(o+sp/2-.05,eo-.29,49.5,.1,.03,1.2,'#d4af37');
+    for(const a of[o-1.05,o+sp+.6]){Q(a,eo-.3,0,.45,.45,6,'#c8a070');Q(a+.05,eo-.25,6,.35,.35,2,'#3f7a32');Q(a+.18,eo-.12,8,.08,.08,22,'#8a6a42');Q(a-.1,eo-.22,28,.65,.3,2,'#3a9a4a');Q(a+.05,eo-.4,28,.3,.6,2,'#4aa85a')}
+    for(const a of[o-.5,o+sp+.32])Q(a,eo+.3,0,.18,.18,4,'#f0e0c8')}},
+  giada:{p:'#5a7a6a',c:'#2ab87a',l:'#4a3a2a',l2:'#3a2a1a',h:'#6affc0',v:'#3a8a3a',ex:(Q,o,sp,eo)=>{
+    for(const a of[o,o+sp]){Q(a-.3,eo-.3,58,.6,.6,4,'#4a6a5a');Q(a-.22,eo-.22,62,.44,.44,6,'#2ab87a');Q(a-.12,eo+.18,64,.24,.08,4,'#ffe84a');Q(a-.14,eo-.14,68,.28,.28,3,'#1f8a5a')}
+    Q(o+sp/2-.55,eo-.3,46,1.1,.1,8,'#4a6a5a');Q(o+sp/2-.2,eo-.32,48,.4,.05,5,'#6affc0');Q(o+sp/2-.08,eo-.33,49,.16,.04,2,'#ffffff');
+    for(let i=0;i<6;i++){Q(o-.4+i*.05,eo+.32,6+i*9,.07,.07,9,'#3a8a3a');Q(o+sp+.32-i*.05,eo+.32,8+i*8,.07,.07,8,'#4a9a4a')}
+    for(const a of[o-1.1,o+sp+.55]){Q(a,eo-.35,0,.55,.55,10,'#5a7a6a');Q(a+.05,eo-.3,10,.45,.45,6,'#4a6a5a');Q(a+.12,eo-.36,12,.06,.02,2,'#6affc0');Q(a+.32,eo-.36,12,.06,.02,2,'#6affc0')}}}});
 /* ---- i santuari dei sigilli ---- */
 function olShrine(e){const o=olFix();if(o.s<2){msg('Un antico santuario di giada. Un\'iscrizione dice: «Solo chi è mandato dalla Regina può prendere il sigillo».');return}
   if(o.sig[e.i]){msg('Il sigillo di questo santuario è già tuo');return}

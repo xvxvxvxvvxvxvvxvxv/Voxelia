@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.46** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.47** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -330,6 +330,14 @@ I cavalli si comprano allo Stallo dei Campi (e nelle città di Tomorrow) e si mo
 cavallo. Al Cantiere Navale si progetta la propria nave e dal molo si salpa verso isole sempre nuove. Ogni mezz'ora
 c'è un evento del mondo (un drago, una meteora o un mercante raro). Il Diario delle scoperte tiene luoghi, creature,
 risorse, pesci e isole. Dalla Boa dei tuffatori del Porto ci si immerge sul fondo del mare, con l'ossigeno contato.
+
+### Mestieri, casa, foto, animali, carte e incroci (dalla 7.47)
+
+Al Banco dei mestieri (in piazza ad Aldoria, nelle Cucine del castello e nelle città di Tomorrow) si cucina, si fanno
+pozioni e si forgia: le ricette si scoprono provando due ingredienti. In casa ci sono la Lavagna dei messaggi (con i
+coinquilini) e la Mensola dei trofei. F8 apre la modalità foto, con pose, filtri e cornice. Al Negozio degli animali si
+prende un amico che ti segue e scava per te. Nella Taverna si gioca il duello delle carte elementali. Dal pannello dei
+compagni (N) si incrociano due compagni per far nascere una specie nuova.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -844,6 +852,8 @@ e si accendono e spengono senza riavviare. Come scriverne uno è spiegato in [pl
 | **Il Sindaco di Aldoria** (`sindaco.js`) | Elezione settimanale del sindaco e decreti (`/vota`, `/sindaco`) |
 | **Speedrun dei dungeon** (`speedrun.js`) | Cronometro dei dungeon, classifiche, record e sfida della settimana (`/speedrun`) |
 | **Torre** (`torre.js`) | Classifica del giorno della Torre della Corona: piani superati e tempo (`/torre`) |
+| **Lavagna** (`lavagna.js`) | La lavagna dei messaggi nelle case, con i coinquilini (`/lavagna`) |
+| **Foto** (`foto.js`) | La Galleria del server per le foto della modalità foto (`/foto`) |
 | **Stress test** (`stress.js`) | Bot finti che giocano sul server per misurare latenza, memoria ed errori |
 | **Taglie del giorno** (`taglie.js`) | Nuove taglie ogni giorno (`/taglie`) |
 | **Fazioni** (`fazioni.js`) | Le fazioni dei giocatori di Tomorrow: ruoli, permessi e una città da costruire insieme (`/fazione`) |
@@ -1036,6 +1046,12 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzzh_eventi.js` | 7.46: gli eventi del mondo ogni mezz'ora (drago, meteora, mercante raro) |
 | `8zzzi_scoperte.js` | 7.46: il diario delle scoperte, con i premi |
 | `8zzzj_immersioni.js` | 7.46: le immersioni sul fondo del mare, con l'ossigeno |
+| `8zzzk_mestieri.js` | 7.47: i mestieri (cucina, alchimia, fabbro), le ricette da scoprire e la dispensa |
+| `8zzzl_casa.js` | 7.47: la lavagna di casa con i coinquilini e la mensola dei trofei |
+| `8zzzm_foto.js` | 7.47: la modalità foto (F8) con pose, filtri, cornice e galleria |
+| `8zzzn_animali.js` | 7.47: gli animali da compagnia che ti seguono e scavano |
+| `8zzzo_carte.js` | 7.47: il duello delle carte elementali in taverna |
+| `8zzzp_incroci.js` | 7.47: gli incroci dei compagni, con le uova e le specie nuove |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

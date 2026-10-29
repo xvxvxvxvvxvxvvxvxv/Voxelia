@@ -5,6 +5,22 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.47 — La vita: mestieri, la casa, la modalità foto, gli animali, le carte, gli incroci (29 ottobre 2026)
+
+- **I mestieri: cucina, alchimia e fabbro.** Al **Banco dei mestieri** (in piazza ad Aldoria, nelle Cucine del castello e nelle città di Tomorrow) si lavora con quello che hai raccolto, pescato e scavato. Le ricette non si comprano: si **scoprono** scegliendo due ingredienti e provando (se non esiste, gli ingredienti vanno persi ma si impara qualcosa).
+  - 🍲 **Cucina:** pane dolce, torta di mele, zuppa del pescatore, frittata di mare, orata alle mele, sidro di luna — cura, forza, difesa, rigenerazione, più esperienza.
+  - ⚗ **Alchimia:** pozioni di rosa, tonico di brina, polvere della furia, essenza del saggio (+50% esperienza), elisir di vigore e il **Respiro del mare**, che raddoppia l'aria sott'acqua.
+  - ⚒ **Fabbro:** con il ferro e un secondo metallo (carbone, rame, pietra, marmo) si forgiano armi, elmi, corazze e scudi **con il tuo nome**; con pepite e gemme un Capolavoro raro.
+  - Ogni mestiere ha il suo livello (fino al 10): i piatti durano di più, la cucina ne fa due alla volta, la forgia dà oggetti più rari, e dal livello 3 le ricette ancora da scoprire danno un indizio. I piatti vanno nella **Dispensa** (anche dal Diario, K) e si mangiano quando vuoi.
+- **La vita in casa.** Nella tua stanza del Motel, nella tua casa di Tomorrow e nelle case del Borgo c'è la **Lavagna**: chi entra lascia un messaggio, il padrone di casa li fissa in alto o li cancella e sceglie fino a sei **coinquilini**, che hanno i suoi stessi permessi sulla lavagna. In rete la tiene il nuovo plugin **Lavagna** (così la leggono anche gli ospiti); senza server è un quaderno di appunti. In casa tua c'è anche la **Mensola dei trofei**: una coppa per ogni dungeon liberato, i frammenti della Corona, la Torre, le corse a cavallo, le isole e le pagine complete del Diario.
+- **La modalità foto (F8, o 📷 nel Diario).** Sparisce tutto quello che copre il mondo e resta una barra: l'eroe si mette in **posa** (saluto, vittoria, pensieroso, seduto, inchino, salto), si sceglie un **filtro** (seppia, bianco e nero, vivido, sogno, notte, tramonto) e la **cornice** con il nome del luogo e la data, e si scatta, in 2D e in 3D. La foto si scarica subito e le ultime dodici restano nella galleria del browser. In rete, con il nuovo plugin **Foto**, si appendono nella **Galleria del server**, che vedono tutti (anche dalla pagina web del plugin).
+- **Gli animali da compagnia.** Al **Negozio degli animali** (ad Aldoria vicino alla piazza e nelle città di Tomorrow): cane, gatto, volpe, coniglio, gufo, maialino, pinguino e draghetto. Ti seguono dappertutto, si chiamano come vuoi, si accarezzano toccandoli, li vedono anche gli altri giocatori, e ogni tanto fiutano e scavano: ognuno trova cose diverse (monete, pesci, risorse, frutta, pozioni, tartufi, conchiglie, gemme, e a volte un oggetto).
+- **Il duello delle carte.** Nella Taverna del Drago Ubriaco (e nelle città di Tomorrow) c'è il **Tavolo delle carte**: 🔥 fuoco batte 🌿 natura, 🌿 natura batte 💧 acqua, 💧 acqua batte 🔥 fuoco (+3), più tre carte speciali (Drago, Giullare, Arcobaleno). Cinque mani con cinque carte della tua collezione, contro quattro avversari sempre più bravi, per gioco o con una posta. Chi vince prende la posta raddoppiata e spesso una carta; la prima vittoria contro i tre avversari più forti dà una carta speciale. Le prime dieci carte sono in regalo, le altre si vincono o si comprano a buste da tre (150 monete). Collezione di trenta carte.
+- **Gli incroci dei compagni.** Nel pannello dei compagni (N) c'è **🥚 Incroci**: due compagni domati dal livello 5 in su fanno un uovo che si schiude in tre minuti. Il piccolo è una **specie nuova, solo tua**: la forma e la mossa del primo genitore, la forza di tutti e due, un nome mescolato e un colore nuovo; a volte c'è una **mutazione ✦** (colori strani, statistiche più alte). Si possono incrociare anche gli incroci.
+- **Plugin:** nuovi **Lavagna 1.0** e **Foto 1.0**.
+
+---
+
 ## 7.46 — Il mondo: cavalli, la tua nave e le isole, eventi a orario, il diario delle scoperte, le immersioni (29 ottobre 2026)
 
 - **Cavalli e corse.** Allo Stallo dei Campi (Aldoria Est) e nelle tue città di Tomorrow si comprano il Puledro, il Destriero e il Corsiero d'oro, sempre più veloci, in quattro mantelli. Con **H** si sale e si scende, all'aperto (non nei dungeon, negli interni o in mare). Gli altri giocatori ti vedono a cavallo.

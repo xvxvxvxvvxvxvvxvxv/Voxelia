@@ -3,6 +3,11 @@
 Stato al 14 ottobre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Lavagna 1.0 e Foto 1.0 (gioco 7.47)
+
+- **Nuovo plugin Lavagna:** la lavagna dei messaggi nelle case (stanza del Motel, case di Tomorrow, case del Borgo). Chi entra scrive; il padrone di casa (chi reclama per primo la lavagna dalla sua casa; per il Motel chi ha quel nome) e i suoi coinquilini fissano e cancellano i messaggi; il padrone sceglie fino a `maxCoinquilini` (6) coinquilini. Le lavagne di Tomorrow sono separate per mondo. Comando `/lavagna`, pagina web `/plugins/lavagna/`. Config: `maxMessaggi` (40), `maxLunghezza` (160), `pausaSecondi` (4), `maxLavagne` (3000).
+- **Nuovo plugin Foto:** la Galleria del server per le foto della modalità foto (F8). Accetta solo JPEG sotto i 60 KB, al massimo `maxPerEroe` (8) per eroe e `maxFoto` (40) in tutto, una ogni `pausaSecondi` (20). Le immagini si vedono nel gioco e su `/plugins/foto/` (ogni foto su `/plugins/foto/img?id=…`); l'admin ne toglie una con `/plugins/foto/via?num=<numero>`. Comando `/foto`.
+
 ## Fazioni 1.1 (gioco 7.45)
 
 - **Le guerre programmate:** il capo (o chi comanda l'esercito) dichiara guerra a una fazione con una città comune, con un preavviso (minimo `preavvisoMinimo` minuti, massimo 2 ore). All'ora stabilita l'assedio dura `guerraMinuti` (20): il server tiene le brecce nelle mura, la presa della piazza (30 secondi senza difensori vicini) e alla fine dà agli attaccanti `bottinoGuerra` (30%) del tesoro della città assediata, o la vittoria ai difensori.

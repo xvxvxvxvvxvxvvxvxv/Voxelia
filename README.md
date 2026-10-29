@@ -4,7 +4,7 @@
 esplora la città di Aldoria e il regno intorno, si combatte nei dungeon e si costruiscono mondi propri con l'editor
 **Voxelia Studio**.
 
-Versione attuale: **7.49** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
+Versione attuale: **7.50** · tutte le modifiche, versione per versione, sono in [CHANGELOG.md](CHANGELOG.md) (anche nel
 gioco, nel menu **Novità**).
 
 ![Aldoria, la città](docs/aldoria.jpg)
@@ -324,12 +324,11 @@ o le vendono ai villaggi, e i banditi le possono assaltare. I cittadini vogliono
 hanno; le tasse si scelgono nel registro. Le stagioni cambiano ogni settimana e il tempo ogni giorno, con effetti sui
 raccolti e sulle carovane. Nell'editor del borgo lo strumento Blocchi mette cubi colorati uno sopra l'altro.
 
-### Cavalli, navi, eventi, scoperte e immersioni (dalla 7.46)
+### Cavalli, eventi e scoperte (dalla 7.46)
 
 I cavalli si comprano allo Stallo dei Campi (e nelle città di Tomorrow) e si montano con H; accanto c'è la corsa a
-cavallo. Al Cantiere Navale si progetta la propria nave e dal molo si salpa verso isole sempre nuove. Ogni mezz'ora
-c'è un evento del mondo (un drago, una meteora o un mercante raro). Il Diario delle scoperte tiene luoghi, creature,
-risorse, pesci e isole. Dalla Boa dei tuffatori del Porto ci si immerge sul fondo del mare, con l'ossigeno contato.
+cavallo. Ogni mezz'ora c'è un evento del mondo (un drago, una meteora o un mercante raro). Il Diario delle scoperte
+tiene luoghi, creature, risorse e pesci. (La nave da costruire e le immersioni sono state tolte nella 7.50.)
 
 ### Mestieri, casa, foto, animali, carte e incroci (dalla 7.47)
 
@@ -355,6 +354,14 @@ Corona è un edificio vero e dentro i piani si costruiscono a caso, sempre più 
 dei mestieri ha il Fornello (pasti), l'Alambicco (pozioni ed elisir) e l'Incudine (forgia, tempra, fonde), il Ricettario e il
 Mercato. Thalassa ha nuovi luoghi e personaggi, le Tavolette di Giada e il mistero della Perla. Gli animali da compagnia
 hanno molte animazioni nuove.
+
+### Thalassa e la giungla rifatte (dalla 7.50)
+
+Thalassa è una città bianca sulla baia: il Palazzo della Regina (si entra nella sala del trono), il viale delle palme,
+la Piazza del Serpente a mosaico con la fontana, il Santuario del Mare e la Taverna della Sirena (con gli interni), i
+quartieri di case colorate, il Mercato delle spezie, i moli, il faro e la spiaggia. La Giungla di Smeraldo ha la cascata,
+il fiume con i ponti di corda, il lago e il Tempio di Giada fra le rovine. Il Motel e il Casinò hanno le insegne luminose
+sul tetto; correndo si alza la polvere dai piedi. Le immersioni e la nave da costruire non ci sono più.
 
 ### Telefoni e tablet
 Sui dispositivi touch compaiono:
@@ -1061,10 +1068,8 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzzd_blocchi.js` | 7.45: costruire a blocchi nell'editor del borgo |
 | `8zzze_assedi.js` | 7.45: le guerre programmate fra le fazioni e gli assedi (plugin Fazioni 1.1) |
 | `8zzzf_cavalli.js` | 7.46: i cavalli (H per montare), lo stallo e la corsa a cavallo |
-| `8zzzg_navi.js` | 7.46: la nave da progettare al cantiere, il molo e le isole da scoprire |
 | `8zzzh_eventi.js` | 7.46: gli eventi del mondo ogni mezz'ora (drago, meteora, mercante raro) |
 | `8zzzi_scoperte.js` | 7.46: il diario delle scoperte, con i premi |
-| `8zzzj_immersioni.js` | 7.46: le immersioni sul fondo del mare, con l'ossigeno |
 | `8zzzk_mestieri.js` | 7.47: i mestieri (cucina, alchimia, fabbro), le ricette da scoprire e la dispensa |
 | `8zzzl_casa.js` | 7.47: la lavagna di casa con i coinquilini e la mensola dei trofei |
 | `8zzzm_foto.js` | 7.47: la modalità foto (F8) con pose, filtri, cornice e galleria |
@@ -1076,6 +1081,9 @@ estendere o sostituire le funzioni di quelli precedenti.
 | `8zzzs_oltremare.js` | 7.48: il capitolo del regno oltre il mare (Thalassa, la Giungla di Smeraldo, il Tempio di Giada) |
 | `8zzzt_classifiche.js` | 7.48: le classifiche della settimana, con i titoli e i mantelli dei campioni |
 | `8zzzu_thalassa2.js` | 7.49: Thalassa più ricca: luoghi e personaggi nuovi, le Tavolette di Giada, il mistero della Perla |
+| `8zzzv_insegne.js` | 7.50: le insegne luminose del Motel e del Casinò |
+| `8zzzw_correzioni.js` | 7.50: niente cose una sopra l'altra, testi dei pannelli che vanno a capo, correzioni varie |
+| `8zzzx_thalassa3.js` | 7.50: Thalassa e la Giungla di Smeraldo costruite da capo, con gli interni e gli arredi nuovi |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 ---

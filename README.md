@@ -21,7 +21,7 @@ Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costrui
 > Questo README è il riassunto: dice cos'è il gioco, come si avvia e come è fatto il progetto. La guida spiegherà
 > tutto, passo per passo: comandi, combattimento, missioni, Tomorrow e il tuo regno, Voxelia Studio, il server e i plugin.
 > Il link comparirà qui appena la guida sarà online (l'indirizzo previsto è
-> `https://teamvoxelia.github.io/voxelia/`).
+> `https://xvxvxvxvvxvxvvxvxv.github.io/Voxelia/`).
 
 Le novità di ogni versione, dalla più recente, sono in [CHANGELOG.md](CHANGELOG.md), e nel gioco nel menu **Novità**.
 
@@ -573,7 +573,7 @@ docker run -d -p 3000:3000 -e ADMIN_PASSWORD='la-tua-password' -v voxelia-data:/
 ```
 
 ### Docker Compose
-`docker-compose.yml` avvia l'immagine pubblicata su GitHub Container Registry (`ghcr.io/teamvoxelia/voxelia`):
+`docker-compose.yml` avvia l'immagine pubblicata su GitHub Container Registry (`ghcr.io/xvxvxvxvvxvxvvxvxv/voxelia`):
 
 ```sh
 ADMIN_PASSWORD='la-tua-password' docker compose up -d

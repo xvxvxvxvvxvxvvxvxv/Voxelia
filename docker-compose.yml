@@ -3,7 +3,7 @@
 # Dopo l'import: imposta ADMIN_PASSWORD come variabile sensibile, aggiungi un endpoint HTTPS sulla porta 3000.
 services:
   voxelia:
-    image: ghcr.io/teamvoxelia/voxelia:latest
+    image: ghcr.io/xvxvxvxvvxvxvvxvxv/voxelia:latest
     restart: unless-stopped
     ports:
       - "3000:3000"

@@ -16,7 +16,9 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define GAME_VER "7.50-3DS"
+#define PORT_VER "1.0"            // versione del port per 3DS
+#define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
+#define GAME_VER "3DS " PORT_VER
 #define MAXN 96
 #define MAXE 640
 #define INV 24

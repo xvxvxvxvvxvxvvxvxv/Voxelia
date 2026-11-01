@@ -393,7 +393,7 @@ static void buildPause(void) {
 }
 static void buildTitle(void) {
 	snprintf(PT, sizeof PT, "VOXELIA %s", GAME_VER);
-	snprintf(PB, sizeof PB, "Il Regno Perduto — gioco di ruolo in grafica voxel isometrica, per Nintendo 3DS.");
+	snprintf(PB, sizeof PB, "Il Regno Perduto — gioco di ruolo in grafica voxel isometrica, per Nintendo 3DS. Port " PORT_VER " · contenuti di Voxelia " DATA_VER ".");
 	bool sv = hasSave();
 	if (sv) opt("Continua la partita", A_CONT, 0)->col = C_GOLD;
 	opt("Nuova partita", A_NEW, 0);

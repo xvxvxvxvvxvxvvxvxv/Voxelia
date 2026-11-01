@@ -1,4 +1,6 @@
-# Voxelia 3DS — Il Regno Perduto
+# Voxelia 3DS 1.0 — Il Regno Perduto
+
+Versione del port: **1.0** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
 Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 7.50 – Il Regno Perduto*,
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,
@@ -81,7 +83,7 @@ e compone l'eroe per ogni tipo d'arma, elmo, corazza e scudo. Il risultato (circ
 Quando esce una nuova versione basta rigenerare i dati:
 
 ```bash
-cd tools && npm install && VOXELIA_HTML=../../voxelia.html node export.js ../romfs
+cd tools && npm install && VOXELIA_HTML=/percorso/di/voxelia.html node export.js ../romfs   # voxelia.html dal branch main
 ```
 
 ## Multigiocatore

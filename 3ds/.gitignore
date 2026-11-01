@@ -1,0 +1,7 @@
+build/
+*.elf
+*.3dsx
+*.smdh
+*.map
+tools/node_modules/
+tools/package-lock.json

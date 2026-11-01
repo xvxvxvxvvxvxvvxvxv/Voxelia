@@ -1,0 +1,114 @@
+; Voxelia 3DS - vertex shader del mondo voxel isometrico
+; v0: posizione (x, y in caselle; z in pixel di altezza; w = emissione 0..1)
+; v1: colore (r, g, b, a) come byte 0..255
+;
+; La luce si calcola qui, per vertice, sulla GPU: luce ambiente (giorno, tramonto,
+; notte, sotterranei) + fino a 8 luci puntiformi (torce, lampioni, fuochi, l'eroe).
+
+.fvec projection[4]
+.fvec ambient
+.fvec lpos[8]
+.fvec lcol[8]
+
+.constf K(0.0, 1.0, 0.00392156862, 0.03125)
+.alias ZERO K.xxxx
+.alias ONE  K.yyyy
+.alias INV255 K.zzzz
+.alias INV32 K.wwww
+
+.out outpos position
+.out outclr color
+
+.alias inpos v0
+.alias inclr v1
+
+.proc main
+	; posizione proiettata (camera, zoom e 3D stereoscopico sono nella matrice)
+	mov r0.xyz, inpos
+	mov r0.w, ONE
+	dp4 outpos.x, projection[0], r0
+	dp4 outpos.y, projection[1], r0
+	dp4 outpos.z, projection[2], r0
+	dp4 outpos.w, projection[3], r0
+
+	; punto per le luci con l'altezza in caselle
+	mov r5.xy, inpos.xy
+	mul r5.z, INV32, inpos.z
+	mov r5.w, ZERO
+
+	mov r1, ambient
+
+	add r2.xyz, lpos[0].xyz, -r5.xyz
+	dp3 r3.x, r2.xyz, r2.xyz
+	mul r3.x, lpos[0].w, r3.x
+	add r3.x, ONE, -r3.x
+	max r3.x, ZERO, r3.x
+	mul r4.xyz, lcol[0].xyz, r3.xxx
+	add r1.xyz, r4.xyz, r1.xyz
+
+	add r2.xyz, lpos[1].xyz, -r5.xyz
+	dp3 r3.x, r2.xyz, r2.xyz
+	mul r3.x, lpos[1].w, r3.x
+	add r3.x, ONE, -r3.x
+	max r3.x, ZERO, r3.x
+	mul r4.xyz, lcol[1].xyz, r3.xxx
+	add r1.xyz, r4.xyz, r1.xyz
+
+	add r2.xyz, lpos[2].xyz, -r5.xyz
+	dp3 r3.x, r2.xyz, r2.xyz
+	mul r3.x, lpos[2].w, r3.x
+	add r3.x, ONE, -r3.x
+	max r3.x, ZERO, r3.x
+	mul r4.xyz, lcol[2].xyz, r3.xxx
+	add r1.xyz, r4.xyz, r1.xyz
+
+	add r2.xyz, lpos[3].xyz, -r5.xyz
+	dp3 r3.x, r2.xyz, r2.xyz
+	mul r3.x, lpos[3].w, r3.x
+	add r3.x, ONE, -r3.x
+	max r3.x, ZERO, r3.x
+	mul r4.xyz, lcol[3].xyz, r3.xxx
+	add r1.xyz, r4.xyz, r1.xyz
+
+	add r2.xyz, lpos[4].xyz, -r5.xyz
+	dp3 r3.x, r2.xyz, r2.xyz
+	mul r3.x, lpos[4].w, r3.x
+	add r3.x, ONE, -r3.x
+	max r3.x, ZERO, r3.x
+	mul r4.xyz, lcol[4].xyz, r3.xxx
+	add r1.xyz, r4.xyz, r1.xyz
+
+	add r2.xyz, lpos[5].xyz, -r5.xyz
+	dp3 r3.x, r2.xyz, r2.xyz
+	mul r3.x, lpos[5].w, r3.x
+	add r3.x, ONE, -r3.x
+	max r3.x, ZERO, r3.x
+	mul r4.xyz, lcol[5].xyz, r3.xxx
+	add r1.xyz, r4.xyz, r1.xyz
+
+	add r2.xyz, lpos[6].xyz, -r5.xyz
+	dp3 r3.x, r2.xyz, r2.xyz
+	mul r3.x, lpos[6].w, r3.x
+	add r3.x, ONE, -r3.x
+	max r3.x, ZERO, r3.x
+	mul r4.xyz, lcol[6].xyz, r3.xxx
+	add r1.xyz, r4.xyz, r1.xyz
+
+	add r2.xyz, lpos[7].xyz, -r5.xyz
+	dp3 r3.x, r2.xyz, r2.xyz
+	mul r3.x, lpos[7].w, r3.x
+	add r3.x, ONE, -r3.x
+	max r3.x, ZERO, r3.x
+	mul r4.xyz, lcol[7].xyz, r3.xxx
+	add r1.xyz, r4.xyz, r1.xyz
+
+	; le superfici luminose (fiamme, finestre accese) non si spengono di notte
+	add r1.xyz, inpos.www, r1.xyz
+	min r1.xyz, ONE, r1.xyz
+
+	mul r6, INV255, inclr
+	mul outclr.xyz, r6.xyz, r1.xyz
+	mov outclr.w, r6.w
+
+	end
+.end

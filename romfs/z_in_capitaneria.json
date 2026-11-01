@@ -1,0 +1,1 @@
+{"k":"in_capitaneria","N":14,"n":"Capitaneria di Porto","lv":0,"bg":"#141820","mus":"b_capitaneria","int":1,"dg":"","dn":0,"boss":"","out":0,"tc":"","sp":[6.5,12.5],"vp":null,"lights":[],"ents":[{"k":"po","x":6.5,"y":13.5,"to":"porto","st":"exit","n":"Esci: Porto di Aldoria","col":"#5fe0ff"},{"k":"npc","x":6.5,"y":2.5,"nid":"baldo","n":"Capitano Baldo","wd":0,"mdl":68}]}

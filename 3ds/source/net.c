@@ -232,6 +232,10 @@ void netSendChat(const char *s) {
 // messaggi per i plugin del server: {t:'x', pl, e, d} (d è già JSON)
 void netSendX(const char *pl, const char *e, const char *d) {
 	if (!netOk) return;
+	// il server accetta al massimo 30 messaggi ai plugin al secondo: si resta sotto
+	static u64 sec = 0; static int cnt = 0; u64 now = osGetTime() / 1000;
+	if (now != sec) { sec = now; cnt = 0; }
+	if (++cnt > 24) return;
 	char b[1024]; JW w = {b, 0, sizeof b};
 	jwRaw(&w, "{\"t\":\"x\",\"pl\":"); jwStr(&w, pl); jwRaw(&w, ",\"e\":"); jwStr(&w, e); jwRaw(&w, ",\"d\":"); jwRaw(&w, d && *d ? d : "null"); jwRaw(&w, "}");
 	if (w.n < (int)sizeof b - 1) netSendRaw(b);
@@ -309,7 +313,7 @@ static void onMsg(J *m) {
 			o->tw = tyIdx(parts[0] ? parts[0] : "swd", TYW, 8, 0); o->th = parts[1] ? tyIdx(parts[1], TYH, 4, 0) : 0; o->tc = parts[2] ? tyIdx(parts[2], TYC, 3, 0) : 0; o->ts = parts[3] ? tyIdx(parts[3], TYS, 3, 0) : 0;
 			int sw = (int)jgn(q, "sw", 0); if (sw != o->swc) { o->swc = sw; o->sw = .2f; }
 			J *say = jget(q, "say");
-			if (say) { int n = (int)jgn(say, "n", 0); if (n != o->sayN) { o->sayN = n; snprintf(o->bub, sizeof o->bub, "%.60s", jgs(say, "s", "")); o->bt = 5; } }
+			if (say) { int n = (int)jgn(say, "n", 0); if (n != o->sayN) { o->sayN = n; snprintf(o->bub, sizeof o->bub, "%.60s", jgs(say, "s", "")); o->bt = fmaxf(5, marqueeTime(o->bub, .38f, 150) + 1.5f); } }
 			// danni ai nemici fatti dagli altri: valgono anche qui
 			static int lastSeq[MAXPEER];
 			int pi = o - PEERS; if (fresh) lastSeq[pi] = 0;
@@ -332,7 +336,7 @@ static void onMsg(J *m) {
 	else if (!strcmp(t, "chat")) {
 		const char *z = jgs(m, "z", "");
 		char who[64]; if (z[0] && strcmp(z, Zk)) snprintf(who, sizeof who, "%s (%s)", jgs(m, "n", "?"), zoneTitle(z)); else snprintf(who, sizeof who, "%s", jgs(m, "n", "?"));
-		chatLog(who, jgs(m, "s", ""), jgn(m, "adm", 0) ? 1 : 0);
+		if (!plChatFilter(jgs(m, "n", ""), jgs(m, "s", ""), jgn(m, "adm", 0) != 0)) chatLog(who, jgs(m, "s", ""), jgn(m, "adm", 0) ? 1 : 0);
 	} else if (!strcmp(t, "x")) plOnMsg(jgs(m, "pl", ""), jgs(m, "e", ""), jget(m, "d")); else if (!strcmp(t, "join")) { char b[80]; snprintf(b, sizeof b, "%s %s", jgs(m, "n", "?"), jgn(m, "j", 0) ? "è entrato nella stanza" : "ha lasciato la stanza"); chatLog("", b, 1); }
 	else if (!strcmp(t, "ann")) { msg("%s", jgs(m, "s", "")); chatLog("", jgs(m, "s", ""), 1); tone(660, .12f, W_TRIANGLE, .05f); }
 	else if (!strcmp(t, "err")) { msg("%s", jgs(m, "s", "")); tone(150, .15f, W_SQUARE, .05f); }

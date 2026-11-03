@@ -46,13 +46,14 @@ void msg(const char *fmt, ...) {
 	noEmoji(MSG); msgT = 3.5f;
 }
 typedef struct { char a[48], b[120]; float t; } Ban;
+static float banT0 = -1;   // quando è comparso il titolo in cima alla coda
 static Ban BAN[4]; static int NBAN = 0;
 void banner(const char *a, const char *b) {
 	if (NBAN >= 4) { memmove(BAN, BAN + 1, sizeof(Ban) * 3); NBAN = 3; }
-	Ban *x = &BAN[NBAN++]; snprintf(x->a, sizeof x->a, "%s", a); snprintf(x->b, sizeof x->b, "%s", b ? b : ""); noEmoji(x->a); noEmoji(x->b); x->t = 2.6f;
+	Ban *x = &BAN[NBAN++]; snprintf(x->a, sizeof x->a, "%s", a); snprintf(x->b, sizeof x->b, "%s", b ? b : ""); noEmoji(x->a); noEmoji(x->b); x->t = 2.6f + marqueeTime(x->b, .42f, 308);
 }
 static char ZBAN[96]; static float zbanT = 0;
-typedef struct { char s[140]; float t; u8 sys; } ChatL;
+typedef struct { char s[140]; float t, tt; u8 sys; } ChatL;
 static ChatL CHL[8]; static int NCHL = 0;
 static ChatL HIST[40]; static int NHIST = 0;
 void chatLog(const char *who, const char *s, int sys) {
@@ -60,7 +61,9 @@ void chatLog(const char *who, const char *s, int sys) {
 	ChatL *c = &CHL[NCHL++];
 	if (who && *who) snprintf(c->s, sizeof c->s, "%s: %s", who, s); else snprintf(c->s, sizeof c->s, "%s", s);
 	noEmoji(c->s);
-	c->t = 9; c->sys = sys;
+	// le righe lunghe restano finché non sono scorse tutte
+	c->tt = fmaxf(9, marqueeTime(c->s, .36f, 228) + 2);
+	c->t = c->tt; c->sys = sys;
 	// registro della chat (Funzioni del server -> Registro della chat)
 	if (NHIST >= 40) { memmove(HIST, HIST + 1, sizeof(ChatL) * 39); NHIST = 39; }
 	HIST[NHIST++] = *c;
@@ -141,7 +144,7 @@ enum {
 	A_EXITSTAY, A_EXITGO, A_BET, A_CPLAY, A_CONFIRM, A_NOP, A_NAME, A_NETTOG, A_NETURL, A_NETCODE, A_CHAT, A_WHO, A_ARBUY, A_SELLRES, A_SAIL, A_PLUG, A_OPENPLUG
 };
 typedef struct { char l[72]; char r[40]; u32 col; int act, arg; bool dis; } Opt;
-static Opt OPT[48]; static int NOPT = 0, SEL = 0, SCR = 0;
+static Opt OPT[72]; static int NOPT = 0, SEL = 0, SCR = 0;
 static char PT[80], PB[900], PS[120];
 static Ent *PNPC = NULL;
 static int npcLine = 0;
@@ -150,7 +153,7 @@ static int confirmStep = 0;
 static int CB = 10; static char CR[96];
 
 static Opt *opt(const char *l, int act, int arg) {
-	if (NOPT >= 48) return &OPT[47];
+	if (NOPT >= 72) return &OPT[71];
 	Opt *o = &OPT[NOPT++]; memset(o, 0, sizeof *o);
 	snprintf(o->l, sizeof o->l, "%s", l); o->act = act; o->arg = arg; o->col = C_TXT; return o;
 }
@@ -412,6 +415,7 @@ static void buildPause(void) {
 	o = opt("Inseguimento automatico del bersaglio", A_SETTING, 7); snprintf(o->r, sizeof o->r, "%s", SET.autoAtk ? "sì" : "no");
 	{ Opt *o = opt("Multigiocatore", A_OPEN, PM_NET); snprintf(o->r, sizeof o->r, "%s", netOk ? "collegato" : NETC.on ? "…" : "spento"); }
 	if (netOk) { Opt *o = opt("Funzioni del server", A_OPENPLUG, 0); snprintf(o->r, sizeof o->r, "emote, gruppo, /hub"); o->col = C_GOLD; }
+	opt("Registro della chat", A_OPENPLUG, 3);
 	opt("Comandi", A_HELP, 0);
 	opt("Salva e torna al titolo", A_TITLE, 0);
 }
@@ -628,7 +632,7 @@ static void doAct(Opt *o, int dir) {
 	case A_ARBUY: { char b[48]; snprintf(b, sizeof b, "{\"t\":\"buy\",\"k\":%d}", a); netSendRaw(b); break; }
 	case A_SELLRES: if (a < 16) { P.g += P.res[a].n * 8; msg("Venduti %d %s", P.res[a].n, P.res[a].k); P.res[a].n = 0; tone(1200, .06f, W_TRIANGLE, .05f); } break;
 	case A_PLUG: if (plPanelAct(a)) { uiClose(); return; } SEL = 0; SCR = 0; break;
-	case A_OPENPLUG: plPanelPage(0); PMback = PM; PM = PM_PLUG; SEL = 0; SCR = 0; break;
+	case A_OPENPLUG: plPanelPage(a); PMback = PM; PM = PM_PLUG; SEL = 0; SCR = 0; break;
 	case A_SAIL: uiClose(); goZone("thal48"); banner("Thalassa", "Il regno oltre il mare · parla con il Cancelliere Oreste"); return;
 	case A_NOP: if (PM == PM_INV) tone(300, .03f, W_TRIANGLE, .03f); return;
 	}
@@ -638,7 +642,9 @@ static void doAct(Opt *o, int dir) {
 /* ---------------- disegno delle finestre ---------------- */
 #define ROWH 19
 static float bodyH = 0;
+static float selT = 0;   // da quando è scelta la riga (per far scorrere il testo lungo)
 static void drawPanel(void) {
+	{ static int lastSel = -1, lastPM = -1; if (SEL != lastSel || PM != lastPM) { lastSel = SEL; lastPM = PM; selT = gtime; } }
 	rect(0, 0, 320, 240, C_PANEL);
 	rect(0, 0, 320, 22, C_PANEL2);
 	rect(0, 22, 320, 1, C2D_Color32(245, 185, 66, 140));
@@ -666,8 +672,10 @@ static void drawPanel(void) {
 		u32 c = o->dis ? C_MU : o->col;
 		float rw = o->r[0] ? txtW(o->r, .42f) : 0;
 		// accorcia l'etichetta se si sovrappone al testo a destra
-		char lab[72]; snprintf(lab, sizeof lab, "%s", o->l);
-		while (strlen(lab) > 4 && txtW(lab, .46f) > 300 - rw - 14) { int n = strlen(lab); lab[n - 4] = '.'; lab[n - 3] = '.'; lab[n - 2] = 0; }
+		char lab[80];
+		if (i == SEL) marqueeStr(o->l, .46f, 300 - rw - 14, gtime - selT, lab, sizeof lab);
+		else { snprintf(lab, sizeof lab, "%s", o->l);
+			if (txtW(lab, .46f) > 300 - rw - 14) { int n = strlen(lab); while (n > 1 && txtW(lab, .46f) > 300 - rw - 24) { n--; while (n > 0 && (lab[n] & 0xC0) == 0x80) n--; lab[n] = 0; } strcat(lab, "…"); } }
 		txt(9, ry + 2, .46f, c, lab);
 		if (o->r[0]) txtR(313, ry + 3, .42f, C_MU, o->r);
 	}
@@ -728,13 +736,13 @@ static void drawHud(void) {
 		txt(x, y, .38f, qReady(&P.q[i]) ? C2D_Color32(122, 255, 122, 255) : C_MU, b); y += 12;
 	}
 	// avviso di un plugin (teletrasporto, invito in un gruppo): sopra gli obiettivi, con Accetta e Rifiuta
-	{ const char *ti, *tx;
-	  if (plCard(&ti, &tx)) {
+	{ const char *ti, *tx, *si, *no;
+	  if (plCard(&ti, &tx, &si, &no)) {
 		rect(116, 58, 202, 108, C2D_Color32(20, 28, 26, 250)); rect(116, 58, 202, 2, C2D_Color32(62, 224, 122, 255));
 		txt(122, 62, .46f, C2D_Color32(125, 255, 176, 255), ti);
 		txtWrapMax(122, 80, 190, .4f, C_TXT, tx, 44);
-		rect(122, 130, 92, 30, C2D_Color32(42, 106, 70, 255)); txtC(168, 137, .48f, C_TXT, "Accetta");
-		rect(220, 130, 92, 30, C2D_Color32(106, 46, 46, 255)); txtC(266, 137, .48f, C_TXT, "Rifiuta");
+		rect(122, 130, 92, 30, C2D_Color32(42, 106, 70, 255)); txtC(168, 137, .48f, C_TXT, si);
+		rect(220, 130, 92, 30, C2D_Color32(106, 46, 46, 255)); txtC(266, 137, .48f, C_TXT, no);
 	  } }
 	// abilità e ricariche
 	{ extern float STA; extern bool STEX;
@@ -847,8 +855,7 @@ void uiDrawTopOverlay(float eyeShift) {
 		// chat della stanza e fumetti sopra gli altri eroi
 		{ float y = 194; int shown = 0;
 		  for (int i = NCHL - 1; i >= 0 && shown < 3; i--) { ChatL *c = &CHL[i]; if (c->t <= 0) continue; u8 a = (u8)(clampf(c->t, 0, 1) * 255);
-			char line[140]; snprintf(line, sizeof line, "%s", c->s);
-			if (txtW(line, .36f) > 236) { int n = strlen(line); while (n > 4 && txtW(line, .36f) > 228) { n--; while (n > 0 && (line[n] & 0xC0) == 0x80) n--; line[n] = 0; } strcat(line, "…"); }
+			char line[160]; marqueeStr(c->s, .36f, 228, c->tt - c->t, line, sizeof line);
 			float w = txtW(line, .36f) + 8; rect(2, y, w, 12, C2D_Color32(0, 0, 0, (u8)(a * .5f))); txt(5, y, .36f, c->sys == 2 ? C2D_Color32(125, 255, 176, a) : c->sys ? C2D_Color32(255, 216, 120, a) : C2D_Color32(235, 240, 255, a), line); y -= 13; shown++; } }
 		if (netOk) { char rk[64]; rmKey(rk, sizeof rk);
 			for (int i = 0; i < MAXPEER; i++) { Peer *o = &PEERS[i]; if (!o->used || strcmp(o->rm, rk) || plHidePeer(o)) continue;
@@ -856,7 +863,7 @@ void uiDrawTopOverlay(float eyeShift) {
 				rect(sx - 13, sy, 26, 4, C2D_Color32(0, 0, 0, 170)); rect(sx - 13, sy, 26 * clampf(o->hp / (float)(o->mx ? o->mx : 1), 0, 1), 4, C2D_Color32(68, 170, 255, 255));
 				bool mate = plMate(o->id);
 				char nm[40]; snprintf(nm, sizeof nm, "%s%s Lv%d", mate ? "+ " : "", o->n, o->lv); label(sx, sy - 12, .38f, inPit(o->x, o->y) ? C2D_Color32(255, 154, 154, 255) : mate ? C2D_Color32(125, 255, 176, 255) : C2D_Color32(170, 210, 255, 255), nm);
-				if (o->bt > 0 && o->bub[0]) { char bb[64]; snprintf(bb, sizeof bb, "%s", o->bub); if (txtW(bb, .38f) > 150) { int n = strlen(bb); while (n > 4 && txtW(bb, .38f) > 142) { n--; while (n > 0 && (bb[n] & 0xC0) == 0x80) n--; bb[n] = 0; } strcat(bb, "…"); } label(sx, sy - 26, .38f, C2D_Color32(255, 227, 138, 255), bb); } } }
+				if (o->bt > 0 && o->bub[0]) { char bb[80]; float tot = fmaxf(5, marqueeTime(o->bub, .38f, 150) + 1.5f); marqueeStr(o->bub, .38f, 150, tot - o->bt, bb, sizeof bb); label(sx, sy - 26, .38f, C2D_Color32(255, 227, 138, 255), bb); } } }
 		plDrawTop();
 		if (msgT > 0) {
 			// i messaggi lunghi vanno su due righe, sempre dentro lo schermo
@@ -875,7 +882,9 @@ void uiDrawTopOverlay(float eyeShift) {
 			rect(40, 68, 320, 46, C2D_Color32(10, 12, 20, (u8)(a * .75f)));
 			rect(40, 68, 320, 2, C2D_Color32(245, 185, 66, a));
 			txtC(200, 72, .6f, C2D_Color32(245, 185, 66, a), b->a);
-			txtC(200, 94, .42f, C2D_Color32(240, 240, 240, a), b->b);
+			if (banT0 < 0) banT0 = gtime;
+			char bb[160]; marqueeStr(b->b, .42f, 308, gtime - banT0, bb, sizeof bb);
+			txtC(200, 94, .42f, C2D_Color32(240, 240, 240, a), bb);
 		}
 	} else {
 		// titolo
@@ -897,7 +906,7 @@ void uiTick(float dt) {
 	for (int i = 0; i < NCHL; i++) CHL[i].t -= dt;
 	if (msgT > 0) msgT -= dt;
 	if (zbanT > 0) zbanT -= dt;
-	if (NBAN) { BAN[0].t -= dt; if (BAN[0].t <= 0) { memmove(BAN, BAN + 1, sizeof(Ban) * (NBAN - 1)); NBAN--; } }
+	if (NBAN) { BAN[0].t -= dt; if (BAN[0].t <= 0) { memmove(BAN, BAN + 1, sizeof(Ban) * (NBAN - 1)); NBAN--; banT0 = -1; } }
 }
 
 /* ---------------- ingresso ---------------- */
@@ -906,11 +915,11 @@ void uiInput(u32 kd, u32 kh, touchPosition *tp, bool touched, bool tdown) {
 	if (PM == PM_NONE) {
 		if (!started) return;
 		if (tdown) {
-			{ const char *ti, *tx; if (plCard(&ti, &tx) && tp->py >= 130 && tp->py < 160) { if (tp->px >= 122 && tp->px < 214) { plCardAnswer(true); return; } if (tp->px >= 220 && tp->px < 312) { plCardAnswer(false); return; } } }
+			{ const char *ti, *tx, *si, *no; if (plCard(&ti, &tx, &si, &no) && tp->py >= 130 && tp->py < 160) { if (tp->px >= 122 && tp->px < 214) { plCardAnswer(true); return; } if (tp->px >= 220 && tp->px < 312) { plCardAnswer(false); return; } } }
 			for (int i = 0; i < 6; i++) {
 				const Btn *b = &BTN[i];
 				if (tp->px >= b->x && tp->px < b->x + b->w && tp->py >= b->y && tp->py < b->y + b->h) {
-					if (b->m < 0) { if (netOk) { kbMode = 3; wantKeyboard = true; } else uiOpenPanel(PM_NET); }
+					if (b->m < 0) { plPanelPage(3); uiOpenPanel(PM_PLUG); }   // Chat: registro della chat, con «Scrivi»
 					else uiOpenPanel(b->m);
 					return;
 				}
@@ -952,6 +961,8 @@ void uiInput(u32 kd, u32 kh, touchPosition *tp, bool touched, bool tdown) {
 			msg("Hai gettato a terra: %s", it.n);
 			buildPanel();
 		}
+	} else if (kd & KEY_Y && PM == PM_PLUG && NOPT && OPT[SEL].act == A_PLUG) {
+		if (plPanelAlt(OPT[SEL].arg)) uiClose();
 	} else if (kd & KEY_B) {
 		if (PM == PM_TITLE) return;
 		if (PM == PM_DEAD) return;
@@ -975,6 +986,9 @@ void uiInput(u32 kd, u32 kh, touchPosition *tp, bool touched, bool tdown) {
 void uiInit(void) { CR[0] = 0; }
 void uiTitleInit(void) { PM = PM_TITLE; SEL = 0; SCR = 0; buildPanel(); }
 int kbMode = 0;
+char kbInit[64];
+// tastiera della chat con un testo iniziale (per esempio "/tpa ")
+void uiKeyboard(const char *init) { snprintf(kbInit, sizeof kbInit, "%s", init ? init : ""); kbMode = 3; wantKeyboard = true; }
 void uiAfterKeyboard(const char *s) {
 	if (!s || !*s) return;
 	if (kbMode == 0) {

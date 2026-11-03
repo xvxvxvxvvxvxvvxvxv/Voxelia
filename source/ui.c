@@ -73,7 +73,7 @@ int uiChatHist(int i, const char **s, int *sys) { if (i < 0 || i >= NHIST) retur
 
 /* ---------------- minimappa: una texture aggiornata solo quando cambia la zona ---------------- */
 static bool mmDirty = true;
-static u8 MMP[104 * 104]; static int mmSz = 0, mmN = 0;
+static u8 MMP[192 * 192]; static int mmSz = 0, mmN = 0;   // fino alla mappa grande (180 in coordinate 3DS = 144 pixel)
 void uiMinimapDirty(void) { mmDirty = true; snprintf(ZBAN, sizeof ZBAN, "%s", ZNAME); zbanT = 2.6f; }
 static u32 tileCol(int x, int y) {
 	u32 c = TCOL[y][x];
@@ -82,7 +82,7 @@ static u32 tileCol(int x, int y) {
 }
 // minimappa: un'immagine nella tavolozza dello schermo, rifatta solo quando cambia la zona o la misura
 static void mmBuild(int sz) {
-	if (sz > 104) sz = 104;
+	if (sz > 192) sz = 192;
 	for (int j = 0; j < sz; j++) for (int i = 0; i < sz; i++) {
 		int x = i * N / sz, y = j * N / sz;
 		MMP[j * sz + i] = (x < N && y < N && M[y][x] != 9) ? gfxIndex(tileCol(x, y)) : 0;

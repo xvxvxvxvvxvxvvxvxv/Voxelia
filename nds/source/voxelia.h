@@ -14,7 +14,7 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.0"            // versione del port per DS
+#define PORT_VER "1.1"            // versione del port per DS
 #define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
 #define GAME_VER "DS " PORT_VER
 #define DATADIR "nitro:/"

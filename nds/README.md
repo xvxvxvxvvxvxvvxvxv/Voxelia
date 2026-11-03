@@ -1,6 +1,6 @@
-# Voxelia DS 1.0 — Il Regno Perduto
+# Voxelia DS 1.1 — Il Regno Perduto
 
-Versione del port: **1.0** (contenuti di Voxelia **7.50**).
+Versione del port: **1.1** (contenuti di Voxelia **7.50**).
 
 Port per **Nintendo DS / DS Lite / DSi** di *Voxelia 7.50 – Il Regno Perduto*. Usa la stessa base del port
 per 3DS (branch `3ds`):
@@ -80,7 +80,8 @@ fotogramma. Il 3DS disegna decine di migliaia di voxel. Quindi:
   - Il tipo di elmo e di scudo non si vede.
 - **Effetti semplificati:** niente 3D stereoscopico, acqua e fiamme ferme, meno particelle.
 - **Niente zoom:** la telecamera è fissa.
-- **Audio:** la stessa musica procedurale, sui canali PSG del DS (onde quadre e rumore).
+- **Audio:** la stessa musica procedurale del browser e del 3DS (stessi brani, note, tempo, inviluppi e batteria),
+  sui canali PSG del DS. Il DS ha solo onde quadre e rumore, quindi il timbro è più «8 bit».
 - **Prestazioni:** circa 25–40 fotogrammi al secondo, secondo la zona.
 
 Contenuti, missioni, storia, combattimento (catene, colpo caricato, stamina), dungeon con le leve, negozi e plugin

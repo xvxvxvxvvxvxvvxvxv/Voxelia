@@ -1,6 +1,6 @@
-# Voxelia 3DS 1.1 — Il Regno Perduto
+# Voxelia 3DS 1.2 — Il Regno Perduto
 
-Versione del port: **1.1** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.2** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
 Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 7.50 – Il Regno Perduto*,
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,
@@ -32,7 +32,7 @@ La partita si salva da sola ogni 30 secondi e a ogni cambio di zona.
 | ZL / ZR o C-stick (New 3DS) | Zoom |
 | START | Pausa: salvataggio, volumi, zoom, opzioni, comandi |
 | SELECT | Mappa grande della zona |
-| Schermo touch | HUD sempre visibile: vita, XP, oro, minimappa, obiettivi, ricariche delle abilità; pulsanti Zaino, Missioni, Diario, Mappa, Menu. Toccando un'abilità la usi; toccando la minimappa apri la mappa |
+| Schermo touch | HUD sempre visibile: vita, XP, oro, minimappa, obiettivi, ricariche delle abilità; pulsanti Zaino, Missioni, Diario, Mappa, Menu. Toccando un'abilità la usi; toccando la minimappa apri la mappa. In rete, le richieste di teletrasporto e gli inviti nei gruppi compaiono qui con Accetta e Rifiuta |
 
 Nei menu: D-pad su/giù per scegliere, A per confermare, B per tornare indietro, L/R per scorrere
 più velocemente, sinistra/destra per cambiare volumi, zoom e puntate. Le righe si possono anche toccare
@@ -101,7 +101,35 @@ e chi gioca dal browser con lo stesso codice stanza stanno nello stesso mondo. F
 - l'ora del mondo condivisa, il ping e i comandi `/` dei plugin;
 - i danni ai nemici condivisi e i cicli dei dungeon della stanza;
 - l'**arena PvP** nella fossa del Colosseo, con vittorie, punti arena e negozio dell'Arena da Kael;
-- l'elenco dei giocatori della stanza, i messaggi e i regali dell'admin, il kick.
+- l'elenco dei giocatori della stanza, i messaggi e i regali dell'admin, il kick;
+- i **plugin del server** della modalità storia (vedi sotto).
+
+### Plugin del server
+
+Nel browser i plugin del server aggiungono al gioco un loro pezzo di JavaScript, che la 3DS non può eseguire.
+Il port ne ha una versione nativa che usa gli stessi messaggi (`{t:'x', pl, e, d}`, in `source/plugins.c`):
+
+| Plugin | Sulla 3DS |
+|---|---|
+| Boss del mondo (`boss`) | Il boss compare nella sua zona, più grande, con la barra in alto. I colpi vanno al server: la vita è quella di tutta la stanza |
+| Caccia al tesoro (`tesoro`) | Avviso e scintille vicino al nascondiglio, titolo e premio a chi lo trova |
+| Taglie (`taglie`) | Il gioco dice al server se la cripta del Borgo delle Ceneri è aperta |
+| Teletrasporto (`tpa`) | Le richieste arrivano sul touch con Accetta e Rifiuta. Con `/tpa nome` il gioco controlla se puoi entrare nella zona dell'altro, poi ci vai |
+| Ritorno ad Aldoria (`hub`) | `/hub`, con gli stessi controlli del browser |
+| Gruppi d'avventura (`gruppi`) | Riquadro dei compagni in alto a sinistra, inviti sul touch, chat del gruppo in verde, nomi verdi sopra la testa |
+| Emote (`emote`) | Fumetti sopra gli eroi e ruota delle emote |
+| Notti di caccia, Torneo, Sindaco, Gara di pesca | Titoli e annunci |
+| Guardie e ladri (`guardieladri`) | Riquadro della partita, benda della guardia, ladri lontani nascosti |
+| Speedrun, Albo | L'indirizzo del server per i link in chat |
+
+**Menu → Funzioni del server** (anche da Multigiocatore) apre una pagina con:
+- emote e gruppo;
+- Torna ad Aldoria;
+- i comandi dei plugin;
+- il **registro della chat**, per leggere per intero le risposte lunghe dei comandi.
+
+I comandi si possono anche scrivere in chat. Casa, Discoteca e Mercatino hanno finestre e mappe proprie del
+browser: dalla 3DS restano i loro comandi in chat.
 
 Provato sul server ufficiale (nell'emulatore Azahar): collegamento `wss://` attraverso Cloudflare, un giocatore dal
 browser visto in città con il suo equipaggiamento, chat, annunci dei plugin (boss del mondo, caccia al tesoro,
@@ -117,7 +145,10 @@ Limiti:
 - **Alcune mappe possono non coincidere con quelle del browser.** Nel browser le zone aperte e i dungeon si generano
   a partire dal codice stanza; sulla 3DS sono quelli esportati. Città, quartieri, interni e Colosseo coincidono;
   nelle zone aperte e nei dungeon gli altri eroi possono sembrare camminare dentro un albero o un muro.
-- **Mancano alcune funzioni online:** scambi, oggetti gettati a terra, profili dettagliati e mondi della community.
+- **Mancano alcune funzioni online:**
+  - scambi, oggetti gettati a terra, profili dettagliati e mondi della community;
+  - le finestre di Casa, Discoteca e Mercatino;
+  - il sensore del Guardiano nel gioco: il Guardiano controlla comunque i progressi dal server.
 
 ## Cosa non c'è ancora
 
@@ -158,5 +189,6 @@ Struttura del codice (`source/`):
 | `audio.c` | sintetizzatore e musica procedurale su ndsp |
 | `data.c` | tabelle lette da `romfs:/data.json`, oggetti, modelli animati (`models.bin`, `hero.bin`) |
 | `net.c` | multigiocatore: WebSocket/TLS (mbedtls), protocollo di `server.js` |
+| `plugins.c` | plugin del server (modalità storia): boss del mondo, tesoro, teletrasporto, gruppi, emote… |
 | `json.c` | lettore e scrittore JSON (dati e rete) |
 | `tools/export.js` | esportatore dei dati dalla versione browser |

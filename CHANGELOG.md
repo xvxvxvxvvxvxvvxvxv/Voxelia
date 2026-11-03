@@ -3,6 +3,42 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.2 · contenuti di Voxelia 7.50
+
+**I plugin del server per la modalità storia.** Nel browser ogni plugin aggiunge al gioco un suo pezzo di codice
+JavaScript, che sulla 3DS non può girare. Ora il port ha la sua versione nativa di quel codice e usa gli stessi
+messaggi del server (`{t:'x', pl, e, d}`):
+
+- **Boss del mondo** (`boss`). Il boss compare nella sua zona, più grande e più forte, con la barra della vita in
+  alto. I colpi vanno al server: la vita e la vittoria sono quelle di tutta la stanza, e il premio arriva a chi
+  l'ha colpito.
+- **Caccia al tesoro** (`tesoro`). Vicino al nascondiglio compaiono l'avviso «Qualcosa luccica qui vicino...» e le
+  scintille, poi il titolo quando lo trovi.
+- **Taglie** (`taglie`). Il gioco dice al server se la cripta del Borgo delle Ceneri è aperta, come fa il browser.
+- **Teletrasporto** (`tpa`). Le richieste arrivano sullo schermo touch, con **Accetta** e **Rifiuta**. Con
+  `/tpa nome` il gioco controlla, come nel browser, se puoi entrare nella zona dell'altro (cancelli delle missioni,
+  punto della storia, livello) e poi ti porta vicino a lui.
+- **Ritorno ad Aldoria** (`hub`). `/hub` funziona, con gli stessi controlli: niente nemici vicini, niente colpi
+  subiti da poco, niente fossa del Colosseo.
+- **Gruppi d'avventura** (`gruppi`). C'è il riquadro dei compagni in alto a sinistra, con vita e zona. Gli inviti
+  arrivano sul touch e la chat del gruppo è in verde. Sopra la testa i compagni hanno il nome in verde. Dal
+  pannello del gruppo li raggiungi con un tocco.
+- **Emote** (`emote`). Le emote compaiono come fumetti sopra gli eroi, e c'è la ruota delle emote.
+- **Annunci.** Ci sono i titoli della notte di caccia (`notti`), del torneo (`torneo`), del sindaco (`sindaco`) e
+  della gara di pesca (`pesca`).
+- **Guardie e ladri** (`guardieladri`). C'è il riquadro della partita. La guardia ha la benda mentre conta e non
+  vede i ladri lontani.
+- **Link dei plugin.** Lo speedrun e l'albo ricevono l'indirizzo del server, per i link in chat.
+- **Pagina «Funzioni del server».** Si apre dal menu di pausa o da Multigiocatore e raccoglie:
+  - le emote e il gruppo;
+  - Torna ad Aldoria;
+  - i comandi dei plugin (`/boss`, `/tesoro`, `/taglie`, `/evento`, `/torneo`, `/classifiche`, `/giornaliero`,
+    `/aiuto`);
+  - il **registro della chat**, dove si leggono per intero le risposte lunghe dei comandi.
+- Le emoji dei messaggi del server, che il font della console non ha, non compaiono più come «?».
+- Casa, Discoteca e Mercatino hanno finestre e mappe del browser: dalla 3DS restano i loro comandi in chat, e il
+  gioco lo dice invece di non fare nulla.
+
 ## 1.1 · contenuti di Voxelia 7.50
 
 - **Leve dei dungeon (7.44).** Nei piani dei dungeon, tranne quello del boss, la scala per il piano di sotto è

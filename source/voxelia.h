@@ -16,7 +16,7 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.1"            // versione del port per 3DS
+#define PORT_VER "1.2"            // versione del port per 3DS
 #define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
 #define GAME_VER "3DS " PORT_VER
 #define MAXN 96
@@ -175,6 +175,8 @@ typedef struct {
 	char gid[16];
 	// frammento / pagina
 	int sid;
+	// boss del mondo (plugin boss): vb = una «vita», scl = grandezza del modello
+	u8 wb; float vb, scl;
 } Ent;
 extern Ent ents[MAXE];
 extern int NENT;
@@ -297,7 +299,7 @@ void chatLog(const char *who, const char *s, int sys);
 void uiMinimapDirty(void);
 void uiTitleInit(void);
 extern int PM;
-enum { PM_NONE, PM_NPC, PM_TXT, PM_SHOP, PM_SMITH, PM_ALCH, PM_INV, PM_QUEST, PM_DIARY, PM_PAUSE, PM_TITLE, PM_DIFF, PM_DEAD, PM_EXITASK, PM_CASINO, PM_MAP, PM_HELP, PM_CONFIRM, PM_NET, PM_CHAT, PM_PLAYERS, PM_SELLRES, PM_ARENA };
+enum { PM_NONE, PM_NPC, PM_TXT, PM_SHOP, PM_SMITH, PM_ALCH, PM_INV, PM_QUEST, PM_DIARY, PM_PAUSE, PM_TITLE, PM_DIFF, PM_DEAD, PM_EXITASK, PM_CASINO, PM_MAP, PM_HELP, PM_CONFIRM, PM_NET, PM_CHAT, PM_PLAYERS, PM_SELLRES, PM_ARENA, PM_PLUG };
 
 /* ---------------- gioco ---------------- */
 void gameInit(void);
@@ -399,6 +401,22 @@ void netSendKo(const char *by);
 void netSendDgDone(const char *d, int run);
 void netSendRaw(const char *json);
 int netRuns(const char *d);
+
+/* ---------------- plugin del server (plugins.c) ---------------- */
+void plOnMsg(const char *pl, const char *ev, J *d);
+void plOnConnect(void);
+void plTick(float dt);
+void plDrawTop(void);
+void plBossHurt(Ent *e, int d, bool cr);
+bool plMate(const char *id);
+bool plHidePeer(const Peer *o);
+bool plCard(const char **ti, const char **tx);
+void plCardAnswer(bool yes);
+void plBuildPanel(void);
+int plPanelAct(int arg);
+bool plPanelBack(void);
+void plPanelPage(int p);
+extern float gMS;
 
 /* ---------------- audio ---------------- */
 void auInit(void);

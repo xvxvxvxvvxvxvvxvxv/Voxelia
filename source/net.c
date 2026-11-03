@@ -229,6 +229,14 @@ void netSendChat(const char *s) {
 	if (s[0] != '/') { snprintf(sayS, sizeof sayS, "%.60s", s); sayN = (int)(osGetTime() % 1000000); }
 	chatLog(P.name, s, 0);
 }
+// messaggi per i plugin del server: {t:'x', pl, e, d} (d è già JSON)
+void netSendX(const char *pl, const char *e, const char *d) {
+	if (!netOk) return;
+	char b[1024]; JW w = {b, 0, sizeof b};
+	jwRaw(&w, "{\"t\":\"x\",\"pl\":"); jwStr(&w, pl); jwRaw(&w, ",\"e\":"); jwStr(&w, e); jwRaw(&w, ",\"d\":"); jwRaw(&w, d && *d ? d : "null"); jwRaw(&w, "}");
+	if (w.n < (int)sizeof b - 1) netSendRaw(b);
+}
+const char *netMyId(void) { return netOk ? myId : ""; }
 void netSendHit(const char *to, int d, bool cr) {
 	char b[96]; snprintf(b, sizeof b, "{\"t\":\"hit\",\"to\":\"%s\",\"d\":%d,\"cr\":%s}", to, d, cr ? "true" : "false"); netSendRaw(b);
 }
@@ -280,6 +288,7 @@ static void onMsg(J *m) {
 		J *ar = jget(m, "ar"); arPts[0] = (int)jgn(ar, "w", 0); arPts[1] = (int)jgn(ar, "l", 0); arPts[2] = (int)jgn(ar, "pts", 0); arPts[3] = (int)jgn(ar, "ap", 0);
 		setTime(jget(m, "gm"));
 		chatLog("", "Collegato al server di Voxelia", 1);
+		plOnConnect();
 	} else if (!strcmp(t, "s")) {
 		J *p = jget(m, "p");
 		bool seen[MAXPEER] = {0};
@@ -323,8 +332,8 @@ static void onMsg(J *m) {
 	else if (!strcmp(t, "chat")) {
 		const char *z = jgs(m, "z", "");
 		char who[64]; if (z[0] && strcmp(z, Zk)) snprintf(who, sizeof who, "%s (%s)", jgs(m, "n", "?"), zoneTitle(z)); else snprintf(who, sizeof who, "%s", jgs(m, "n", "?"));
-		chatLog(who, jgs(m, "s", ""), 0);
-	} else if (!strcmp(t, "join")) { char b[80]; snprintf(b, sizeof b, "%s %s", jgs(m, "n", "?"), jgn(m, "j", 0) ? "è entrato nella stanza" : "ha lasciato la stanza"); chatLog("", b, 1); }
+		chatLog(who, jgs(m, "s", ""), jgn(m, "adm", 0) ? 1 : 0);
+	} else if (!strcmp(t, "x")) plOnMsg(jgs(m, "pl", ""), jgs(m, "e", ""), jget(m, "d")); else if (!strcmp(t, "join")) { char b[80]; snprintf(b, sizeof b, "%s %s", jgs(m, "n", "?"), jgn(m, "j", 0) ? "è entrato nella stanza" : "ha lasciato la stanza"); chatLog("", b, 1); }
 	else if (!strcmp(t, "ann")) { msg("%s", jgs(m, "s", "")); chatLog("", jgs(m, "s", ""), 1); tone(660, .12f, W_TRIANGLE, .05f); }
 	else if (!strcmp(t, "err")) { msg("%s", jgs(m, "s", "")); tone(150, .15f, W_SQUARE, .05f); }
 	else if (!strcmp(t, "cfg")) { pvpOn = jgn(jget(m, "c"), "pvp", 1) != 0; }

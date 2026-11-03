@@ -27,26 +27,46 @@ bool wantKeyboard = false;
 static int wantDiff = 1;
 
 /* ---------------- messaggi e annunci ---------------- */
+// il font della console non ha le emoji che i plugin mettono nei messaggi: si tolgono (e gli spazi rimasti in testa)
+static void noEmoji(char *s) {
+	char *o = s; const unsigned char *p = (const unsigned char *)s;
+	while (*p) {
+		if (*p >= 0xF0) { p++; while (*p && (*p & 0xC0) == 0x80) p++; continue; }
+		if (p[0] == 0xEF && p[1] == 0xB8 && p[2] == 0x8F) { p += 3; continue; }   // selettore di variante
+		if (p[0] == 0xE2 && p[1] == 0x80 && p[2] == 0x8D) { p += 3; continue; }   // unione di emoji
+		*o++ = *p++;
+	}
+	*o = 0;
+	char *a = s; while (*a == ' ') a++;
+	if (a != s) memmove(s, a, strlen(a) + 1);
+}
 static char MSG[160]; static float msgT = 0;
 void msg(const char *fmt, ...) {
 	va_list ap; va_start(ap, fmt); vsnprintf(MSG, sizeof MSG, fmt, ap); va_end(ap);
-	msgT = 3.5f;
+	noEmoji(MSG); msgT = 3.5f;
 }
 typedef struct { char a[48], b[120]; float t; } Ban;
 static Ban BAN[4]; static int NBAN = 0;
 void banner(const char *a, const char *b) {
 	if (NBAN >= 4) { memmove(BAN, BAN + 1, sizeof(Ban) * 3); NBAN = 3; }
-	Ban *x = &BAN[NBAN++]; snprintf(x->a, sizeof x->a, "%s", a); snprintf(x->b, sizeof x->b, "%s", b ? b : ""); x->t = 2.6f;
+	Ban *x = &BAN[NBAN++]; snprintf(x->a, sizeof x->a, "%s", a); snprintf(x->b, sizeof x->b, "%s", b ? b : ""); noEmoji(x->a); noEmoji(x->b); x->t = 2.6f;
 }
 static char ZBAN[96]; static float zbanT = 0;
 typedef struct { char s[140]; float t; u8 sys; } ChatL;
 static ChatL CHL[8]; static int NCHL = 0;
+static ChatL HIST[40]; static int NHIST = 0;
 void chatLog(const char *who, const char *s, int sys) {
 	if (NCHL >= 8) { memmove(CHL, CHL + 1, sizeof(ChatL) * 7); NCHL = 7; }
 	ChatL *c = &CHL[NCHL++];
 	if (who && *who) snprintf(c->s, sizeof c->s, "%s: %s", who, s); else snprintf(c->s, sizeof c->s, "%s", s);
+	noEmoji(c->s);
 	c->t = 9; c->sys = sys;
+	// registro della chat (Funzioni del server -> Registro della chat)
+	if (NHIST >= 40) { memmove(HIST, HIST + 1, sizeof(ChatL) * 39); NHIST = 39; }
+	HIST[NHIST++] = *c;
 }
+// i-esimo messaggio dal più recente
+int uiChatHist(int i, const char **s, int *sys) { if (i < 0 || i >= NHIST) return 0; ChatL *c = &HIST[NHIST - 1 - i]; *s = c->s; *sys = c->sys; return 1; }
 
 /* ---------------- minimappa: una texture aggiornata solo quando cambia la zona ---------------- */
 static C3D_Tex mmTex;
@@ -118,7 +138,7 @@ static void drawMinimap(float X, float Y, float S, bool legend) {
 enum {
 	A_CLOSE = 1, A_BACK, A_STORY, A_QACCEPT, A_QTURN, A_OPEN, A_HEAL, A_REST, A_SONG, A_BUY, A_SELL, A_SELLALL, A_FORGE, A_UPG,
 	A_EQUIP, A_DROPIT, A_QABANDON, A_LORE, A_RESUME, A_SAVE, A_SETTING, A_TITLE, A_CONT, A_NEW, A_PROLOG, A_HELP, A_DIFF,
-	A_EXITSTAY, A_EXITGO, A_BET, A_CPLAY, A_CONFIRM, A_NOP, A_NAME, A_NETTOG, A_NETURL, A_NETCODE, A_CHAT, A_WHO, A_ARBUY, A_SELLRES, A_SAIL
+	A_EXITSTAY, A_EXITGO, A_BET, A_CPLAY, A_CONFIRM, A_NOP, A_NAME, A_NETTOG, A_NETURL, A_NETCODE, A_CHAT, A_WHO, A_ARBUY, A_SELLRES, A_SAIL, A_PLUG, A_OPENPLUG
 };
 typedef struct { char l[72]; char r[40]; u32 col; int act, arg; bool dis; } Opt;
 static Opt OPT[48]; static int NOPT = 0, SEL = 0, SCR = 0;
@@ -250,7 +270,7 @@ static void buildNet(void) {
 	o = opt(NETC.on ? "Disconnetti" : "Collegati al server", A_NETTOG, 0); o->col = NETC.on ? COL(255, 140, 120) : C_GOLD;
 	o = opt("Codice stanza", A_NETCODE, 0); snprintf(o->r, sizeof o->r, "%s", NETC.code[0] ? NETC.code : "—");
 	o = opt("Server", A_NETURL, 0); { const char *u = strstr(NETC.url, "://"); snprintf(o->r, sizeof o->r, "%.30s", u ? u + 3 : NETC.url); }
-	if (netOk) { opt("Scrivi in chat", A_CHAT, 0); o = opt("Giocatori nella stanza", A_WHO, 0); if (netPing >= 0) snprintf(o->r, sizeof o->r, "ping %d ms", (int)netPing); }
+	if (netOk) { opt("Scrivi in chat", A_CHAT, 0); o = opt("Funzioni del server", A_OPENPLUG, 0); snprintf(o->r, sizeof o->r, "plugin"); o->col = C_GOLD; o = opt("Giocatori nella stanza", A_WHO, 0); if (netPing >= 0) snprintf(o->r, sizeof o->r, "ping %d ms", (int)netPing); }
 	opt("Indietro", A_BACK, 0);
 }
 static void buildPlayers(void) {
@@ -391,6 +411,7 @@ static void buildPause(void) {
 	o = opt("Ombre", A_SETTING, 6); snprintf(o->r, sizeof o->r, "%s", SET.shad ? "sì" : "no");
 	o = opt("Inseguimento automatico del bersaglio", A_SETTING, 7); snprintf(o->r, sizeof o->r, "%s", SET.autoAtk ? "sì" : "no");
 	{ Opt *o = opt("Multigiocatore", A_OPEN, PM_NET); snprintf(o->r, sizeof o->r, "%s", netOk ? "collegato" : NETC.on ? "…" : "spento"); }
+	if (netOk) { Opt *o = opt("Funzioni del server", A_OPENPLUG, 0); snprintf(o->r, sizeof o->r, "emote, gruppo, /hub"); o->col = C_GOLD; }
 	opt("Comandi", A_HELP, 0);
 	opt("Salva e torna al titolo", A_TITLE, 0);
 }
@@ -480,6 +501,7 @@ static void buildPanel(void) {
 	case PM_PLAYERS: buildPlayers(); break;
 	case PM_ARENA: buildArena(); break;
 	case PM_SELLRES: buildSellRes(); break;
+	case PM_PLUG: plBuildPanel(); break;
 	case PM_MAP:
 		snprintf(PT, sizeof PT, "%s", ZNAME);
 		opt("Chiudi", A_CLOSE, 0);
@@ -488,6 +510,11 @@ static void buildPanel(void) {
 	if (SEL >= NOPT) SEL = NOPT - 1;
 	if (SEL < 0) SEL = 0;
 }
+
+/* ---------------- pannello dei plugin del server (plugins.c) ---------------- */
+void uiPlugTitle(const char *ti, const char *body) { snprintf(PT, sizeof PT, "%s", ti ? ti : ""); snprintf(PB, sizeof PB, "%s", body ? body : ""); }
+void uiPlugOpt(const char *l, const char *r, int arg, u32 col, bool dis) { Opt *o = opt(l, arg ? A_PLUG : A_NOP, arg); snprintf(o->r, sizeof o->r, "%s", r ? r : ""); o->col = col; o->dis = dis; }
+void uiOpenPlug(void) { uiOpenPanel(PM_PLUG); }
 
 /* ---------------- azioni ---------------- */
 extern void titleStart(void);
@@ -541,6 +568,7 @@ static void doAct(Opt *o, int dir) {
 		uiClose(); return;
 	case A_BACK:
 		if (PM == PM_PLAYERS) { PM = PNPC ? PM_NPC : PM_NET; buildPanel(); return; }
+		if (PM == PM_PLUG) { if (plPanelBack()) { SEL = 0; SCR = 0; buildPanel(); return; } if (PMback == PM_NET || PMback == PM_PAUSE) { PM = PMback; SEL = 0; buildPanel(); return; } uiClose(); return; }
 		if (PM == PM_NET) { PM = started ? PM_PAUSE : PM_TITLE; SEL = 0; buildPanel(); return; }
 		if (PM == PM_SHOP || PM == PM_SMITH || PM == PM_ALCH || PM == PM_CASINO || PM == PM_ARENA || PM == PM_SELLRES) { if (PNPC) { PM = PM_NPC; buildPanel(); } else uiClose(); return; }
 		if (PM == PM_DIFF || PM == PM_CONFIRM || (PM == PM_HELP && !started)) { PM = PM_TITLE; SEL = 0; buildPanel(); return; }
@@ -599,6 +627,8 @@ static void doAct(Opt *o, int dir) {
 	case A_WHO: NWHO = 0; netSendRaw("{\"t\":\"who\"}"); PM = PM_PLAYERS; SEL = 0; break;
 	case A_ARBUY: { char b[48]; snprintf(b, sizeof b, "{\"t\":\"buy\",\"k\":%d}", a); netSendRaw(b); break; }
 	case A_SELLRES: if (a < 16) { P.g += P.res[a].n * 8; msg("Venduti %d %s", P.res[a].n, P.res[a].k); P.res[a].n = 0; tone(1200, .06f, W_TRIANGLE, .05f); } break;
+	case A_PLUG: if (plPanelAct(a)) { uiClose(); return; } SEL = 0; SCR = 0; break;
+	case A_OPENPLUG: plPanelPage(0); PMback = PM; PM = PM_PLUG; SEL = 0; SCR = 0; break;
 	case A_SAIL: uiClose(); goZone("thal48"); banner("Thalassa", "Il regno oltre il mare · parla con il Cancelliere Oreste"); return;
 	case A_NOP: if (PM == PM_INV) tone(300, .03f, W_TRIANGLE, .03f); return;
 	}
@@ -697,6 +727,15 @@ static void drawHud(void) {
 		while (strlen(b) > 4 && txtW(b, .38f) > 196) { int n = strlen(b) - 1; while (n > 0 && (b[n] & 0xC0) == 0x80) n--; b[n] = 0; }
 		txt(x, y, .38f, qReady(&P.q[i]) ? C2D_Color32(122, 255, 122, 255) : C_MU, b); y += 12;
 	}
+	// avviso di un plugin (teletrasporto, invito in un gruppo): sopra gli obiettivi, con Accetta e Rifiuta
+	{ const char *ti, *tx;
+	  if (plCard(&ti, &tx)) {
+		rect(116, 58, 202, 108, C2D_Color32(20, 28, 26, 250)); rect(116, 58, 202, 2, C2D_Color32(62, 224, 122, 255));
+		txt(122, 62, .46f, C2D_Color32(125, 255, 176, 255), ti);
+		txtWrapMax(122, 80, 190, .4f, C_TXT, tx, 44);
+		rect(122, 130, 92, 30, C2D_Color32(42, 106, 70, 255)); txtC(168, 137, .48f, C_TXT, "Accetta");
+		rect(220, 130, 92, 30, C2D_Color32(106, 46, 46, 255)); txtC(266, 137, .48f, C_TXT, "Rifiuta");
+	  } }
 	// abilità e ricariche
 	{ extern float STA; extern bool STEX;
 	  int cd = P.moving ? 20 : 12;
@@ -727,6 +766,8 @@ void uiDrawBottom(void) {
 	static char lastSt[64]; static bool lastOk = false;
 	if ((PM == PM_NET || PM == PM_PLAYERS || PM == PM_TITLE || PM == PM_PAUSE) && (strcmp(lastSt, netStatus) || lastOk != netOk)) { int sel = SEL, scr = SCR; buildPanel(); SEL = sel < NOPT ? sel : NOPT - 1; SCR = scr; }
 	snprintf(lastSt, sizeof lastSt, "%s", netStatus); lastOk = netOk;
+	// il pannello dei plugin si aggiorna da solo (gruppo, chat)
+	{ static int fr = 0; if (PM == PM_PLUG && ++fr % 30 == 0) { int sel = SEL, scr = SCR; buildPanel(); SEL = sel < NOPT ? sel : NOPT - 1; SCR = scr; } }
 	if (PM == PM_NONE && started) drawHud();
 	else if (PM == PM_NONE) { rect(0, 0, 320, 240, C_PANEL); }
 	else drawPanel();
@@ -790,7 +831,7 @@ void uiDrawTopOverlay(float eyeShift) {
 		// boss: barra grande in alto
 		for (int i = 0; i < NENT; i++) {
 			Ent *e = &ents[i];
-			if (e->k == K_EN && e->boss && e->al && hyp(e->px - P.px, e->py - P.py) < 14) {
+			if (e->k == K_EN && e->boss && !e->wb && e->al && hyp(e->px - P.px, e->py - P.py) < 14) {
 				rect(60, 22, 280, 9, C2D_Color32(0, 0, 0, 180));
 				rect(61, 23, 278 * clampf(e->hp / e->mx, 0, 1), 7, e->enr ? C2D_Color32(255, 122, 42, 255) : C2D_Color32(200, 30, 50, 255));
 				label(200, 6, .45f, C2D_Color32(255, 220, 220, 255), e->name);
@@ -808,13 +849,15 @@ void uiDrawTopOverlay(float eyeShift) {
 		  for (int i = NCHL - 1; i >= 0 && shown < 3; i--) { ChatL *c = &CHL[i]; if (c->t <= 0) continue; u8 a = (u8)(clampf(c->t, 0, 1) * 255);
 			char line[140]; snprintf(line, sizeof line, "%s", c->s);
 			if (txtW(line, .36f) > 236) { int n = strlen(line); while (n > 4 && txtW(line, .36f) > 228) { n--; while (n > 0 && (line[n] & 0xC0) == 0x80) n--; line[n] = 0; } strcat(line, "…"); }
-			float w = txtW(line, .36f) + 8; rect(2, y, w, 12, C2D_Color32(0, 0, 0, (u8)(a * .5f))); txt(5, y, .36f, c->sys ? C2D_Color32(255, 216, 120, a) : C2D_Color32(235, 240, 255, a), line); y -= 13; shown++; } }
+			float w = txtW(line, .36f) + 8; rect(2, y, w, 12, C2D_Color32(0, 0, 0, (u8)(a * .5f))); txt(5, y, .36f, c->sys == 2 ? C2D_Color32(125, 255, 176, a) : c->sys ? C2D_Color32(255, 216, 120, a) : C2D_Color32(235, 240, 255, a), line); y -= 13; shown++; } }
 		if (netOk) { char rk[64]; rmKey(rk, sizeof rk);
-			for (int i = 0; i < MAXPEER; i++) { Peer *o = &PEERS[i]; if (!o->used || strcmp(o->rm, rk)) continue;
+			for (int i = 0; i < MAXPEER; i++) { Peer *o = &PEERS[i]; if (!o->used || strcmp(o->rm, rk) || plHidePeer(o)) continue;
 				float sx, sy; worldToScreen(o->x, o->y, 44, &sx, &sy); if (sx < -40 || sx > 440 || sy < -20 || sy > 260) continue;
 				rect(sx - 13, sy, 26, 4, C2D_Color32(0, 0, 0, 170)); rect(sx - 13, sy, 26 * clampf(o->hp / (float)(o->mx ? o->mx : 1), 0, 1), 4, C2D_Color32(68, 170, 255, 255));
-				char nm[32]; snprintf(nm, sizeof nm, "%s Lv%d", o->n, o->lv); label(sx, sy - 12, .38f, inPit(o->x, o->y) ? C2D_Color32(255, 154, 154, 255) : C2D_Color32(170, 210, 255, 255), nm);
+				bool mate = plMate(o->id);
+				char nm[40]; snprintf(nm, sizeof nm, "%s%s Lv%d", mate ? "+ " : "", o->n, o->lv); label(sx, sy - 12, .38f, inPit(o->x, o->y) ? C2D_Color32(255, 154, 154, 255) : mate ? C2D_Color32(125, 255, 176, 255) : C2D_Color32(170, 210, 255, 255), nm);
 				if (o->bt > 0 && o->bub[0]) { char bb[64]; snprintf(bb, sizeof bb, "%s", o->bub); if (txtW(bb, .38f) > 150) { int n = strlen(bb); while (n > 4 && txtW(bb, .38f) > 142) { n--; while (n > 0 && (bb[n] & 0xC0) == 0x80) n--; bb[n] = 0; } strcat(bb, "…"); } label(sx, sy - 26, .38f, C2D_Color32(255, 227, 138, 255), bb); } } }
+		plDrawTop();
 		if (msgT > 0) {
 			// i messaggi lunghi vanno su due righe, sempre dentro lo schermo
 			u8 al = (u8)(clampf(msgT, 0, 1) * 255);
@@ -863,6 +906,7 @@ void uiInput(u32 kd, u32 kh, touchPosition *tp, bool touched, bool tdown) {
 	if (PM == PM_NONE) {
 		if (!started) return;
 		if (tdown) {
+			{ const char *ti, *tx; if (plCard(&ti, &tx) && tp->py >= 130 && tp->py < 160) { if (tp->px >= 122 && tp->px < 214) { plCardAnswer(true); return; } if (tp->px >= 220 && tp->px < 312) { plCardAnswer(false); return; } } }
 			for (int i = 0; i < 6; i++) {
 				const Btn *b = &BTN[i];
 				if (tp->px >= b->x && tp->px < b->x + b->w && tp->py >= b->y && tp->py < b->y + b->h) {

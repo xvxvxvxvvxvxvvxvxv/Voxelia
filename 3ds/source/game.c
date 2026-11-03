@@ -148,6 +148,7 @@ static void mv(float *px, float *py, float dx, float dy) { if (!blk(*px + dx, *p
 static void killEnt(Ent *e);
 extern void netEnemyHit(int id, float frac);
 static void hurtE(Ent *e, int d, bool cr) {
+	if (e->wb) { plBossHurt(e, d, cr); return; }   // il boss del mondo: la vita la tiene il server
 	netEnemyHit(e->id, d / fmaxf(1, e->mx));
 	e->hp -= d; e->fl = .12f; e->al = 1;
 	char b[16]; snprintf(b, sizeof b, cr ? "%d!" : "%d", d);
@@ -547,8 +548,16 @@ static bool dgLeft(void) {
 	for (int i = 0; i < NENT; i++) { Ent *e = &ents[i]; if (e->k == K_SHARD || e->k == K_DR || (e->k == K_CH && e->rich)) return true; }
 	return false;
 }
+static float zoneAtX = 0, zoneAtY = 0;
+bool zoneBusy(void) { return zonePending != 0; }
+// teletrasporto (plugin tpa): nella zona, vicino alla casella data
+void goZoneAt(const char *to, float x, float y) {
+	if (zonePending) return;
+	goZone(to); zoneAtX = x; zoneAtY = y;
+}
 void goZone(const char *to) {
 	if (zonePending) return;
+	zoneAtX = zoneAtY = 0;
 	zonePending = 1; zoneFade = 0; snprintf(zoneTo, sizeof zoneTo, "%s", to); snprintf(zoneFrom, sizeof zoneFrom, "%s", Zk);
 	whoosh();
 }
@@ -861,7 +870,7 @@ void hurtPvp(int d, bool cr, const char *from, const char *n) {
 void enemyNetHit(int id, float frac) {
 	for (int i = 0; i < NENT; i++) {
 		Ent *e = &ents[i];
-		if (e->k != K_EN || e->id != id) continue;
+		if (e->k != K_EN || e->id != id || e->wb) continue;
 		int d = (int)roundf(frac * e->mx); if (d < 1) d = 1;
 		e->hp -= d; e->fl = .12f; e->al = 1;
 		char b[16]; snprintf(b, sizeof b, "%d", d); flt(e->px, e->py, b, 0xaaddff);
@@ -925,6 +934,11 @@ static void zoneTick(float dt) {
 	if (zoneFade >= 1) {
 		zoneFade = 1; zonePending = 0;
 		loadZone(zoneTo, zoneFrom);
+		if (zoneAtX > 0 && zoneAtY > 0 && !strcmp(Zk, zoneTo) && zoneAtX < N - 1 && zoneAtY < N - 1) {
+			int x, y;
+			if (nearFree((int)zoneAtX, (int)zoneAtY, &x, &y) && WK(M[y][x])) { P.px = x + .5f; P.py = y + .5f; P.dmk = 0; camX = camTX = 32 * (P.px - P.py); camY = camTY = 16 * (P.px + P.py) - 10; }
+		}
+		zoneAtX = zoneAtY = 0;
 	}
 }
 
@@ -932,6 +946,7 @@ void gameUpdate(float dt) {
 	if (dt > .1f) dt = .1f;
 	gtime += dt;
 	zoneTick(dt);
+	plTick(dt);
 	if (!started) return;
 	// tempo del giorno
 	P.gt += dt;

@@ -20,6 +20,7 @@ static void shadowAt(float x, float y, float r) {
 	rStream(2); flatEllipse(x, y, .35f, r, r, 0x000000, 70); rStream(1);
 }
 
+float gMS = 1;   // grandezza dei modelli (il boss del mondo è più grande)
 void drawModelFrame(int mdl, int frame, float px, float py, float zo, int white, u8 alpha) {
 	if (mdl < 0 || mdl >= NMDL) return;
 	AModel *m = &MDL[mdl];
@@ -31,8 +32,9 @@ void drawModelFrame(int mdl, int frame, float px, float py, float zo, int white,
 		u32 c = white == 1 ? 0xffffff : (q->r << 16) | (q->g << 8) | q->b;
 		gEmit = emissiveQ(q) ? .85f : 0;
 		u8 a = alpha < 255 ? alpha : (q->a < 250 ? q->a : 255);
-		if (q->fl & 2) boxR(px, py, q->x / 256.f, q->y / 256.f, q->z / 8.f + zo, q->w / 256.f, q->d / 256.f, q->h / 8.f, c, q->f / 100.f, a);
-		else boxA(px + q->x / 256.f, py + q->y / 256.f, q->z / 8.f + zo, q->w / 256.f, q->d / 256.f, q->h / 8.f, c, q->f / 100.f, a);
+		float s = gMS;
+		if (q->fl & 2) boxR(px, py, q->x / 256.f * s, q->y / 256.f * s, q->z / 8.f * s + zo, q->w / 256.f * s, q->d / 256.f * s, q->h / 8.f * s, c, q->f / 100.f, a);
+		else boxA(px + q->x / 256.f * s, py + q->y / 256.f * s, q->z / 8.f * s + zo, q->w / 256.f * s, q->d / 256.f * s, q->h / 8.f * s, c, q->f / 100.f, a);
 	}
 	gEmit = 0;
 }
@@ -84,7 +86,7 @@ void drawPeers(void) {
 	char rk[64]; rmKey(rk, sizeof rk);
 	for (int i = 0; i < MAXPEER; i++) {
 		Peer *p = &PEERS[i];
-		if (!p->used || strcmp(p->rm, rk)) continue;
+		if (!p->used || strcmp(p->rm, rk) || plHidePeer(p)) continue;
 		float sx, sy; worldToScreen(p->x, p->y, 0, &sx, &sy);
 		if (sx < -80 || sx > 480 || sy < -60 || sy > 320) continue;
 		shadowAt(p->x, p->y, .33f);
@@ -177,11 +179,14 @@ void drawEntity(Ent *e) {
 	case K_EN: {
 		bool boss = e->boss;
 		if (e == LOCK) { rStream(2); EMIT(1, flatRing(e->px, e->py, .6f, boss ? .75f : .45f, boss ? .75f : .45f, .07f, 0xff5a4a, 230)); rStream(1); }
-		shadowAt(e->px, e->py, boss ? .62f : .33f);
+		float sc = e->scl > 0 ? e->scl : 1;
+		shadowAt(e->px, e->py, (boss ? .62f : .33f) * sc);
 		int fr;
 		if (e->atkT > 0 && gtime - e->atkT < .3f) fr = 3;
 		else fr = (e->mvT > gtime - .2f) ? ((int)(gtime * 6 + e->id) % 3) : 0;
+		gMS = sc;
 		drawModelFrame(e->model, (e->face & 7) * 4 + fr, e->px, e->py, 0, e->fl > 0 ? 1 : 0, 255);
+		gMS = 1;
 		if (e->enr && boss) { rStream(2); EMIT(1, boxA(e->px - .7f, e->py - .7f, 0, 1.4f, 1.4f, 1, 0xff3a2a, 1, 60 + (u8)(sinf(gtime * 6) * 30))); rStream(1); }
 		return;
 	}

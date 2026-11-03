@@ -191,6 +191,68 @@ static void exitSpot(int x, int y, int *ox, int *oy) {
 	*ox = bx; *oy = by;
 }
 static float pendingMsgT = 0; static char pendingMsg[120];
+
+/* ---------------- 7.44: le leve dei dungeon, da tirare insieme ----------------
+   Nei piani dei dungeon (non in quello del boss) la scala che scende è chiusa da una grata: servono due leve tirate
+   insieme. Ogni leva resta giù 18 secondi; tirandola escono dei guardiani. In rete contano anche quelle dei compagni. */
+#define LVR_T 18
+float levOn[2];
+static char levOpen[16][40]; static int nLevOpen = 0;
+bool levPeer[2], levPeerOpen;
+static bool levIsOpen(void) { char rk[64]; rmKey(rk, sizeof rk); for (int i = 0; i < nLevOpen; i++) if (!strcmp(levOpen[i], rk)) return true; return false; }
+static Ent *levDown(void) { for (int i = 0; i < NENT; i++) if (ents[i].k == K_PO && ents[i].seal) return &ents[i]; return NULL; }
+static void levUnseal(bool quiet) {
+	Ent *d = levDown();
+	if (!levIsOpen() && nLevOpen < 16) { rmKey(levOpen[nLevOpen], 40); nLevOpen++; }
+	if (!d) return;
+	d->seal = 0;
+	if (!quiet) { msg("Le leve scattano insieme: la grata si alza!"); JINGLE(.1f, W_TRIANGLE, 60, 67, 72, 79); sparks(d->px, d->py, 24, 0xffd84a, 80); fxRing(d->px, d->py, 2.2f, .9f, 0xffdc78); }
+}
+void levLoad(void) {
+	levOn[0] = levOn[1] = -99; levPeer[0] = levPeer[1] = levPeerOpen = false;
+	if (!levDown()) return;
+	if (levIsOpen()) { levUnseal(true); return; }
+	bool hasLev = false; for (int i = 0; i < NENT; i++) if (ents[i].k == K_LEV) hasLev = true;
+	if (!hasLev) { levDown()->seal = 0; return; }
+	snprintf(pendingMsg, sizeof pendingMsg, "La scala per il piano di sotto è chiusa da una grata: cerca le due leve e tirale insieme.");
+	pendingMsgT = 2.6f;
+}
+bool levIsDown(Ent *e) { int i = e->lev[1] == '2'; return levOn[i] > gtime || levPeer[i] || !levDown(); }
+float levLeft(Ent *e) { int i = e->lev[1] == '2'; return levOn[i] > gtime ? (levOn[i] - gtime) / LVR_T : levPeer[i] ? 1 : 0; }
+static void levPull(Ent *e) {
+	int i = e->lev[1] == '2';
+	if (!levDown()) { msg("La leva è già bloccata: la grata è aperta."); return; }
+	if (levOn[i] > gtime) { msg("La leva è già giù: %d secondi", (int)ceilf(levOn[i] - gtime)); return; }
+	levOn[i] = gtime + LVR_T;
+	tone(140, .25f, W_SQUARE, .06f); sparks(e->px, e->py, 10, 0xffd84a, 50);
+	// i guardiani escono dall'ombra intorno alla leva
+	if (ZDG >= 0 && DG[ZDG].nen) {
+		int n = 0, ne = 0; for (int k = 0; k < NENT; k++) if (ents[k].k == K_EN) ne++;
+		for (int k = 0; k < 3 && ne + n < 40; k++) {
+			float a = k * 2.1f + frnd(); int x, y;
+			nearFree(clampi((int)floorf(e->px + cosf(a) * 3), 1, N - 2), clampi((int)floorf(e->py + sinf(a) * 3), 1, N - 2), &x, &y);
+			if (WK(M[y][x])) { Ent *m = mkEn(DG[ZDG].en[k % DG[ZDG].nen], x, y); if (m) { m->al = 1; n++; } }
+		}
+		if (n) flt(e->px, e->py, "Guardiani!", 0xff8a5a);
+	}
+	int o = !i;
+	if (levOn[o] > gtime || levPeer[o]) msg("Leva tirata!");
+	else msg("Leva tirata: hai %d secondi per tirare l'altra (o fatti aiutare da un compagno)!", LVR_T);
+}
+static void levTick(void) {
+	if (ZDG < 0 || !levDown()) return;
+	if (levPeerOpen) { levUnseal(false); return; }
+	if ((levOn[0] > gtime || levPeer[0]) && (levOn[1] > gtime || levPeer[1])) levUnseal(false);
+}
+// le mie leve per la rete: "lvr":["L1"], "lvo":1 quando il piano è aperto
+void levPack(char *out, int n) {
+	out[0] = 0; if (ZDG < 0) return;
+	char b[48] = ""; int k = 0;
+	if (levOn[0] > gtime) k += snprintf(b + k, sizeof b - k, "\"L1\"");
+	if (levOn[1] > gtime) k += snprintf(b + k, sizeof b - k, "%s\"L2\"", k ? "," : "");
+	snprintf(out, n, "%s%s%s%s", k ? ",\"lvr\":[" : "", b, k ? "]" : "", levIsOpen() ? ",\"lvo\":1" : "");
+}
+
 static void dungeonClear(Ent *e) {
 	int id = ZDG; const DungeonDef *d = &DG[id];
 	int x = (int)e->px, y = (int)e->py, u, v;
@@ -515,6 +577,7 @@ void act(Ent *e) {
 		msg("Forziere aperto! +%d oro", gd);
 		return;
 	}
+	case K_LEV: levPull(e); return;
 	case K_RES: {
 		if (e->rt > gtime) { msg("Qui non c'è più niente da raccogliere: torna più tardi"); return; }
 		e->rt = gtime + 60;
@@ -526,6 +589,7 @@ void act(Ent *e) {
 		return;
 	}
 	case K_PO:
+		if (e->seal) { msg("Una grata di ferro chiude la scala. Tira le due leve del piano nello stesso momento."); tone(150, .2f, W_SQUARE, .05f); return; }
 		if (e->lock[0] && !hasUnl(e->lock)) { msg("%s", e->lockMsg ? e->lockMsg : "Il passaggio è sbarrato."); tone(150, .2f, W_SQUARE, .05f); return; }
 		if (!zoneExists(e->to)) { msg("%s: questo luogo non è ancora disponibile su 3DS", e->name); tone(150, .2f, W_SQUARE, .05f); return; }
 		if (e->dgx && !e->ok && dgLeft()) { TGT = e; uiOpenPanel(PM_EXITASK); tone(330, .08f, W_TRIANGLE, .05f); return; }
@@ -828,7 +892,7 @@ void resAdd(const char *k, int n) {
 }
 
 /* ---------------- aggiornamento ---------------- */
-static bool interactable(Ent *e) { return e->k == K_NPC || e->k == K_PO || e->k == K_CH || e->k == K_DR || e->k == K_SHARD || e->k == K_LORE; }
+static bool interactable(Ent *e) { return e->k == K_LEV || e->k == K_NPC || e->k == K_PO || e->k == K_CH || e->k == K_DR || e->k == K_SHARD || e->k == K_LORE; }
 extern float stickX, stickY;
 extern bool attackHeld;
 static void enMove(Ent *e, float d, float dt) {
@@ -1020,6 +1084,7 @@ void gameUpdate(float dt) {
 		if (q->z < 0) { q->z = 0; q->vz *= -.3f; }
 	}
 	{ int j = 0; for (int i = 0; i < NPARTS; i++) if (PARTS[i].t > 0) PARTS[j++] = PARTS[i]; NPARTS = j; }
+	levTick();
 	// musica del boss
 	if ((bossT -= dt) <= 0) {
 		bossT = .5f;
@@ -1049,7 +1114,9 @@ void newGame(int df, const char *name) {
 	P.lv = 6; P.pot = 9; P.g = 5000; recalc(); P.hp = P.mx;
 	P.eq[SL_W] = mkItem(6, 2, SL_W);
 	if (VOX_TEST == 1) loadZone("forest", "town");
-	if (VOX_TEST == 2) loadZone("tana@2", NULL);
+	if (VOX_TEST == 2) { loadZone("tana@1", NULL); for (int i = 0; i < NENT; i++) if (ents[i].k == K_LEV && ents[i].lev[1] == '1') { int u, v; nearFree((int)ents[i].px + 1, (int)ents[i].py + 1, &u, &v); P.px = u + .5f; P.py = v + .5f; }
+		for (int i = 0; i < NENT; i++) if (ents[i].k == K_EN && hyp(ents[i].px - P.px, ents[i].py - P.py) < 8) entDel(&ents[i]);
+		for (int q = 0; q < 5; q++) { int k = questIdx((const char *[]){"c1", "m1", "b1", "g1", "l1"}[q]); if (k >= 0) P.q[P.nq++] = (Quest){k, npcIdx("marcus"), 0}; } }
 	if (VOX_TEST == 3) { P.gt = 1320; loadZone("in_castle", "town"); }
 	if (VOX_TEST == 4) { P.gt = 1320; }
 	if (VOX_TEST == 5) loadZone("porto", "town");

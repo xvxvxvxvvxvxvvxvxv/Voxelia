@@ -151,7 +151,12 @@ float txtW(const char *s, float sc) {
 	return w * sc;
 }
 float lineH(float sc) { if (!cwOk) cwInit(); return LF * sc; }
-// testo a capo sulle parole; restituisce l'altezza occupata. y<-1000 misura soltanto.
+// testo a capo sulle parole; restituisce l'altezza occupata. y<-1000 misura soltanto. Con maxH si ferma
+// all'ultima riga che ci sta e la chiude con «…».
+static float wrapMax = 0;
+float txtWrapMax(float x, float y, float w, float sc, u32 col, const char *s, float maxH) {
+	wrapMax = maxH; float h = txtWrap(x, y, w, sc, col, s); wrapMax = 0; return h;
+}
 float txtWrap(float x, float y, float w, float sc, u32 col, const char *s) {
 	if (!cwOk) cwInit();
 	char line[256];
@@ -167,8 +172,14 @@ float txtWrap(float x, float y, float w, float sc, u32 col, const char *s) {
 			if (cp == ' ') lastSp = q;
 			lw += cw; q = nq;
 		}
-		int n = q - ls; if (n > 255) n = 255;
+		int n = q - ls; if (n > 250) n = 250;
 		memcpy(line, ls, n); line[n] = 0;
+		if (wrapMax > 0 && yy - y + 2 * lh > wrapMax && *q) {   // ultima riga disponibile
+			while (n > 0 && txtW(line, sc) > w - txtW("…", sc)) { n--; while (n > 0 && (line[n] & 0xC0) == 0x80) n--; line[n] = 0; }
+			strcat(line, "…");
+			if (y > -1000) txt(x, yy, sc, col, line);
+			return yy + lh - y;
+		}
 		if (y > -1000) txt(x, yy, sc, col, line);
 		yy += lh;
 		p = q;
@@ -231,7 +242,7 @@ void rExit(void) {
 /* ---------------- geometria fissa della zona ---------------- */
 static int TS[MAXN * MAXN + 1];
 static void emitQ(const QBox *q) {
-	gEmit = (q->fl & 1) ? .85f : 0;
+	gEmit = emissiveQ(q) ? .85f : 0;
 	boxA(q->x / 256.f, q->y / 256.f, q->z / 8.f, q->w / 256.f, q->d / 256.f, q->h / 8.f, (q->r << 16) | (q->g << 8) | q->b, q->f / 100.f, q->a < 250 ? q->a : 255);
 }
 void rBuildZone(const QBox *B, int nb) {

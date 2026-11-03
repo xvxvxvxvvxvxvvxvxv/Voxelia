@@ -344,13 +344,16 @@ static void buildQuest(void) {
 	snprintf(PT, sizeof PT, "Missioni");
 	char so[200]; storyObj(so, sizeof so);
 	snprintf(PB, sizeof PB, "Storia: %s", so);
-	if (P.st == 1) for (int i = 0; i < NSHARD; i++) { char b[120]; snprintf(b, sizeof b, "\n%s %s — %s", (P.sh & (1u << i)) ? "[x]" : "[ ]", DG[i].n, DGH[i]); strncat(PB, b, sizeof PB - strlen(PB) - 1); }
-	if (!P.nq) strncat(PB, "\n\nNessuna missione secondaria. Cerca i personaggi con il ! sopra la testa.", sizeof PB - strlen(PB) - 1);
+	if (!P.nq) opt("Nessuna missione secondaria: cerca chi ha il ! sopra la testa", A_NOP, 0)->col = C_MU;
 	for (int i = 0; i < P.nq; i++) {
 		const QuestDef *T = &QT[P.q[i].id]; char pr[48], b[96];
 		if (qReady(&P.q[i])) snprintf(pr, sizeof pr, "pronta: torna da %s", NPCS[P.q[i].npc].n); else qProg(&P.q[i], pr, sizeof pr);
 		snprintf(b, sizeof b, "%s (%s)", T->ti, pr);
 		Opt *o = opt(b, A_QABANDON, i); o->col = qReady(&P.q[i]) ? COL(122, 255, 122) : C_TXT; snprintf(o->r, sizeof o->r, G_A " abbandona");
+	}
+	if (P.st == 1) for (int i = 0; i < NSHARD; i++) {
+		Opt *o = opt(DG[i].n, A_NOP, 0); bool got = P.sh & (1u << i);
+		o->col = got ? C_GOLD : C_MU; snprintf(o->r, sizeof o->r, "%s", got ? "frammento preso" : "frammento da trovare");
 	}
 	opt("Chiudi", A_CLOSE, 0);
 }
@@ -617,7 +620,7 @@ static void drawPanel(void) {
 		txt(8, 222, .42f, C_MU, G_B " chiudi · SELECT mappa");
 		return;
 	}
-	if (PB[0]) { bodyH = txtWrap(8, y, 304, .45f, C_TXT, PB); y += bodyH + 4; }
+	if (PB[0]) { bodyH = txtWrapMax(8, y, 304, .45f, C_TXT, PB, PM == PM_TXT || PM == PM_HELP ? 180 : 118); y += bodyH + 4; }
 	float top = y, bottom = 238;
 	int vis = (int)((bottom - top) / ROWH);
 	if (vis < 1) vis = 1;
@@ -650,12 +653,15 @@ static void bar(float x, float y, float w, float h, float k, u32 c, const char *
 }
 typedef struct { float x, y, w, h; const char *l; int m; } Btn;
 static const Btn BTN[6] = {{2, 214, 52, 24, "Zaino", PM_INV}, {55, 214, 52, 24, "Missioni", PM_QUEST}, {108, 214, 52, 24, "Diario", PM_DIARY}, {161, 214, 52, 24, "Mappa", PM_MAP}, {214, 214, 52, 24, "Chat", -1}, {267, 214, 51, 24, "Menu", PM_PAUSE}};
-static void skillBox(float x, float y, const char *g, const char *n, float cd, float mx) {
+// pulsante di un'abilità: simbolo e nome a sinistra, a destra il costo in stamina (o i secondi d'attesa)
+static void skillBox(float x, float y, const char *g, const char *n, int cost, float cd, float mx, bool off) {
 	rect(x, y, 76, 22, C2D_Color32(42, 51, 80, 255));
 	if (cd > 0) rect(x, y, 76 * clampf(cd / mx, 0, 1), 22, C2D_Color32(120, 30, 30, 200));
 	char b[32]; snprintf(b, sizeof b, "%s %s", g, n);
-	txt(x + 4, y + 3, .42f, cd > 0 ? C_MU : C_TXT, b);
-	if (cd > 0 && mx > 1) { char c[8]; snprintf(c, sizeof c, "%d", (int)ceilf(cd)); txtR(x + 73, y + 3, .42f, C_GOLD, c); }
+	txt(x + 3, y + 4, .38f, off || cd > 0 ? C_MU : C_TXT, b);
+	char c[8] = "";
+	if (cd > 0) snprintf(c, sizeof c, "%d", (int)ceilf(cd)); else if (cost > 0) snprintf(c, sizeof c, "%d", cost);
+	if (c[0]) txtR(x + 74, y + 5, .34f, cd > 0 ? C_GOLD : C2D_Color32(120, 220, 150, 255), c);
 }
 static void drawHud(void) {
 	rect(0, 0, 320, 240, C2D_Color32(16, 19, 26, 255));
@@ -670,34 +676,36 @@ static void drawHud(void) {
 	snprintf(b, sizeof b, "XP %d/%d", P.xp, needXP());
 	bar(164, 19, 152, 13, P.xp / (float)needXP(), C2D_Color32(68, 170, 221, 255), b);
 	snprintf(b, sizeof b, "Oro %d · Pozioni %d · ATT %d · DIF %d%s%s", P.g, P.pot, atkV(), defV(), P.bA > 0 ? " · Forza" : "", P.bD > 0 ? " · Pietra" : "");
-	txt(4, 34, .44f, C_TXT, b);
+	txt(4, 33, .42f, C_TXT, b);
+	// stamina, sotto la riga dell'oro e sopra la minimappa
+	{ extern float STA; extern bool STEX; extern int stMax(void);
+	  char b2[48]; float k = STA / stMax();
+	  snprintf(b2, sizeof b2, "%s %d/%d", STEX ? "Senza fiato" : "Stamina", (int)STA, stMax());
+	  bar(4, 48, 312, 10, k, STEX ? C2D_Color32(192, 80, 64, 255) : k < .25f ? C2D_Color32(192, 160, 64, 255) : C2D_Color32(76, 192, 112, 255), NULL);
+	  txtC(160, 47, .34f, C_TXT, b2); }
 	// minimappa
-	drawMinimap(6, 54, 112, false);
+	drawMinimap(6, 62, 104, false);
 	// zona e obiettivi
-	float x = 128, y = 50;
-	txtWrap(x, y, 188, .44f, C_GOLD, ZNAME); y += lineH(.44f) * (txtW(ZNAME, .44f) > 188 ? 2 : 1) + 2;
+	float x = 120, y = 60;
+	txtWrap(x, y, 196, .42f, C_GOLD, ZNAME); y += lineH(.42f) * (txtW(ZNAME, .42f) > 196 ? 2 : 1) + 2;
 	char so[200]; storyObj(so, sizeof so);
-	y += txtWrap(x, y, 188, .4f, C_TXT, so) + 3;
+	y += txtWrapMax(x, y, 196, .38f, C_TXT, so, 46) + 3;
 	for (int i = 0; i < P.nq && y < 156; i++) {
 		const QuestDef *T = &QT[P.q[i].id]; char pr[48];
 		if (qReady(&P.q[i])) snprintf(pr, sizeof pr, "pronta!"); else qProg(&P.q[i], pr, sizeof pr);
 		snprintf(b, sizeof b, "%s: %s", T->ti, pr);
-		txt(x, y, .4f, qReady(&P.q[i]) ? C2D_Color32(122, 255, 122, 255) : C_MU, b); y += 13;
+		while (strlen(b) > 4 && txtW(b, .38f) > 196) { int n = strlen(b) - 1; while (n > 0 && (b[n] & 0xC0) == 0x80) n--; b[n] = 0; }
+		txt(x, y, .38f, qReady(&P.q[i]) ? C2D_Color32(122, 255, 122, 255) : C_MU, b); y += 12;
 	}
 	// abilità e ricariche
-	{ extern float STA; extern bool STEX; extern int stMax(void); extern float atkCost(void);
-	  char b2[48]; float k = STA / stMax();
-	  snprintf(b2, sizeof b2, "%s %d/%d", STEX ? "Senza fiato" : "Stamina", (int)STA, stMax());
-	  bar(4, 156, 312, 11, k, STEX ? C2D_Color32(192, 80, 64, 255) : k < .25f ? C2D_Color32(192, 160, 64, 255) : C2D_Color32(76, 192, 112, 255), b2);
-	  char c1[24], c2[24], c3[24];
-	  snprintf(c1, sizeof c1, "Schivata %d", P.moving ? 20 : 12); snprintf(c2, sizeof c2, "%s", LOCK ? "Sblocca" : "Blocca"); snprintf(c3, sizeof c3, "Area 45");
-	  float lack = STEX ? 1 : 0;
-	  skillBox(4, 170, G_B, c1, lack || STA < 12 ? 1 : 0, 1);
-	  skillBox(83, 170, G_R, c2, 0, 1);
-	  skillBox(162, 170, G_Y, c3, lack || STA < 1 ? 1 : 0, 1);
-	  skillBox(241, 170, G_X, "Pozione", P.pc, 2.5f); }
+	{ extern float STA; extern bool STEX;
+	  int cd = P.moving ? 20 : 12;
+	  skillBox(4, 170, G_B, "Schiva", cd, 0, 1, STEX || STA < 1);
+	  skillBox(83, 170, G_R, "Affondo", 40, 0, 1, STEX || STA < 1 || P.at > 0);
+	  skillBox(162, 170, G_Y, "Area", 45, 0, 1, STEX || STA < 1 || P.at > 0);
+	  skillBox(241, 170, G_X, "Pozione", 0, P.pc, 2.5f, P.pot <= 0); }
 	if (IT) {
-		const char *v = IT->k == K_NPC ? "Parla con" : IT->k == K_PO ? "Vai a" : IT->k == K_CH ? "Apri il forziere" : IT->k == K_DR ? "Raccogli" : "Raccogli";
+		const char *v = IT->k == K_LEV ? "Tira la" : IT->k == K_NPC ? "Parla con" : IT->k == K_PO ? "Vai a" : IT->k == K_CH ? "Apri il forziere" : IT->k == K_DR ? "Raccogli" : "Raccogli";
 		snprintf(b, sizeof b, G_L " %s %s", v, IT->k == K_CH ? "" : IT->k == K_DR ? IT->it.n : IT->name);
 		txt(6, 195, .44f, C_GOLD, b);
 	} else {
@@ -716,6 +724,9 @@ static void drawHud(void) {
 }
 
 void uiDrawBottom(void) {
+	static char lastSt[64]; static bool lastOk = false;
+	if ((PM == PM_NET || PM == PM_PLAYERS || PM == PM_TITLE || PM == PM_PAUSE) && (strcmp(lastSt, netStatus) || lastOk != netOk)) { int sel = SEL, scr = SCR; buildPanel(); SEL = sel < NOPT ? sel : NOPT - 1; SCR = scr; }
+	snprintf(lastSt, sizeof lastSt, "%s", netStatus); lastOk = netOk;
 	if (PM == PM_NONE && started) drawHud();
 	else if (PM == PM_NONE) { rect(0, 0, 320, 240, C_PANEL); }
 	else drawPanel();
@@ -805,9 +816,10 @@ void uiDrawTopOverlay(float eyeShift) {
 				char nm[32]; snprintf(nm, sizeof nm, "%s Lv%d", o->n, o->lv); label(sx, sy - 12, .38f, inPit(o->x, o->y) ? C2D_Color32(255, 154, 154, 255) : C2D_Color32(170, 210, 255, 255), nm);
 				if (o->bt > 0 && o->bub[0]) { char bb[64]; snprintf(bb, sizeof bb, "%s", o->bub); if (txtW(bb, .38f) > 150) { int n = strlen(bb); while (n > 4 && txtW(bb, .38f) > 142) { n--; while (n > 0 && (bb[n] & 0xC0) == 0x80) n--; bb[n] = 0; } strcat(bb, "…"); } label(sx, sy - 26, .38f, C2D_Color32(255, 227, 138, 255), bb); } } }
 		if (msgT > 0) {
-			float w = txtW(MSG, .45f) + 16; if (w > 396) w = 396;
-			rect(200 - w / 2, 212, w, 20, C2D_Color32(0, 0, 0, (u8)(clampf(msgT, 0, 1) * 180)));
-			txtC(200, 214, .45f, C2D_Color32(255, 255, 255, (u8)(clampf(msgT, 0, 1) * 255)), MSG);
+			// i messaggi lunghi vanno su due righe, sempre dentro lo schermo
+			u8 al = (u8)(clampf(msgT, 0, 1) * 255);
+			if (txtW(MSG, .45f) <= 384) { float w = txtW(MSG, .45f) + 16; rect(200 - w / 2, 212, w, 20, C2D_Color32(0, 0, 0, (u8)(al * .7f))); txtC(200, 214, .45f, C2D_Color32(255, 255, 255, al), MSG); }
+			else { float h = txtWrapMax(-2000, -2000, 380, .42f, 0, MSG, 30); rect(4, 234 - h - 4, 392, h + 4, C2D_Color32(0, 0, 0, (u8)(al * .7f))); txtWrapMax(10, 234 - h - 2, 380, .42f, C2D_Color32(255, 255, 255, al), MSG, 30); }
 		}
 		if (zbanT > 0) {
 			u8 a = (u8)(clampf(zbanT, 0, 1) * 255);
@@ -864,7 +876,7 @@ void uiInput(u32 kd, u32 kh, touchPosition *tp, bool touched, bool tdown) {
 			// tocco sulle abilità
 			if (tp->py >= 170 && tp->py < 192) {
 				int k = tp->px / 79;
-				if (k == 0) dodge(); else if (k == 1) lockNext(); else if (k == 2) areaAtk(); else potion();
+				if (k == 0) dodge(); else if (k == 1) lunge(); else if (k == 2) areaAtk(); else potion();
 				return;
 			}
 			if (tp->py >= 192 && tp->py < 210 && IT) { act(IT); return; }

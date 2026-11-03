@@ -13,7 +13,7 @@ bool TITLE_MODE = true;
 bool IS_NEW3DS = false;
 float FPS = 60;
 float stickX = 0, stickY = 0;
-bool runHeld = false; static float bT = 9;
+bool runHeld = false; static float bT = 9, rT = 9; static bool rLocked = false;
 bool attackHeld = false;
 extern bool wantKeyboard;
 void uiTick(float dt);
@@ -105,7 +105,10 @@ int main(int argc, char **argv) {
 			if (kh & KEY_B) bT += dt;
 			runHeld = (kh & KEY_B) && bT >= .24f;
 			if ((hidKeysUp() & KEY_B) && bT < .24f) dodge();
-			if (kd & KEY_R) lockNext();
+			// R toccato = affondo dell'arma; R tenuto premuto = blocca il bersaglio (R di nuovo, tenuto, passa al seguente)
+			if (kd & KEY_R) { rT = 0; rLocked = false; }
+			if (kh & KEY_R) { rT += dt; if (rT >= .35f && !rLocked) { rLocked = true; lockNext(); } }
+			if ((hidKeysUp() & KEY_R) && !rLocked) lunge();
 			if (hidKeysUp() & KEY_A) heroAttackRelease();
 			if (kd & KEY_Y) areaAtk();
 			if (kd & KEY_X) potion();

@@ -195,7 +195,7 @@ static bool loadFiles(const char *k, int run) {
 			q = mkEn(enemyIdx(jgs(e, "t", "")), (int)x, (int)y); if (q) { q->px = x; q->py = y; }
 		} else if (!strcmp(k2, "po")) {
 			q = mkPo(x, y, jgs(e, "to", "town"), poSt(jgs(e, "st", NULL)), jgs(e, "n", NULL));
-			if (q) { q->col = jcolor(jgs(e, "col", NULL), 0x5fe0ff); const char *lk = jgs(e, "lock", NULL); if (lk) { snprintf(q->lock, sizeof q->lock, "%s", lk); q->lockMsg = jgs(e, "lockMsg", NULL); } }
+			if (q) { q->seal = jgn(e, "seal", 0) != 0; q->col = jcolor(jgs(e, "col", NULL), 0x5fe0ff); const char *lk = jgs(e, "lock", NULL); if (lk) { snprintf(q->lock, sizeof q->lock, "%s", lk); q->lockMsg = jgs(e, "lockMsg", NULL); } }
 		} else if (!strcmp(k2, "ch")) {
 			const char *hc = jgs(e, "hc", NULL);
 			u32 hk = hc ? hs(hc) : 0;
@@ -212,6 +212,8 @@ static bool loadFiles(const char *k, int run) {
 			q = entNew(K_LORE, x, y); if (q) { q->sid = li; snprintf(q->name, sizeof q->name, "Pagina di diario"); }
 		} else if (!strcmp(k2, "trag48b")) {
 			q = mkPo(x, y, "porto", PO_OTHER, "La Stella del Sud · per Aldoria");
+		} else if (!strcmp(k2, "lev")) {
+			q = entNew(K_LEV, x, y); if (q) { snprintf(q->lev, sizeof q->lev, "%s", jgs(e, "id", "L1")); snprintf(q->name, sizeof q->name, "%s", jgs(e, "n", "Leva antica")); }
 		} else if (!strcmp(k2, "res")) {
 			q = entNew(K_RES, x, y); if (q) { snprintf(q->res, sizeof q->res, "%s", jgs(e, "r", "?")); snprintf(q->name, sizeof q->name, "%s", jgs(e, "n", q->res)); }
 		}
@@ -250,6 +252,7 @@ void loadZone(const char *k, const char *from) {
 		if (best) { int u, v; nearFree((int)best->px, (int)best->py, &u, &v); sx = u + .5f; sy = v + .5f; }
 	}
 	if (blk(sx, sy)) { int u, v; nearFree((int)sx, (int)sy, &u, &v); sx = u + .5f; sy = v + .5f; }
+	{ extern void levLoad(void); levLoad(); }
 	P.px = sx; P.py = sy;
 	P.ndmh = 0; P.dmk = 0;
 	{ extern float STA; extern bool STEX; extern int stMax(void); STA = stMax(); STEX = false; }

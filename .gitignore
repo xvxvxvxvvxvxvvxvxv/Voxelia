@@ -1,0 +1,6 @@
+build/
+*.elf
+*.nds
+*.map
+tools/__pycache__/
+libs/mbedtls/obj/

@@ -253,6 +253,7 @@ static void sendState(void) {
 	for (int i = 0; i < NHITS; i++) { if (i) jwRaw(&w, ","); jwRaw(&w, HITS[i]); }
 	jwRaw(&w, "]");
 	if (sayN) { jwRaw(&w, ",\"say\":{\"s\":"); jwStr(&w, sayS); jwf(&w, ",\"n\":%d}", sayN); }
+	{ extern void levPack(char *, int); char lp[64]; levPack(lp, sizeof lp); jwRaw(&w, lp); }
 	jwRaw(&w, "}}");
 	netSendRaw(b);
 }
@@ -312,6 +313,9 @@ static void onMsg(J *m) {
 			}
 		}
 		for (int i = 0; i < MAXPEER; i++) if (PEERS[i].used && !seen[i]) PEERS[i].used = false;
+		// le leve tirate dai compagni dello stesso piano
+		{ extern bool levPeer[2], levPeerOpen; levPeer[0] = levPeer[1] = levPeerOpen = false; char rk[64]; rmKey(rk, sizeof rk);
+		  JFOR(q, p) { if (strcmp(jgs(q, "rm", ""), rk)) continue; JFOR(l, jget(q, "lvr")) { const char *id = jstr(l, ""); if (!strcmp(id, "L1")) levPeer[0] = true; if (!strcmp(id, "L2")) levPeer[1] = true; } if (jgn(q, "lvo", 0)) levPeerOpen = true; } }
 	} else if (!strcmp(t, "pi")) {
 		char b[64]; snprintf(b, sizeof b, "{\"t\":\"po\",\"s\":%.0f}", jgn(m, "s", 0)); netSendRaw(b);
 		netPing = jgn(m, "me", -1); setTime(jget(m, "gm"));

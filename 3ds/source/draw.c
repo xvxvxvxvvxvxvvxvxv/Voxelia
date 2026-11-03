@@ -29,7 +29,7 @@ void drawModelFrame(int mdl, int frame, float px, float py, float zo, int white,
 	for (int i = 0; i < m->nb[frame]; i++) {
 		const QBox *q = &B[i];
 		u32 c = white == 1 ? 0xffffff : (q->r << 16) | (q->g << 8) | q->b;
-		gEmit = (q->fl & 1) ? .85f : 0;
+		gEmit = emissiveQ(q) ? .85f : 0;
 		u8 a = alpha < 255 ? alpha : (q->a < 250 ? q->a : 255);
 		if (q->fl & 2) boxR(px, py, q->x / 256.f, q->y / 256.f, q->z / 8.f + zo, q->w / 256.f, q->d / 256.f, q->h / 8.f, c, q->f / 100.f, a);
 		else boxA(px + q->x / 256.f, py + q->y / 256.f, q->z / 8.f + zo, q->w / 256.f, q->d / 256.f, q->h / 8.f, c, q->f / 100.f, a);
@@ -141,7 +141,21 @@ void drawEntity(Ent *e) {
 		u = sinf(gtime * 3 + e->px) * 1.5f;
 		EMIT(1, box(e->px - .05f, e->py - .05f, 26 + u, .1f, .1f, 3, 0xfff2a0, 1));
 		return;
+	case K_LEV: {
+		extern bool levIsDown(Ent *); extern float levLeft(Ent *);
+		bool on = levIsDown(e); float k = levLeft(e);
+		shadowAt(e->px, e->py, .28f);
+		box(e->px - .22f, e->py - .16f, 0, .44f, .32f, 5, 0x5a5652, 1); box(e->px - .18f, e->py - .12f, 5, .36f, .24f, 3, 0x6e6a64, 1); box(e->px - .05f, e->py - .05f, 8, .1f, .1f, 4, 0x3a3a3a, 1);
+		if (on) { box(e->px, e->py - .04f, 8, .34f, .08f, 3, 0x8a6a42, 1); box(e->px + .3f, e->py - .06f, 8, .1f, .12f, 4, 0xc0392b, 1); }
+		else { box(e->px - .04f, e->py - .04f, 12, .08f, .08f, 16, 0x8a6a42, 1); box(e->px - .06f, e->py - .06f, 28, .12f, .12f, 4, 0xc0392b, 1); }
+		if (on) EMIT(1, box(e->px - .07f, e->py + .12f, 6, .14f, .04f, 3, k >= 1 ? 0x7affea : k > .3f ? 0x7aff7a : 0xffd84a, 1.5f));
+		return;
+	}
 	case K_PO:
+		if (e->seal) {   // la grata davanti alla scala
+			for (int i = 0; i < 5; i++) box(e->px - .42f + i * .2f, e->py + .38f, 0, .05f, .05f, 40, 0x5a5a62, 1);
+			box(e->px - .46f, e->py + .37f, 12, .92f, .06f, 3, 0x3a3a42, 1); box(e->px - .46f, e->py + .37f, 30, .92f, .06f, 3, 0x3a3a42, 1);
+		}
 		if (e->st == PO_VOID) {
 			float r = fmodf(gtime * 2, 6.28f);
 			box(e->px - .45f, e->py - .1f, 0, .12f, .2f, 40, 0x2a1a3a, 1); box(e->px + .33f, e->py - .1f, 0, .12f, .2f, 40, 0x2a1a3a, 1);

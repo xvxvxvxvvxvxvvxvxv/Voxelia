@@ -16,7 +16,7 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.0"            // versione del port per 3DS
+#define PORT_VER "1.1"            // versione del port per 3DS
 #define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
 #define GAME_VER "3DS " PORT_VER
 #define MAXN 96
@@ -129,9 +129,15 @@ typedef struct { u8 nfr, fpd; QBox **fr; u16 *nb; } AModel;
 extern AModel *MDL;
 extern int NMDL;
 void modelsLoad(void);
+static inline bool emissiveQ(const QBox *q) {
+	u32 c = (q->r << 16) | (q->g << 8) | q->b;
+	switch (c) { case 0xffd27a: case 0xffe9a8: case 0xffe08a: case 0xffcc33: case 0xfff2a0: case 0xff8a2a: case 0xff7a2a: case 0xffd84a: case 0xfff6c0: case 0xffd890: case 0xff6a1a: case 0xffb04a: return true; }
+	return q->f >= 118;   // il pavimento varia la luminosità fino a 1,08: non è una luce
+}
+
 
 /* ---------------- entità ---------------- */
-enum { K_NONE, K_EN, K_NPC, K_PO, K_CH, K_DR, K_SHARD, K_LORE, K_TC, K_DEAD, K_CHO, K_RES, K_PEER };
+enum { K_NONE, K_EN, K_NPC, K_PO, K_CH, K_DR, K_SHARD, K_LORE, K_TC, K_DEAD, K_CHO, K_RES, K_PEER, K_LEV };
 enum { PO_DOOR, PO_EXIT, PO_GATE, PO_DUN, PO_DOWN, PO_UP, PO_VOID, PO_OTHER };
 
 typedef struct {
@@ -157,6 +163,8 @@ typedef struct {
 	u32 col;
 	const char *lockMsg;
 	char lock[16];
+	u8 seal;          // scala chiusa dalla grata delle leve
+	char lev[4];      // id della leva (L1, L2)
 	// forziere, risorse
 	u8 rich;
 	int hc;
@@ -270,6 +278,7 @@ void txtO(float x, float y, float sc, u32 col, const char *s, int align);
 float txtW(const char *s, float sc);
 float txtWrap(float x, float y, float w, float sc, u32 col, const char *s);
 float lineH(float sc);
+float txtWrapMax(float x, float y, float w, float sc, u32 col, const char *s, float maxH);
 void rect(float x, float y, float w, float h, u32 c);
 u32 RGBA(u32 rgb, u8 a);
 

@@ -1,6 +1,6 @@
-# Voxelia 3DS 1.0 — Il Regno Perduto
+# Voxelia 3DS 1.1 — Il Regno Perduto
 
-Versione del port: **1.0** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.1** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
 Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 7.50 – Il Regno Perduto*,
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,

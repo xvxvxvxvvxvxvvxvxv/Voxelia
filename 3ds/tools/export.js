@@ -29,16 +29,17 @@ const JS=`(${function(){
     for(let fc=0;fc<8;fc++){for(let j=0;j<4;j++){if(j<3){t=10+j*.2094;e.mvT=t;e.atkT=0;e.atkD=null}else{t=20;e.mvT=-9;e.atkT=t-.09;e.atkD=DIR[fc]}
       e.fd=DIR[fc];e.lpx=e.px;e.lpy=e.py;e.al=1;e.cdt=1;e.fl=0;e.enr=0;CUR=[];try{ent(e)}catch(err){}fr.push(enc(CUR,e.px,e.py));CUR=null}}
     return addModel(fr,4)}
-  const STATICK=k=>!['npc','en','ch','cho','dr','shard','lore','dead','pl','tc','abo','resx'].includes(k);
+  const STATICK=k=>!['npc','en','ch','cho','dr','shard','lore','dead','pl','tc','abo','resx','lev'].includes(k);
   function capZone(k){load(k);const sp=[+P.px.toFixed(2),+P.py.toFixed(2)];let vp=null;if(ZZ.lay)ZZ.lay.forEach((r,y)=>{const x=r.indexOf('V');if(x>=0)vp=[x+.5,y+.5]});t=0;NK=0;DK=0;FC=null;P.px=-999;P.py=-999;P.path=[];P.tg=null;PA=null;PM=0;
     const z=ZZ,n=N,B=[],L=[];LREC=L;
     for(let y=0;y<n;y++)for(let x=0;x<n;x++){CUR=[];try{tile(x,y)}catch(err){}for(const b of enc(CUR,0,0))b[10]=y*n+x,B.push(b)}
     const E2=[];
     for(const e of ents){const q={k:e.k,x:+e.px.toFixed(3),y:+e.py.toFixed(3)};
+      const seal=e.seal;if(seal)e.seal=0;   // la grata la disegna la 3DS, finché le leve non la aprono
       if(STATICK(e.k)){CUR=[];try{ent(e)}catch(err){}const tx=Math.max(0,Math.min(n-1,Math.floor(e.px))),ty=Math.max(0,Math.min(n-1,Math.floor(e.py)));for(const b of enc(CUR,0,0))b[10]=ty*n+tx,B.push(b);CUR=null}
       if(e.k==='npc'){q.nid=e.nid;q.n=e.n;q.wd=e.wd?1:0;q.mdl=capNpc(e);if(e.slp)q.slp=1;if(e.ghost)q.ghost=1}
       else if(e.k==='en'){q.t=e.t;if(e.boss)q.boss=1}
-      else if(e.k==='po'){q.to=e.to;q.st=e.st;q.n=e.n;q.col=e.col;if(e.lock)q.lock=e.lock,q.lockMsg=e.lockMsg;}
+      else if(e.k==='po'){q.to=e.to;q.st=e.st;q.n=e.n0||e.n;q.col=e.col;if(seal)q.seal=1,e.seal=seal;if(e.lock)q.lock=e.lock,q.lockMsg=e.lockMsg;}
       else if(e.k==='ch'){if(e.rich)q.rich=1;if(e.hc)q.hc=e.hc}
       else if(e.n)q.n=e.n;
       if(e.id!=null&&typeof e.id==='string')q.id=e.id;if(e.r!=null&&typeof e.r==='string')q.r=e.r;

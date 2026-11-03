@@ -5,7 +5,22 @@
 //   boss (boss del mondo), tesoro (caccia al tesoro), taglie, notti (notte di caccia), emote, tpa (teletrasporto),
 //   hub (ritorno ad Aldoria), gruppi (gruppi d'avventura), torneo, sindaco, guardieladri, pesca, speedrun e albo.
 // Housing, discoteca e mercato hanno finestre e mappe proprie del browser: dalla 3DS restano i loro comandi in chat.
+//
+// Per i plugin nuovi o aggiornati c'è un protocollo generico (vedi PLUGIN.md): eventi come banner, avviso, chat,
+// suono, domanda, riquadro, punto e menu funzionano con qualunque plugin, anche se la 3DS non lo conosce. Un evento
+// che un plugin conosciuto non aveva quando è uscito il port passa anche lui da lì. I comandi del server si leggono
+// da /aiuto all'avvio, così il pannello mostra quelli che il server ha davvero.
 #include "voxelia.h"
+#define G_A_TXT "\xEE\x80\x80"
+#define G_Y_TXT "\xEE\x80\x83"
+
+// numeri anche scritti come testo ("12"): i plugin non sempre sono precisi
+static double jgnT(const J *o, const char *k, double def) {
+	J *n = jget(o, k);
+	if (n && n->t == JSTR && n->s) { char *e; double v = strtod(n->s, &e); if (e != n->s) return v; }
+	return jnum(n, def);
+}
+#define jgn jgnT
 
 extern const char *netMyId(void);
 extern void netSendX(const char *pl, const char *e, const char *d);
@@ -15,6 +30,8 @@ extern void uiPlugTitle(const char *ti, const char *body);
 extern void uiPlugOpt(const char *l, const char *r, int arg, u32 col, bool dis);
 extern void uiOpenPlug(void);
 extern int uiChatHist(int i, const char **s, int *sys);
+extern void uiKeyboard(const char *init);
+static void cmd(const char *s);
 
 #define C_TXT C2D_Color32(232, 236, 244, 255)
 #define C_MU C2D_Color32(154, 164, 184, 255)
@@ -22,6 +39,7 @@ extern int uiChatHist(int i, const char **s, int *sys);
 #define C_GREEN C2D_Color32(125, 255, 176, 255)
 #define C_RED C2D_Color32(255, 140, 120, 255)
 
+static int plPage = 0;         // pagina del pannello «Funzioni del server»
 static float clk = 0;          // orologio dei plugin (secondi)
 static float lastHit = -99;    // ultima volta che l'eroe ha perso vita (per /hub)
 static float lastHp = -1;
@@ -165,7 +183,6 @@ static void helloTick(Hello *h, const char *pl, float dt) {
 	h->t = 1.5f;
 	if (!h->ready && h->tries < 8) { h->tries++; netSendX(pl, "ciao", "1"); }
 }
-static int plPage = 0;
 static void emMsg(const char *ev, J *d) {
 	if (!strcmp(ev, "pronto")) HE.ready = true;
 	else if (!strcmp(ev, "emote")) {
@@ -177,13 +194,33 @@ static void emMsg(const char *ev, J *d) {
 
 /* =====================================================================================================
    Avvisi sullo schermo touch con Accetta e Rifiuta (teletrasporto e inviti nei gruppi).                     */
-static struct { int kind; char ti[48], tx[120], id[40]; float t; } CARD;   // kind: 0 nessuno, 1 tpa, 2 gruppo
-bool plCard(const char **ti, const char **tx) { if (!CARD.kind) return false; *ti = CARD.ti; *tx = CARD.tx; return true; }
-static void cardClose(void) { CARD.kind = 0; }
+// kind: 1 teletrasporto, 2 invito nel gruppo, 3 domanda di un plugin qualunque (id è il suo JSON grezzo)
+typedef struct { int kind; char pl[24], ti[48], tx[160], id[64], si[16], no[16]; float t; } Card;
+static Card CQ[4]; static int NCQ = 0;
+static Card *cardAdd(int kind, const char *pl) {
+	if (NCQ >= 4) { memmove(CQ, CQ + 1, sizeof(Card) * 3); NCQ = 3; }
+	Card *c = &CQ[NCQ++]; memset(c, 0, sizeof *c);
+	c->kind = kind; c->t = 60; snprintf(c->pl, sizeof c->pl, "%s", pl);
+	snprintf(c->si, sizeof c->si, "Accetta"); snprintf(c->no, sizeof c->no, "Rifiuta");
+	return c;
+}
+static void cardDel(int i) { if (i < 0 || i >= NCQ) return; memmove(&CQ[i], &CQ[i + 1], sizeof(Card) * (NCQ - i - 1)); NCQ--; }
+// chiude gli avvisi di un tipo (e di un plugin, e con un id); id vuoto = tutti
+static void cardClose(int kind, const char *pl, const char *id) {
+	for (int i = NCQ - 1; i >= 0; i--) if ((!kind || CQ[i].kind == kind) && (!pl || !strcmp(CQ[i].pl, pl)) && (!id || !id[0] || !strcmp(CQ[i].id, id))) cardDel(i);
+}
+static void cardCloseAll(void) { NCQ = 0; }
+bool plCard(const char **ti, const char **tx, const char **si, const char **no) {
+	if (!NCQ) return false;
+	*ti = CQ[0].ti; *tx = CQ[0].tx; *si = CQ[0].si; *no = CQ[0].no; return true;
+}
 void plCardAnswer(bool yes) {
-	if (CARD.kind == 1) { char b[96]; snprintf(b, sizeof b, "{\"id\":\"%s\",\"si\":%s}", CARD.id, yes ? "true" : "false"); netSendX("tpa", "risposta", b); }
-	else if (CARD.kind == 2) { char b[120]; JW w = {b, 0, sizeof b}; jwRaw(&w, "{\"da\":"); jwStr(&w, CARD.id); jwf(&w, ",\"si\":%s}", yes ? "true" : "false"); netSendX("gruppi", "risposta", b); }
-	cardClose(); tone(yes ? 880 : 300, .06f, W_TRIANGLE, .05f);
+	if (!NCQ) return;
+	Card *c = &CQ[0]; char b[200]; JW w = {b, 0, sizeof b};
+	if (c->kind == 1) { jwRaw(&w, "{\"id\":"); jwStr(&w, c->id); jwf(&w, ",\"si\":%s}", yes ? "true" : "false"); netSendX("tpa", "risposta", b); }
+	else if (c->kind == 2) { jwRaw(&w, "{\"da\":"); jwStr(&w, c->id); jwf(&w, ",\"si\":%s}", yes ? "true" : "false"); netSendX("gruppi", "risposta", b); }
+	else { jwRaw(&w, "{\"id\":"); jwRaw(&w, c->id[0] ? c->id : "null"); jwf(&w, ",\"si\":%s}", yes ? "true" : "false"); netSendX(c->pl, "risposta", b); }
+	cardDel(0); tone(yes ? 880 : 300, .06f, W_TRIANGLE, .05f);
 }
 
 /* =====================================================================================================
@@ -281,13 +318,14 @@ static void tpMsg(const char *ev, J *d) {
 		goZoneAt(zk, x, y);
 		msg("Ti sei teletrasportato da %s", jgs(d, "da", "?"));
 	} else if (!strcmp(ev, "richiesta")) {
-		CARD.kind = 1; snprintf(CARD.id, sizeof CARD.id, "%s", id);
-		snprintf(CARD.ti, sizeof CARD.ti, "Teletrasporto");
-		snprintf(CARD.tx, sizeof CARD.tx, "%s vuole teletrasportarsi da te. Scade tra %d secondi.", jgs(d, "da", "?"), (int)jgn(d, "sec", 60));
-		CARD.t = jgn(d, "sec", 60);
+		cardClose(1, NULL, id);
+		Card *C = cardAdd(1, "tpa"); snprintf(C->id, sizeof C->id, "%s", id);
+		snprintf(C->ti, sizeof C->ti, "Teletrasporto");
+		snprintf(C->tx, sizeof C->tx, "%s vuole teletrasportarsi da te. Scade tra %d secondi.", jgs(d, "da", "?"), (int)jgn(d, "sec", 60));
+		C->t = jgn(d, "sec", 60);
 		tone(660, .08f, W_TRIANGLE, .05f);
 		msg("%s vuole teletrasportarsi da te: rispondi sullo schermo touch", jgs(d, "da", "?"));
-	} else if (!strcmp(ev, "chiudi")) { if (CARD.kind == 1 && (!id[0] || !strcmp(id, CARD.id))) cardClose(); }
+	} else if (!strcmp(ev, "chiudi")) cardClose(1, NULL, id);
 }
 
 /* =====================================================================================================
@@ -338,15 +376,16 @@ static void grMsg(const char *ev, J *d) {
 		if (strcmp(n, P.name)) tone(660, .05f, W_TRIANGLE, .04f);
 	} else if (!strcmp(ev, "invito")) {
 		const char *da = jgs(d, "da", ""); if (!da[0]) return;
-		CARD.kind = 2; snprintf(CARD.id, sizeof CARD.id, "%s", da);
-		snprintf(CARD.ti, sizeof CARD.ti, "Invito in un gruppo");
+		cardClose(2, NULL, da);
+		Card *C = cardAdd(2, "gruppi"); snprintf(C->id, sizeof C->id, "%s", da);
+		snprintf(C->ti, sizeof C->ti, "Invito in un gruppo");
 		int n = (int)jgn(d, "n", 1);
-		if (n > 1) snprintf(CARD.tx, sizeof CARD.tx, "%s ti invita nel suo gruppo d'avventura (%d eroi).", da, n);
-		else snprintf(CARD.tx, sizeof CARD.tx, "%s ti invita nel suo gruppo d'avventura.", da);
-		CARD.t = fmaxf(5, jgn(d, "sec", 60));
+		if (n > 1) snprintf(C->tx, sizeof C->tx, "%s ti invita nel suo gruppo d'avventura (%d eroi).", da, n);
+		else snprintf(C->tx, sizeof C->tx, "%s ti invita nel suo gruppo d'avventura.", da);
+		C->t = fmaxf(5, jgn(d, "sec", 60));
 		tone(520, .08f, W_TRIANGLE, .05f);
 		msg("%s ti invita nel suo gruppo: rispondi sullo schermo touch", da);
-	} else if (!strcmp(ev, "chiudiInvito")) { const char *da = jgs(d, "da", ""); if (CARD.kind == 2 && (!da[0] || !strcmp(da, CARD.id))) cardClose(); }
+	} else if (!strcmp(ev, "chiudiInvito")) cardClose(2, NULL, jgs(d, "da", ""));
 }
 
 /* =====================================================================================================
@@ -383,7 +422,7 @@ static void webOnly(int i, const char *what) {
 	msg("%s si usa dal gioco nel browser: dalla 3DS restano i comandi in chat.", what);
 	if (!toldWeb[i]) { toldWeb[i] = true; char b[160]; snprintf(b, sizeof b, "%s ha finestre del browser che la 3DS non può mostrare. /aiuto elenca i comandi.", what); chatLog("", b, 1); }
 }
-void plOnMsg(const char *pl, const char *ev, J *d) {
+static void plKnown(const char *pl, const char *ev, J *d) {
 	if (!strcmp(pl, "boss")) wbMsg(ev, d);
 	else if (!strcmp(pl, "tesoro")) tsMsg(ev, d);
 	else if (!strcmp(pl, "emote")) emMsg(ev, d);
@@ -416,6 +455,176 @@ void plOnMsg(const char *pl, const char *ev, J *d) {
 	else if (!strcmp(pl, "mercato")) { if (!strcmp(ev, "apri")) webOnly(2, "Il Mercatino"); }
 }
 
+
+/* =====================================================================================================
+   Protocollo generico: funziona con qualunque plugin, anche nuovo (documentato in PLUGIN.md).            */
+// eventi che i plugin conosciuti gestiscono già a modo loro; gli altri passano dal protocollo generico
+static const char *KNOWN[][6] = {
+	{"boss", "stato", "vita", "fine", NULL}, {"tesoro", "vicino", "fine", "trovato", NULL}, {"emote", "pronto", "emote", "ruota", NULL},
+	{"tpa", "verifica", "vai", "richiesta", "chiudi", NULL}, {"hub", "vai", NULL}, {"gruppi", "pronto", "stato", "chat", "invito", "chiudiInvito"},
+	{"guardieladri", "stato", "evento", "fine", NULL}, {"notti", "inizio", "fine", NULL}, {"torneo", "chiamata", "iscrizioni", "vincitore", NULL},
+	{"sindaco", "eletto", "discorso", "decreto", "festa", NULL}, {"housing", "vai", "apri", NULL}, {"discoteca", "entra", NULL}, {"mercato", "apri", NULL}};
+static bool isKnown(const char *pl, const char *ev) {
+	for (unsigned i = 0; i < sizeof KNOWN / sizeof KNOWN[0]; i++) {
+		if (strcmp(KNOWN[i][0], pl)) continue;
+		for (int k = 1; k < 6 && KNOWN[i][k]; k++) if (!strcmp(KNOWN[i][k], ev)) return true;
+		return false;
+	}
+	return false;
+}
+#define CLIENT_INFO "{\"tipo\":\"3ds\",\"versione\":\"" PORT_VER "\",\"gioco\":\"" DATA_VER "\",\"eventi\":[\"banner\",\"avviso\",\"chat\",\"suono\",\"domanda\",\"chiudi\",\"riquadro\",\"punto\",\"menu\",\"origine?\",\"client?\"]}"
+// la 3DS si presenta a ogni plugin la prima volta che le scrive (api.onClient('client', ...))
+static char seenPl[24][24]; static int nSeenPl = 0;
+static void meetPlugin(const char *pl) {
+	for (int i = 0; i < nSeenPl; i++) if (!strcmp(seenPl[i], pl)) return;
+	if (nSeenPl < 24) snprintf(seenPl[nSeenPl++], 24, "%s", pl);
+	netSendX(pl, "client", CLIENT_INFO);
+}
+static const char *gs2(J *d, const char *a, const char *b, const char *def) {
+	if (d && d->t == JSTR) return d->s;   // l'evento può mandare direttamente il testo
+	const char *s = jgs(d, a, NULL); if (!s && b) s = jgs(d, b, NULL);
+	return s ? s : def;
+}
+// un id (testo o numero) come JSON grezzo, per rimandarlo uguale
+static void jraw(J *n, char *out, int sz) {
+	if (!n) { out[0] = 0; return; }
+	if (n->t == JNUM) snprintf(out, sz, "%.15g", n->d);
+	else if (n->t == JSTR) { JW w = {out, 0, sz}; jwStr(&w, n->s); }
+	else if (n->t == JBOOL) snprintf(out, sz, n->d ? "true" : "false");
+	else out[0] = 0;
+}
+static void playNotes(J *s) {
+	if (!s || s->t != JARR) return;
+	int ns[12], n = 0; JFOR(q, s) if (n < 12) ns[n++] = clampi((int)jnum(q, 60), 24, 108);
+	if (n) jingle(ns, n, .12f, W_TRIANGLE);
+}
+// riquadri dei plugin (in alto a destra), punti sulla mappa, menu
+typedef struct { bool on; char pl[24], id[24], ti[48], l[3][72]; float v, t; } Box;
+static Box BX[4];
+typedef struct { bool on; char pl[24], id[24], zk[32], tx[48]; int x, y; } Pt;
+static Pt PTS[8];
+typedef struct { char t[48], cmd[72], id[64]; } MItem;
+typedef struct { bool on; char pl[24], id[64], ti[48], tx[200]; int n; MItem v[12]; } Menu;
+static Menu MN[4];
+static void genClear(const char *pl) {
+	for (int i = 0; i < 4; i++) if (BX[i].on && (!pl || !strcmp(BX[i].pl, pl))) BX[i].on = false;
+	for (int i = 0; i < 8; i++) if (PTS[i].on && (!pl || !strcmp(PTS[i].pl, pl))) PTS[i].on = false;
+	for (int i = 0; i < 4; i++) if (MN[i].on && (!pl || !strcmp(MN[i].pl, pl))) MN[i].on = false;
+	if (!pl) cardCloseAll(); else cardClose(3, pl, NULL);
+}
+static void plGeneric(const char *pl, const char *ev, J *d) {
+	char id[64]; jraw(jget(d, "id"), id, sizeof id);
+	bool none = !d || d->t == JNULL;
+	if (!strcmp(ev, "banner")) { banner(gs2(d, "titolo", "title", ""), jgs(d, "testo", jgs(d, "text", ""))); playNotes(jget(d, "suono")); }
+	else if (!strcmp(ev, "avviso") || !strcmp(ev, "messaggio")) { const char *t = gs2(d, "testo", "s", ""); if (t[0]) msg("%s", t); playNotes(jget(d, "suono")); }
+	else if (!strcmp(ev, "chat")) { const char *t = gs2(d, "testo", "s", ""); if (t[0]) chatLog(jgs(d, "n", jgs(d, "nome", "")), t, 1); }
+	else if (!strcmp(ev, "suono")) playNotes(d && d->t == JARR ? d : jget(d, "note"));
+	else if (!strcmp(ev, "domanda")) {
+		if (id[0]) cardClose(3, pl, id);
+		Card *c = cardAdd(3, pl); snprintf(c->id, sizeof c->id, "%s", id);
+		snprintf(c->ti, sizeof c->ti, "%s", gs2(d, "titolo", "title", "Domanda"));
+		snprintf(c->tx, sizeof c->tx, "%s", jgs(d, "testo", jgs(d, "text", "")));
+		const char *si = jgs(d, "si", NULL), *no = jgs(d, "no", NULL);
+		if (si) snprintf(c->si, sizeof c->si, "%s", si);
+		if (no) snprintf(c->no, sizeof c->no, "%s", no);
+		c->t = clampf(jgn(d, "sec", 60), 3, 600);
+		tone(620, .08f, W_TRIANGLE, .05f);
+		msg("%s: rispondi sullo schermo touch", c->ti);
+	} else if (!strcmp(ev, "chiudi")) {
+		// chiude domande, riquadri, punti e menu del plugin con quell'id (o tutti, senza id)
+		cardClose(3, pl, id);
+		char sid[24]; snprintf(sid, sizeof sid, "%s", jgs(d, "id", ""));
+		for (int i = 0; i < 4; i++) if (BX[i].on && !strcmp(BX[i].pl, pl) && (!id[0] || !strcmp(BX[i].id, sid))) BX[i].on = false;
+		for (int i = 0; i < 8; i++) if (PTS[i].on && !strcmp(PTS[i].pl, pl) && (!id[0] || !strcmp(PTS[i].id, sid))) PTS[i].on = false;
+		for (int i = 0; i < 4; i++) if (MN[i].on && !strcmp(MN[i].pl, pl) && (!id[0] || !strcmp(MN[i].id, id))) MN[i].on = false;
+	} else if (!strcmp(ev, "riquadro")) {
+		const char *bid = jgs(d, "id", "");
+		Box *b = NULL;
+		for (int i = 0; i < 4; i++) if (BX[i].on && !strcmp(BX[i].pl, pl) && !strcmp(BX[i].id, bid)) b = &BX[i];
+		if (none || jgn(d, "via", 0)) { if (b) b->on = false; return; }
+		if (!b) for (int i = 0; i < 4; i++) if (!BX[i].on) { b = &BX[i]; break; }
+		if (!b) b = &BX[0];
+		memset(b, 0, sizeof *b); b->on = true;
+		snprintf(b->pl, sizeof b->pl, "%s", pl); snprintf(b->id, sizeof b->id, "%s", bid);
+		snprintf(b->ti, sizeof b->ti, "%s", gs2(d, "titolo", "title", ""));
+		int n = 0; J *L = jget(d, "righe");
+		if (L && L->t == JARR) { JFOR(q, L) if (n < 3) snprintf(b->l[n++], 72, "%s", jstr(q, "")); }
+		else if (jgs(d, "testo", NULL)) snprintf(b->l[n++], 72, "%s", jgs(d, "testo", ""));
+		b->v = jget(d, "v") ? clampf(jgn(d, "v", 0), 0, 1) : -1;
+		b->t = jgn(d, "sec", 0) > 0 ? clk + jgn(d, "sec", 0) : 0;
+	} else if (!strcmp(ev, "punto")) {
+		const char *pid = jgs(d, "id", "");
+		Pt *q = NULL;
+		for (int i = 0; i < 8; i++) if (PTS[i].on && !strcmp(PTS[i].pl, pl) && !strcmp(PTS[i].id, pid)) q = &PTS[i];
+		if (none || jgn(d, "via", 0) || !jgs(d, "zk", NULL)) { if (q) q->on = false; return; }
+		if (!q) for (int i = 0; i < 8; i++) if (!PTS[i].on) { q = &PTS[i]; break; }
+		if (!q) q = &PTS[0];
+		memset(q, 0, sizeof *q); q->on = true;
+		snprintf(q->pl, sizeof q->pl, "%s", pl); snprintf(q->id, sizeof q->id, "%s", pid);
+		snprintf(q->zk, sizeof q->zk, "%s", jgs(d, "zk", "")); snprintf(q->tx, sizeof q->tx, "%s", jgs(d, "testo", ""));
+		q->x = (int)jgn(d, "x", 0); q->y = (int)jgn(d, "y", 0);
+	} else if (!strcmp(ev, "menu")) {
+		Menu *m = NULL;
+		for (int i = 0; i < 4; i++) if (MN[i].on && !strcmp(MN[i].pl, pl) && !strcmp(MN[i].id, id)) m = &MN[i];
+		if (none || jgn(d, "via", 0)) { if (m) m->on = false; return; }
+		if (!m) for (int i = 0; i < 4; i++) if (!MN[i].on) { m = &MN[i]; break; }
+		if (!m) m = &MN[0];
+		memset(m, 0, sizeof *m); m->on = true;
+		snprintf(m->pl, sizeof m->pl, "%s", pl); snprintf(m->id, sizeof m->id, "%s", id);
+		snprintf(m->ti, sizeof m->ti, "%s", gs2(d, "titolo", "title", pl));
+		snprintf(m->tx, sizeof m->tx, "%s", jgs(d, "testo", ""));
+		JFOR(q, jget(d, "voci")) {
+			if (m->n >= 12) break;
+			MItem *v = &m->v[m->n++];
+			if (q->t == JSTR) { snprintf(v->t, sizeof v->t, "%s", q->s); continue; }
+			snprintf(v->t, sizeof v->t, "%s", gs2(q, "t", "testo", "?"));
+			snprintf(v->cmd, sizeof v->cmd, "%s", jgs(q, "cmd", ""));
+			jraw(jget(q, "id"), v->id, sizeof v->id);
+		}
+		if (jgn(d, "apri", 0) && started && PM == PM_NONE) { plPage = 10 + (int)(m - MN); uiOpenPlug(); }
+		else msg("%s: apri Menu > Funzioni del server", m->ti);
+	} else if (!strcmp(ev, "origine?")) { extern void plOrigin(const char *pl); plOrigin(pl); }
+	else if (!strcmp(ev, "client?")) netSendX(pl, "client", CLIENT_INFO);
+	else if (!strcmp(ev, "evento") || !strcmp(ev, "annuncio") || !strcmp(ev, "notifica") || !strcmp(ev, "info")) {
+		// eventi «da mostrare» di plugin sconosciuti: titolo grande se c'è, altrimenti un avviso
+		const char *bn = jgs(d, "banner", jgs(d, "titolo", NULL)), *tx = gs2(d, "testo", "s", "");
+		if (bn) banner(bn, tx); else if (tx[0]) msg("%s", tx);
+		playNotes(jget(d, "suono"));
+	}
+	// tutto il resto è un messaggio interno di un plugin che la 3DS non conosce: si ignora senza errori
+}
+void plOnMsg(const char *pl, const char *ev, J *d) {
+	if (!pl[0] || !ev[0]) return;
+	meetPlugin(pl);
+	if (isKnown(pl, ev)) plKnown(pl, ev, d);
+	else plGeneric(pl, ev, d);
+}
+
+/* ---------------- i comandi del server, letti da /aiuto ---------------- */
+typedef struct { char c[24], d[72]; u8 web; } Cmd;
+static Cmd CMDL[48]; static int NCMDL = 0;
+static float aiutoT = -1, capT = 0;
+// comandi di funzioni che sulla 3DS non hanno finestre (case, discoteca, mercato) o di Tomorrow: in fondo alla lista
+static const char *WEBCMD[] = {"borgo", "casa", "case", "pet", "visita", "lavagna", "dj", "coda", "skip", "pausa", "discoteca", "mercato", "terre", "fazione", "bacheca", "foto", NULL};
+// true = la riga va tolta dalla chat (è la risposta a /aiuto chiesta dal port)
+bool plChatFilter(const char *n, const char *s, bool adm) {
+	if (capT <= 0 || !adm || strcmp(n, "Server")) return false;
+	if (!strncmp(s, "Comandi del server", 18) || !strncmp(s, "Questo server non ha comandi", 28) || !strncmp(s, "\xE2\x80\xA6", 3)) return true;
+	if (s[0] != '/') return false;
+	char c[24]; int i = 0; const char *p = s + 1;
+	while (*p && *p != ' ' && i < 23) c[i++] = *p++;
+	c[i] = 0;
+	const char *dsc = strstr(s, " \xE2\x80\x94 "); dsc = dsc ? dsc + 5 : "";
+	if (!strcmp(c, "plugin")) capT = 0;   // l'ultima riga di /aiuto
+	if (!c[0] || emoIdx(c) >= 0 || NCMDL >= 48) return true;
+	for (int k = 0; k < NCMDL; k++) if (!strcmp(CMDL[k].c, c)) return true;
+	Cmd *m = &CMDL[NCMDL++];
+	snprintf(m->c, sizeof m->c, "%s", c); snprintf(m->d, sizeof m->d, "%s", dsc);
+	if (m->d[0] >= 'a' && m->d[0] <= 'z') m->d[0] -= 32;
+	m->web = 0; for (int k = 0; WEBCMD[k]; k++) if (!strcmp(WEBCMD[k], c)) m->web = 1;
+	return true;
+}
+
 // l'indirizzo del server, per i link dei plugin (speedrun, albo)
 void plOrigin(const char *pl) {
 	char o[140]; snprintf(o, sizeof o, "%s", NETC.url);
@@ -426,12 +635,15 @@ void plOrigin(const char *pl) {
 }
 // appena collegati (o ricollegati con un nuovo id)
 void plOnConnect(void) {
-	HE = (Hello){0}; HG = (Hello){0}; tgLast = -1; GR.on = false; GL.on = false; cardClose();
+	HE = (Hello){0}; HG = (Hello){0}; tgLast = -1; GR.on = false; GL.on = false; genClear(NULL);
+	nSeenPl = 0; NCMDL = 0; aiutoT = 2.5f; capT = 0;
+	// la 3DS si presenta a tutti i plugin che leggono i messaggi grezzi (api.on('message'))
+	netSendRaw("{\"t\":\"client\",\"d\":" CLIENT_INFO "}");
 	plOrigin("speedrun"); plOrigin("albo");
 }
 void plOnDisconnect(void) {
 	if (WB.on) wbRemove(false);
-	WB.on = false; TS.on = false; GR.on = false; GL.on = false; HE.ready = HG.ready = false; cardClose();
+	WB.on = false; TS.on = false; GR.on = false; GL.on = false; HE.ready = HG.ready = false; genClear(NULL);
 }
 // entrando in una zona
 static char lastZk[32];
@@ -442,12 +654,18 @@ void plTick(float dt) {
 	if (lastHp >= 0 && P.hp < lastHp) lastHit = clk;
 	lastHp = P.hp;
 	if (myEmoT > 0) myEmoT -= dt;
-	if (CARD.kind && (CARD.t -= dt) <= 0) cardClose();
-	if (!netOk) { if (WB.on || GR.on || GL.on || CARD.kind) plOnDisconnect(); return; }
+	for (int i = NCQ - 1; i >= 0; i--) if ((CQ[i].t -= dt) <= 0) cardDel(i);
+	for (int i = 0; i < 4; i++) if (BX[i].on && BX[i].t > 0 && clk > BX[i].t) BX[i].on = false;
+	if (capT > 0) capT -= dt;
+	if (!netOk) { if (WB.on || GR.on || GL.on || NCQ || BX[0].on || BX[1].on || BX[2].on || BX[3].on) plOnDisconnect(); return; }
+	if (aiutoT > 0 && (aiutoT -= dt) <= 0) { cmd("/aiuto"); capT = 6; }
 	helloTick(&HE, "emote", dt); helloTick(&HG, "gruppi", dt);
 	if (!started) return;
 	if (strcmp(lastZk, Zk) && !zoneBusy()) { snprintf(lastZk, sizeof lastZk, "%s", Zk); plOnZone(); }
 	wbTick(dt); tsTick(dt); tgTick(dt);
+	// scintille sui punti dei plugin nella zona
+	static float ptT = 0;
+	if ((ptT -= dt) <= 0) { ptT = .35f; for (int i = 0; i < 8; i++) { Pt *q = &PTS[i]; if (q->on && inZone(q->zk) && dist2(q->x + .5f, q->y + .5f) < 12) sparks(q->x + .5f, q->y + .5f, 3, 0x9adcff, 50); } }
 }
 
 /* =====================================================================================================
@@ -505,6 +723,26 @@ void plDrawTop(void) {
 		float w = txtW(b, .4f) + 16; float y = e ? 36 : 4;
 		rect(200 - w / 2, y, w, 16, C2D_Color32(10, 14, 24, 210)); txtC(200, y + 1, .4f, C_TXT, b);
 	}
+	// punti dei plugin: la scritta sopra la casella, quando sei vicino
+	for (int i = 0; i < 8; i++) {
+		Pt *q = &PTS[i]; if (!q->on || !q->tx[0] || !inZone(q->zk) || dist2(q->x + .5f, q->y + .5f) > 9) continue;
+		float sx, sy; worldToScreen(q->x + .5f, q->y + .5f, 24, &sx, &sy); lab(sx, sy - 10, .38f, C2D_Color32(154, 220, 255, 255), q->tx);
+	}
+	// riquadri dei plugin, in alto a destra
+	{ float y = 36;
+	  for (int i = 0; i < 4; i++) {
+		Box *b = &BX[i]; if (!b->on) continue;
+		int nl = 0; while (nl < 3 && b->l[nl][0]) nl++;
+		float h = (b->ti[0] ? 13 : 2) + nl * 11 + (b->v >= 0 ? 7 : 0) + 3;
+		rect(268, y, 128, h, C2D_Color32(12, 16, 28, 205)); rect(268, y, 128, 1, C2D_Color32(154, 220, 255, 200));
+		float yy = y + 1;
+		char t[80];
+		(void)t;
+		if (b->ti[0]) { txtMarquee(272, yy, .36f, C2D_Color32(154, 220, 255, 255), b->ti, 120, clk); yy += 13; }
+		for (int k = 0; k < nl; k++) { txtMarquee(272, yy, .32f, C_TXT, b->l[k], 120, clk); yy += 11; }
+		if (b->v >= 0) { rect(272, yy + 2, 120, 4, C2D_Color32(0, 0, 0, 160)); rect(272, yy + 2, 120 * b->v, 4, C2D_Color32(154, 220, 255, 255)); }
+		y += h + 3;
+	  } }
 	// la mia emote
 	if (myEmoT > 0 && myEmo >= 0) { float sx, sy; worldToScreen(P.px, P.py, 44, &sx, &sy); lab(sx, sy - 26, .42f, C2D_Color32(255, 227, 138, 255), EMOB[myEmo]); }
 }
@@ -514,14 +752,39 @@ void plDrawTop(void) {
 static void cmd(const char *s) {
 	char b[120]; JW w = {b, 0, sizeof b}; jwRaw(&w, "{\"t\":\"chat\",\"s\":"); jwStr(&w, s); jwRaw(&w, ",\"z\":"); jwStr(&w, Zk); jwRaw(&w, "}"); netSendRaw(b);
 }
-enum { PA_PAGE = 1, PA_CMD, PA_EMO, PA_GREXIT, PA_GRTPA, PA_CARD };
-static const char *CMDS[][2] = {{"Boss del mondo", "/boss"}, {"Caccia al tesoro", "/tesoro"}, {"Taglie del giorno", "/taglie"}, {"Notte di caccia", "/evento"},
+enum { PA_PAGE = 1, PA_CMD, PA_EMO, PA_GREXIT, PA_GRTPA, PA_CARD, PA_MITEM, PA_WRITE, PA_FIX };
+// se il server non risponde a /aiuto: i comandi dei plugin ufficiali
+static const char *CMDS[][2] = {{"Torna ad Aldoria", "/hub"}, {"Boss del mondo", "/boss"}, {"Caccia al tesoro", "/tesoro"}, {"Taglie del giorno", "/taglie"}, {"Notte di caccia", "/evento"},
 	{"Torneo dell'arena", "/torneo"}, {"Classifiche", "/classifiche"}, {"Ricompensa del giorno", "/giornaliero"}, {"Tutti i comandi", "/aiuto"}};
 #define NCMDS (int)(sizeof CMDS / sizeof CMDS[0])
 static int plArg(int kind, int i) { return kind * 100 + i; }
+static void chatRows(void) {
+	const char *s; int sys, n = 0;
+	for (int i = 0; uiChatHist(i, &s, &sys) && n < 44; i++) {
+		// righe lunghe divise per la larghezza dello schermo
+		char line[160]; snprintf(line, sizeof line, "%s", s); char *p = line;
+		while (*p && n < 44) {
+			char seg[80]; int k = 0, lastSp = -1;
+			while (p[k] && k < 78) { seg[k] = p[k]; seg[k + 1] = 0; if (txtW(seg, .46f) > 280) break; if (p[k] == ' ') lastSp = k; k++; }
+			if (p[k] && lastSp > 8) k = lastSp + 1;
+			while (k > 0 && (p[k] & 0xC0) == 0x80) k--;
+			if (k <= 0) break;
+			memcpy(seg, p, k); seg[k] = 0; p += k;
+			uiPlugOpt(seg, "", 0, sys == 2 ? C_GREEN : sys ? C2D_Color32(255, 216, 120, 255) : C_TXT, false);
+			n++;
+		}
+	}
+	if (!n) uiPlugOpt("Ancora nessun messaggio", "", 0, C_MU, true);
+}
 void plBuildPanel(void) {
-	char b[200];
-	if (plPage == 1) {
+	char b[260];
+	if (plPage >= 10 && plPage < 14) {
+		Menu *m = &MN[plPage - 10];
+		if (!m->on) { plPage = 0; plBuildPanel(); return; }
+		uiPlugTitle(m->ti, m->tx);
+		for (int j = 0; j < m->n; j++) uiPlugOpt(m->v[j].t, m->v[j].cmd, plArg(PA_MITEM, (plPage - 10) * 16 + j), C_TXT, !netOk);
+		uiPlugOpt("Indietro", "", plArg(PA_PAGE, 0), C_MU, false);
+	} else if (plPage == 1) {
 		uiPlugTitle("Emote", "Un fumetto sopra la testa, visto da chi è nella tua zona.");
 		for (int i = 0; i < 12; i++) { char l[48]; snprintf(l, sizeof l, "/%s", EMO[i][0]); uiPlugOpt(l, EMO[i][1], plArg(PA_EMO, i), C_TXT, !netOk); }
 	} else if (plPage == 2) {
@@ -539,31 +802,27 @@ void plBuildPanel(void) {
 		if (GR.on) uiPlugOpt("Esci dal gruppo", "", plArg(PA_GREXIT, 0), C_RED, false);
 		uiPlugOpt("Indietro", "", plArg(PA_PAGE, 0), C_TXT, false);
 	} else if (plPage == 3) {
-		uiPlugTitle("Registro della chat", NULL);
-		const char *s; int sys, n = 0;
-		for (int i = 0; uiChatHist(i, &s, &sys) && n < 44; i++) {
-			// righe lunghe divise per la larghezza dello schermo
-			char line[160]; snprintf(line, sizeof line, "%s", s); char *p = line;
-			while (*p && n < 44) {
-				char seg[80]; int k = 0, lastSp = -1;
-				while (p[k] && k < 78) { seg[k] = p[k]; seg[k + 1] = 0; if (txtW(seg, .46f) > 280) break; if (p[k] == ' ') lastSp = k; k++; }
-				if (p[k] && lastSp > 8) k = lastSp + 1;
-				while (k > 0 && (p[k] & 0xC0) == 0x80) k--;
-				memcpy(seg, p, k); seg[k] = 0; p += k;
-				uiPlugOpt(seg, "", 0, sys == 2 ? C_GREEN : sys ? C2D_Color32(255, 216, 120, 255) : C_TXT, false);
-				n++;
-			}
-		}
-		if (!n) uiPlugOpt("Ancora nessun messaggio", "", 0, C_MU, true);
+		uiPlugTitle("Registro della chat", netOk ? "I messaggi più recenti in alto. " G_Y_TXT " scrive in chat." : "I messaggi più recenti in alto. Per scrivere collegati da Menu > Multigiocatore.");
+		if (netOk) uiPlugOpt("Scrivi in chat", "tastiera", plArg(PA_WRITE, 1), C_GOLD, false);
+		chatRows();
 	} else {
-		snprintf(b, sizeof b, netOk ? "I plugin del server: boss del mondo, caccia al tesoro, taglie, notti di caccia, emote, teletrasporto, gruppi, tornei. Le risposte arrivano in chat." : "Collegati a un server dal menu Multigiocatore.");
+		if (!netOk) snprintf(b, sizeof b, "Collegati a un server dal menu Multigiocatore.");
+		else snprintf(b, sizeof b, "Le funzioni dei plugin di questo server. " G_A_TXT " usa un comando, " G_Y_TXT " lo scrive con la tastiera per aggiungere un nome o altro. Le risposte arrivano in chat.");
 		uiPlugTitle("Funzioni del server", b);
-		uiPlugOpt("Emote", "fumetti", plArg(PA_PAGE, 1), C_GOLD, !netOk);
-		uiPlugOpt("Gruppo d'avventura", GR.on ? "nel gruppo" : "", plArg(PA_PAGE, 2), C_GOLD, !netOk);
-		uiPlugOpt("Torna ad Aldoria", "/hub", plArg(PA_CMD, 99), C_TXT, !netOk);
-		for (int i = 0; i < NCMDS; i++) uiPlugOpt(CMDS[i][0], CMDS[i][1], plArg(PA_CMD, i), C_TXT, !netOk);
+		for (int i = 0; i < NCQ; i++) { char l[72]; snprintf(l, sizeof l, "Rispondi: %s", CQ[i].tx); uiPlugOpt(l, CQ[i].si, plArg(PA_CARD, i), C_GREEN, false); }
+		for (int i = 0; i < 4; i++) if (MN[i].on) uiPlugOpt(MN[i].ti, "menu", plArg(PA_PAGE, 10 + i), C_GOLD, false);
+		bool known = NCMDL > 0;
+		if (!known || HE.ready) uiPlugOpt("Emote", "fumetti", plArg(PA_PAGE, 1), C_GOLD, !netOk);
+		if (!known || HG.ready) uiPlugOpt("Gruppo d'avventura", GR.on ? "nel gruppo" : "", plArg(PA_PAGE, 2), C_GOLD, !netOk);
+		if (known) {
+			for (int w = 0; w < 2; w++) for (int i = 0; i < NCMDL; i++) {
+				Cmd *c = &CMDL[i]; if (c->web != w) continue;
+				char r[28]; snprintf(r, sizeof r, "/%s", c->c);
+				uiPlugOpt(c->d[0] ? c->d : r, r, plArg(PA_CMD, i), w ? C_MU : C_TXT, !netOk);
+			}
+		} else for (int i = 0; i < NCMDS; i++) uiPlugOpt(CMDS[i][0], CMDS[i][1], plArg(PA_FIX, i), C_TXT, !netOk);
+		uiPlugOpt("Scrivi un comando", "/...", plArg(PA_WRITE, 0), C_TXT, !netOk);
 		uiPlugOpt("Registro della chat", "", plArg(PA_PAGE, 3), C_TXT, false);
-		if (CARD.kind) uiPlugOpt(CARD.tx, "Accetta", plArg(PA_CARD, 1), C_GREEN, false);
 	}
 }
 // restituisce 1 se il pannello va chiuso, 0 se va ridisegnato
@@ -572,15 +831,37 @@ int plPanelAct(int arg) {
 	switch (k) {
 	case PA_PAGE: plPage = i; return 0;
 	case PA_CMD:
-		if (i == 99) { cmd("/hub"); return 1; }
-		if (i < NCMDS) { cmd(CMDS[i][1]); plPage = 3; }
+		if (i < NCMDL) { char b[32]; snprintf(b, sizeof b, "/%s", CMDL[i].c); cmd(b); if (!strcmp(CMDL[i].c, "hub") || !strcmp(CMDL[i].c, "emote")) return 1; plPage = 3; }
 		return 0;
+	case PA_FIX:
+		if (i < NCMDS) { cmd(CMDS[i][1]); if (i == 0) return 1; plPage = 3; }
+		return 0;
+	case PA_WRITE: uiKeyboard(i == 1 ? "" : "/"); return 1;
 	case PA_EMO: if (i < 12) { char b[24]; snprintf(b, sizeof b, "/%s", EMO[i][0]); cmd(b); } return 1;
 	case PA_GREXIT: netSendX("gruppi", "esci", "1"); plPage = 0; return 0;
 	case PA_GRTPA: if (i < GR.n) { char b[40]; snprintf(b, sizeof b, "/tpa %s", GR.m[i].n); cmd(b); chatLog(P.name, b, 0); } return 1;
-	case PA_CARD: plCardAnswer(i == 1); return 0;
+	case PA_CARD: if (i < NCQ) { Card t = CQ[i]; cardDel(i); if (NCQ < 4) { memmove(CQ + 1, CQ, sizeof(Card) * NCQ); CQ[0] = t; NCQ++; } plCardAnswer(true); } return 0;
+	case PA_MITEM: {
+		int mi = i / 16, j = i % 16; if (mi >= 4 || !MN[mi].on || j >= MN[mi].n) return 0;
+		Menu *m = &MN[mi]; MItem *v = &m->v[j];
+		if (v->cmd[0]) cmd(v->cmd);
+		else { char b[200]; JW w = {b, 0, sizeof b}; jwRaw(&w, "{\"id\":"); jwRaw(&w, m->id[0] ? m->id : "null"); jwRaw(&w, ",\"voce\":"); jwRaw(&w, v->id[0] ? v->id : "null"); jwf(&w, ",\"n\":%d}", j); netSendX(m->pl, "scelta", b); }
+		tone(760, .04f, W_TRIANGLE, .04f);
+		return 1;
+	}
 	}
 	return 0;
 }
-bool plPanelBack(void) { if (plPage != 0) { plPage = 0; return true; } return false; }
-void plPanelPage(int p) { plPage = p; }
+// Y sul pannello: scrive il comando con la tastiera, per aggiungere un nome o altro
+bool plPanelAlt(int arg) {
+	int k = arg / 100, i = arg % 100; char b[40];
+	if (plPage == 3 && netOk) { uiKeyboard(""); return true; }
+	if (k == PA_CMD && i < NCMDL) snprintf(b, sizeof b, "/%s ", CMDL[i].c);
+	else if (k == PA_FIX && i < NCMDS) snprintf(b, sizeof b, "%s ", CMDS[i][1]);
+	else return false;
+	uiKeyboard(b); return true;
+}
+// Indietro torna alla pagina da cui si è entrati (Funzioni del server, oppure il registro della chat)
+static int plRoot = 0;
+bool plPanelBack(void) { if (plPage != plRoot) { plPage = plRoot; return true; } return false; }
+void plPanelPage(int p) { plPage = plRoot = p; }

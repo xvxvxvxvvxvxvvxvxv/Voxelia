@@ -1,6 +1,6 @@
-# Voxelia 3DS 1.2 — Il Regno Perduto
+# Voxelia 3DS 1.3 — Il Regno Perduto
 
-Versione del port: **1.2** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.3** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
 Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 7.50 – Il Regno Perduto*,
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,
@@ -32,7 +32,7 @@ La partita si salva da sola ogni 30 secondi e a ogni cambio di zona.
 | ZL / ZR o C-stick (New 3DS) | Zoom |
 | START | Pausa: salvataggio, volumi, zoom, opzioni, comandi |
 | SELECT | Mappa grande della zona |
-| Schermo touch | HUD sempre visibile: vita, XP, oro, minimappa, obiettivi, ricariche delle abilità; pulsanti Zaino, Missioni, Diario, Mappa, Menu. Toccando un'abilità la usi; toccando la minimappa apri la mappa. In rete, le richieste di teletrasporto e gli inviti nei gruppi compaiono qui con Accetta e Rifiuta |
+| Schermo touch | HUD sempre visibile: vita, XP, oro, minimappa, obiettivi, ricariche delle abilità; pulsanti Zaino, Missioni, Diario, Mappa, Chat (registro della chat, da cui si scrive), Menu. Toccando un'abilità la usi; toccando la minimappa apri la mappa. In rete, le richieste di teletrasporto e gli inviti nei gruppi compaiono qui con Accetta e Rifiuta |
 
 Nei menu: D-pad su/giù per scegliere, A per confermare, B per tornare indietro, L/R per scorrere
 più velocemente, sinistra/destra per cambiare volumi, zoom e puntate. Le righe si possono anche toccare
@@ -130,6 +130,14 @@ Il port ne ha una versione nativa che usa gli stessi messaggi (`{t:'x', pl, e, d
 
 I comandi si possono anche scrivere in chat. Casa, Discoteca e Mercatino hanno finestre e mappe proprie del
 browser: dalla 3DS restano i loro comandi in chat.
+
+**Plugin nuovi e aggiornati.** Il port funziona anche con plugin che non conosce:
+- i comandi della pagina «Funzioni del server» arrivano da `/aiuto`, quindi un plugin nuovo compare lì da solo;
+- c'è un protocollo di eventi generici (`banner`, `avviso`, `chat`, `suono`, `domanda`, `riquadro`, `punto`,
+  `menu`, `chiudi`) che la 3DS mostra da qualunque plugin;
+- un evento nuovo di un plugin conosciuto passa da quel protocollo.
+
+Chi scrive plugin trova tutto in [PLUGIN.md](PLUGIN.md).
 
 Provato sul server ufficiale (nell'emulatore Azahar): collegamento `wss://` attraverso Cloudflare, un giocatore dal
 browser visto in città con il suo equipaggiamento, chat, annunci dei plugin (boss del mondo, caccia al tesoro,

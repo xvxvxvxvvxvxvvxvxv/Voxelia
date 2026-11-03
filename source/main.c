@@ -38,7 +38,9 @@ static void runKeyboard(void) {
 	int max = kbMode == 0 ? 14 : kbMode == 1 ? 120 : kbMode == 2 ? 16 : 60;
 	swkbdInit(&sw, SWKBD_TYPE_NORMAL, 2, max);
 	swkbdSetHintText(&sw, kbMode == 0 ? "Il tuo nome da eroe" : kbMode == 1 ? "Indirizzo del server" : kbMode == 2 ? "Codice stanza (lettere e numeri)" : "Messaggio per la stanza");
-	swkbdSetInitialText(&sw, kbMode == 0 ? P.name : kbMode == 1 ? NETC.url : kbMode == 2 ? NETC.code : "");
+	extern char kbInit[64];
+	swkbdSetInitialText(&sw, kbMode == 0 ? P.name : kbMode == 1 ? NETC.url : kbMode == 2 ? NETC.code : kbInit);
+	kbInit[0] = 0;
 	swkbdSetValidation(&sw, SWKBD_NOTEMPTY_NOTBLANK, 0, 0);
 	SwkbdButton b = swkbdInputText(&sw, buf, max + 1);
 	if (b == SWKBD_BUTTON_CONFIRM) uiAfterKeyboard(buf);

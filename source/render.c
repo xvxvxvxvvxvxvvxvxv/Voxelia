@@ -151,6 +151,36 @@ float txtW(const char *s, float sc) {
 	return w * sc;
 }
 float lineH(float sc) { if (!cwOk) cwInit(); return LF * sc; }
+// testo più largo di maxW: invece di tagliarlo, le lettere scorrono in avanti. Ferma all'inizio per MQ_A secondi,
+// poi un carattere ogni MQ_S secondi fino a mostrare la fine, ferma MQ_B secondi e ricomincia.
+#define MQ_A 1.2f
+#define MQ_S .11f
+#define MQ_B 1.6f
+static int mqSteps(const char *s, float sc, float maxW) {
+	int k = 0; const char *p = s; u32 cp;
+	while (*p && txtW(p, sc) > maxW) { p = u8next(p, &cp); k++; }
+	return k;
+}
+float marqueeTime(const char *s, float sc, float maxW) {
+	int k = mqSteps(s, sc, maxW);
+	return k ? MQ_A + k * MQ_S + MQ_B : 0;
+}
+const char *marqueeStr(const char *s, float sc, float maxW, float t, char *buf, int n) {
+	if (txtW(s, sc) <= maxW) { snprintf(buf, n, "%s", s); return buf; }
+	int kmax = mqSteps(s, sc, maxW);
+	float u = fmodf(fmaxf(0, t), MQ_A + kmax * MQ_S + MQ_B);
+	int k = u < MQ_A ? 0 : u >= MQ_A + kmax * MQ_S ? kmax : (int)((u - MQ_A) / MQ_S);
+	const char *q = s; u32 cp;
+	for (int i = 0; i < k && *q; i++) q = u8next(q, &cp);
+	snprintf(buf, n, "%s", q);
+	// la coda che non entra si toglie (non c'è nei primi passi)
+	int l = strlen(buf);
+	while (l > 1 && txtW(buf, sc) > maxW) { l--; while (l > 0 && (buf[l] & 0xC0) == 0x80) l--; buf[l] = 0; }
+	return buf;
+}
+void txtMarquee(float x, float y, float sc, u32 col, const char *s, float maxW, float t) {
+	char b[256]; txt(x, y, sc, col, marqueeStr(s, sc, maxW, t, b, sizeof b));
+}
 // testo a capo sulle parole; restituisce l'altezza occupata. y<-1000 misura soltanto. Con maxH si ferma
 // all'ultima riga che ci sta e la chiude con «…».
 static float wrapMax = 0;

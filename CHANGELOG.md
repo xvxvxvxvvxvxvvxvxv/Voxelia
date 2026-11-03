@@ -3,6 +3,35 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.3 · contenuti di Voxelia 7.50
+
+**Plugin più stabili, anche quelli futuri.**
+- **Eventi generici.** C'è un piccolo protocollo che la 3DS capisce da qualunque plugin, anche se non lo conosce:
+  `banner`, `avviso`, `chat`, `suono`, `domanda` (con due pulsanti sul touch), `riquadro` (in alto a destra, con
+  una barra), `punto` (scintille e scritta su una casella), `menu` (un elenco di scelte o di comandi) e `chiudi`.
+  È spiegato in [PLUGIN.md](PLUGIN.md), con un esempio.
+- **Aggiornamenti dei plugin conosciuti.** Se un plugin aggiunge un evento che il port non conosce, l'evento
+  passa dal protocollo generico. Gli eventi interni sconosciuti si ignorano senza errori; i numeri scritti come
+  testo vengono letti lo stesso.
+- **La 3DS si presenta ai plugin.** Il plugin può accorgersene con il messaggio `client` (tipo, versione, eventi
+  capiti) e scegliere cosa mandare.
+- **Comandi letti dal server.** All'avvio la 3DS chiede `/aiuto` senza mostrarlo e la pagina «Funzioni del
+  server» elenca i comandi che il server ha davvero, con la loro descrizione. Un plugin nuovo compare lì da solo.
+  A usa un comando; Y lo apre nella tastiera, per aggiungere un nome. C'è anche «Scrivi un comando».
+- **Più avvisi insieme.** Richieste di teletrasporto, inviti e domande dei plugin si mettono in coda invece di
+  sostituirsi.
+- **Limite dei messaggi.** La 3DS resta sotto il limite di messaggi ai plugin che il server accetta.
+
+**Testi lunghi e chat.**
+- **Testi che scorrono.** I messaggi lunghi non vengono più tagliati con «…»: le lettere scorrono in avanti fino
+  alla fine, poi il testo ricomincia. Vale per:
+  - le righe della chat sullo schermo superiore, che restano visibili finché non sono scorse tutte;
+  - i fumetti sopra gli altri eroi;
+  - il testo sotto i titoli grandi e i riquadri dei plugin;
+  - la riga scelta nei menu.
+- **Registro della chat.** Il pulsante **Chat** sul touch apre il registro della chat, con i messaggi più recenti
+  in alto e «Scrivi in chat» come prima riga (anche con Y). Il registro si apre anche dal menu di pausa.
+
 ## 1.2 · contenuti di Voxelia 7.50
 
 **I plugin del server per la modalità storia.** Nel browser ogni plugin aggiunge al gioco un suo pezzo di codice

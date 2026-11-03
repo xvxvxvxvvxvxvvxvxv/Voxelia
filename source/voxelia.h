@@ -16,7 +16,7 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.2"            // versione del port per 3DS
+#define PORT_VER "1.3"            // versione del port per 3DS
 #define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
 #define GAME_VER "3DS " PORT_VER
 #define MAXN 96
@@ -281,6 +281,9 @@ float txtW(const char *s, float sc);
 float txtWrap(float x, float y, float w, float sc, u32 col, const char *s);
 float lineH(float sc);
 float txtWrapMax(float x, float y, float w, float sc, u32 col, const char *s, float maxH);
+float marqueeTime(const char *s, float sc, float maxW);
+const char *marqueeStr(const char *s, float sc, float maxW, float t, char *buf, int n);
+void txtMarquee(float x, float y, float sc, u32 col, const char *s, float maxW, float t);
 void rect(float x, float y, float w, float h, u32 c);
 u32 RGBA(u32 rgb, u8 a);
 
@@ -410,7 +413,9 @@ void plDrawTop(void);
 void plBossHurt(Ent *e, int d, bool cr);
 bool plMate(const char *id);
 bool plHidePeer(const Peer *o);
-bool plCard(const char **ti, const char **tx);
+bool plCard(const char **ti, const char **tx, const char **si, const char **no);
+bool plPanelAlt(int arg);
+bool plChatFilter(const char *n, const char *s, bool adm);
 void plCardAnswer(bool yes);
 void plBuildPanel(void);
 int plPanelAct(int arg);

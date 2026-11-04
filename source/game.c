@@ -1105,7 +1105,7 @@ void gameUpdate(float dt) {
 		bossT = .5f;
 		bool b = false;
 		for (int i = 0; i < NENT; i++) { Ent *e = &ents[i]; if (e->k == K_EN && e->boss && e->al && dist(e, P.px, P.py) < 14) b = true; }
-		music(b ? MUS_BOSS : ZMUS);
+		music(b ? MUS_BOSS : zoneMusic(ZMUS));   // di notte in città il notturno, come nel browser
 		npcMarks();
 	}
 	if ((saveT -= dt) <= 0) { saveT = 30; saveGame(); }

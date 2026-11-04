@@ -1,149 +1,222 @@
-// Voxelia DS - audio sui canali PSG del DS (6 onde quadre e 2 di rumore), con la stessa musica procedurale e gli
-// stessi suoni del port 3DS: stessi brani, scale, accordi, melodia seminata, basso, arpeggi, pad e batteria.
-// Come il sintetizzatore del 3DS (e le rampe Web Audio del browser), ogni nota ha un attacco e un decadimento
-// esponenziale: qui il volume del canale si aggiorna a ogni fotogramma, e la cassa scende di frequenza.
-// Nota: il PSG del DS genera onde di 8 passi, quindi per una nota di frequenza F il timer va impostato a 8*F.
+// Voxelia DS - audio: le musiche e gli effetti del gioco originale sui 16 canali del DS.
+// Il sequencer (musiche scritte e procedurali, come nel browser) è music.c, comune al port 3DS. Qui ogni nota
+// diventa un canale che suona in loop una tabella d'onda (seno, triangolo, dente di sega, quadra): il filtro
+// passa-basso degli strumenti si imita scegliendo una tabella con meno armoniche, il secondo oscillatore usa un
+// altro canale quando ce n'è uno libero. Inviluppi (rampe lineari ed esponenziali, tenuta), vibrato e discese di
+// frequenza si aggiornano a ogni fotogramma; la batteria usa rumore campionato. Manca solo il riverbero.
 #include "voxelia.h"
 
 float VOL_MUS = .5f, VOL_SFX = .7f;
 bool MUS_ON = true;
 static bool auOk = false;
+static double now = 0;
 
-// livello: ampiezza del sintetizzatore 3DS (0..1) -> volume del canale PSG (0..127)
-#define AMP 520.f
-typedef struct { float at, dur, freq, vol, att, sweep; u8 wave, noise, mus; } Note;
-#define MAXN_Q 64
-static Note Q[MAXN_Q]; static int NQ = 0;
-typedef struct { int id; float t, end, g, peak, att, k, f, sweepK; u8 mus, noise; } Live;
-static Live LV[16]; static int NLV = 0;
-static float now = 0;
-
-static float mtof(float m) { return 440.f * powf(2.f, (m - 69) / 12.f); }
-static void qAdd(float delay, float dur, float freq, int wave, float vol, float att, bool mus, bool noise, float sweep) {
-	if (!auOk || NQ >= MAXN_Q) return;
-	Q[NQ++] = (Note){now + delay, dur, freq, vol, att, sweep, (u8)wave, noise, mus};
-}
-// nota come vNote() del 3DS: attacco lineare, poi decadimento fino a 0,0001
-static void vNote(float freq, float delay, float dur, int wave, float vol, float att, bool mus) { qAdd(delay, dur, freq, wave, vol, att, mus, 0, 1); }
-// cassa come vKick() del 3DS: sinusoide da 130 a 40 Hz in 0,12 s, decadimento in 0,2 s
-static void vKick(float delay, float vol) { qAdd(delay, .2f, 130, W_SINE, vol, 0, 1, 0, 40.f / 130.f); }
-// rumore come vNoise() del 3DS (piatti e rullante)
-static void vNoise(float delay, float dur, float vol, float freq, bool mus) { qAdd(delay, dur, freq, W_NOISE, vol, 0, mus, 1, 1); }
-
-/* ---------------- musica (la stessa del 3DS) ---------------- */
-static const s8 SC_MAJ[7] = {0, 2, 4, 5, 7, 9, 11}, SC_MIN[7] = {0, 2, 3, 5, 7, 8, 10}, SC_DOR[7] = {0, 2, 3, 5, 7, 9, 10}, SC_PHR[7] = {0, 1, 4, 5, 7, 8, 10}, SC_HM[7] = {0, 2, 3, 5, 7, 8, 11};
-typedef struct { const char *name; int bpm, root; const s8 *sc; s8 pr[8]; int npr, ld; float dn; u8 arp, dr, pad, spb, waltz; s8 bs[8]; int nbs; } Track;
-static const Track TRK[MUS_COUNT] = {
-	{"menu", 88, 50, SC_MAJ, {0, 5, 3, 4}, 4, W_SQUARE, .5f, 1, 0, 1, 16, 0, {0, 8}, 2},
-	{"town", 100, 53, SC_MAJ, {0, 3, 4, 0, 5, 3, 1, 4}, 8, W_TRIANGLE, .6f, 0, 1, 0, 16, 0, {0, 6, 8, 12}, 4},
-	{"forest", 104, 50, SC_DOR, {0, 6, 3, 0}, 4, W_TRIANGLE, .55f, 1, 1, 0, 16, 0, {0, 8}, 2},
-	{"desert", 94, 52, SC_PHR, {0, 1, 0, 6}, 4, W_SQUARE, .45f, 0, 1, 0, 16, 0, {0, 3, 8, 11}, 4},
-	{"peaks", 72, 49, SC_MIN, {0, 5, 2, 6}, 4, W_SINE, .35f, 1, 0, 1, 16, 0, {0, 8}, 2},
-	{"inter", 126, 55, SC_MAJ, {0, 4, 5, 3}, 4, W_TRIANGLE, .6f, 0, 0, 0, 12, 1, {0}, 1},
-	{"dungeon", 80, 45, SC_MIN, {0, 0, 5, 4}, 4, W_TRIANGLE, .28f, 0, 2, 1, 16, 0, {0, 8}, 2},
-	{"boss", 150, 45, SC_HM, {0, 1, 0, 4}, 4, W_SAW, .66f, 0, 3, 0, 16, 0, {0, 2, 4, 6, 8, 10, 12, 14}, 8},
-	{"arena", 136, 47, SC_HM, {0, 5, 3, 4}, 4, W_SQUARE, .62f, 0, 3, 0, 16, 0, {0, 3, 6, 8, 11, 14}, 6},
-};
-int musicFor(const char *m) {
-	if (!m || !*m) return MUS_TOWN;
-	static const char *K[] = {"menu", "town", "forest", "desert", "peaks", "inter", "dungeon", "boss", "arena"};
-	for (int i = 0; i < MUS_COUNT; i++) if (!strcmp(K[i], m)) return i;
-	if (strstr(m, "tana") || strstr(m, "cripta") || strstr(m, "piramide") || strstr(m, "cristallo") || strstr(m, "fucina") || strstr(m, "abisso") || strstr(m, "cittadella") || strstr(m, "tempio")) return MUS_DUNGEON;
-	if (strstr(m, "giungla") || strstr(m, "campi") || strstr(m, "nord")) return MUS_FOREST;
-	if (strstr(m, "rovine") || strstr(m, "ceneri")) return MUS_PEAKS;
-	if (strstr(m, "porto") || strstr(m, "mare")) return MUS_DESERT;
-	return MUS_INTER;
-}
-static int curTr = -1, wantTr = -1, st = 0, bar = 0;
-static float nextStep = 0;
-static u32 hsS(const char *s) { u32 h = 2166136261u; for (; *s; s++) h = (h ^ (u8)*s) * 16777619u; return h; }
-static float mb(u32 *a) {
-	*a += 0x6D2B79F5u; u32 t = *a;
-	t = (t ^ (t >> 15)) * (1u | t);
-	t = (t + ((t ^ (t >> 7)) * (61u | t))) ^ t;
-	return (float)((t ^ (t >> 14)) >> 8) / 16777216.f;
-}
-static int midN(const Track *T, int k) { int m = ((k % 7) + 7) % 7; return T->root + T->sc[m] + 12 * (int)floorf(k / 7.f); }
-// un passo da 1/16, identico a mstep() del port 3DS
-static void mstep(const Track *T, int s, int b, float dt) {
-	int spb = T->spb, deg = T->pr[b % T->npr];
-#define CN(i) midN(T, deg + (i) * 2)
-	if (T->pad && s == 0) for (int i = 0; i < 3; i++) vNote(mtof(CN(i) + 12), 0, dt * spb * .98f, W_SINE, .018f, .25f, 1);
-	for (int i = 0; i < T->nbs; i++) if (T->bs[i] == s) vNote(mtof(CN(0) - 12), 0, dt * (spb == 12 ? 4 : 3), W_TRIANGLE, .09f, .01f, 1);
-	if (T->waltz && (s == 4 || s == 8)) for (int i = 0; i < 3; i++) vNote(mtof(CN(i)), 0, dt * 2, W_TRIANGLE, .022f, .01f, 1);
-	if (T->arp && s % 2 == 0) vNote(mtof(CN((s >> 1) % 3) + 24), 0, dt * 1.6f, W_TRIANGLE, .016f, .01f, 1);
-	if (s % 2 == 0) {
-		u32 r = hsS(T->name) + (b % 4) * 977 + ((b >> 2) & 1) * 7919 + s * 131;
-		float a = mb(&r), c = mb(&r), e = mb(&r);
-		if (a < T->dn && !(b % 8 == 7 && s >= spb / 2)) {
-			int k = s % 4 == 0 ? deg + 2 * (int)floorf(c * 3) : deg + (int)floorf(c * 7) - 1;
-			vNote(mtof(midN(T, k) + 12), 0, dt * (2 + (int)floorf(e * 3)), T->ld, (T->ld == W_SQUARE || T->ld == W_SAW) ? .02f : .045f, .01f, 1);
+/* ---------------- tabelle d'onda (8 bit, nella RAM principale, viste dall'ARM7) ---------------- */
+#define NH 9
+static const u8 HARM[NH] = {1, 2, 3, 4, 6, 8, 12, 16, 24};
+static s8 T64[4][NH][64] __attribute__((aligned(32)));   // [onda][armoniche]
+static s8 T16[4][NH][16] __attribute__((aligned(32)));
+static s8 NOISE[8192] __attribute__((aligned(32)));
+static void tabMake(s8 *t, int L, int w, int h) {
+	float b[64], mx = 0;
+	for (int i = 0; i < L; i++) {
+		float p = (float)i / L, v = 0;
+		if (w == W_SINE) v = sinf(2 * PI_F * p);
+		else if (w == W_TRIANGLE) v = p < .5f ? 4 * p - 1 : 3 - 4 * p;
+		else for (int k = 1; k <= h && k < L / 2; k++) {
+			if (w == W_SAW) v += sinf(2 * PI_F * k * p) / k * (k & 1 ? 1 : -1);
+			else if (k & 1) v += sinf(2 * PI_F * k * p) / k;
 		}
+		b[i] = v; if (fabsf(v) > mx) mx = fabsf(v);
 	}
-	if (T->dr == 1) { if (s == 0 || s == 8) vKick(0, .16f); if (s % 4 == 2) vNoise(0, .03f, .03f, 8000, 1); }
-	else if (T->dr == 2) { if (s == 0) vKick(0, .2f); if (s == 10 && b % 2) vKick(0, .12f); if (s == 6) vNoise(0, .08f, .025f, 3000, 1); }
-	else if (T->dr == 3) { if (s == 0 || s == 8 || s == 10) vKick(0, .24f); if (s == 4 || s == 12) vNoise(0, .12f, .09f, 1800, 1); if (s % 2 == 0) vNoise(0, .03f, .035f, 8000, 1); }
+	for (int i = 0; i < L; i++) t[i] = (s8)lroundf(b[i] / (mx > 0 ? mx : 1) * 120);
 }
-static void killMusic(void) {
-	for (int i = 0; i < NLV;) { if (LV[i].mus) { soundKill(LV[i].id); LV[i] = LV[--NLV]; } else i++; }
-	for (int i = 0; i < NQ;) { if (Q[i].mus) Q[i] = Q[--NQ]; else i++; }
+static int widx(int w) { return w == W_SQUARE ? 0 : w == W_TRIANGLE ? 1 : w == W_SAW ? 2 : 3; }
+static const s8 *table(int w, float f, float lp, int *len) {
+	int h = NH - 1;
+	if (w == W_SAW || w == W_SQUARE) { int want = lp > 0 ? (int)(lp / f) : 24; for (h = 0; h < NH - 1 && HARM[h + 1] <= want; h++); }
+	int wi = widx(w);
+	if (f * 64 < 65000) { *len = 64; return T64[wi][h]; }
+	*len = 16; return T16[wi][h];
 }
-void music(int track) {
-	VOL_MUS = SET.mu; VOL_SFX = SET.sf; MUS_ON = SET.muOn;
-	if (track != wantTr) { wantTr = track; killMusic(); curTr = track; st = 0; bar = 0; nextStep = now + .3f; }
-}
-void tone(float f, float d, int wave, float v) { qAdd(0, d, f, wave, v, .002f, 0, wave == W_NOISE, 1); }
-void jingle(const int *ns, int n, float sp, int wave) { for (int i = 0; i < n; i++) if (ns[i]) vNote(mtof(ns[i]), i * sp, sp * 1.8f, wave, .05f, .01f, 0); }
-void whoosh(void) { vNoise(0, .35f, .08f, 900, 0); }
 
-void auInit(void) { soundEnable(); auOk = true; }
-void auExit(void) { for (int i = 0; i < NLV; i++) soundKill(LV[i].id); NLV = 0; auOk = false; }
+/* ---------------- voci ---------------- */
+enum { SEG_LIN, SEG_EXP, SEG_TGT };
+typedef struct { float n, to, tau; u8 mode; } Seg;
+typedef struct {
+	u8 on, mus, noise, playing;
+	int id, id2; double t0; float t, len;
+	const s8 *tab; int L; float f, f2, g2; s8 w2;
+	float sweepK, sweepT, vibD;
+	float rate, rsw[3], rswT[2];          // rumore: velocità (al posto del filtro) e sua spazzata
+	float g, k; int seg, nseg; float segT; Seg S[4];
+} Voice;
+#define MAXV 40
+static Voice V[MAXV];
+static Voice *vNew(double t0, bool mus, float len) {
+	Voice *v = NULL;
+	for (int i = 0; i < MAXV; i++) if (!V[i].on) { v = &V[i]; break; }
+	if (!v) return NULL;
+	memset(v, 0, sizeof *v);
+	v->on = 1; v->mus = mus; v->t0 = t0 < now ? now : t0; v->len = len; v->id = v->id2 = -1; v->sweepK = 1;
+	return v;
+}
+static void segAdd(Voice *v, float sec, float to, u8 mode) { if (v->nseg < 4) v->S[v->nseg++] = (Seg){sec < .001f ? .001f : sec, to, 0, mode}; }
+static void segTgt(Voice *v, float sec, float to, float tau) { if (v->nseg < 4) v->S[v->nseg++] = (Seg){sec < .001f ? .001f : sec, to, tau, SEG_TGT}; }
+static inline float mtof(float m) { return 440.f * powf(2.f, (m - 69) / 12.f); }
 
-// onde: il PSG ha solo onde quadre; le forme morbide (seno, triangolo) usano la quadra più piena e più piano
-static DutyCycle dutyOf(int w) { return w == W_SAW ? DutyCycle_25 : DutyCycle_50; }
-static float waveGain(int w) { return w == W_SINE ? .55f : w == W_TRIANGLE ? .7f : 1; }
-static void startNote(Note *n) {
-	float mv = n->mus ? (MUS_ON ? VOL_MUS : 0) : VOL_SFX;
-	float peak = n->vol * mv * waveGain(n->wave) * AMP;
-	if (peak < .5f) return;
-	if (peak > 127) peak = 127;
-	int id;
-	float f = n->freq;
-	if (n->noise) id = soundPlayNoise((u16)clampi((int)(f * 4), 200, 65000), n->att > .003f ? 1 : (u8)peak, 64);   // rumore: timer più alto = fruscio più acuto
-	else id = soundPlayPSG(dutyOf(n->wave), (u16)clampi((int)(f * 8), 64, 65000), n->att > .003f ? 1 : (u8)peak, 64);
-	if (id < 0) return;
-	if (NLV >= 16) { soundKill(id); return; }
-	// decadimento come sul 3DS: dal picco a 0,0001 (in ampiezza) nella durata della nota
-	float dec = n->dur - n->att; if (dec < .02f) dec = .02f;
-	float k = powf(.0001f / (n->vol > .0002f ? n->vol : .0002f), 1.f / (dec * 60));
-	float sk = n->sweep != 1 ? powf(n->sweep, 1.f / (.12f * 60)) : 1;
-	LV[NLV++] = (Live){id, 0, n->dur + .05f, n->att > .003f ? 0 : peak, peak, n->att, k, f, sk, n->mus, n->noise};
+// ins() del browser
+void synIns(double t0, float midi, float d, int k, float v, bool rv) {
+	(void)rv;
+	const InsDef *I = musIns(k);
+	float f = mtof(midi), a = I->a > 0 ? I->a : .01f, end;
+	bool pl = I->s == 0;
+	if (pl) end = fmaxf(a + .03f, fminf(I->dec > 0 ? I->dec : .4f, d * 2.5f));
+	else end = fmaxf(a + .01f, d) + (I->r > 0 ? I->r : .08f);
+	Voice *x = vNew(t0, 1, end + .02f); if (!x) return;
+	int w = I->w < 0 ? W_TRIANGLE : I->w;
+	x->f = f; x->tab = table(w, f, I->lp, &x->L);
+	if (I->w2 >= 0 && I->v2 >= .2f) { x->f2 = f * (I->m2 > 0 ? I->m2 : 1) * powf(2.f, I->det / 1200.f); x->g2 = I->v2; x->w2 = I->w2; }
+	if (I->vib && d > .3f) x->vibD = .006f;
+	segAdd(x, a, v, SEG_LIN);
+	if (pl) segAdd(x, end - a, .0001f, SEG_EXP);
+	else { float sus = fmaxf(a + .01f, d); segTgt(x, sus - a, v * I->s, .09f); segAdd(x, end - sus, .0001f, SEG_EXP); }
+}
+// note() del browser (brani procedurali)
+void synNote(double t0, float midi, float d, int wave, float v, float att) {
+	if (att < .002f) att = .002f;
+	float dur = fmaxf(d, att + .02f);
+	Voice *x = vNew(t0, 1, dur + .05f); if (!x) return;
+	x->f = mtof(midi); x->tab = table(wave, x->f, 0, &x->L);
+	segAdd(x, att, v, SEG_LIN); segAdd(x, dur - att, .0001f, SEG_EXP);
+}
+static Voice *kick(double t0, float v, float f0, float f1, float sw, float dec, bool mus, int wave) {
+	Voice *x = vNew(t0, mus, dec + .03f); if (!x) return NULL;
+	x->f = f0; x->tab = table(wave, f0, 0, &x->L); x->sweepT = sw; x->sweepK = logf(f1 / f0) / sw;
+	x->g = v; segAdd(x, dec, .0001f, SEG_EXP);
+	return x;
+}
+// rumore filtrato: la velocità del campione fa da filtro (più veloce = più acuto)
+static float nzRate(float f, char type) { return type == 'h' ? fminf(32000, f * 3.5f) : type == 'l' ? f * 2.5f : f * 3.f; }
+static Voice *nz(double t0, float d, float v, float f, char type, bool mus) {
+	Voice *x = vNew(t0, mus, d + .02f); if (!x) return NULL;
+	x->noise = 1; x->rate = nzRate(f, type); x->g = v * (type == 'h' ? 1.4f : 1.f);
+	segAdd(x, d, .0001f, SEG_EXP);
+	return x;
+}
+// drm() del browser; K, H, B, S sono la batteria dei brani procedurali
+void synDrum(double t0, char c, float v) {
+	switch (c) {
+	case 'x': case 'k': kick(t0, .21f * v, 130, 40, .12f, .2f, 1, W_SINE); break;
+	case 'K': kick(t0, v, 130, 40, .12f, .2f, 1, W_SINE); break;
+	case 's': nz(t0, .13f, .1f * v, 1900, 'b', 1); kick(t0, .07f * v, 200, 120, .08f, .1f, 1, W_TRIANGLE); break;
+	case 'h': nz(t0, .028f, .03f * v, 8500, 'h', 1); break;
+	case 'o': nz(t0, .16f, .026f * v, 7000, 'h', 1); break;
+	case 'r': nz(t0, .05f, .032f * v, 5500, 'b', 1); break;
+	case 't': kick(t0, .12f * v, 150, 80, .18f, .22f, 1, W_SINE); break;
+	case 'T': kick(t0, .2f * v, 82, 60, .6f, .8f, 1, W_SINE); nz(t0, .08f, .04f * v, 400, 'l', 1); break;
+	case 'c': for (int i = 0; i < 3; i++) nz(t0 + i * .011, .05f, .05f * v, 1500, 'b', 1); break;
+	case 'a': { static const float F[3][2] = {{1180, .05f}, {1760, .034f}, {2650, .02f}};
+		for (int i = 0; i < 3; i++) kick(t0, F[i][1] * v, F[i][0], F[i][0], .35f, .35f, 1, W_SINE);
+		nz(t0, .02f, .05f * v, 6000, 'h', 1); break; }
+	case 'w': kick(t0, .09f * v, 1250, 1250, .07f, .07f, 1, W_TRIANGLE); break;
+	case 'n': { Voice *x = nz(t0, .45f, 0, 900, 'b', 1); if (!x) break; x->nseg = 0; x->g = 0;
+		segAdd(x, .05f, .05f * v, SEG_LIN); segAdd(x, .4f, .0001f, SEG_LIN);
+		x->rsw[0] = nzRate(900, 'b'); x->rsw[1] = nzRate(2200, 'b'); x->rsw[2] = nzRate(900, 'b'); x->rswT[0] = x->rswT[1] = .22f; break; }
+	case 'W': { Voice *x = nz(t0, 2.6f, 0, 500, 'l', 1); if (!x) break; x->nseg = 0; x->g = 0;
+		segAdd(x, 1.1f, .045f * v, SEG_LIN); segAdd(x, 1.5f, .0001f, SEG_LIN);
+		x->rsw[0] = nzRate(500, 'l'); x->rsw[1] = nzRate(900, 'l'); x->rsw[2] = nzRate(400, 'l'); x->rswT[0] = x->rswT[1] = 1.2f; break; }
+	case 'H': nz(t0, .03f, v, 8000, 'h', 1); break;
+	case 'B': nz(t0, .08f, v, 3000, 'b', 1); break;
+	case 'S': nz(t0, .12f, v, 1800, 'b', 1); break;
+	}
+}
+static void vKill(Voice *v) { if (v->id >= 0) soundKill(v->id); if (v->id2 >= 0) soundKill(v->id2); v->on = 0; }
+void synStopMusic(void) { for (int i = 0; i < MAXV; i++) if (V[i].on && V[i].mus) vKill(&V[i]); }
+
+/* ---------------- effetti sonori del gioco ---------------- */
+void tone(float f, float d, int wave, float v) {
+	if (wave == W_NOISE) { nz(now, d, v, 3000, 'b', 0); return; }
+	Voice *x = vNew(now, 0, d + .02f); if (!x) return;
+	x->f = f; x->tab = table(wave, f, 0, &x->L); x->g = v; segAdd(x, d, .0001f, SEG_EXP);
+}
+void jingle(const int *ns, int n, float sp, int wave) {
+	for (int i = 0; i < n; i++) if (ns[i]) {
+		Voice *x = vNew(now + i * sp, 0, sp * 1.8f + .05f); if (!x) return;
+		x->f = mtof(ns[i]); x->tab = table(wave, x->f, 0, &x->L);
+		segAdd(x, .01f, .05f, SEG_LIN); segAdd(x, sp * 1.8f - .01f, .0001f, SEG_EXP);
+	}
+}
+void whoosh(void) { nz(now, .35f, .08f, 900, 'b', 0); }
+void music(int track) { musicSet(track); }
+
+void auInit(void) {
+	soundEnable();
+	for (int w = 0; w < 4; w++) for (int h = 0; h < NH; h++) {
+		int wv = w == 0 ? W_SQUARE : w == 1 ? W_TRIANGLE : w == 2 ? W_SAW : W_SINE;
+		tabMake(T64[w][h], 64, wv, HARM[h]); tabMake(T16[w][h], 16, wv, HARM[h] < 7 ? HARM[h] : 7);
+	}
+	u32 r = 0x12345678; for (int i = 0; i < 8192; i++) { r ^= r << 13; r ^= r >> 17; r ^= r << 5; NOISE[i] = (s8)(r >> 24); }
+	DC_FlushRange(T64, sizeof T64); DC_FlushRange(T16, sizeof T16); DC_FlushRange(NOISE, sizeof NOISE);
+	musInit(DATADIR "music.json");
+	auOk = true;
+}
+void auExit(void) { for (int i = 0; i < MAXV; i++) if (V[i].on) vKill(&V[i]); auOk = false; }
+
+// volume: ampiezza del Web Audio -> volume del canale a 11 bit (0..2047, con il divisore del DS), così le code
+// delle note piano sfumano senza scalini. Con la musica al 50% un'ampiezza A esce a 4·A del fondo scala.
+#define KVOL 8188.f
+static inline void chVol(int id, int v) { if (id >= 0) soundChSetVolume(id, (unsigned)clampi(v, 0, 2047)); }
+static int startCh(const s8 *tab, int L, float rate, int vol) {
+	int id = soundPlaySample(tab, SoundFormat_8Bit, L, (u16)clampi((int)rate, 64, 65000), 0, 64, true, 0);
+	if (id < 0) {   // tutti i canali occupati: si libera la nota di musica più vecchia
+		Voice *o = NULL; for (int i = 0; i < MAXV; i++) if (V[i].on && V[i].playing && V[i].mus && (!o || V[i].t > o->t)) o = &V[i];
+		if (o) { vKill(o); id = soundPlaySample(tab, SoundFormat_8Bit, L, (u16)clampi((int)rate, 64, 65000), 0, 64, true, 0); }
+	}
+	chVol(id, vol);
+	return id;
 }
 void auTick(float dt) {
 	if (!auOk) return;
 	now += dt;
-	// musica: sedicesimi, come sul 3DS (60 / bpm / 4)
-	if (curTr >= 0 && MUS_ON && VOL_MUS > .01f) {
-		const Track *T = &TRK[curTr];
-		float step = 60.f / T->bpm / 4;
-		while (nextStep <= now) { mstep(T, st, bar, step); nextStep += step; if (++st >= T->spb) { st = 0; bar++; } }
-	} else nextStep = now;
-	// note arrivate
-	for (int i = 0; i < NQ;) {
-		if (Q[i].at > now) { i++; continue; }
-		startNote(&Q[i]);
-		Q[i] = Q[--NQ];
-	}
-	// inviluppo e discesa di frequenza, a ogni fotogramma
-	float fr = dt * 60;
-	for (int i = 0; i < NLV;) {
-		Live *l = &LV[i];
-		l->t += dt;
-		if (l->t >= l->end) { soundKill(l->id); LV[i] = LV[--NLV]; continue; }
-		if (l->t < l->att) l->g = l->peak * (l->t / l->att);
-		else l->g *= powf(l->k, fr);
-		soundSetVolume(l->id, (u8)clampi((int)l->g, 0, 127));
-		if (l->sweepK != 1 && l->t < .12f) { l->f *= powf(l->sweepK, fr); soundSetFreq(l->id, (u16)clampi((int)(l->f * 8), 64, 65000)); }
-		i++;
+	musAdvance(now, dt + .02);
+	float fade = musFade(now), mv = (MUS_ON ? VOL_MUS : 0) * 2 * fade, sv = VOL_SFX * 1.4f;
+	int freeCh = 0; for (int i = 0; i < MAXV; i++) if (V[i].on && V[i].playing) freeCh += 1 + (V[i].id2 >= 0); freeCh = 16 - freeCh;
+	for (int i = 0; i < MAXV; i++) {
+		Voice *v = &V[i];
+		if (!v->on || now < v->t0) continue;
+		float tt = (float)(now - v->t0);
+		float step = tt - v->t; v->t = tt;
+		// inviluppo, passo dopo passo come sul 3DS
+		while (v->seg < v->nseg && step > 0) {
+			Seg *s = &v->S[v->seg];
+			float left = s->n - v->segT, h = step < left ? step : left;
+			if (v->segT == 0 && s->mode == SEG_EXP) { float a = v->g > 1e-5f ? v->g : 1e-5f, b = s->to > 1e-5f ? s->to : 1e-5f; v->k = logf(b / a) / s->n; }
+			if (v->segT == 0 && s->mode == SEG_LIN) v->k = (s->to - v->g) / s->n;
+			if (s->mode == SEG_EXP) v->g *= expf(v->k * h); else if (s->mode == SEG_LIN) v->g += v->k * h; else v->g = s->to + (v->g - s->to) * expf(-h / s->tau);
+			v->segT += h; step -= h;
+			if (v->segT >= s->n - 1e-4f) { if (s->mode != SEG_TGT) v->g = s->to; v->seg++; v->segT = 0; }
+		}
+		if (tt >= v->len) { vKill(v); continue; }
+		float bus = v->mus ? mv : sv;
+		int vol = (int)(v->g * KVOL * bus);
+		// frequenza: discesa (casse) e vibrato
+		float f = v->f;
+		if (v->sweepT > 0) f = v->f * expf(v->sweepK * fminf(tt, v->sweepT));
+		if (v->vibD > 0) f *= 1 + sinf(2 * PI_F * 5.3f * tt) * v->vibD * fminf(1, tt / .3f);
+		float rate = v->noise ? v->rate : f * v->L;
+		if (v->noise && v->rswT[0] > 0) rate = tt < v->rswT[0] ? v->rsw[0] + (v->rsw[1] - v->rsw[0]) * tt / v->rswT[0] : v->rsw[1] + (v->rsw[2] - v->rsw[1]) * fminf(1, (tt - v->rswT[0]) / v->rswT[1]);
+		if (!v->playing) {
+			v->playing = 1;
+			v->id = v->noise ? startCh(NOISE, 8192, rate, vol) : startCh(v->tab, v->L, rate, vol);
+			if (v->id < 0) { v->on = 0; continue; }
+			// secondo oscillatore, se c'è un canale libero (lasciandone qualcuno per gli effetti)
+			if (v->f2 > 0 && freeCh > 4) { int L2; const s8 *t2 = table(v->w2, v->f2, 0, &L2); v->id2 = startCh(t2, L2, v->f2 * L2, (int)(vol * v->g2)); freeCh--; }
+			freeCh--;
+			continue;
+		}
+		chVol(v->id, vol);
+		if (v->sweepT > 0 || v->vibD > 0 || v->rswT[0] > 0) soundSetFreq(v->id, (u16)clampi((int)rate, 64, 65000));
+		if (v->id2 >= 0) chVol(v->id2, (int)(vol * v->g2));
 	}
 }

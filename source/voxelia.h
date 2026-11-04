@@ -14,7 +14,7 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.1"            // versione del port per DS
+#define PORT_VER "1.2"            // versione del port per DS
 #define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
 #define GAME_VER "DS " PORT_VER
 #define DATADIR "nitro:/"
@@ -443,12 +443,23 @@ void auInit(void);
 void auExit(void);
 void music(int track);
 int musicFor(const char *mus);
+// musiche del gioco originale (music.c, da nitro:/music.json) e sintetizzatore (audio.c)
+typedef struct { s8 w, w2; float m2, v2, det, a, s, dec, lp, r; u8 le, vib; } InsDef;
+void musInit(const char *path);
+void musicSet(int track);
+int zoneMusic(int zmus);
+float musFade(double now);
+void musAdvance(double now, double ahead);
+const InsDef *musIns(int i);
+void synIns(double t0, float midi, float dur, int ins, float vol, bool rv);
+void synNote(double t0, float midi, float dur, int wave, float vol, float att);
+void synDrum(double t0, char c, float v);
+extern int MUS_MENU, MUS_BOSS, MUS_TOWN, MUS_NOTTE;
 void tone(float f, float d, int wave, float v);
 void jingle(const int *ns, int n, float sp, int wave);
 void auTick(float dt);
 void whoosh(void);
 enum { W_SQUARE, W_TRIANGLE, W_SAW, W_SINE, W_NOISE };
-enum { MUS_MENU, MUS_TOWN, MUS_FOREST, MUS_DESERT, MUS_PEAKS, MUS_INTER, MUS_DUNGEON, MUS_BOSS, MUS_ARENA, MUS_COUNT };
 #define JINGLE(sp, wave, ...) do { static const int _j[] = {__VA_ARGS__}; jingle(_j, sizeof(_j)/sizeof(int), sp, wave); } while (0)
 extern float VOL_MUS, VOL_SFX;
 extern bool MUS_ON;

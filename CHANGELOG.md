@@ -3,6 +3,19 @@
 Il port ha una versione sua. In ogni versione c'è anche la versione di Voxelia (il gioco per browser) da cui
 arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.2 · contenuti di Voxelia 7.50
+
+**La musica è quella del gioco per browser.** Prima anche la 1.1 usava il vecchio generatore procedurale, mentre
+il browser suona brani scritti. Ora il DS usa lo stesso sequencer del port 3DS 1.4:
+- **brani scritti** di città, menu, zone, taverne, notte, boss e arena, con melodia, seconda voce, armonia, basso,
+  batteria e accordi come nel browser;
+- **brani procedurali dei dungeon** con il seme e i parametri del browser;
+- **cambio di brano** come nell'originale (notte, boss vicino, dissolvenze).
+
+Il suono non usa più i canali PSG (solo onde quadre): ogni strumento è un'onda campionata (sinusoide, triangolo,
+dente di sega o quadra) suonata alla frequenza giusta, con il secondo oscillatore quando ci sono canali liberi, e
+il volume a 11 bit per code delle note senza scalini. Il basso ha di nuovo il timbro morbido dell'originale.
+
 ## 1.1 · contenuti di Voxelia 7.50
 
 **La musica è di nuovo quella del gioco.**

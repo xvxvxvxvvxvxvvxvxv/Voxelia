@@ -3,6 +3,29 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.4 · contenuti di Voxelia 7.50
+
+**La musica è quella del gioco per browser.** Prima il port generava tutti i brani con il vecchio generatore
+procedurale; il browser invece suona brani scritti. Ora:
+- **Brani scritti.** Città, menu, foresta, deserto, zone, taverne, notte, boss e arena hanno le stesse note del
+  browser: melodia, seconda voce, armonia una terza sotto, basso, batteria e accordi, parte per parte, con le
+  variazioni di strumento e volume di ogni parte.
+- **Strumenti originali.** Due oscillatori, filtro con apertura, vibrato, attacco e rilascio come le rampe Web
+  Audio, batteria con cassa, rullante, piatti e tom, e il riverbero di 2,6 secondi.
+- **Brani procedurali dei dungeon** (cripta, tana, piramide, cristallo, fucina, abisso, cittadella, motel…) con il
+  seme e i parametri del browser, quindi la stessa sequenza.
+- **Cambio di brano** come nell'originale: musica notturna in città e nelle zone vicine, musica del boss quando
+  è vicino, dissolvenze tra un brano e l'altro.
+- Le note vengono estratte da `voxelia.html` con `tools/songs.js` (in `romfs/music.json`), quindi un aggiornamento
+  del gioco si porta sul 3DS rigenerando il file.
+
+**Prestazioni.** Il sintetizzatore gira su un core diverso da quello del gioco (il core 2 sui New 3DS, il core 1
+sui 3DS), quindi la musica non toglie fotogrammi; se quel core non è disponibile, torna sul core del gioco. Usa circa
+il 10% di un core a 268 MHz.
+
+Confronto con il browser (ogni brano registrato dal codice originale con Web Audio e dal sintetizzatore del
+port): somiglianza delle note tra 0,91 e 0,99, volume tra 0,87 e 1,05 di quello originale.
+
 ## 1.3 · contenuti di Voxelia 7.50
 
 **Plugin più stabili, anche quelli futuri.**

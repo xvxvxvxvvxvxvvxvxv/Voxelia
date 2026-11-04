@@ -1,6 +1,6 @@
-# Voxelia DS 1.1 — Il Regno Perduto
+# Voxelia DS 1.2 — Il Regno Perduto
 
-Versione del port: **1.1** (contenuti di Voxelia **7.50**).
+Versione del port: **1.2** (contenuti di Voxelia **7.50**).
 
 Port per **Nintendo DS / DS Lite / DSi** di *Voxelia 7.50 – Il Regno Perduto*. Usa la stessa base del port
 per 3DS (branch `3ds`):
@@ -80,8 +80,10 @@ fotogramma. Il 3DS disegna decine di migliaia di voxel. Quindi:
   - Il tipo di elmo e di scudo non si vede.
 - **Effetti semplificati:** niente 3D stereoscopico, acqua e fiamme ferme, meno particelle.
 - **Niente zoom:** la telecamera è fissa.
-- **Audio:** la stessa musica procedurale del browser e del 3DS (stessi brani, note, tempo, inviluppi e batteria),
-  sui canali PSG del DS. Il DS ha solo onde quadre e rumore, quindi il timbro è più «8 bit».
+- **Audio:** la stessa musica del browser e del 3DS: brani scritti (città, menu, zone, taverne, notte, boss…) e
+  brani procedurali dei dungeon, con le stesse note, parti, tempo e cambi di brano. Il sequencer è quello del 3DS;
+  gli strumenti sono onde campionate (sinusoide, triangolo, dente di sega, quadra) sui 16 canali del DS, con
+  inviluppi e batteria. Rispetto al 3DS il filtro è fisso (non si apre durante la nota) e manca il riverbero.
 - **Prestazioni:** circa 25–40 fotogrammi al secondo, secondo la zona.
 
 Contenuti, missioni, storia, combattimento (catene, colpo caricato, stamina), dungeon con le leve, negozi e plugin
@@ -110,6 +112,7 @@ Codice (`source/`):
 | `render.c` | 3D del DS: caselle in aritmetica intera, luce per casella, blocchi trasparenti davanti all'eroe, sprite |
 | `draw.c` | sprite dei modelli e dell'eroe (con i colori della rarità), forzieri, leve, portali, effetti |
 | `gfx2d.c` | bitmap a 8 bit sui due schermi, testo proporzionale, testo che scorre |
-| `audio.c` | musica e suoni sui canali PSG |
+| `audio.c` | sintetizzatore a onde campionate sui canali del DS |
+| `music.c` | sequencer dei brani del browser (`nitro/music.json`), lo stesso del port 3DS |
 | `net.c` | Wi-Fi, TLS (mbedtls), WebSocket e protocollo di `server.js`, in un thread calico |
 | `game.c`, `world.c`, `data.c`, `ui.c`, `plugins.c`, `json.c` | dal port 3DS, con poche modifiche |

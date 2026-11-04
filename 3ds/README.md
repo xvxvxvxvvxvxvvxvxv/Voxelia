@@ -1,6 +1,6 @@
-# Voxelia 3DS 1.3 — Il Regno Perduto
+# Voxelia 3DS 1.4 — Il Regno Perduto
 
-Versione del port: **1.3** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.4** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
 Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 7.50 – Il Regno Perduto*,
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,
@@ -56,8 +56,13 @@ più velocemente, sinistra/destra per cambiare volumi, zoom e puntate. Le righe 
 - **Due schermi.** In alto c'è solo il mondo; in basso, sullo schermo touch, HUD, minimappa (una texture che si
   aggiorna solo quando cambi zona), finestre di dialogo e negozi.
 - **New 3DS:** attiva la modalità a 804 MHz con la cache L2.
-- **Audio sintetizzato sul DSP.** La musica procedurale dell'originale (scale, giri di accordi, melodia seminata,
-  basso, batteria) e gli effetti sonori sono generati in un thread a parte, senza file audio.
+- **Audio sintetizzato sul DSP.** La musica è quella del browser, suonata nota per nota in un thread a parte,
+  senza file audio:
+  - i **brani scritti** (città, menu, foresta, deserto, taverne, notte, boss, arena…) con melodia, seconda voce,
+    armonia, basso, batteria, accordi e gli strumenti originali (onde, filtro, vibrato, riverbero);
+  - i **brani procedurali** dei dungeon (cripta, tana, fucina, cittadella…), con lo stesso seme del browser;
+  - il cambio di brano come nell'originale: musica notturna in città, musica del boss quando è vicino, dissolvenze.
+  Le note sono estratte da `voxelia.html` con `tools/songs.js` in `romfs/music.json`.
 
 ## Contenuti: sincronizzati con la 7.50
 
@@ -194,7 +199,8 @@ Struttura del codice (`source/`):
 | `world.c` | caricamento delle zone esportate (collisioni, voxel, luci, entità); percorsi |
 | `game.c` | eroe, combattimento, IA dei nemici, bottino, missioni, storia, negozi, salvataggi |
 | `ui.c` | HUD, minimappa, finestre e menu (schermo touch), scritte sullo schermo superiore |
-| `audio.c` | sintetizzatore e musica procedurale su ndsp |
+| `audio.c` | sintetizzatore (strumenti, batteria, riverbero) su ndsp |
+| `music.c` | sequencer dei brani del browser (`music.json`), condiviso con il port DS |
 | `data.c` | tabelle lette da `romfs:/data.json`, oggetti, modelli animati (`models.bin`, `hero.bin`) |
 | `net.c` | multigiocatore: WebSocket/TLS (mbedtls), protocollo di `server.js` |
 | `plugins.c` | plugin del server (modalità storia): boss del mondo, tesoro, teletrasporto, gruppi, emote… |

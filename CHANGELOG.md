@@ -5,6 +5,55 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.2 — Aldoria 3026: oltre il cielo (5 novembre 2026)
+
+Quando finisci le missioni della città, allo spazioporto di Aldoria 3026 ti aspetta la **Stella di Aldric**, la prima nave a salto. Ispirazione: Mass Effect.
+
+- **La nave.** Si sale dalla banchina dello spazioporto, dove la nave è posata e si vede da lontano. Dentro ci sono:
+  - la plancia, con il tavolo olografico della mappa galattica, la pilota Vera Kade e IRIS, l'intelligenza della nave;
+  - l'ingegneria, con il nucleo del motore e la console dei potenziamenti;
+  - l'armeria e l'infermeria, dove ci si cura gratis;
+  - gli alloggi;
+  - il portello, da cui si scende sul pianeta intorno a cui sei in orbita.
+- **La mappa galattica**, a tutto schermo. Ha cinque sistemi: il Sole di Aldoria, la Nebulosa di Vesper, l'Ammasso Kharon, il Velo di Lumen e l'Abisso Esterno.
+  - Ogni salto costa una cella di carburante. Al Sole di Aldoria carburante e sonde si riempiono gratis.
+  - Dentro un sistema i pianeti girano sulle loro orbite: toccane uno per vederlo, scansionarlo o atterrare.
+- **Le sonde**, come in Mass Effect 2. Muovi il mirino sul pianeta: le barre in basso mostrano quanto Iridio, Palladio, Platino ed Etere ci sono sotto. Tocca per lanciare una sonda. Ogni pianeta ha i suoi giacimenti nascosti, che si esauriscono.
+- **Otto pianeti dove atterrare**, ognuno con il suo cielo e i suoi colori:
+  - Selene, la luna delle miniere;
+  - Ardea, il deserto rosso;
+  - Brina, il mondo di ghiaccio;
+  - Kharon Prime, il pianeta-fabbrica;
+  - Ferro-7, l'asteroide;
+  - Brace, la lava;
+  - Lumen, la giungla di funghi luminosi;
+  - l'Ultima Soglia, le rovine dei Costruttori.
+
+  Su ogni pianeta ci sono la navetta per tornare a bordo, un rover a sei ruote da guidare, cristalli di minerali da raccogliere, rovine, accampamenti, Sintetici e fauna aliena. La fauna sono chimere di creature del gioco, con un nome nuovo.
+- **La rotta dei Costruttori**, sei missioni. Elara ti dà le chiavi della nave. Poi:
+  - il Faro di Ardea e il suo Guardiano;
+  - il mondo-macchina di Kharon, dove liberi Ferro, un Sintetico ribelle;
+  - il popolo dei Lumari e il Divoratore;
+  - la Corazza di Kharon e la Barriera, senza cui la nave non regge le tempeste dell'Abisso;
+  - l'Ultima Soglia contro l'Araldo dei Costruttori, dove si scopre chi ha forgiato la Corona.
+
+  Ferro e Thal'en dei Lumari salgono a bordo. Quello che dice l'equipaggio cambia con la storia.
+- **Sei potenziamenti**, da costruire con i minerali:
+  - Serbatoio maggiorato;
+  - Scanner a lungo raggio;
+  - Barriera personale (+25 allo scudo);
+  - Acceleratore (+15% ai danni delle armi del 3026);
+  - Corazza di Kharon;
+  - Barriera della nave.
+- Se cadi su un pianeta, IRIS ti riporta in infermeria. La partita riprende dove l'avevi lasciata: sulla nave o sul pianeta.
+- **In rete** chi ha lo stesso codice stanza si ritrova sulla stessa nave e sugli stessi pianeti, anche in rover.
+- **I veicoli del 3026 ridisegnati.** Prima erano piccoli e bassi, e dall'alto sembravano lastre. Ora sono grandi il 30% in più e alti il doppio, con:
+  - la cabina a vetri, i montanti e il tetto;
+  - il muso, i fari bianchi e le luci rosse;
+  - i levitatori agli angoli;
+  - un dettaglio per ogni modello: l'alettone della Saetta, il cassone del Cargo, la scritta TAXI, la croce della Medi-navetta, le strisce blu della Volante.
+- La prova automatica ora gioca anche lo spazio: la nave, un salto, un atterraggio, il rover e una sonda.
+
 ## 8.1 — Ordine, prove e bilanciamento (5 novembre 2026)
 
 - **Il bilanciamento.** Un robot ha giocato da solo ogni dungeon e ha misurato quanta vita costa ogni nemico. Dove i numeri erano fuori scala, ora sono in linea:

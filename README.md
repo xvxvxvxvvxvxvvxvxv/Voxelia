@@ -4,7 +4,7 @@
 Si gioca da soli o con gli amici. Si esplora la città di Aldoria e il regno intorno e si combatte nei dungeon. In
 Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costruiscono mondi da far giocare agli altri.
 
-**Versione attuale: 8.1** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.2** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.md)
 
@@ -661,7 +661,7 @@ I sorgenti stanno in cartelle, una per parte del gioco:
 | `src/storia/` | La Modalità Storia: Aldoria, i filmati, Thalassa, le scelte e il finale |
 | `src/combattimento/` | Combattimento, boss, dungeon, compagni, elementi e chimere |
 | `src/tomorrow/` | Tomorrow: il mondo senza fine, i borghi, le fazioni e le guerre |
-| `src/aldoria3026/` | Aldoria 3026 e la Cronoporta |
+| `src/aldoria3026/` | Aldoria 3026, la Cronoporta e lo spazio (la nave, la mappa galattica, i pianeti) |
 | `src/corona/` | Il menu della Corona, i frammenti, il Cuore della Corona e l'Album |
 | `src/studio/` | Voxelia Studio (l'editor) e i Mondi della community |
 | `src/grafica/` | La vista 3D, la realtà virtuale e le opzioni grafiche |
@@ -824,6 +824,8 @@ nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della
 | `combattimento/8zzzze_dungeon.js` | Ogni dungeon un'altra dimensione: stanze di forme diverse, stile e arredi propri |
 | `aldoria3026/8zzzzf_zaffiro.js` | Voxelia Dimension tolta dal gioco (lo Zaffiro della Corona passa ad Aldoria 3026) |
 | `aldoria3026/8zzzzg_neo.js` | Aldoria 3026, la città del futuro nello Zaffiro, la Cronoporta e lo sblocco delle modalità |
+| `aldoria3026/8zzzzl_stelle.js` | Oltre il cielo: la Stella di Aldric, la mappa galattica, le sonde, i pianeti, l'equipaggio, i potenziamenti e la rotta dei Costruttori |
+| `aldoria3026/8zzzzm_veicoli.js` | I veicoli del 3026 ridisegnati: più grandi, con cabina a vetri, fari e i dettagli di ogni modello; il rover a sei ruote |
 | `combattimento/8zzzzk_bilancio.js` | Il bilanciamento della 8.1: Campioni per piano, Cripta, Fucina, Tempio di Giada, Tomorrow ai livelli alti |
 | `corona/8zzzzh_corona80.js` | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album |
 | `sistemi/8zzzzh_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |

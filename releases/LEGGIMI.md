@@ -16,10 +16,11 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-109 versioni, dalla più recente.
+110 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
+| [8.2](voxelia_v8.2.html) | 5 novembre 2026 | Aldoria 3026 oltre il cielo: la nave, la mappa galattica, le sonde, otto pianeti e la rotta dei Costruttori; veicoli ridisegnati | 3.172 KB |
 | [8.1](voxelia_v8.1.html) | 5 novembre 2026 | Ordine, prove e bilanciamento: sorgenti in cartelle, prova automatica più grande, dungeon e Cuore in linea | 3.109 KB |
 | [8.0](voxelia_v8.0.html) | 5 novembre 2026 | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album | 3.105 KB |
 | [7.57](voxelia_v7.57.html) | 5 novembre 2026 | Aldoria 3026, la Cronoporta (la Dimension torna) e le modalità che si sbloccano | 3.086 KB |

@@ -17,7 +17,9 @@ const PASSI=[
   ['Storia: il Serraglio',`load('in_serraglio','town');SR55.tab='pot';pn('serr55');cl();`],
   ['Tomorrow',`localStorage.setItem('voxelia_unl55',JSON.stringify({ow:1,neo:1}));toMenu();owGo(1,null);for(let i=0;i<5;i++){try{introEnd()}catch(e){}try{cineSkip()}catch(e){}}`],
   ['Aldoria 3026',`toMenu();mode('neo');neoBegin(null);cl();const c=ents.find(e=>e.k==='car'&&e.ai);P.px=c.px;P.py=c.py;carEnter(c);KEYS.w=1;`],
-  ['La Cronoporta',`KEYS.w=0;carExit();nmFix().m=9;save();neoTime(1);`],
+  ['Lo spazio: la nave e la mappa galattica',`KEYS.w=0;carExit();nmFix().m=NMS.length;save();spGo('neo_nave');gxOpen();gxDraw();GX.v='gal';gxDraw();gxJump(1);gxClose();`],
+  ['Lo spazio: un pianeta, il rover e una sonda',`GX.s=1;gxLand(0);const r=ents.find(e=>e.rov82);P.px=r.px;P.py=r.py;carEnter(r);KEYS.w=1;setTimeout(()=>{KEYS.w=0;carExit()},1500);gxOpen();GX.v='scan';GX.s=1;GX.p=0;gxDraw();gxProbe(560,380);setTimeout(gxClose,900);`],
+  ['La Cronoporta',`spGo('neo_city');KEYS.w=0;carExit();nmFix().m=9;save();neoTime(1);`],
   ['Il Cuore della Corona',`try{cineSkip()}catch(e){}toMenu();for(const k of GEM80.map(g=>g.k))cr80Got(k,1);if(LS.get(SAVEK,null))cuoreEnter()`]];
 // salvataggi: [nome, come si comincia e si salva, come si ricarica, che cosa deve tornare]
 const SALVA=[

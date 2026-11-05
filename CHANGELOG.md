@@ -5,6 +5,56 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.55 — Il Serraglio, gli elementi, le chimere e i dungeon come un'altra dimensione; lo Zaffiro si è spezzato (5 novembre 2026)
+
+- **Il Serraglio di Aldoria, la casa dei compagni.** È un edificio nuovo vicino al lungomare a est, accanto al recinto dei cavalli. Dentro c'è la **Domatrice Selene** con cinque postazioni:
+  - **💪 Potenzia**: Forza, Vita (10 gradini ciascuna) e Rapidità (5). Ogni gradino costa oro ed Essenze dell'elemento del compagno.
+  - **🎨 Modifica**: il nome, l'elemento (con il suo livello, fino a V) e la taglia, da Piccolo a Enorme.
+  - **🧬 Muta forma** (all'Altare della Mutazione): il compagno prende l'aspetto di un'altra specie del tuo bestiario, oppure diventa una **chimera**: tiene il suo corpo e prende la testa (e le ali, se le ha) di un'altra specie. Forza, mossa e livello restano i suoi, e si torna indietro gratis.
+  - **🏡 Pensione** (i recinti): ci lasci fino a 30 compagni in attesa, fuori dalla stalla. Mentre aspettano guariscono e si allenano da soli, piano piano, mai oltre il tuo livello + 2. Li vedi girare nei recinti.
+  - **🥚 Uova chimera** (il nido): un uovo misterioso da cui nasce, in un minuto e mezzo, un compagno che non esiste in natura, con il corpo di una specie, la testa di un'altra e un elemento suo.
+
+  In Tomorrow le stesse cose si fanno dall'Allevamento del borgo.
+- **Gli elementi.** Ci sono nove elementi, gli stessi già presenti nel gioco: 🔥 fuoco, ❄ ghiaccio, ⚡ fulmine, 💧 acqua, ☠ veleno, 🪨 terra, 💨 vento, 🌑 ombra, ✨ luce.
+  - **Ogni mostro ha il suo elemento**, dal nome (Golem di Magma è fuoco, Medusa è acqua…) o dal dungeon.
+  - Gli elementi si battono a vicenda: fuoco > ghiaccio > vento > terra > fulmine > acqua > fuoco. Il veleno batte l'acqua, luce e ombra si battono l'una con l'altra. Contro un elemento debole si fa il 30% in più, contro lo stesso il 30% in meno.
+  - **Le armi** possono avere un elemento, dal livello I al V. Le rare in su a volte ci nascono già; alla Fucina di Borin si infondono con le Essenze. Una parte dei colpi (dal 24% al 48%) fa scattare l'effetto:
+    - il fuoco brucia;
+    - il ghiaccio rallenta e dal III congela;
+    - il fulmine salta sui nemici vicini;
+    - l'acqua bagna e spinge;
+    - il veleno avvelena;
+    - la terra stordisce;
+    - il vento respinge e fa colpire più in fretta;
+    - l'ombra ruba vita;
+    - la luce cura te e il compagno e brucia l'ombra.
+  - Gli elementi si combinano: bagnato + fulmine fa una scossa doppia, gelato + fuoco fa vapore.
+  - **I compagni** hanno l'elemento della loro specie (si cambia al Serraglio) e i loro colpi fanno scattare lo stesso effetto.
+  - Sopra i mostri girano i cubetti degli stati (bruciato, avvelenato, rallentato, bagnato, stordito). Intorno all'arma elementale volano le scintille del suo colore.
+  - **Le Essenze elementali** le lasciano i mostri, ognuno quelle del suo elemento (i boss ne lasciano tante).
+- **Le chimere: armi, armature e compagni nuovi, mescolando i pezzi di quelli che ci sono già.**
+  - **Armi**: la testa di un'arma sull'impugnatura di un'altra, per esempio un'ascia-lancia o un martello-pugnale. Combattono come la loro testa.
+  - **Armature**: un elmo con le punte di una corona, una corazza con gli spallacci di un'altra, uno scudo con le decorazioni di un altro, con un secondo colore.
+  - Nascono a volte come bottino (circa una su undici tra le rare in su). Alla Fucina di Borin c'è anche la **Fusione**: due oggetti dello stesso tipo diventano uno nuovo, con la rarità più alta, un po' più di forza e l'elemento.
+  - In rete chi ti vede vede la tua arma vera. Nell'icona c'è il segno ✦.
+  - **Compagni chimera**: oltre al Serraglio e alle uova, nei dungeon a volte si incontrano **mostri chimera**, più forti e con un alone viola. Se li domi, il compagno resta chimera.
+- **I dungeon, ognuno un'altra dimensione.**
+  - Le stanze hanno forme diverse secondo il dungeon: rotonde, sale a colonne, a croce, ottagoni, anelli sospesi su una fossa di lava, acqua o vuoto con due ponti.
+  - Ogni stanza ha un compito, arredato come il suo bioma:
+    - **Tana dei Goblin**: l'accampamento, la fungaia, il deposito, la tana dei ratti, la vecchia miniera.
+    - **Cripta**: l'ossario, la cappella, i sarcofagi, la biblioteca, le prigioni.
+    - **Piramide**: la sala degli dei, il tesoro, i geroglifici, le trappole, la tomba del sacerdote.
+    - **Caverne di Cristallo**: il giardino di cristallo, il lago gelato, il nido, le statue nel ghiaccio, le guglie.
+    - **Fucina**: la fucina dei demoni, il fiume di magma, le catene, l'ossidiana, l'altare della fiamma.
+    - **Abisso**: il corallo, il relitto, il santuario sommerso, le alghe, le perle.
+    - **Cittadella**: la biblioteca che galleggia, l'osservatorio stellare, il ponte sul nulla, le rune, gli specchi.
+    - **Tempio di Giada**: le statue, il giardino, l'altare, le vasche.
+  - Il pavimento cambia da stanza a stanza: geroglifici, lastre spaccate, ghiaccio lucido, sabbia, basalto con le crepe di lava, un cielo di stelle, specchi.
+  - Sopra le stanze galleggiano pezzi di un'altra dimensione: isole di roccia, schegge, rune che girano, piramidi rovesciate. Gli arredi che brillano fanno luce nel buio.
+  - La stanza del boss è un santuario, con le colonne in cerchio, il varco dimensionale e le rune sul pavimento.
+  - Entrando in una stanza speciale compare il suo nome. La mappa resta la stessa per tutti i giocatori della stanza.
+- **Voxelia Dimension non c'è più.** Sulla Corona, al posto della sua gemma, resta lo **Zaffiro infranto**, in schegge: «in attesa» di quello che nascerà dai suoi frammenti. La modalità è tolta anche dal menu di riserva e dal pannello sviluppatore.
+
 ## 7.54 — I compagni in rete, negli scambi e con le varianti; la Torre fuori dai piedi; l'eroe non cammina più da solo (4 novembre 2026)
 
 - **I compagni degli altri si vedono.** In rete ogni giocatore vede il compagno in campo degli altri, con il nome, il livello, la forma evoluta e la variante: cammina con il suo padrone, attacca con lui e ha la sua barra della vita. Nel profilo di un eroe (doppio clic) c'è anche la sua stalla.

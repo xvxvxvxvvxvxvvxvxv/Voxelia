@@ -1,8 +1,8 @@
 /* ================= 7.7: MODALITÀ SVILUPPATORE =================
    In basso a destra nel menu c'è un piccolo pulsante 🛠: chiede un codice e, se è giusto, apre il pannello sviluppatore.
-   Da lì si vede tutto il gioco: ogni filmato (prologo, scene della storia, Voxelia Dimension, i finali), ogni zona della
+   Da lì si vede tutto il gioco: ogni filmato (prologo, scene della storia, i finali), ogni zona della
    mappa, anche quelle che di solito non si possono visitare (interni chiusi, piani dei dungeon, sogni, prigioni, mari,
-   campi di battaglia, epoche di Dimension), e qualche strumento per provare le cose in fretta.
+   campi di battaglia), e qualche strumento per provare le cose in fretta.
    Le partite aperte dal pannello sono "di prova": non si salvano e non toccano il salvataggio della storia.
    Il codice non sta scritto qui in chiaro: si confronta solo la sua impronta. */
 const DEVH=0x82db348b;   // impronta del codice (FNV-1a a 32 bit del codice in maiuscolo, senza spazi)
@@ -46,16 +46,15 @@ function devRender(){const el=$('devp');if(!el||el.hidden)return;const T=[['film
 /* ---- filmati ---- */
 const DEVF=()=>[['Prologo',[['Il Regno Perduto · prologo completo','playIntro(devBackMenu)']]],
   ['Scene della storia',FLIST().map(id=>[filmGet(id).n,`filmPlay('${id}',devBackMenu)`])],
-  ['Cinematiche dei capitoli segreti',[['Il frammento falso (le prigioni)','playCine(ARRC,\'dungeon\',devBackMenu)'],['Il vero finale','playCine(ENDC,\'notte\',devBackMenu)'],['Il tesoro del Capitano Scarlatto','playCine(TREASC,\'boarding\',devBackMenu)']]],
-  ['Voxelia Dimension',[['La cabina blu (inizio)','playCine(DCI,\'dimintro\',devBackMenu)'],['Ritorno a casa (finale)','playCine(DCF,\'dimend\',devBackMenu)']]]];
+  ['Cinematiche dei capitoli segreti',[['Il frammento falso (le prigioni)','playCine(ARRC,\'dungeon\',devBackMenu)'],['Il vero finale','playCine(ENDC,\'notte\',devBackMenu)'],['Il tesoro del Capitano Scarlatto','playCine(TREASC,\'boarding\',devBackMenu)']]]];
 function devBackMenu(){if(started)return;$('menu').style.display='flex';inMenu=1;music('menu')}
 function devFilm(code){devClose();if(started&&!DEV.sess){if(!confirm('Per vedere il filmato si torna al menu (la partita viene salvata). Continuare?'))return;toMenu()}else if(DEV.sess)toMenu();
   setTimeout(()=>{try{new Function(code)()}catch(e){msg('Filmato non disponibile: '+e.message)}},80)}
 /* ---- zone ---- */
 const DEVSPEC={sogno:'il sogno del motel',occhio:'la stanza dell\'Occhio',culto:'il covo del culto',cella:'la cella delle prigioni',mare:'la navigazione',arrembaggio:'l\'arrembaggio',stiva:'la stiva della nave',dim_hub:'la Cabina di Dimension'};
-function devZones(){const Z2=Object.keys(Z),cat={'Città e dintorni':[],'Interni':[],'Dungeon (tutti i piani)':[],'Mare e battaglie':[],'Voxelia Dimension':[],'Speciali e segrete':[]};
+function devZones(){const Z2=Object.keys(Z),cat={'Città e dintorni':[],'Interni':[],'Dungeon (tutti i piani)':[],'Mare e battaglie':[],'Speciali e segrete':[]};
   for(const k of Z2){const z=Z[k];if(!z||z.ed)continue;const n=z.n||k;
-    if(k.startsWith('dim_'))cat['Voxelia Dimension'].push([k,n]);else if(k.startsWith('mare')||k.startsWith('bat_')||k==='arrembaggio'||k==='stiva')cat['Mare e battaglie'].push([k,n]);
+    if(k.startsWith('dim_'))continue;if(k.startsWith('mare')||k.startsWith('bat_')||k==='arrembaggio'||k==='stiva')cat['Mare e battaglie'].push([k,n]);
     else if(DEVSPEC[k]||/segret|cripta|passaggio|prigion|sogno|culto|occhio|cella/.test(k))cat['Speciali e segrete'].push([k,n]);else if(z.lay||k.startsWith('in_')||k.startsWith('cas_')||k.startsWith('lib_'))cat['Interni'].push([k,n]);else cat['Città e dintorni'].push([k,n])}
   for(const id of Object.keys(DG)){const d=DG[id];for(let f=1;f<=(d.fls||3);f++)cat['Dungeon (tutti i piani)'].push([id+'@'+f,d.n+' · piano '+f+(f===d.fls?' (boss)':'')])}return cat}
 function devBody(){switch(DEV.tab){
@@ -75,8 +74,7 @@ function devBody(){switch(DEV.tab){
   case 'altro':return`<div class="dvr"><span>Ora del giorno</span><span>${[[6,'🌅 Alba'],[12,'☀ Giorno'],[19,'🌇 Tramonto'],[23,'🌙 Notte']].map(([h,n])=>`<button onclick="devHour(${h})" ${started?'':'disabled'}>${n}</button>`).join('')}</span></div>
     <div class="dvr"><span>Velocità del gioco ×${DEV.speed}</span><span>${[.5,1,2,4].map(v=>`<button class="${DEV.speed===v?'on':''}" onclick="DEV.speed=${v};devRender()">×${v}</button>`).join('')}</span></div>
     <div class="dvr"><span>Contatore FPS</span><input type="checkbox" ${SET.fps?'checked':''} onchange="setv('fps',this.checked?1:0)"></div>
-    <div class="dvr"><span>Voxelia Dimension (nascosta dal menu)</span><button onclick="devClose();if(started)toMenu();setTimeout(()=>mode('dim'),60)">🌀 Apri</button></div>
-    <div class="dvr"><span>Rivedi il tour di benvenuto</span><button onclick="LS.del('voxelia_tour');msg('Il tour ripartirà alla prossima partita in città')">↺</button></div>
+        <div class="dvr"><span>Rivedi il tour di benvenuto</span><button onclick="LS.del('voxelia_tour');msg('Il tour ripartirà alla prossima partita in città')">↺</button></div>
     ${DEV.sess?`<div class="dvr"><span>Partita di prova</span><button onclick="devClose();toMenu()">⏏ Termina e torna al menu</button></div>`:''}
     <div class="dvr"><span>Modalità sviluppatore</span><button class="danger" onclick="DEV.on=false;DEV.tok='';DEV.god=0;DEV.speed=1;LS.del('voxelia_dev');devMark();devClose();msg('Modalità sviluppatore disattivata')">Disattiva</button></div>`}return''}
 // partita di prova: un eroe nuovo, niente salvataggi

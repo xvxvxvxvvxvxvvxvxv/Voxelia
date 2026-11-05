@@ -5,7 +5,8 @@
 const CRGEM=[
  {k:'story',g:'Rubino',c:[230,40,58],m:'Modalità Storia',s:'Il Regno Perduto',d:'Crea il tuo eroe, scegli la difficoltà, rivivi il prologo e riunisci la Corona di Voxel.',go:()=>mode('story')},
  {k:'ow',g:'Smeraldo',c:[40,214,110],m:'Tomorrow',s:'Un mondo senza confini',d:'Fonda la tua città, allarga il regno, stringi alleanze con altre fazioni e conquista il mondo, da solo o con gli amici.',go:()=>mode('ow')},
- {k:'dim',g:'Zaffiro',c:[50,110,240],m:'Voxelia Dimension',s:'La cabina blu',d:'Un viaggio attraverso le epoche: Far West, Londra vittoriana, Rivoluzione e Grande Guerra.',go:()=>mode('dim'),lock:()=>!(typeof DEV!=='undefined'&&DEV.on),lk:'Questa gemma è ancora sigillata: la Dimension tornerà presto.'},
+ // 7.55: lo Zaffiro della Dimension si è spezzato. Resta sulla Corona, in pezzi, in attesa di quello che nascerà dai suoi frammenti.
+ {k:'rotta',g:'Zaffiro infranto',c:[38,62,120],broken:1,m:'La gemma spezzata',s:'In attesa',d:'',go:()=>{},lock:()=>true,lk:'Lo Zaffiro si è spezzato e la cabina blu se n\'è andata con lui. I frammenti brillano ancora, piano: qualcosa di nuovo sta per nascere qui.'},
  {k:'parco',g:'Ametista',c:[170,70,235],m:'Parco giochi',s:'Voxelia Studio',d:'Costruisci i tuoi mondi con mappe, personaggi, dialoghi, missioni, armi, musiche e cinematiche, e giocali.',go:()=>mode('parco')},
  {k:'mondi',g:'Topazio',c:[255,170,30],m:'Mondi della community',s:'Gioca e pubblica',d:'Gioca ai mondi creati dagli altri giocatori, dai le stelle, commenta e pubblica i tuoi.',go:()=>mbOpen()},
  {k:'film',g:'Diamante',c:[200,240,255],m:'Prologo e filmati',s:'La storia della Corona',d:'Il prologo raccontato dall\'inizio e le scene della storia che hai già sbloccato.',go:()=>playIntro(),alt:[['▶ Prologo',()=>playIntro()],['🎞 Scene della storia',()=>filmMenu()]]}];
@@ -30,12 +31,16 @@ function crBuild(){const V=[],I=[];const box=(cx,cy,cz,hw,hh,hd,a,col,mat,gid)=>
   // sei punte grandi con la gemma in cima, sei piccole fra una e l'altra
   for(let i=0;i<6;i++){const a=i/6*Math.PI*2,ca=Math.cos(a),sa=Math.sin(a),r=CRR,gc=CRGEM[i].c,gb=gc.map(v=>Math.min(255,v*1.2+30)),gd=gc.map(v=>v*.72);
     for(let L=0;L<7;L++){const w=3.6-L*.5;box(ca*r,12.2+L*2.2+1.1,sa*r,w,1.1,1.2,a,L%2?G:GL,0,0)}
-    box(ca*r,29.6,sa*r,1.5,1.5,1.5,a,GL,0,0);box(ca*(r+.2),32.3,sa*(r+.2),.9,1.2,.9,a+.785,gc,2,i+1);
+    box(ca*r,29.6,sa*r,1.5,1.5,1.5,a,GL,0,0);if(CRGEM[i].broken){box(ca*(r+.5),31.4,sa*(r+.5),.5,.6,.5,a+.5,gc,2,i+1);box(ca*(r-.3),32.1,sa*(r-.3),.4,.45,.4,a-.3,CRGEM[i].c.map(v=>v*.7),2,i+1)}else box(ca*(r+.2),32.3,sa*(r+.2),.9,1.2,.9,a+.785,gc,2,i+1);
     // la gemma sulla fascia, tagliata a rombo: castone d'oro, pietra, faccette e punta
     const at=(rad,t2,y,hw,hh,hd,col,mat,gid)=>box(ca*rad-sa*t2,y,sa*rad+ca*t2,hw,hh,hd,a,col,mat,gid);
     at(22.15,0,CRGY,3.4,1.6,.6,GD,0,0);at(22.15,0,CRGY,1.6,3.6,.6,GD,0,0);at(22.15,0,CRGY,2.6,2.8,.62,GD,0,0);
-    at(22.9,0,CRGY,2.3,2.3,.55,gd,2,i+1);at(22.95,0,CRGY+2.7,1.3,.75,.5,gc,2,i+1);at(22.95,0,CRGY-2.7,1.3,.75,.5,gd,2,i+1);at(22.95,2.6,CRGY,.75,1.3,.5,gc,2,i+1);at(22.95,-2.6,CRGY,.75,1.3,.5,gd,2,i+1);
-    at(23.5,0,CRGY,1.5,1.5,.4,gc,2,i+1);at(23.95,-.3,CRGY+.3,.8,.8,.3,gb,2,i+1);
+    if(CRGEM[i].broken){// la gemma spezzata: schegge staccate e storte, con le crepe scure in mezzo
+      const SH=[[22.7,-1.3,1.5,.9,1.1,.32],[22.9,1.2,1.7,1,.8,-.4],[23.1,-1.5,-1.4,.8,1,.5],[22.8,1.5,-1.6,1.1,.9,-.25],[23.4,.15,.2,.7,.7,.9],[24.1,-.4,2.9,.45,.5,.6],[23.8,1.9,-3,.4,.45,-.7],[24.4,-2.4,-.6,.3,.35,1.1]];
+      for(const[rd,tt,yy,hw,hh,ro]of SH)box(ca*rd-sa*tt,CRGY+yy,sa*rd+ca*tt,hw,hh,.42,a+ro,(ro>0?gc:gd),2,i+1);
+      at(22.6,0,CRGY,.12,3.2,.5,[8,10,20],0,0);at(22.6,0,CRGY,2.8,.12,.5,[8,10,20],0,0)}
+    else{at(22.9,0,CRGY,2.3,2.3,.55,gd,2,i+1);at(22.95,0,CRGY+2.7,1.3,.75,.5,gc,2,i+1);at(22.95,0,CRGY-2.7,1.3,.75,.5,gd,2,i+1);at(22.95,2.6,CRGY,.75,1.3,.5,gc,2,i+1);at(22.95,-2.6,CRGY,.75,1.3,.5,gd,2,i+1);
+    at(23.5,0,CRGY,1.5,1.5,.4,gc,2,i+1);at(23.95,-.3,CRGY+.3,.8,.8,.3,gb,2,i+1)}
     const b=a+Math.PI/6,cb=Math.cos(b),sb=Math.sin(b);for(let L=0;L<4;L++)box(cb*r,12.2+L*1.8+.9,sb*r,2.2-L*.5,.9,1,b,G,0,0);box(cb*r,20.2,sb*r,.8,.8,.8,b,[244,238,226],3,0);
     box(cb*22.4,CRGY,sb*22.4,1.1,1.1,.5,b,GL,0,0);box(cb*22.7,CRGY,sb*22.7,.55,.55,.4,b,[244,238,226],3,0);
     // gli archi che salgono verso il globo
@@ -133,7 +138,7 @@ function crCard(){const card=$('crcard'),hint=$('crhint');if(!card)return;const 
   for(const b of document.querySelectorAll('#crchips button'))b.classList.toggle('on',+b.dataset.i===i);
   if(i<0){card.hidden=true;hint.hidden=false;return}const G=CRGEM[i],lk=crLocked(i),cc=G.c.join(',');hint.hidden=true;card.hidden=false;card.style.setProperty('--gc',`rgb(${cc})`);
   card.innerHTML=`<div class="crg"><i></i><span>${G.g}</span><small>${G.s}</small></div><h2>${G.m}</h2><p>${lk?G.lk:G.d}</p><div class="crbtn"><button class="crarr" onclick="crStep(-1)" aria-label="Gemma precedente">◀</button>${
-    lk?'<button class="crgo" disabled>🔒 Sigillata</button>':G.alt?G.alt.map((a,j)=>`<button class="crgo" onclick="crGo(${j})">${a[0]}</button>`).join(''):'<button class="crgo" onclick="crGo()">Entra ▶</button>'}<button class="crarr" onclick="crStep(1)" aria-label="Gemma successiva">▶</button></div>`;
+    lk?`<button class="crgo" disabled>${G.broken?'💔 Spezzata · in attesa':'🔒 Sigillata'}</button>`:G.alt?G.alt.map((a,j)=>`<button class="crgo" onclick="crGo(${j})">${a[0]}</button>`).join(''):'<button class="crgo" onclick="crGo()">Entra ▶</button>'}<button class="crarr" onclick="crStep(1)" aria-label="Gemma successiva">▶</button></div>`;
   if(typeof menuAnim==='function')menuAnim(card)}
 function crPick(i){if(CRW.go)return;if(i===CRW.sel)return;CRW.sel=i;document.body.classList.toggle('crsel',i>=0);crCard();if(i>=0){try{tone(520+i*70,.08,'triangle',.04);setTimeout(()=>tone(780+i*70,.1,'sine',.03),70)}catch(_){}}}
 function crStep(d){crPick(CRW.sel<0?(d>0?0:5):(CRW.sel+d+6)%6)}

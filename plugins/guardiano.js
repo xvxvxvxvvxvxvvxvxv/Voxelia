@@ -9,6 +9,8 @@
 // Il sensore gira nel browser del giocatore, quindi un baro esperto può zittirlo: il Guardiano segnala anche quello.
 // Regali che NON vanno segnalati: quelli del pannello admin e di tutti i plugin (p.give) li vede da solo, gli scambi pure.
 // globalThis.VoxeliaGuardiano.grazia(nome, sec) resta per i plugin che regalano in altri modi.
+// 2.9: pasti, elisir e via dell'eroe (7.47-7.48) cambiano vita massima, forza e difesa: Pane dolce e Banchetto non sono più trucchi.
+// 2.8: benedizioni della Torre della Corona e maledizioni dei dungeon (7.44); eroi di Tomorrow separati da quelli del regno (7.16).
 // 2.7: chi sblocca il pannello sviluppatore del gioco con la password admin non viene segnalato finché vale lo sblocco (12 ore).
 // Di base segnala e basta: le azioni (ripristino, riporto in città, disconnessione) si accendono in guardiano.config.json.
 // Automoderazione (spenta di base, si accende dalla pagina admin o in config): ogni segnalazione dà punti all'eroe,
@@ -22,6 +24,13 @@ const ibase = (s, lv) => (s === 'w' ? 5 : s === 'c' ? 4 : 2.5) + lv * (s === 'w'
 const need = lv => 20 + lv * lv * 11.5;
 const vitaMin = lv => 60 + lv * 15;
 const BUFF_MAX = 90, CASINO_MAX = 50000, GRAV = { bassa: 1, media: 2, alta: 3 };
+// 7.17-7.21, solo in Tomorrow: il santuario dà la difesa per 300 s, il pasto al campo la forza per 180 s, il tempio
+// dell'insediamento la difesa fino a 600 s (240 + 120 per livello del tempio, che arriva a 3)
+const BUFF_MAX_TW = 600;
+// 7.47: un pasto del Fornello dura 600 s × (1 + 5% per livello di cucina, che arriva a 10) = 870 s, e la sua forza o difesa altrettanto
+const BUFF_MAX_PASTO = 870;
+// 7.16: le zone di Tomorrow iniziano con "tw" (tw:x,y le regioni, twi: gli edifici, twd_ i dungeon)
+const tomorrow = zk => /^tw/.test(String(zk || ''));
 
 // Il server non passa ai plugin i messaggi che manda: per vedere i regali (pannello admin e p.give di ogni plugin)
 // il Guardiano legge i frame WebSocket in uscita {"t":"id"} e {"t":"adm"}. Uno solo per processo, tolto allo stop.
@@ -53,10 +62,29 @@ function sensore(ID, INT) {
     // dalla 7.11, nella stanza dell'Occhio, la benedizione della Regina Elara (P.elb) dà un altro +20% ai colpi
     const o = window.hurtE;
     if (typeof o === 'function') window.hurtE = function (e, d, rem) {
-      try { if (!rem && e && e.k === 'en' && vivo() && typeof atk === 'function') { const a = Math.max(1, atk()), bn = P.elb && typeof Zk !== 'undefined' && Zk === 'occhio' ? 1.2 : 1; if (d > a * 9.72 * bn * 1.05 + 2) { colpi++; colpiMax = Math.max(colpiMax, d / a); } } } catch (x) {}
+      try { if (!rem && e && e.k === 'en' && vivo() && typeof atk === 'function') { const a = Math.max(1, atk()), tor = torre(); let bn = P.elb && typeof Zk !== 'undefined' && Zk === 'occhio' ? 1.2 : 1; bn *= 1 + .2 * tor.forza; if (!tor.esplosione && d > a * 9.72 * bn * 1.05 + 2) { colpi++; colpiMax = Math.max(colpiMax, d / a); } } } catch (x) {}
       return o.apply(this, arguments);
     };
     ref = {}; for (const n of WATCH) ref[n] = window[n];
+  }
+  // 7.44: le benedizioni della Torre della Corona (Forza: +20% danni, Vigore: +25% vita, Scoppio: chi cade ferisce i vicini
+  // con un quarto della sua vita) e la maledizione Fragile dei dungeon (-30% vita): valgono finché si resta lì
+  function torre() {
+    const o = { forza: 0, vita: 0, esplosione: 0, fragile: 0 };
+    try { if (typeof torOn === 'function' && torOn()) for (const k of ['forza', 'vita', 'esplosione']) o[k] = torN(k) | 0; } catch (e) {}
+    try { if (typeof malOn === 'function' && malOn('fragile')) o.fragile = 1; } catch (e) {}
+    return o;
+  }
+  // 7.47-7.48: come il gioco (recalc) cambia la vita massima dopo Fragile e Torre: un pasto (Pane dolce +15%, Banchetto del
+  // cavaliere +10%), la via della spada (+6%) e la benedizione di Quetzal (+5%).
+  // buff: un pasto di forza, difesa o Banchetto è attivo (P.bA e P.bD arrivano alla sua durata)
+  function bonus() {
+    const o = { pasto: 1, buff: 0, spada: 0, quetzal: 0 };
+    try { if (typeof mstHas === 'function' && P.mest) { o.pasto = mstHas(['vita']) ? 1.15 : mstHas(['tutto']) ? 1.1 : 1; if (mstHas(['forza', 'difesa', 'tutto'])) o.buff = 1; } } catch (e) {}
+    // la via segue il karma delle scelte (s.b, s.d): senza scelte non c'è via della spada
+    try { const s = P.st48; if (s && (Object.keys(s.b || {}).length || Object.keys(s.d || {}).length)) o.spada = 1; } catch (e) {}
+    try { if (P.ol48 && P.ol48.bl) o.quetzal = 1; } catch (e) {}
+    return o;
   }
   function segni() {
     const s = [];
@@ -69,13 +97,17 @@ function sensore(ID, INT) {
   // valore (abbondante) di risorse e pesci: se calano, l'oro che sale può venire dalla loro vendita
   function risorse() { let v = 0; try { for (const k in (P.res || {})) v += (P.res[k] | 0) * ((typeof RESP !== 'undefined' && RESP[k]) || 10); for (const k in (P.fish || {})) { const f = typeof FISHT !== 'undefined' && FISHT.find(q => q.id === k); v += (P.fish[k] | 0) * (f ? f.p : 30); } } catch (e) {} return v * 2; }
   const sostituite = () => ref ? WATCH.filter(n => window[n] !== ref[n]) : [];
-  const ogg = i => i && typeof i === 'object' ? { u: String(i.u || '').slice(0, 16), s: i.s, r: +i.r || 0, v: +i.v || 0, n: String(i.n || '').slice(0, 40), p: +i.p || 0, hp: +i.hp || 0, cr: +i.cr || 0, up: +i.up || 0, ml: +i.ml || 0, ar: i.ar ? 1 : 0 } : null;
+  const ogg = i => i && typeof i === 'object' ? { u: String(i.u || '').slice(0, 16), s: i.s, r: +i.r || 0, v: +i.v || 0, n: String(i.n || '').slice(0, 40), p: +i.p || 0, hp: +i.hp || 0, cr: +i.cr || 0, up: +i.up || 0, ml: +i.ml || 0, ar: i.ar ? 1 : 0,
+    // 7.14: un oggetto unico (seme in uq) ha poteri, e i controlli lo trattano come tale: basta dire che lo è
+    uq: i.uq && typeof i.uq === 'object' ? { lv: +i.uq.lv || 0 } : undefined } : null;
   function foto() {
     const eq = P.eq || {}, d = {};
     for (const k in (P.done || {})) if (P.done[k] > 0) d[k] = P.done[k] | 0;
     const f = { lv: P.lv, xp: P.xp, g: P.g, hp: P.hp, mx: P.mx, pot: P.pot, bA: P.bA || 0, bD: P.bD || 0, inv: typeof INV === 'number' ? INV : 24,
       eq: { w: ogg(eq.w), h: ogg(eq.h), c: ogg(eq.c), s: ogg(eq.s) }, it: (P.inv || []).slice(0, 80).map(ogg), ds: (P.stash || []).slice(0, 80).map(ogg), sh: (P.sh || []).slice(0, 20).map(String), done: d,
-      rs: risorse(), z: typeof Zk === 'string' ? Zk : '', segni: segni(), fn: sostituite(), colpi, colpiMax: Math.round(colpiMax * 10) / 10, muri, raffica };
+      tor: torre().vita, mal: torre().fragile, bon: bonus(), rs: risorse(), z: typeof Zk === 'string' ? Zk : '', segni: segni(), fn: sostituite(), colpi, colpiMax: Math.round(colpiMax * 10) / 10, muri, raffica };
+    // 7.16: in Tomorrow l'eroe è un altro (salvataggio suo) e il bottino cresce con il livello delle regioni visitate
+    try { if (typeof twOn === 'function' && twOn()) { f.tw = 1; let m = 0; for (const k in (P.tw.vis || {})) { const q = /^tw:(-?\d+),(-?\d+)$/.exec(k); if (q) m = Math.max(m, twLv(+q[1], +q[2])); } f.twMax = m; } } catch (e) {}
     colpi = 0; colpiMax = 0; muri = 0; raffica = 0;
     return f;
   }
@@ -109,7 +141,7 @@ function sensore(ID, INT) {
       }
       if (d.sh) P.sh = P.sh.filter(s => P.done && P.done[s] > 0);
       if (Array.isArray(d.shTieni)) P.sh = P.sh.filter(s => d.shTieni.includes(s));
-      if (P.bA > 90) P.bA = 90; if (P.bD > 90) P.bD = 90;
+      const bm = bonus().buff ? 870 : typeof twOn === 'function' && twOn() ? 600 : 90; if (P.bA > bm) P.bA = bm; if (P.bD > bm) P.bD = bm;
       recalc(); P.hp = Math.min(P.hp, P.mx); hud(); save();
       msg('Il Guardiano ha ripristinato ' + (fatto.length ? [...new Set(fatto)].join(', ') : 'le statistiche') + ': ' + (d.perche || 'valori non validi'));
     } catch (e) {}
@@ -118,7 +150,7 @@ function sensore(ID, INT) {
 
 module.exports = {
   name: 'Guardiano',
-  version: '2.7',
+  version: '2.9',
   author: 'Voxelia',
   description: 'Riconosce oro, livelli, statistiche e oggetti ottenuti con trucchi o cheat esterni; pagina admin con le prove',
   defaults: {
@@ -128,6 +160,7 @@ module.exports = {
     oroSecondo: 12000,      // oro guadagnato in un secondo senza spiegazione (regali, scambi, vendite) oltre il quale si segnala
     oroMinuto: 20000,       // oro senza spiegazione in un minuto: oroMinuto + oroMinutoPerLivello × livello (per il moltiplicatore d'oro del server)
     oroMinutoPerLivello: 2000,
+    oroSecondoPerLivelloTomorrow: 250, // in Tomorrow i premi crescono con il livello della regione: per ogni livello (dell'eroe o della regione più alta vista) la soglia di oroSecondo sale di tanto
     livelliSecondo: 2,      // livelli guadagnati in un secondo senza un regalo
     livelli10Minuti: 8,     // livelli in 10 minuti (dal livello 10 in su)
     livelloMax: 150,        // nessuno può arrivare oltre
@@ -180,6 +213,10 @@ module.exports = {
   setup(api) {
     const C = api.config, stato = new Map(), grazie = new Map(), svil = new Map(), chiave = n => String(n).toLowerCase();
     const st = () => { const s = api.store; if (!Array.isArray(s.lista)) s.lista = []; for (const k of ['storico', 'stat', 'statSegn', 'copie', 'mod', 'sospesi', 'silenziati']) if (!s[k] || typeof s[k] !== 'object') s[k] = {}; return s; };
+    // 7.16: un eroe di Tomorrow ha un salvataggio suo anche con lo stesso nome: copia, storico e statistiche si tengono a parte
+    const mondo = x => x && x.tw ? '#tw' : '';
+    // livello più alto da cui può venire il bottino di un eroe di Tomorrow (la regione più lontana vista)
+    const twMax = x => x && x.tw && x.foto ? Math.max(0, Math.min(10000, +x.foto.twMax || 0)) : 0;
     const X = p => { let x = stato.get(p.id); if (!x) stato.set(p.id, x = { id: p.id, nome: p.name, crediti: [], guadagni: [], livelli: [], chiavi: new Set(), gravi: 0, entrato: Date.now() }); return x; };
     const fmt = n => Math.round(n).toLocaleString('it-IT');
 
@@ -219,7 +256,7 @@ module.exports = {
     // ripristino completo: oro e livello di inizio sessione, oggetti impossibili, frammenti senza boss
     function ripristinoCompleto(p, perche) {
       const s = stato.get(p.id) || {}; if (!s.foto) return false;
-      const u = []; for (const i of ['w', 'h', 'c', 's'].map(k => s.foto.eq && s.foto.eq[k]).concat(s.foto.it || [], s.foto.ds || [])) if (i && oggettoStrano(i, p.lv)) u.push(String(i.u));
+      const u = []; for (const i of ['w', 'h', 'c', 's'].map(k => s.foto.eq && s.foto.eq[k]).concat(s.foto.it || [], s.foto.ds || [])) if (i && oggettoStrano(i, p.lv, s)) u.push(String(i.u));
       ripristina(p, Object.assign({ perche, sh: 1, u }, s.inizio ? { oro: s.inizio.oro, lv: s.inizio.lv, xp: s.inizio.xp } : {}));
       return s.inizio || true;
     }
@@ -313,15 +350,19 @@ module.exports = {
       for (const room of Object.keys(api.rooms())) { const r = api.server.runs(room); for (const d in DG) m = Math.max(m, DG[d][0] + 3 * (r[d] || 0) + DG[d][1] - 1 + 3); }
       if (m !== s.zonaMax) { s.zonaMax = m; api.save(); }
     }
-    const lvOggettiMax = lv => Math.max(2 * lv + 10, zonaMax() + 4);
+    const lvOggettiMax = (lv, x) => Math.max(2 * lv + 10, x && x.tw ? twMax(x) + 6 : zonaMax() + 4);
     // vita massima più alta possibile: 60 + 15/livello + elmo, corazza e scudo migliori (unici e arena: base + 3 × livello oggetto)
-    const vitaMax = lv => { const L = lvOggettiMax(lv); return vitaMin(lv) + 420 + 9 * L; };
+    const vitaMax = (lv, x) => { const L = lvOggettiMax(lv, x); return vitaMin(lv) + 420 + 9 * L; };
+    // 7.47-7.48: i bonus alla vita massima detti dal sensore (pasto, via della spada, Quetzal), solo con i valori del gioco
+    const bonusFoto = f => { const b = f && f.bon && typeof f.bon === 'object' ? f.bon : {}; return { pasto: [1.1, 1.15].includes(+b.pasto) ? +b.pasto : 1, buff: b.buff ? 1 : 0, spada: b.spada ? 1 : 0, quetzal: b.quetzal ? 1 : 0 }; };
+    // vita massima più alta che i bonus possono dare: un pasto si mangia in ogni momento (prima che arrivi la foto), via e Quetzal restano
+    const bonusMax = x => { const b = bonusFoto(x && x.foto); return 1.15 * (b.spada ? 1.06 : 1) * (b.quetzal ? 1.05 : 1); };
 
     // un oggetto che il gioco non può creare: restituisce il motivo, o '' se va bene
-    function oggettoStrano(it, lv) {
+    function oggettoStrano(it, lv, x) {
       if (!it || typeof it !== 'object') return 'oggetto non valido';
       // 7.14: i reperti del Mondo aperto (trofei dei contratti) non si indossano: contano solo rarità e valore
-      if (it.s === 'x') { const r = +it.r, p = +it.p || 0; if (!(r >= 0 && r <= 3 && r % 1 === 0)) return 'rarità ' + r + ' inesistente'; if (p < 0 || p > 100 * lvOggettiMax(lv)) return 'reperto con valore ' + p + ' troppo alto'; return ''; }
+      if (it.s === 'x') { const r = +it.r, p = +it.p || 0; if (!(r >= 0 && r <= 3 && r % 1 === 0)) return 'rarità ' + r + ' inesistente'; if (p < 0 || p > 100 * lvOggettiMax(lv, x)) return 'reperto con valore ' + p + ' troppo alto'; return ''; }
       // 7.14: gli oggetti unici (con il seme in it.uq) hanno poteri: critico, vita e prezzo possono essere più alti
       const uq = !!(it.uq && typeof it.uq === 'object');
       const s = it.s, r = +it.r, v = +it.v, p = +it.p || 0, hp = +it.hp || 0, cr = +it.cr || 0, up = +it.up || 0, ml = +it.ml || 0;
@@ -334,7 +375,7 @@ module.exports = {
       if (hp < 0 || p < 0) return 'valori negativi';
       // livello dell'oggetto ricavato dal valore: il minimo (tiro migliore da unico) e il massimo (tiro peggiore)
       const k = s === 'w' ? 2 : 1.4, b = ibase(s, 0), alto = it.ar ? 3.9 : RM[r] * 1.15 * 1.15, basso = it.ar ? 3.2 : RM[r] * .85;
-      const lvMin = (v / alto - b) / k, lvTop = (v / basso - b) / k + 1, L = lvOggettiMax(lv);
+      const lvMin = (v / alto - b) / k, lvTop = (v / basso - b) / k + 1, L = lvOggettiMax(lv, x);
       if (lvMin > L) return 'valore ' + v + ' possibile solo da un oggetto di livello ' + Math.ceil(lvMin) + ' (ora al massimo ' + L + ')';
       if (hp > (uq ? 220 + 8 * Math.max(0, lvTop) : 160 + 3 * Math.max(0, lvTop))) return 'punti vita +' + hp + ' troppo alti per un oggetto di valore ' + v;
       if (p > v * (uq ? 20 : 6) * Math.pow(1.15, up) + 5 + up) return 'prezzo di vendita ' + p + ' troppo alto per un oggetto di valore ' + v;
@@ -350,8 +391,9 @@ module.exports = {
         if (finto(p)) continue;
         visti.add(p.id);
         const x = X(p), prima = x.ultimo;
+        if (p.zone) x.tw = tomorrow(p.zone);
         if (!x.inizio && p.lv > 0) x.inizio = { oro: p.gold, lv: p.lv, t: ora };
-        if (!x.storico && p.lv > 0) { x.storico = 1; confrontaStorico(p, x); if (C.statistiche) confrontaGuadagni(p); }
+        if (!x.storico && p.lv > 0 && p.zone) { x.storico = 1; confrontaStorico(p, x); if (C.statistiche) confrontaGuadagni(p); }
         if (prima && p.lv > 0 && prima.lv > 0) {
           const a = acc(x, p.lv); a.sec += (ora - prima.t) / 1000;
           if (p.gold > prima.oro) x.guadagni.push({ t: ora, d: p.gold - prima.oro, prima: prima.oro, zona: p.zone, grazia: inGrazia(p) });
@@ -367,11 +409,13 @@ module.exports = {
               segnala(p, 'teletrasporto', fmt(dist) + ' caselle in ' + dt.toFixed(1) + ' s nella stessa zona (' + p.zone + ')', { g: 'media', prove: { da: [prima.x, prima.y], a: [p.x, p.y], zona: p.zone } });
           } else x.veloci = 0;
           // vita: per 2 secondi di fila (il gioco aggiorna vita e livello insieme)
+          // 7.44: nei dungeon la maledizione Fragile toglie il 30% della vita; nel piano N della Torre il Vigore ne aggiunge fino a N × 25%
+          const tp = /^torre(\d+)$/.exec(String(p.zone || '')), fr = String(p.zone || '').includes('@') ? .7 : 1, vg = (tp ? 1 + .25 * +tp[1] : 1) * bonusMax(x);
           const strana = p.hp > p.maxHp + 1 ? 'vita ' + p.hp + ' sopra la vita massima ' + p.maxHp
-            : p.maxHp < vitaMin(p.lv) - 1 ? 'vita massima ' + p.maxHp + ' sotto il minimo del livello ' + p.lv + ' (' + vitaMin(p.lv) + '): livello cambiato a mano'
-            : p.maxHp > vitaMax(p.lv) ? 'vita massima ' + p.maxHp + ' impossibile al livello ' + p.lv + ' (al massimo ' + vitaMax(p.lv) + ')' : '';
+            : p.maxHp < Math.floor((vitaMin(p.lv) - 1) * fr) ? 'vita massima ' + p.maxHp + ' sotto il minimo del livello ' + p.lv + ' (' + vitaMin(p.lv) + '): livello cambiato a mano'
+            : p.maxHp > vitaMax(p.lv, x) * vg ? 'vita massima ' + p.maxHp + ' impossibile al livello ' + p.lv + ' (al massimo ' + Math.round(vitaMax(p.lv, x) * vg) + ')' : '';
           x.vitaStrana = strana ? (x.vitaStrana || 0) + 1 : 0;
-          if (x.vitaStrana === 2) segnala(p, 'statistiche', strana, { g: 'alta', chiave: 'vita:' + p.lv + ':' + p.maxHp, prove: { lv: p.lv, vita: p.hp, vitaMax: p.maxHp, minimo: vitaMin(p.lv), massimo: vitaMax(p.lv) },
+          if (x.vitaStrana === 2) segnala(p, 'statistiche', strana, { g: 'alta', chiave: 'vita:' + p.lv + ':' + p.maxHp, prove: { lv: p.lv, vita: p.hp, vitaMax: p.maxHp, minimo: vitaMin(p.lv), massimo: vitaMax(p.lv, x) },
             rip: x.inizio && p.lv > x.inizio.lv ? { lv: x.inizio.lv, xp: 0 } : null });
           if (p.lv > C.livelloMax) segnala(p, 'livello', 'livello ' + p.lv + ' oltre il massimo ' + C.livelloMax, { g: 'alta', chiave: 'lvmax', rip: x.inizio ? { lv: Math.min(x.inizio.lv, C.livelloMax), xp: 0 } : null });
         }
@@ -400,7 +444,8 @@ module.exports = {
         // per le statistiche conta quello che si guadagna giocando (anche vendendo), non i regali, gli scambi e il deposito
         acc(x, p.lv).oro += q.d - Object.entries(sp.fonti).filter(([k]) => /^(regalo|scambio|deposito|grazia|plugin)/.test(k)).reduce((a, [, v]) => a + v, 0);
         if (resto <= 0) continue;
-        const soglia = q.zona === 'in_casino' ? Math.max(C.oroSecondo, CASINO_MAX) : C.oroSecondo * gm;
+        const soglia = q.zona === 'in_casino' ? Math.max(C.oroSecondo, CASINO_MAX)
+          : (C.oroSecondo + (tomorrow(q.zona) ? (+C.oroSecondoPerLivelloTomorrow || 0) * Math.max(p.lv, twMax(x)) : 0)) * gm;
         // quello già segnalato qui non si ripete nella finestra di un minuto
         (x.inspiegato || (x.inspiegato = [])).push({ t: q.t, d: resto > soglia ? 0 : resto, casino: q.zona === 'in_casino' });
         if (resto > soglia) segnala(p, 'oro', '+' + fmt(q.d) + ' oro in un secondo, ' + fmt(resto) + ' senza spiegazione', { g: x.foto && resto > 2 * soglia ? 'alta' : 'media',
@@ -420,7 +465,7 @@ module.exports = {
       while (L.length && ora - L[0].t > 600000) L.shift();
       if (ora - (x.finestra || 0) > 5000) {
         x.finestra = ora;
-        const min = I.filter(q => ora - q.t <= 60000 && !q.casino).reduce((a, q) => a + q.d, 0), lim = (C.oroMinuto + C.oroMinutoPerLivello * p.lv) * gm;
+        const min = I.filter(q => ora - q.t <= 60000 && !q.casino).reduce((a, q) => a + q.d, 0), lim = (C.oroMinuto + C.oroMinutoPerLivello * Math.max(p.lv, twMax(x))) * gm;
         if (min > lim && ora - (x.oroMinT || 0) > 60000) { x.oroMinT = ora; segnala(p, 'oro', fmt(min) + ' oro senza spiegazione nell\'ultimo minuto (soglia ' + fmt(lim) + ')', { g: 'media', prove: { minuto: min, soglia: lim, sensore: !!x.foto } }); }
         const lv10 = L.reduce((a, q) => a + q.d, 0);
         if (L.length && L[0].da >= 10 && lv10 > C.livelli10Minuti && ora - (x.lvMinT || 0) > 600000) { x.lvMinT = ora; segnala(p, 'livello', lv10 + ' livelli in 10 minuti (dal ' + L[0].da + ')', { g: 'media', prove: { livelli: lv10, da: L[0].da } }); }
@@ -429,9 +474,10 @@ module.exports = {
     }
 
     // ---------- guadagni per ora di gioco, per fascia di 10 livelli ----------
-    const fascia = lv => Math.floor(lv / 10);
-    const nomeFascia = b => 'livelli ' + (b * 10 || 1) + '-' + (b * 10 + 9);
-    function acc(x, lv) { const b = fascia(lv); if (!x.acc || x.acc.b !== b) { versa(x); x.acc = { b, sec: 0, oro: 0, xp: 0 }; } return x.acc; }
+    // gli eroi di Tomorrow guadagnano in un altro modo: le loro fasce (1000 in su) non si mescolano con quelle del regno
+    const fascia = (lv, tw) => Math.floor(lv / 10) + (tw ? 1000 : 0);
+    const nomeFascia = b => (b >= 1000 ? 'Tomorrow, ' : '') + 'livelli ' + (b % 1000 * 10 || 1) + '-' + (b % 1000 * 10 + 9);
+    function acc(x, lv) { const b = fascia(lv, x.tw); if (!x.acc || x.acc.b !== b) { versa(x); x.acc = { b, sec: 0, oro: 0, xp: 0 }; } return x.acc; }
     // passa i conteggi della sessione nello store (ogni minuto e all'uscita)
     function versa(x) {
       const a = x.acc; if (!a || a.sec < 1) return; const s = st(), k = chiave(x.nome), b = s.stat[k] || (s.stat[k] = {}), v = b[a.b] || (b[a.b] = { sec: 0, oro: 0, xp: 0 });
@@ -470,12 +516,12 @@ module.exports = {
       const f = x.foto; if (!f || !x.copiaFatta || C.copia === 'spento') return;
       const s = st(), u = [];
       for (const i of ['w', 'h', 'c', 's'].map(k => f.eq && f.eq[k]).concat(f.it || [], f.ds || [])) if (i && i.u) u.push(String(i.u).slice(0, 16));
-      s.copie[chiave(nome)] = { t: Date.now(), lv: +f.lv || 0, xp: +f.xp || 0, g: +f.g || 0, u: u.slice(0, 200), sh: Array.isArray(f.sh) ? f.sh.map(String).slice(0, 10) : [] };
+      s.copie[chiave(nome) + mondo(x)] = { t: Date.now(), lv: +f.lv || 0, xp: +f.xp || 0, g: +f.g || 0, u: u.slice(0, 200), sh: Array.isArray(f.sh) ? f.sh.map(String).slice(0, 10) : [] };
       const k = Object.keys(s.copie); if (k.length > 2000) for (const n of k.sort((a, b) => s.copie[a].t - s.copie[b].t).slice(0, k.length - 2000)) delete s.copie[n];
     }
     function confrontaCopia(p, x, f) {
       x.copiaFatta = 1;
-      const c = C.copia !== 'spento' && st().copie[chiave(p.name)]; if (!c) return;
+      const c = C.copia !== 'spento' && st().copie[chiave(p.name) + mondo(x)]; if (!c) return;
       const tutti = ['w', 'h', 'c', 's'].map(k => f.eq && f.eq[k]).concat(f.it || [], f.ds || []).filter(i => i && i.u), noti = new Set(c.u);
       const nuovi = tutti.filter(i => !noti.has(String(i.u))), sh = (Array.isArray(f.sh) ? f.sh.map(String) : []).filter(q => !c.sh.includes(q));
       const lv = (+f.lv || 0) - c.lv, oro = (+f.g || 0) - c.g, diff = [];
@@ -491,10 +537,10 @@ module.exports = {
     }
 
     // ---------- tra una sessione e l'altra (per nome) ----------
-    function ricorda(p, x) { if (finto(p) || !(p.lv > 0)) return; const s = st(); if (x) { versa(x); salvaCopia(x, p.name); } s.storico[chiave(p.name)] = { lv: p.lv, oro: p.gold, t: Date.now() }; const k = Object.keys(s.storico); if (k.length > 3000) for (const n of k.sort((a, b) => s.storico[a].t - s.storico[b].t).slice(0, k.length - 3000)) delete s.storico[n]; api.save(); }
+    function ricorda(p, x) { if (finto(p) || !(p.lv > 0)) return; const s = st(); if (x) { versa(x); salvaCopia(x, p.name); } s.storico[chiave(p.name) + mondo(x)] = { lv: p.lv, oro: p.gold, t: Date.now() }; const k = Object.keys(s.storico); if (k.length > 3000) for (const n of k.sort((a, b) => s.storico[a].t - s.storico[b].t).slice(0, k.length - 3000)) delete s.storico[n]; api.save(); }
     function confrontaStorico(p, x) {
       // con la copia dell'eroe ci pensa confrontaCopia, quando arriva la prima foto del sensore
-      const v = st().storico[chiave(p.name)]; if (!v || (C.copia !== 'spento' && st().copie[chiave(p.name)])) return;
+      const v = st().storico[chiave(p.name) + mondo(x)]; if (!v || (C.copia !== 'spento' && st().copie[chiave(p.name) + mondo(x)])) return;
       const dl = p.lv - v.lv, dg = p.gold - v.oro, quando = new Date(v.t).toLocaleString('it-IT');
       if ((C.livelliFuori > 0 && dl > C.livelliFuori) || (C.oroFuori > 0 && dg > C.oroFuori))
         segnala(p, 'progressi fuori dal server', 'rientra con livello ' + p.lv + ' e ' + fmt(p.gold) + ' oro; era uscito il ' + quando + ' con livello ' + v.lv + ' e ' + fmt(v.oro) + ' oro (partita modificata o giocata da soli)',
@@ -518,7 +564,7 @@ module.exports = {
       }
       x.oggetti = tutti.map(i => ({ u: i.u, p: i.p }));
       if (!x.inizio || x.inizio.xp == null) x.inizio = Object.assign(x.inizio || { oro: num(f.g), lv, t: ora }, { xp: num(f.xp) });
-      x.foto = f; x.fotoT = ora;
+      x.foto = f; x.fotoT = ora; x.tw = !!f.tw;
       if (!x.copiaFatta) confrontaCopia(p, x, f);
 
       // Cheat Menu e funzioni del gioco sostituite
@@ -528,15 +574,27 @@ module.exports = {
       else if (fn.length) segnala(p, 'gioco modificato', 'funzioni del gioco sostituite dopo l\'avvio: ' + fn.join(', '), { g: 'media', chiave: 'fn:' + fn.join(','), prove: { funzioni: fn } });
 
       // statistiche: la vita massima è 60 + 15 per livello + la vita degli oggetti indossati (due foto di fila)
-      const atteso = vitaMin(lv) + ['w', 'h', 'c', 's'].reduce((a, k) => a + (eq[k] ? Math.max(0, num(eq[k].hp)) : 0), 0);
+      let atteso = vitaMin(lv) + ['w', 'h', 'c', 's'].reduce((a, k) => a + (eq[k] ? Math.max(0, num(eq[k].hp)) : 0), 0);
+      // 7.44: Vigore della Torre (+25% a benedizione, al massimo una per piano) e maledizione Fragile nei dungeon (-30%)
+      const zf = String(f.z || ''), tp = /^torre(\d+)$/.exec(zf), tor = tp ? Math.max(0, Math.min(+tp[1], num(f.tor) | 0)) : 0;
+      if (f.mal && zf.includes('@')) atteso = Math.max(1, Math.round(atteso * .7));
+      if (tor) atteso = Math.round(atteso * (1 + .25 * tor));
+      // 2.9: poi, nell'ordine del gioco, il pasto, la via della spada e Quetzal. La via segue il karma, che cambia senza ricalcolare
+      // la vita: con una via scelta vanno bene tutte e due le vite massime, con e senza il +6%
+      const bon = bonusFoto(f), possibili = [];
+      for (const sp of bon.spada ? [0, 1] : [0]) { let a = atteso; if (bon.pasto > 1) a = Math.round(a * bon.pasto); if (sp) a = Math.round(a * 1.06); if (bon.quetzal) a = Math.round(a * 1.05); possibili.push(a); }
+      if (!possibili.some(a => Math.abs(num(f.mx) - a) <= 1)) atteso = possibili.reduce((m, a) => Math.abs(num(f.mx) - a) < Math.abs(num(f.mx) - m) ? a : m, possibili[0]);
+      else atteso = num(f.mx);
       const st1 = [];
       if (Math.abs(num(f.mx) - atteso) > 1) st1.push('vita massima ' + num(f.mx) + ' invece di ' + atteso + ' (livello ' + lv + ' e oggetti indossati)');
       if (num(f.hp) > num(f.mx) + 1) st1.push('vita ' + num(f.hp) + ' sopra la massima ' + num(f.mx));
       if (num(f.xp) >= need(lv) + 1 || num(f.xp) < 0) st1.push('esperienza ' + Math.round(num(f.xp)) + ' impossibile al livello ' + lv + ' (si passa di livello a ' + need(lv) + ')');
-      if (num(f.bA) > BUFF_MAX + 1 || num(f.bD) > BUFF_MAX + 1) st1.push('pozioni di forza/pietra per ' + Math.round(Math.max(num(f.bA), num(f.bD))) + ' s (al massimo ' + BUFF_MAX + ')');
+      const bm = Math.max(f.tw ? BUFF_MAX_TW : BUFF_MAX, bon.buff ? BUFF_MAX_PASTO : 0);
+      if (num(f.bA) > bm + 1 || num(f.bD) > bm + 1) st1.push('pozioni di forza/pietra per ' + Math.round(Math.max(num(f.bA), num(f.bD))) + ' s (al massimo ' + bm + ')');
       if (num(f.inv) > 48) st1.push('zaino da ' + num(f.inv) + ' posti (il più grande ne ha 48)');
-      const chiaveSt = st1.join('|');
-      if (st1.length && chiaveSt === x.statPrima) segnala(p, 'statistiche', st1.join('; '), { g: 'alta', chiave: 'st:' + chiaveSt, prove: { lv, xp: f.xp, vita: f.hp, vitaMax: f.mx, atteso, forza: f.bA, pietra: f.bD, zaino: f.inv },
+      // i secondi di forza e pietra scendono da una foto all'altra: nella chiave conta solo che siano troppi (prima non si segnalava mai)
+      const chiaveSt = st1.map(m => /^pozioni di forza/.test(m) ? 'buff' : m).join('|');
+      if (st1.length && chiaveSt === x.statPrima) segnala(p, 'statistiche', st1.join('; '), { g: 'alta', chiave: 'st:' + chiaveSt, prove: { lv, xp: f.xp, vita: f.hp, vitaMax: f.mx, atteso, bonus: bon, forza: f.bA, pietra: f.bD, zaino: f.inv },
         rip: x.inizio && lv > x.inizio.lv ? { lv: x.inizio.lv, xp: x.inizio.xp } : {} });
       x.statPrima = chiaveSt;
 
@@ -546,7 +604,7 @@ module.exports = {
       if (senza.length) segnala(p, 'frammenti', 'frammenti della Corona senza aver battuto il boss: ' + senza.join(', '), { g: 'alta', chiave: 'sh:' + senza.join(','), prove: { frammenti: sh, bossBattuti: done }, rip: { sh: 1 } });
 
       // oggetti impossibili (indossati e nello zaino)
-      const brutti = []; for (const i of tutti) { const m = oggettoStrano(i, lv); if (m) brutti.push({ u: String(i.u), m, it: pulito(i) }); }
+      const brutti = []; for (const i of tutti) { const m = oggettoStrano(i, lv, x); if (m) brutti.push({ u: String(i.u), m, it: pulito(i) }); }
       const nuovi = brutti.filter(b => !x.chiavi.has('ogg:' + b.u));
       if (nuovi.length) segnala(p, 'oggetti impossibili', nuovi.slice(0, 3).map(b => descr(b.it) + ': ' + b.m).join('; ') + (nuovi.length > 3 ? ' e altri ' + (nuovi.length - 3) : ''),
         { g: 'alta', chiave: 'ogg:' + nuovi.map(b => b.u).join(','), prove: { oggetti: nuovi.slice(0, 8) }, rip: { u: nuovi.map(b => b.u) } });
@@ -587,7 +645,7 @@ module.exports = {
       // scambi e oggetti a terra: oro che non si ha, oggetti che il gioco non sa creare
       if ((m.t === 'tr' && m.a === 'off') || m.t === 'drop') {
         const its = m.t === 'drop' ? [m.it] : (Array.isArray(m.it) ? m.it.slice(0, 12) : []), brutti = [];
-        for (const i of its) { const e = oggettoStrano(i, p.lv); if (e) brutti.push({ it: pulito(i), m: e }); }
+        for (const i of its) { const e = oggettoStrano(i, p.lv, X(p)); if (e) brutti.push({ it: pulito(i), m: e }); }
         const oro = m.t === 'tr' ? Math.max(0, +m.g || 0) : 0, senzaOro = oro > p.gold + 100;
         if (brutti.length) segnala(p, 'oggetti impossibili', (m.t === 'drop' ? 'gettato a terra: ' : 'offerto in uno scambio: ') + brutti.map(b => descr(b.it) + ': ' + b.m).join('; '), { g: 'alta', prove: { oggetti: brutti } });
         if (senzaOro) segnala(p, 'scambio', 'offre ' + fmt(oro) + ' oro ma ne ha ' + fmt(p.gold), { g: 'alta', prove: { offerto: oro, posseduto: p.gold } });

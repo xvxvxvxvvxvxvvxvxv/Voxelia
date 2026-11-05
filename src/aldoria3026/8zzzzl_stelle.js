@@ -159,7 +159,9 @@ function plGen(pk,{R4,D,F,RS,EN,n}){const p=PL82[pk],B=BIO82[p.t],P2=PLP[pk]={},
   return[lx,ly+1]}
 for(let i=0;i<3;i++)NPCS['lum82_'+i]={n:'Lumaro',c:'#5aa0e8',hat:'#e8e0ff',ln:[['Thal\'en parla per tutti noi.','Il Divoratore viene dal buio dei funghi. Ogni notte è più vicino.','La tua nave fa rumore. Le stelle non fanno rumore.'][i]]};
 /* ---- andare e venire: città → nave → pianeti ---- */
-function spGo(k,at){if(NEO.car)carExit();const s=spFix();if(Z[k]&&Z[k].pl82){const p=PL82[Z[k].pl82];Z[k].lv=Math.max(p.lv,(P.lv|0)-1)}
+// 8.3: i nemici di una missione non si salvano: ogni volta che arrivi in un posto (o riprendi la partita) tornano al loro posto,
+// invece di dare il passo per già fatto
+function spGo(k,at){if(NEO.car)carExit();const s=spFix();s.ms=0;if(Z[k]&&Z[k].pl82){const p=PL82[Z[k].pl82];Z[k].lv=Math.max(p.lv,(P.lv|0)-1)}
   cl();load(k);let q=at;if(!q){if(k==='neo_nave')q=[NAVP.portello[0],NAVP.portello[1]-1];else if(Z[k]&&Z[k].pl82){const L=PLP[Z[k].pl82].land;q=[L[0],L[1]+1]}else if(k==='neo_city'&&NPOI.porto)q=[NPOI.porto[0],NPOI.porto[1]+2]}
   if(q){P.px=q[0]+.5;P.py=q[1]+.5;P.path=[];P.tg=null;camX=PX(P.px,P.py);camY=PY(P.px,P.py,10)}
   s.z=k==='neo_city'?'':k;if(Z[k]&&Z[k].pl82){const pk=Z[k].pl82;if(!s.vis[pk]){s.vis[pk]=1;banner('🪐 '+PL82[pk].n,PL82[pk].a,'stella')}else banner('🪐 '+PL82[pk].n,'Livello '+ZZ.lv,'stella')}
@@ -362,5 +364,5 @@ const NPR82={
 {const m0=neoShMax;neoShMax=function(){const v=m0();return v>0&&MODE==='neo'&&spUp('scudo')?v+25:v}}
 {const h0=hurtE;hurtE=function(e,d,rem,cr){if(MODE==='neo'&&!rem&&spUp('armi')&&d>0)d=Math.round(d*1.15);return h0(e,d,rem,cr)}}
 /* ---- riprendere la partita dove l'avevi lasciata: sulla nave o su un pianeta ---- */
-{const b0=neoBegin;neoBegin=function(s){b0(s);try{const sp=spFix();if(s&&sp.z&&Z[sp.z]&&spOpen())setTimeout(()=>{if(MODE==='neo'&&started)spGo(sp.z)},50)}catch(e){console.warn('Oltre il cielo',e)}}}
+{const b0=neoBegin;neoBegin=function(s){const z0=s&&s.p&&s.p.neo&&s.p.neo.sp&&s.p.neo.sp.z;b0(s);try{if(z0&&Z[z0]&&spOpen())setTimeout(()=>{if(MODE==='neo'&&started)spGo(z0)},50)}catch(e){console.warn('Oltre il cielo',e)}}}
 {const s0=save;save=function(){try{if(MODE==='neo'&&P&&P.neo){const s=spFix();s.z=spZone()?Zk:''}}catch(e){}s0()}}

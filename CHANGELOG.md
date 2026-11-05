@@ -15,6 +15,8 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 - **Più Campioni ai livelli alti**: la probabilità sale con il tuo livello, fino al +12%. Il limite per piano è 2, più 1 ogni 10 livelli (e 1 in più sul piano del boss).
 - **Il mercato segue il livello**: nella Storia i prezzi dei negozi salgono di un altro 2% a livello dal livello 5. A livello 30 si paga circa il doppio di un eroe all'inizio: una pozione costa 62 monete invece di 31. In cima ai negozi c'è scritto di quanto sono saliti.
 - **Cripta e Fucina**: quello che la 8.1 aveva alleggerito torna a metà strada. Il Tempio di Giada resta come nella 8.1, perché con i nemici due livelli più su era di nuovo il posto più duro del gioco.
+- **Aldoria 3026, nello spazio: le missioni non si chiudono più da sole.** È lo stesso problema corretto nella 7.57.1 per la città: i nemici di una missione non si salvano. Lasciando un pianeta a metà di «distruggi la guarnigione» o di uno scontro con un boss, al ritorno il passo risultava già fatto. Ora i nemici tornano al loro posto ogni volta che arrivi, anche dopo «Continua».
+- **«Continua» riparte da dove eri**, sulla nave o sul pianeta. Prima ripartiva sempre dalla città, perché il salvataggio fatto all'avvio cancellava il posto.
 - **Le prove del robot**:
   - all'altezza del livello consigliato ogni nemico costa tra l'11% e il 40% della vita;
   - con 12 livelli in più costa tra il 5% e il 24%.

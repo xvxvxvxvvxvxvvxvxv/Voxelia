@@ -10,6 +10,23 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - Il controllo resta esatto: chi gonfia la vita massima a mano, chi si dà il bonus di un pasto senza averlo mangiato e chi allunga la forza oltre la durata di un pasto viene ancora segnalato. Il limite di 870 secondi vale solo con un pasto di forza o difesa attivo. Il controllo della forza e della pietra prima non scattava mai, perché i secondi scendono da una foto all'altra e le due foto di fila non erano mai uguali: ora conta solo che siano troppi. Il controllo del server senza sensore (vita massima impossibile per il livello) tiene conto di un pasto (+15%) in ogni momento, e di via e Quetzal solo se il sensore li ha visti.
 - Provato nel gioco 7.54 con il server e il plugin: con la 2.8 il Pane dolce dava la segnalazione alta, con la 2.9 Pane dolce, Banchetto, Torta di mele, Frittata di mare, via della spada e Quetzal non danno segnalazioni. Vita massima gonfiata, forza a 3000 secondi e bonus del pasto senza pasto vengono segnalati.
 
+## Annunci a schermo (gioco 7.54)
+
+- Gli eventi che chiamano i giocatori non arrivano più solo in chat: compare anche uno stendardo al centro dello schermo, lo stesso del «Giorno N» e del level up (con le scene spente diventa l'avviso in alto, come nel gioco).
+- Lo stendardo **non** compare a chi è in un posto impegnativo: dungeon (anche di Tomorrow), Torre della Corona, fossa del Colosseo, battaglia in mare, missioni delle dimensioni, sogno, filmati e scene, oppure entro 14 caselle da un boss sveglio (compreso il Boss del mondo). A loro resta il messaggio in chat. Quando lo stendardo compare, nasconde l'avviso in alto con lo stesso testo.
+- Il codice nel gioco è uguale in ogni plugin che lo usa (`VXAnnuncio(titolo, testo, icona)`, versione 1): ogni plugin funziona anche da solo, e se due plugin hanno versioni diverse vale la più nuova. Sul server ogni plugin manda l'evento `annuncio`.
+- Plugin aggiornati: **Boss del mondo 1.5**, **Taglie 1.3**, **Caccia al tesoro 1.3**, **Torneo 1.2**, **Gara di pesca 1.2**, **Guardie e ladri 1.4**, **Notti di caccia 1.2**, **Sindaco 1.2**.
+  - **Boss del mondo 1.5:** stendardo quando il boss appare, quando è a metà vita e quando mancano 2 minuti (solo a chi gioca nel regno, non a Tomorrow). «Boss sconfitto» ora arriva anche a chi non ha combattuto.
+  - **Taglie 1.3:** stendardo personale per ogni taglia completata e per tutte le taglie del giorno. A mezzanotte UTC, in chat e a schermo: «Sono uscite le taglie di oggi». Config nuova: `annunciaNuove` (sì).
+  - **Caccia al tesoro 1.3:** stendardo per l'inizio della caccia, per ogni nuovo indizio e quando qualcuno trova il tesoro.
+  - **Guardie e ladri 1.4:** stendardo a tutta la stanza quando si aprono le iscrizioni.
+  - **Notti di caccia 1.2:** stendardo anche per il preavviso «Tra poco cala la notte».
+  - **Torneo 1.2**, **Gara di pesca 1.2**, **Sindaco 1.2:** avevano già i loro stendardi (iscrizioni, «tocca a te», campione; inizio e fine gara; elezione, decreto, festa), che ora rispettano i posti impegnativi.
+  - Guardie e ladri, Caccia al tesoro e Notti di caccia: anche gli stendardi che c'erano già rispettano i posti impegnativi.
+- Non cambiati, perché i loro annunci non chiedono ai giocatori di fare qualcosa: Speedrun (record), Torre (prima in cima), Premio giornaliero, Territori, Guardiano.
+- Provato nel gioco vero (7.54) con due eroi online: chi è in città vede gli stendardi del boss, del tesoro, di guardie e ladri, del torneo e della gara di pesca; chi è nella Tana dei Goblin o accanto al Boss del mondo riceve solo la chat.
+- Boss del mondo, Caccia al tesoro e Guardie e ladri su main erano ancora alla 1.2, 1.1 e 1.2: questi file portano anche le versioni intermedie preparate nella cartella del progetto (Boss 1.3 e 1.4 per i nemici condivisi della 7.41 e i boss a fasi della 7.43; Caccia al tesoro 1.2 e Guardie e ladri 1.3 per Tomorrow e il Colosseo 40×40 della 7.27).
+
 ## Teletrasporto 1.3 (gioco 7.50.1)
 
 - Se `/tpa` non parte perché chi chiede è impegnato (sta già cambiando zona, sta facendo uno scambio, è in cella), il messaggio dice solo il motivo, senza più «… è in una zona che non puoi raggiungere» davanti.

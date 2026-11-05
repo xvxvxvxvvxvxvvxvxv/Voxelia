@@ -4,7 +4,7 @@
 Si gioca da soli o con gli amici. Si esplora la città di Aldoria e il regno intorno e si combatte nei dungeon. In
 Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costruiscono mondi da far giocare agli altri.
 
-**Versione attuale: 7.54.2** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.0** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.md)
 
@@ -194,11 +194,11 @@ Il menu è la **Corona di Voxel** in 3D: ogni gemma porta a una modalità.
 | Gemma | Modalità | Che cos'è |
 |---|---|---|
 | Rubino | **Modalità Storia** | Il Regno Perduto: l'avventura principale, con quattro difficoltà. |
-| Smeraldo | **Tomorrow** | Un mondo senza confini, mille anni dopo Aldoria, con un eroe e un salvataggio suoi. |
+| Smeraldo | **Tomorrow** | Un mondo senza confini, mille anni dopo Aldoria, con un eroe e un salvataggio suoi. Si apre quando hai finito la Storia. |
 | Ametista | **Parco giochi · Voxelia Studio** | L'editor per costruire e giocare i propri mondi. |
 | Topazio | **Mondi della community** | I mondi pubblicati dagli altri giocatori sul server: si giocano, si votano, si commentano. |
 | Diamante | **Prologo e filmati** | Il prologo e le scene della storia già viste. Sul server anche le [versioni precedenti](#versioni-precedenti). |
-| Zaffiro | **Voxelia Dimension** | Un viaggio attraverso le epoche. Per ora è sigillata: si apre solo dal pannello sviluppatore. |
+| Zaffiro | **Aldoria 3026** | La città fra mille anni: torri di vetro e neon, veicoli a levitazione, androidi e armi laser, con un eroe e un salvataggio suoi. Si accende quando in Tomorrow hai fondato il tuo borgo e sei arrivato al livello 15. |
 
 ---
 
@@ -641,6 +641,7 @@ server.js               server multigiocatore, pannello admin, plugin, mondi e v
 admin.html              interfaccia del pannello admin
 build.sh                unisce i sorgenti in voxelia.html e ne controlla la sintassi
 tools/verifica.sh       la verifica prima di pubblicare (build, sintassi, versioni, server di prova)
+tools/prova.js          la prova automatica: gioca qualche secondo di ogni modalità (serve Playwright)
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md e CHANGELOG.md)
@@ -654,7 +655,7 @@ docker-compose.yml      avvio con Docker Compose
 `build.sh` mette in fila `src/head.html` e i file `src/[numero]_*.js` in ordine alfabetico (`LC_ALL=C`, per cui
 `75_tempo.js` viene prima di `7_net.js`). Tutto il codice condivide un unico ambito globale: i file successivi possono
 estendere o sostituire le funzioni di quelli precedenti. Per questo i file nuovi si aggiungono in fondo, con un nome
-che viene dopo gli altri (`8zzzze_…`, `8zzzzf_…`).
+che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`).
 
 <details>
 <summary><b>Che cosa c'è in ogni file di <code>src/</code></b></summary>
@@ -799,9 +800,16 @@ che viene dopo gli altri (`8zzzze_…`, `8zzzzf_…`).
 | `8zzzy_eroe.js` | Esportare e importare l'eroe in un file, con il codice di controllo e le conferme |
 | `8zzzz_compagni.js` | I compagni in rete (visti dagli altri, colpi condivisi), negli scambi, le varianti degli incroci, il nome cambiato nella stalla |
 | `8zzzza_fermo.js` | Quando si apre una finestra l'eroe si ferma; un clic fuori da una finestra la chiude e basta |
-| `8zzzzb_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |
-| `8zzzzc_avvisi.js` | Le scritte del gioco (eventi, cibo attivo, guerre…) non coprono il riquadro dell'eroe, le finestre e la fine della battaglia |
-| `8zzzzd_intralcio.js` | Gli animali da compagnia camminano dietro all'eroe; R, il pulsante verde e il clic scelgono prima porte, oggetti e personaggi |
+| `8zzzzb_elementi.js` | I nove elementi di mostri, armi e compagni (fuoco, ghiaccio, fulmine, acqua, veleno, terra, vento, ombra, luce) e i loro punti deboli |
+| `8zzzzc_chimere.js` | Le chimere: armi, armature e compagni montati con i pezzi di quelli che ci sono già |
+| `8zzzzd_serraglio.js` | Il Serraglio di Aldoria, la casa dei compagni, con la Domatrice Selene e le sue postazioni |
+| `8zzzze_dungeon.js` | Ogni dungeon un'altra dimensione: stanze di forme diverse, stile e arredi propri |
+| `8zzzzf_zaffiro.js` | Voxelia Dimension tolta dal gioco (lo Zaffiro della Corona passa ad Aldoria 3026) |
+| `8zzzzg_neo.js` | Aldoria 3026, la città del futuro nello Zaffiro, la Cronoporta e lo sblocco delle modalità |
+| `8zzzzh_corona80.js` | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album |
+| `8zzzzh_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |
+| `8zzzzi_avvisi.js` | Le scritte del gioco (eventi, cibo attivo, guerre…) non coprono il riquadro dell'eroe, le finestre e la fine della battaglia |
+| `8zzzzj_intralcio.js` | Gli animali da compagnia camminano dietro all'eroe; R, il pulsante verde e il clic scelgono prima porte, oggetti e personaggi |
 
 </details>
 
@@ -814,6 +822,7 @@ che viene dopo gli altri (`8zzzze_…`, `8zzzzf_…`).
 sh build.sh             # rigenera src/9_changelog.js e voxelia.html, e controlla la sintassi
 node server.js          # per provarlo con il server (oppure apri voxelia.html nel browser)
 sh tools/verifica.sh    # la verifica completa: build, sintassi, versioni e un server di prova
+node tools/prova.js     # gioca qualche secondo di ogni modalità e si ferma se il gioco dà un errore
 ```
 
 La stessa verifica gira su GitHub a ogni push e a ogni pull request (workflow **Verifica**): una PR che rompe la build,

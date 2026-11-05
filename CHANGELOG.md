@@ -40,6 +40,7 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
   - **Aldoria 3026** si apre quando in Tomorrow fondi il tuo borgo e arrivi al livello 15.
   - In partita un annuncio dice cosa si è aperto. Nel menu della Corona le gemme chiuse spiegano cosa serve.
   - Chi aveva già una partita in Tomorrow o in Aldoria la tiene aperta.
+- **Dentro anche le correzioni della 7.54.1 e della 7.54.2**, che valgono pure per le cose nuove: la schermata di Aldoria 3026 nel menu sta nella finestra come le altre, e le scritte del gioco non coprono il riquadro in alto di Aldoria 3026.
 
 ## 7.56 — Aldoria 2026: la città moderna nello Zaffiro (5 novembre 2026)
 

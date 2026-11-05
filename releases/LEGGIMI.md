@@ -16,10 +16,11 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-104 versioni, dalla più recente.
+105 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
+| [7.57](voxelia_v7.57.html) | 5 novembre 2026 | Aldoria 3026, la Cronoporta (la Dimension torna) e le modalità che si sbloccano | 3.072 KB |
 | [7.56](voxelia_v7.56.html) | 5 novembre 2026 | Aldoria 2026: la città moderna nello Zaffiro, con auto, armi da fuoco, polizia e missioni | 3.056 KB |
 | [7.55](voxelia_v7.55.html) | 5 novembre 2026 | Il Serraglio dei compagni, gli elementi, le chimere e i dungeon come un'altra dimensione; via Voxelia Dimension | 2.991 KB |
 | [7.54](voxelia_v7.54.html) | 4 novembre 2026 | I compagni in rete, negli scambi e con le varianti; la Torre fuori dai piedi; l'eroe non cammina più da solo | 2.898 KB |

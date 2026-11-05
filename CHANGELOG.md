@@ -5,6 +5,22 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.57 — Aldoria 3026, la Cronoporta e le modalità che si sbloccano (5 novembre 2026)
+
+- **Aldoria 2026 diventa Aldoria 3026: la città fra mille anni.**
+  - La città: torri di vetro con le fasce al neon che salgono fino al tetto, abitazioni a capsula con la cupola luminosa, viali scuri con le corsie azzurre e i bordi magenta. Ci sono piloni al neon al posto dei lampioni, semafori olografici, cartelloni olografici, alberi bioluminescenti, colonnine di ricarica, l'ologramma di Re Aldric in piazza e droni che volano sopra le strade. Il porto è uno spazioporto.
+  - **Veicoli a levitazione**: scivolano a un metro da terra, con l'ombra sotto e i levitatori che brillano. Nove modelli: Navetta, Saetta, Corazzata, Cargo, Aerotaxi, Rover, Volante-drone, Medi-navetta e la nuova **Moto jet**, la più veloce.
+  - **Armi laser**: pistola laser, raffica ionica, disgregatore a impulsi e fucile al plasma, con i raggi colorati. C'è anche lo **scudo energetico**: assorbe i colpi e si ricarica da solo dopo quattro secondi di calma. Nell'HUD si vede la sua carica.
+  - **Robot e androidi**: un passante su tre è un androide. La polizia schiera agenti androidi e, da 4 stelle, i mech. I Corvi di Neon hanno droni da combattimento e cyborg. Tommaso del Bar è diventato Tommaso-7, un androide barista.
+  - I soldi sono **crediti** (₡). Anche negozi e oggetti sono del 3026: Armeria Fotonica, Levitatori Aldric, Moda 3026 (visori, cappucci a led, giacche riflettenti), le nanocure dell'ospedale, la tua capsula.
+  - **La storia è riscritta per il 3026**: la Corona è diventata la Rete Corona che alimenta la città, i Corvi di Neon rubano i nuclei di Zaffiro e Max «il Corvo» è mezzo uomo e mezzo macchina. Le missioni sono **nove**: l'ultima, con la nuova **Professoressa Elara**, accende la Cronoporta.
+- **La Cronoporta: Voxelia Dimension torna, dentro Aldoria 3026.** Dal Laboratorio Cronos (in centro, con l'anello di luce che gira sul tetto) si viaggia nel tempo nelle quattro epoche della Dimension: Far West, Londra vittoriana, Rivoluzione e Grande Guerra, con le loro missioni, le scelte e i finali. Dalla console della cabina «⏎ Torna nel 3026», e alla fine del viaggio si torna da soli in città.
+- **Le modalità si sbloccano una dopo l'altra.**
+  - **Tomorrow** si apre quando sconfiggi il Re Lich nella Storia.
+  - **Aldoria 3026** si apre quando in Tomorrow fondi il tuo borgo e arrivi al livello 15.
+  - In partita un annuncio dice cosa si è aperto. Nel menu della Corona le gemme chiuse spiegano cosa serve.
+  - Chi aveva già una partita in Tomorrow o in Aldoria la tiene aperta.
+
 ## 7.56 — Aldoria 2026: la città moderna nello Zaffiro (5 novembre 2026)
 
 Lo Zaffiro della Corona si è riacceso, intero. Dentro c'è **Aldoria mille anni dopo**: una metropoli del 2026, con un eroe nuovo e un salvataggio tutto suo.

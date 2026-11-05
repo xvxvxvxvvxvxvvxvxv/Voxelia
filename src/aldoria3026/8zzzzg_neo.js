@@ -382,6 +382,9 @@ function neoBegin(s){cineReset();auInit();MODE='neo';DIM=null;PPJ=[];DF=DFS[s&&s
   NET.tm=null;NET.hits=[];NET.say=null;NET.ar=null;NET.lb=null;NET.runs={};NET.st=NET.code?(window.GAME_WS?'connessione…':'multigiocatore non disponibile: apri il gioco dal server (node server.js)'):'';
   NEO.car=null;NEO.W=0;NEO.b=[];NEO.ms=[];NEO.gz=null;$('menu').style.display='none';closeSet();document.body.classList.add('ig','neom');inMenu=0;started=1;last=performance.now();cineOff();SZ=1;
   netConnect();load('neo_city');hudApply&&hudApply();wheelApply&&wheelApply();
+  // 7.57.1: i nemici e l'auto del corriere di una missione non si salvano: con «Continua» a metà missione si rimettono in strada
+  // (prima il passo «caccia», «ferma la Saetta» o «affronta il Corvo» si chiudeva da solo, con la ricompensa). Il tempo rimasto resta quello salvato.
+  if(s&&s.p){const o=nmFix();if(o.s>=0){const tl=o.tl;nmStep();if(tl>0)o.tl=tl}}
   if(s&&s.p&&s.p.neo&&s.p.neo.home&&NPOI.apt){P.px=NPOI.apt[0]+.5;P.py=NPOI.apt[1]+1.5;camX=PX(P.px,P.py);camY=PY(P.px,P.py,10)}
   if(!s){PA={ti:'Aldoria · 3026',tx:'Lo Zaffiro si apre e ti lascia cadere su un marciapiede di metallo. Veicoli che scivolano a un metro da terra, droni, torri di vetro con le fasce al neon che si perdono tra le nuvole: è Aldoria, fra mille anni.\n\nNon hai niente, se non trecento crediti e una mazza al plasma. Al Bar del Drago, qui vicino, c\'è qualcuno che ti aspetta (il segno giallo sopra la testa).\n\nComandi: clic o WASD per camminare · R per salire su un veicolo (e per scendere) · WASD o la levetta per guidare, Spazio per frenare · clic su un nemico o Spazio/X per sparare · T per il comunicatore.'};pn('txt')}
   neoHud();save()}

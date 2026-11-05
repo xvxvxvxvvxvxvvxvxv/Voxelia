@@ -5,6 +5,12 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.54.2 — Gli animali e i compagni non stanno più in mezzo (5 novembre 2026)
+
+- **Gli animali da compagnia camminano dietro all'eroe.** Cane, gatto, volpe, coniglio, gufo, maialino, pinguino e draghetto seguivano l'eroe a un passo, spesso proprio davanti o addosso a lui. Ora gli stanno dietro, un po' di lato (dalla parte opposta del compagno domato), e si fermano lì.
+- **Porte, oggetti e personaggi vengono prima dell'animale.** L'animale era sempre «la cosa più vicina» con cui interagire: R, il pulsante verde e il clic prendevano lui invece della porta, del forziere, dell'oggetto a terra o del personaggio, e non si riusciva più ad aprire, raccogliere o parlare. Ora scelgono prima tutto il resto: l'animale si accarezza quando lì vicino non c'è altro.
+- **Il compagno domato non si clicca più per sbaglio.** Un clic su di lui fa camminare l'eroe dove hai cliccato, o colpisce il nemico che c'è lì (prima l'eroe gli andava incontro e basta).
+
 ## 7.54.1 — Il menu sta nella finestra, le scritte non coprono più le finestre, il cavallo guarda dove guardi tu (5 novembre 2026)
 
 - **Niente più spazio vuoto sotto la difficoltà.** Nella Modalità Storia le carte della difficoltà riempiono tutto il pannello «Nuova partita», anche quando il pannello dell'eroe accanto è più alto (con i pulsanti per esportare e importare l'eroe lo era diventato).

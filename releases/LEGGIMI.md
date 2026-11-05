@@ -16,10 +16,11 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-103 versioni, dalla più recente.
+104 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
+| [7.54.2](voxelia_v7.54.2.html) | 5 novembre 2026 | Gli animali e i compagni non stanno più in mezzo | 2912 KB |
 | [7.54.1](voxelia_v7.54.1.html) | 5 novembre 2026 | Il menu sta nella finestra, le scritte non coprono più le finestre, il cavallo guarda dove guardi tu | 2908 KB |
 | [7.54](voxelia_v7.54.html) | 4 novembre 2026 | I compagni in rete, negli scambi e con le varianti; la Torre fuori dai piedi; l'eroe non cammina più da solo | 2.898 KB |
 | [7.53](voxelia_v7.53.html) | 4 novembre 2026 | Ottimizzazione generale: il gioco arriva compresso, meno codice morto, sorgenti più ordinati | 2.869 KB |

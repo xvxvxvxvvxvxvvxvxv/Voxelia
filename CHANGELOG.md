@@ -116,6 +116,19 @@ Lo Zaffiro della Corona si è riacceso, intero. Dentro c'è **Aldoria mille anni
   - La stanza del boss è un santuario, con le colonne in cerchio, il varco dimensionale e le rune sul pavimento.
   - Entrando in una stanza speciale compare il suo nome. La mappa resta la stessa per tutti i giocatori della stanza.
 - **Voxelia Dimension non c'è più.** Sulla Corona, al posto della sua gemma, resta lo **Zaffiro infranto**, in schegge: «in attesa» di quello che nascerà dai suoi frammenti. La modalità è tolta anche dal menu di riserva e dal pannello sviluppatore.
+## 7.54.2 — Gli animali e i compagni non stanno più in mezzo (5 novembre 2026)
+
+- **Gli animali da compagnia camminano dietro all'eroe.** Cane, gatto, volpe, coniglio, gufo, maialino, pinguino e draghetto seguivano l'eroe a un passo, spesso proprio davanti o addosso a lui. Ora gli stanno dietro, un po' di lato (dalla parte opposta del compagno domato), e si fermano lì.
+- **Porte, oggetti e personaggi vengono prima dell'animale.** L'animale era sempre «la cosa più vicina» con cui interagire: R, il pulsante verde e il clic prendevano lui invece della porta, del forziere, dell'oggetto a terra o del personaggio, e non si riusciva più ad aprire, raccogliere o parlare. Ora scelgono prima tutto il resto: l'animale si accarezza quando lì vicino non c'è altro.
+- **Il compagno domato non si clicca più per sbaglio.** Un clic su di lui fa camminare l'eroe dove hai cliccato, o colpisce il nemico che c'è lì (prima l'eroe gli andava incontro e basta).
+
+## 7.54.1 — Il menu sta nella finestra, le scritte non coprono più le finestre, il cavallo guarda dove guardi tu (5 novembre 2026)
+
+- **Niente più spazio vuoto sotto la difficoltà.** Nella Modalità Storia le carte della difficoltà riempiono tutto il pannello «Nuova partita», anche quando il pannello dell'eroe accanto è più alto (con i pulsanti per esportare e importare l'eroe lo era diventato).
+- **Il menu si adatta alla finestra.** La schermata della Corona riempie sempre la finestra, né più né meno: il titolo in alto, i pulsanti in basso e la Corona nello spazio che resta, anche quando la finestra si allarga o si stringe. Le altre schermate (Storia, Tomorrow, Parco giochi…) si rimpiccioliscono quanto serve per starci intere, invece di scorrere su e giù oltre la pagina; scorrono solo quando servirebbe rimpicciolirle troppo, come sui telefoni in verticale.
+- **Le scritte del gioco non coprono più il resto.** L'evento in corso («Un drago attacca…»), il cibo o l'elisir attivo («Torta di mele · 14:28»), la guerra tra fazioni, la maledizione e i contatori di miniera e insediamento stavano sopra a tutto: coprivano il riquadro dell'eroe, la schermata di fine battaglia e le finestre del gioco, e due insieme si accavallavano. Ora stanno sotto le finestre e si mettono da sole nel primo posto libero: il cibo sotto il riquadro dell'eroe (che cambia altezza con stamina, notte e giocatori), le altre una sotto l'altra al centro, sotto il nome della zona e i riquadri della battaglia.
+- **Anche gli avvisi passeggeri stanno sotto le finestre.** I titoli grandi («Vittoria!»), il nome della zona, il «Perfetto!» delle combo e i pulsanti d'azione in basso finiscono sotto una finestra quando la apri. A fine battaglia il titolo «Vittoria!» o «Sconfitta» compare sotto il riquadro con i pulsanti, e il nome della zona non si vede più in trasparenza dietro la barra della battaglia.
+- **Il cavallo guarda dove guarda l'eroe.** Prima seguiva solo l'ultimo passo e in quattro versi: quando l'eroe si girava per colpire, raccogliere o mirare, il cavallo restava di traverso sotto di lui, e i cavalli degli altri giocatori guardavano sempre dalla stessa parte. Ora si gira con l'eroe in tutti gli otto versi, anche per gli altri giocatori.
 
 ## 7.54 — I compagni in rete, negli scambi e con le varianti; la Torre fuori dai piedi; l'eroe non cammina più da solo (4 novembre 2026)
 

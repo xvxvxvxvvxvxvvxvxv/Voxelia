@@ -1,8 +1,8 @@
-# Voxelia 3DS 1.4 — Il Regno Perduto
+# Voxelia 3DS 1.5 — Il Regno Perduto
 
-Versione del port: **1.4** (contenuti di Voxelia **7.50**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.5** (contenuti di Voxelia **7.57**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
-Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 7.50 – Il Regno Perduto*,
+Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 7.57 – Il Regno Perduto*,
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,
 libctru, citro3d e citro2d, e pensato per l'hardware della console.
 
@@ -64,10 +64,10 @@ più velocemente, sinistra/destra per cambiare volumi, zoom e puntate. Le righe 
   - il cambio di brano come nell'originale: musica notturna in città, musica del boss quando è vicino, dissolvenze.
   Le note sono estratte da `voxelia.html` con `tools/songs.js` in `romfs/music.json`.
 
-## Contenuti: sincronizzati con la 7.50
+## Contenuti: sincronizzati con la 7.57
 
 Mappe, modelli, nemici, personaggi e missioni non sono più riscritti a mano: arrivano direttamente dalla versione
-browser più recente. `tools/export.js` esegue `voxelia.html` 7.50 in Node (jsdom, senza grafica), carica ogni
+browser più recente. `tools/export.js` esegue `voxelia.html` 7.57 in Node (jsdom, senza grafica), carica ogni
 zona con il codice originale e registra ogni voxel che il renderer disegna (`box`/`rbox`), oltre a collisioni,
 luci ed entità. Poi cattura in 8 direzioni i fotogrammi di camminata e di attacco dei modelli animati della 7.18
 e compone l'eroe per ogni tipo d'arma, elmo, corazza e scudo. Il risultato (circa 12 MB) sta nella romfs.
@@ -163,16 +163,32 @@ Limiti:
   - le finestre di Casa, Discoteca e Mercatino;
   - il sensore del Guardiano nel gioco: il Guardiano controlla comunque i progressi dal server.
 
+## La Modalità Storia della 7.57
+
+Dalla 1.5 la console ha le meccaniche della Storia arrivate nel browser dopo la 7.50, con le stesse regole e gli
+stessi messaggi di rete (`story*.c`, `sync.c`):
+- **Nemici condivisi (7.41):** in rete i nemici della zona li guida chi ci è da più tempo, gli altri ne vedono la
+  copia; i colpi arrivano al padrone e quando un nemico cade, cade per tutti. Vale tra 3DS e browser.
+- **Cavalli e corsa (7.46)**, **animali da compagnia (7.47)**, **compagni domati (7.20/7.54)** con il Serraglio,
+  gli incroci e le varianti (7.47/7.54/7.55): si vedono anche quelli degli altri giocatori, e loro vedono i tuoi.
+- **Elementi ed Essenze (7.55)**, infusione alla Fucina di Borin.
+- **Scelte (7.48):** risparmiare o finire i boss, il Viandante, la Casa degli alleati, le vie e i titoli.
+- **Il regno oltre il mare (7.48):** Capitana Marina, Cancelliere Oreste, i Sigilli di Giada, Quetzal, la Regina Nerea.
+- **Combattimento (7.44):** boss a fasi con il punto debole, armi che crescono (nome e mossa speciale), maledizioni.
+- **Mondo (7.44/7.46):** scavi, eventi a orario (drago, meteora, mercante), diario delle scoperte.
+- **Bottega dei mestieri (7.47)**, **Torre della Corona (7.44/7.49)** con le sale generate sulla console,
+  **duello delle carte (7.47)**.
+
+Comandi: sul touch ci sono **Comp.** (i compagni), **Doma** (quando un mostro indebolito si può domare) e
+**Sella/Scendi** (con un cavallo). Dal menu di pausa: compagni, animali, incroci, cronaca, diario delle scoperte.
+
 ## Cosa non c'è ancora
 
-La 7.50 è enorme (circa 20.000 righe). Mancano le parti che sono modalità a sé o richiedono meccaniche proprie:
-- **Modalità a sé:** Tomorrow (regni, fazioni, guerre, città), Voxelia Studio, Voxelia Dimension, realtà virtuale.
-- **Meccaniche proprie:** pesca e immersioni, mestieri, animali, carte, cavalcature, battaglia navale,
-  Torre della Corona, miniere, scavi.
-- **Storia e presentazione:** i filmati, le scelte del vero finale (Aldoria Vecchia, l'Abominio), l'editor
-  dell'aspetto dell'eroe.
-
-Questi luoghi e oggetti si vedono, ma non si possono usare.
+- **Modalità a sé:** Tomorrow, Aldoria 2026/3026 e la Cronoporta, Voxelia Studio, realtà virtuale.
+- **Storia:** pesca, miniere, battaglia navale, la casa (lavagna e trofei), le classifiche della settimana,
+  i filmati, il vero finale (Aldoria Vecchia, l'Abominio), l'editor dell'aspetto e il file dell'eroe.
+- **Semplificazioni:** le chimere hanno il corpo di una specie (la testa dell'altra resta nel nome); il passaggio
+  segreto degli scavi è crollato (dà un tesoro, non la grotta); le armi chimera degli altri si vedono con la loro testa.
 
 ## Compilare
 

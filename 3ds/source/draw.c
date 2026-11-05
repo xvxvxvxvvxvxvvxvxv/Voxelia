@@ -30,6 +30,7 @@ void drawModelFrame(int mdl, int frame, float px, float py, float zo, int white,
 	for (int i = 0; i < m->nb[frame]; i++) {
 		const QBox *q = &B[i];
 		u32 c = white == 1 ? 0xffffff : (q->r << 16) | (q->g << 8) | q->b;
+		if (gVar && white != 1) { extern u32 pvColor(u32); c = pvColor(c); }   // varianti dei compagni (7.54)
 		gEmit = emissiveQ(q) ? .85f : 0;
 		u8 a = alpha < 255 ? alpha : (q->a < 250 ? q->a : 255);
 		float s = gMS;
@@ -77,6 +78,7 @@ void drawHero(void) {
 	int c, h, w, s, tw, th, tc, ts; heroEqPack(&c, &h, &w, &s, &tw, &th, &tc, &ts);
 	float z = P.moving ? fabsf(sinf(gtime * 17)) * 2 : 0;
 	if (P.dmk == 1) z += 3;
+	if (cavOn()) { xDrawHeroHorse(); z = xHeroZ(); }   // in sella (7.46)
 	drawHeroModel(P.px, P.py, z, P.face, c, h, w, s, tw, th, tc, ts, P.moving, gtime * 17, P.sw > 0, P.fl > 0 ? 200 : 255);
 	if (P.bA > 0 || P.bD > 0) { rStream(2); flatRing(P.px, P.py, .5f, .42f, .42f, .06f, P.bA > 0 ? 0xff7a3a : 0x9a9aaa, 140); rStream(1); }
 }
@@ -91,13 +93,16 @@ void drawPeers(void) {
 		if (sx < -80 || sx > 480 || sy < -60 || sy > 320) continue;
 		shadowAt(p->x, p->y, .33f);
 		bool mv = p->mv > 0;
-		drawHeroModel(p->x, p->y, mv ? fabsf(sinf(gtime * 17 + i)) * 2 : 0, p->fa & 7, p->c, p->h, p->w, p->s, p->tw, p->th, p->tc, p->ts, mv, gtime * 17 + i, p->sw > 0, p->fl > 0 ? 200 : 255);
+		xDrawPeerExtras(p, i);
+		if (xPeerMounted(p)) xDrawPeerHorse(p, mv, gtime * 13 + i);
+		drawHeroModel(p->x, p->y, xPeerMounted(p) ? 16 : mv ? fabsf(sinf(gtime * 17 + i)) * 2 : 0, p->fa & 7, p->c, p->h, p->w, p->s, p->tw, p->th, p->tc, p->ts, mv, gtime * 17 + i, p->sw > 0, p->fl > 0 ? 200 : 255);
 	}
 }
 
 void drawEntity(Ent *e) {
 	float u;
 	switch (e->k) {
+	case K_X: xDraw(e); return;
 	case K_TC: {
 		box(e->px - .05f, e->py - .05f, 10, .1f, .1f, 14, 0x4a3a2a, 1);
 		float fl = 1 + sinf(gtime * 12 + e->px * 5) * .15f;

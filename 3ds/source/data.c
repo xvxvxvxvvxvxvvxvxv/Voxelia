@@ -15,6 +15,8 @@ static float mulberry(u32 *a) {
 	return (float)((t ^ (t >> 14)) >> 8) / 16777216.0f;
 }
 float frnd(void) { return mulberry(&FSEED); }
+u32 rngSwap(u32 s) { u32 o = FSEED; FSEED = s; return o; }
+J *dataRoot(void) { return DROOT; }
 int fri(int a, int b) { int v = a + (int)floorf(frnd() * (b - a + 1)); return v > b ? b : v; }
 u32 hs(const char *s) { u32 h = 2166136261u; for (; *s; s++) h = (h ^ (u8)*s) * 16777619u; return h; }
 
@@ -41,6 +43,7 @@ Item mkItem(int lv, int minR, int slot) {
 	it.s = s; it.r = r; it.v = v; it.p = v * 5; it.used = 1;
 	snprintf(it.n, sizeof it.n, "%s%s", a[fri(0, na - 1)], RS[r > 3 ? 3 : r]);
 	if (r >= 2 && frnd() < .6f) { if (s == SL_W) it.cr = fri(2, 4 + r * 2); else it.hp = (int)roundf(fri(5, 12) * (r - 1) + lv * 2); }
+	itemRollEl(&it);   // 7.55: le armi rare in su a volte nascono con un elemento
 	return it;
 }
 int iv(const Item *it) { if (!it || !it->used) return 0; return (int)roundf(it->v * (1 + .12f * it->up)); }
@@ -159,7 +162,10 @@ void dataInit(void) {
 		d->rng = jcolor(jgs(e, "rng", NULL), 0);
 		d->mdl = (int)jgn(e, "mdl", -1);
 		d->sum = -1;
+		d->kind = jgs(e, "kind", "");
+		{ J *xe = jget(jget(DROOT, "XM"), "el"), *xh = jget(jget(DROOT, "XM"), "elh"); d->el = (u8)elKey(jgs(xe, e->key, "")); d->elh = (u8)elKey(jgs(xh, e->key, "")); }
 	}
+	xModels(jget(DROOT, "XM"));
 	{ int i = 0; JFOR(e, jget(DROOT, "E")) { if (i >= NE) break; E[i].sum = enemyIdx(jgs(e, "sum", NULL)); i++; } }
 	// personaggi
 	JFOR(n, jget(DROOT, "NPCS")) {

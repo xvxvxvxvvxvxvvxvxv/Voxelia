@@ -252,8 +252,15 @@ void netEnemyHit(int id, float frac) {
 	if (NHITS >= 14) { memmove(HITS, HITS + 1, sizeof HITS[0] * 13); NHITS = 13; }
 	snprintf(HITS[NHITS++], 48, "[%d,%.4f,%d]", id, frac, ++hitSeq);
 }
+// 7.41: i nemici condivisi si colpiscono con il loro id di rete ("padrone.n")
+void netEnemyHitE(Ent *e, float frac) {
+	if (!netOk) return;
+	if (!e->sg[0]) { netEnemyHit(e->id, frac); return; }
+	if (NHITS >= 14) { memmove(HITS, HITS + 1, sizeof HITS[0] * 13); NHITS = 13; }
+	snprintf(HITS[NHITS++], 48, "[\"%s\",%.4f,%d]", e->sg, frac, ++hitSeq);
+}
 static void sendState(void) {
-	char b[1400]; JW w = {b, 0, sizeof b};
+	static char b[6144]; JW w = {b, 0, sizeof b};
 	char rk[64]; rmKey(rk, sizeof rk);
 	int c, h, ww, s, tw, th, tc, ts; heroEqPack(&c, &h, &ww, &s, &tw, &th, &tc, &ts);
 	jwRaw(&w, "{\"t\":\"p\",\"d\":{\"rm\":"); jwStr(&w, rk);
@@ -266,6 +273,7 @@ static void sendState(void) {
 	jwRaw(&w, "]");
 	if (sayN) { jwRaw(&w, ",\"say\":{\"s\":"); jwStr(&w, sayS); jwf(&w, ",\"n\":%d}", sayN); }
 	{ extern void levPack(char *, int); char lp[64]; levPack(lp, sizeof lp); jwRaw(&w, lp); }
+	{ static char xp[4096]; xPack(xp, sizeof xp); jwRaw(&w, xp); extern void syncPack(char *, int); syncPack(xp, sizeof xp); jwRaw(&w, xp); }
 	jwRaw(&w, "}}");
 	netSendRaw(b);
 }
@@ -310,8 +318,10 @@ static void onMsg(J *m) {
 			char tb[48]; snprintf(tb, sizeof tb, "%s", ty);
 			char *parts[4] = {tb, NULL, NULL, NULL}; int np = 1;
 			for (char *c2 = tb; *c2 && np < 4; c2++) if (*c2 == '.') { *c2 = 0; parts[np++] = c2 + 1; }
+			for (int k = 0; k < np; k++) { char *t2 = strchr(parts[k], '~'); if (t2) *t2 = 0; }   // 7.55: chimere "axe~spr~2": la testa decide il tipo
 			o->tw = tyIdx(parts[0] ? parts[0] : "swd", TYW, 8, 0); o->th = parts[1] ? tyIdx(parts[1], TYH, 4, 0) : 0; o->tc = parts[2] ? tyIdx(parts[2], TYC, 3, 0) : 0; o->ts = parts[3] ? tyIdx(parts[3], TYS, 3, 0) : 0;
 			int sw = (int)jgn(q, "sw", 0); if (sw != o->swc) { o->swc = sw; o->sw = .2f; }
+			xPeerParse(o, q, fresh);
 			J *say = jget(q, "say");
 			if (say) { int n = (int)jgn(say, "n", 0); if (n != o->sayN) { o->sayN = n; snprintf(o->bub, sizeof o->bub, "%.60s", jgs(say, "s", "")); o->bt = fmaxf(5, marqueeTime(o->bub, .38f, 150) + 1.5f); } }
 			// danni ai nemici fatti dagli altri: valgono anche qui
@@ -321,15 +331,17 @@ static void onMsg(J *m) {
 				int id = (int)jnum(jat(h, 0), -1), seq = (int)jnum(jat(h, 2), 0);
 				if (seq <= lastSeq[pi]) continue;
 				char rk[64]; rmKey(rk, sizeof rk);
-				if (!fresh && !strcmp(o->rm, rk)) enemyNetHit(id, (float)jnum(jat(h, 1), 0));
+				if (!fresh && !strcmp(o->rm, rk)) { J *h0 = jat(h, 0); if (h0 && h0->t == JSTR) { extern void enemyNetHitG(const char *, float); enemyNetHitG(jstr(h0, ""), (float)jnum(jat(h, 1), 0)); } else enemyNetHit(id, (float)jnum(jat(h, 1), 0)); }
 				lastSeq[pi] = seq;
 			}
 		}
 		for (int i = 0; i < MAXPEER; i++) if (PEERS[i].used && !seen[i]) PEERS[i].used = false;
+		{ extern void syncOnState(J *); syncOnState(p); }
 		// le leve tirate dai compagni dello stesso piano
 		{ extern bool levPeer[2], levPeerOpen; levPeer[0] = levPeer[1] = levPeerOpen = false; char rk[64]; rmKey(rk, sizeof rk);
 		  JFOR(q, p) { if (strcmp(jgs(q, "rm", ""), rk)) continue; JFOR(l, jget(q, "lvr")) { const char *id = jstr(l, ""); if (!strcmp(id, "L1")) levPeer[0] = true; if (!strcmp(id, "L2")) levPeer[1] = true; } if (jgn(q, "lvo", 0)) levPeerOpen = true; } }
 	} else if (!strcmp(t, "pi")) {
+		xSetServerTime(jgn(m, "s", 0));
 		char b[64]; snprintf(b, sizeof b, "{\"t\":\"po\",\"s\":%.0f}", jgn(m, "s", 0)); netSendRaw(b);
 		netPing = jgn(m, "me", -1); setTime(jget(m, "gm"));
 	} else if (!strcmp(t, "time")) { setTime(jget(m, "gm")); if (jget(m, "s")) msg("%s", jgs(m, "s", "")); }

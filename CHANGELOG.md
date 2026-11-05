@@ -5,6 +5,26 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.0 — La Corona Riunita (5 novembre 2026)
+
+- **Sei frammenti, uno per modalità.** Ogni gemma della Corona ora si conquista finendo la sua avventura:
+  - **Rubino**, Storia: sconfiggi il Re Lich;
+  - **Smeraldo**, Tomorrow: batti il boss di un dungeon di livello 20 o più;
+  - **Zaffiro**, Aldoria 3026: sconfiggi il Corvo;
+  - **Ametista**, il Parco: finisci un'avventura dell'editor;
+  - **Topazio**, i Mondi: finisci un mondo che hai giocato;
+  - **Diamante**, la Cronoporta: arriva alla fine del viaggio nel tempo.
+  
+  Chi aveva già finito queste avventure si trova i frammenti già assegnati.
+- **Il Cuore della Corona.** Con tutti e sei i frammenti si apre l'arena finale: una piattaforma circolare sospesa, con le sei gemme sui piedistalli.
+  - Si combatte con l'eroe della Storia contro cinque ondate: il passato, le epoche, il futuro, le chimere di Tomorrow e poi tutti insieme.
+  - Fra un'ondata e l'altra recuperi il 40% della vita e una pozione. Se cadi torni in città e puoi riprovare dall'Album.
+  - Alla fine arriva **l'Eco della Corona**, una chimera del Re Lich e del Drago di Brina.
+  - Chi vince riceve 20.000 monete e l'elmo **Corona Riunita**.
+- **L'Album della Corona.** Un nuovo pulsante nel menu apre l'album, con i frammenti presi (e quando), quelli mancanti con cosa serve per averli, e l'ingresso al Cuore.
+- Nella Corona del menu ogni gemma mostra se il suo frammento è già tuo.
+- **Prova automatica**: `node tools/prova.js` gioca qualche secondo di ogni modalità e si ferma se il gioco dà un errore.
+
 ## 7.57 — Aldoria 3026, la Cronoporta e le modalità che si sbloccano (5 novembre 2026)
 
 - **Aldoria 2026 diventa Aldoria 3026: la città fra mille anni.**

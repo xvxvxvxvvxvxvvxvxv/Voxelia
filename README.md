@@ -4,7 +4,7 @@
 Si gioca da soli o con gli amici. Si esplora la città di Aldoria e il regno intorno e si combatte nei dungeon. In
 Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costruiscono mondi da far giocare agli altri.
 
-**Versione attuale: 8.0** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.1** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.md)
 
@@ -641,7 +641,8 @@ server.js               server multigiocatore, pannello admin, plugin, mondi e v
 admin.html              interfaccia del pannello admin
 build.sh                unisce i sorgenti in voxelia.html e ne controlla la sintassi
 tools/verifica.sh       la verifica prima di pubblicare (build, sintassi, versioni, server di prova)
-tools/prova.js          la prova automatica: gioca qualche secondo di ogni modalità (serve Playwright)
+tools/prova.js          la prova automatica: le modalità, i salvataggi e due giocatori in rete (serve Playwright)
+tools/bilancia.js       il bilanciamento: un robot gioca i dungeon e dice quanta vita costa ogni nemico
 CHANGELOG.md            tutte le modifiche, dalla più recente (finisce anche dentro il gioco)
 src/                    i sorgenti del gioco
 plugins/                plugin del server (con LEGGIMI.md e CHANGELOG.md)
@@ -652,10 +653,27 @@ docker-compose.yml      avvio con Docker Compose
 .github/workflows/      la verifica a ogni push e PR, e la pubblicazione dell'immagine su GitHub Container Registry
 ```
 
-`build.sh` mette in fila `src/head.html` e i file `src/[numero]_*.js` in ordine alfabetico (`LC_ALL=C`, per cui
-`75_tempo.js` viene prima di `7_net.js`). Tutto il codice condivide un unico ambito globale: i file successivi possono
-estendere o sostituire le funzioni di quelli precedenti. Per questo i file nuovi si aggiungono in fondo, con un nome
-che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`).
+I sorgenti stanno in cartelle, una per parte del gioco:
+
+| Cartella | Che cosa c'è |
+|---|---|
+| `src/base/` | Le basi: motore, dati, mondo, disegno, eroe, interfaccia, rete, avvio |
+| `src/storia/` | La Modalità Storia: Aldoria, i filmati, Thalassa, le scelte e il finale |
+| `src/combattimento/` | Combattimento, boss, dungeon, compagni, elementi e chimere |
+| `src/tomorrow/` | Tomorrow: il mondo senza fine, i borghi, le fazioni e le guerre |
+| `src/aldoria3026/` | Aldoria 3026 e la Cronoporta |
+| `src/corona/` | Il menu della Corona, i frammenti, il Cuore della Corona e l'Album |
+| `src/studio/` | Voxelia Studio (l'editor) e i Mondi della community |
+| `src/grafica/` | La vista 3D, la realtà virtuale e le opzioni grafiche |
+| `src/sistemi/` | Le parti comuni a tutto il gioco: eventi, mestieri, animali, foto, menu, correzioni |
+
+Restano direttamente in `src/` solo `head.html` (la pagina) e `9_changelog.js` (generato da `build.sh`).
+
+`build.sh` mette in fila `src/head.html` e tutti i file `[numero]_*.js` delle cartelle in ordine alfabetico del **nome
+del file**, qualunque sia la cartella (`LC_ALL=C`, per cui `75_tempo.js` viene prima di `7_net.js`). Due file con lo
+stesso nome in cartelle diverse fermano la build. Tutto il codice condivide un unico ambito globale: i file successivi
+possono estendere o sostituire le funzioni di quelli precedenti. Per questo i file nuovi si aggiungono in fondo, con un
+nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della parte del gioco che toccano.
 
 <details>
 <summary><b>Che cosa c'è in ogni file di <code>src/</code></b></summary>
@@ -665,151 +683,152 @@ che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`).
 | File | Contenuto |
 |---|---|
 | `head.html` | Pagina, stili, menu e struttura dell'interfaccia |
-| `1_core.js` | Utilità, proiezione isometrica, disegno delle scatole voxel, motore audio, versione (`GAME_VER`) |
-| `2_data.js` | Modelli voxel, oggetti e rarità, nemici, zone, dungeon, personaggi, missioni, interni |
-| `3_world.js` | Generazione del mondo: città, zone aperte, dungeon, interni, porte |
-| `4_render.js` | Disegno del mondo e degli arredi, scene, pesca, battaglia navale, mappa, sogni, Dimension, traduzioni, icone |
-| `4a_aldoria.js` | Aldoria più grande: edifici nuovi e arredi degli interni |
-| `4b_fast.js` | Grafica più veloce: muri e arredi fermi disegnati una volta sola in fogli di sprite |
-| `5_game.js` | Eroe, combattimento, bottino, missioni, interazioni, aggiornamento del mondo, salvataggio |
-| `6_ui.js` | HUD, finestre (zaino, missioni, negozi, dialoghi, casinò…), impostazioni, novità |
-| `75_tempo.js` | Giorno e notte |
-| `76_icone.js` | Icone dell'HUD in pixel art |
-| `77_scene.js` | Animazioni sceniche: inquadrature, iride, stendardi, oggetti che volano |
-| `78_aspetto.js` | Aspetto dell'eroe, modelli dell'equipaggiamento indossato, ritratti |
-| `79_hudedit.js` | Editor dell'HUD |
-| `7_net.js` | Multigiocatore (WebSocket verso `server.js`), chat con i link |
-| `8_main.js` | Menu animato, musiche scritte, storia, piazza e routine della città, castello, Malakar, animazioni, luoghi, dialoghi, aspetto dei personaggi |
-| `8_main0_attivita.js` | La pesca, Stefano e la Puledra, le battaglie di Ryan il Pelato, Manuel |
-| `8_main1_studio.js` | Voxelia Studio: l'editor, i mondi da giocare, le finestre, le musiche, le cinematiche, le icone, gli strumenti |
-| `8_main2_avvio.js` | Avvio, salvataggi e menu, tastiera, ciclo principale, cursore |
+| `base/1_core.js` | Utilità, proiezione isometrica, disegno delle scatole voxel, motore audio, versione (`GAME_VER`) |
+| `base/2_data.js` | Modelli voxel, oggetti e rarità, nemici, zone, dungeon, personaggi, missioni, interni |
+| `base/3_world.js` | Generazione del mondo: città, zone aperte, dungeon, interni, porte |
+| `base/4_render.js` | Disegno del mondo e degli arredi, scene, pesca, battaglia navale, mappa, sogni, Dimension, traduzioni, icone |
+| `base/4a_aldoria.js` | Aldoria più grande: edifici nuovi e arredi degli interni |
+| `base/4b_fast.js` | Grafica più veloce: muri e arredi fermi disegnati una volta sola in fogli di sprite |
+| `base/5_game.js` | Eroe, combattimento, bottino, missioni, interazioni, aggiornamento del mondo, salvataggio |
+| `base/6_ui.js` | HUD, finestre (zaino, missioni, negozi, dialoghi, casinò…), impostazioni, novità |
+| `base/75_tempo.js` | Giorno e notte |
+| `base/76_icone.js` | Icone dell'HUD in pixel art |
+| `base/77_scene.js` | Animazioni sceniche: inquadrature, iride, stendardi, oggetti che volano |
+| `base/78_aspetto.js` | Aspetto dell'eroe, modelli dell'equipaggiamento indossato, ritratti |
+| `base/79_hudedit.js` | Editor dell'HUD |
+| `base/7_net.js` | Multigiocatore (WebSocket verso `server.js`), chat con i link |
+| `base/8_main.js` | Menu animato, musiche scritte, storia, piazza e routine della città, castello, Malakar, animazioni, luoghi, dialoghi, aspetto dei personaggi |
+| `base/8_main0_attivita.js` | La pesca, Stefano e la Puledra, le battaglie di Ryan il Pelato, Manuel |
+| `studio/8_main1_studio.js` | Voxelia Studio: l'editor, i mondi da giocare, le finestre, le musiche, le cinematiche, le icone, gli strumenti |
+| `base/8_main2_avvio.js` | Avvio, salvataggi e menu, tastiera, ciclo principale, cursore |
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md`: non si modifica a mano |
 
 **Storia, Aldoria e filmati**
 
 | File | Contenuto |
 |---|---|
-| `8t_touch.js` | Comandi touch per telefoni e tablet |
-| `8u_musiche.js` | Le canzoni degli edifici, gli strumenti e le batterie nuove |
-| `8v_abominio.js` | Il vero finale: l'Abominio in cinque fasi, l'ombra della Regina Elara, lo scudo di Malakar |
-| `8v_sfida.js` | La difficoltà della Modalità Storia: nemici più forti, branco, Campioni, ultima furia dei boss |
-| `8w_icone.js` | Icone voxel in tutto il gioco |
-| `8x_dev.js` | Pannello sviluppatore (sui server, con la password admin controllata dal server) |
-| `8y_film.js` | Il motore dei filmati: luoghi veri, attori che camminano, telecamera, sottotitoli |
-| `8y_film2.js` | I filmati della storia, della battaglia navale e di Voxelia Dimension |
-| `8y_film3.js` | La scena del prologo sotto la città: gli strati della terra, il pozzo, l'Occhio |
-| `8z_mondi.js` | Mondi della community: browser, schede e pubblicazione |
-| `8za_mondo.js` | Arredi nuovi, il Colosseo vero (fuori e dentro) |
-| `8zb_mappa.js` | La mappa della zona in cui ti trovi (tasto M) |
-| `8zc_prova.js` | Pannello sviluppatore: prova di tutte le boss fight |
-| `8zd_biomi.js` | Foresta, deserto e picchi: la pianta, i luoghi, le raccolte |
-| `8zd_biomi2.js` | Come si disegnano i biomi, gli interni e i loro personaggi |
-| `8ze_ricordo.js` | Il ricordo del Moreau: Aldoria Vecchia prima della nebbia |
-| `8zj_citta.js` | «Le vie di Aldoria», il tema della città, e le sezioni dinamiche del motore dei brani |
-| `8zr_caricamento.js` | Le schermate di caricamento e il filmato del viaggio con la gemma |
-| `8zs_modelli.js` | I modelli con scheletro e animazioni dei boss e degli animali |
-| `8zza_prologo.js` | Il prologo della Storia: le scene e le sue tre musiche |
+| `storia/8t_touch.js` | Comandi touch per telefoni e tablet |
+| `storia/8u_musiche.js` | Le canzoni degli edifici, gli strumenti e le batterie nuove |
+| `storia/8v_abominio.js` | Il vero finale: l'Abominio in cinque fasi, l'ombra della Regina Elara, lo scudo di Malakar |
+| `storia/8v_sfida.js` | La difficoltà della Modalità Storia: nemici più forti, branco, Campioni, ultima furia dei boss |
+| `storia/8w_icone.js` | Icone voxel in tutto il gioco |
+| `storia/8x_dev.js` | Pannello sviluppatore (sui server, con la password admin controllata dal server) |
+| `storia/8y_film.js` | Il motore dei filmati: luoghi veri, attori che camminano, telecamera, sottotitoli |
+| `storia/8y_film2.js` | I filmati della storia, della battaglia navale e di Voxelia Dimension |
+| `storia/8y_film3.js` | La scena del prologo sotto la città: gli strati della terra, il pozzo, l'Occhio |
+| `studio/8z_mondi.js` | Mondi della community: browser, schede e pubblicazione |
+| `storia/8za_mondo.js` | Arredi nuovi, il Colosseo vero (fuori e dentro) |
+| `storia/8zb_mappa.js` | La mappa della zona in cui ti trovi (tasto M) |
+| `storia/8zc_prova.js` | Pannello sviluppatore: prova di tutte le boss fight |
+| `storia/8zd_biomi.js` | Foresta, deserto e picchi: la pianta, i luoghi, le raccolte |
+| `storia/8zd_biomi2.js` | Come si disegnano i biomi, gli interni e i loro personaggi |
+| `storia/8ze_ricordo.js` | Il ricordo del Moreau: Aldoria Vecchia prima della nebbia |
+| `storia/8zj_citta.js` | «Le vie di Aldoria», il tema della città, e le sezioni dinamiche del motore dei brani |
+| `storia/8zr_caricamento.js` | Le schermate di caricamento e il filmato del viaggio con la gemma |
+| `storia/8zs_modelli.js` | I modelli con scheletro e animazioni dei boss e degli animali |
+| `storia/8zza_prologo.js` | Il prologo della Storia: le scene e le sue tre musiche |
 
 **Realtà virtuale e vista 3D**
 
 | File | Contenuto |
 |---|---|
-| `8zf_xr.js` | Realtà virtuale (WebXR) per Meta Quest: schermo sospeso, controller, levette |
-| `8zg_xrui.js` | L'interfaccia HTML del gioco mostrata nel visore |
-| `8zh_xr3d.js` | Il mondo in 3D sul tavolo (diorama) |
-| `8zi_xrfp.js` | La prima persona: mondo a grandezza naturale, attacchi con i controller, pannelli fluttuanti |
-| `8zm_3d.js` | La vista 3D in WebGL 2: luce, ombre, materiali, cielo, orizzonte, stile voxel o liscio, telecamera |
-| `8zn_pausa.js` | Il menu di pausa e la sezione «Vista 3D» delle impostazioni |
-| `8zzl_grafica.js` | L'acqua su un foglio a parte, la risoluzione dinamica, le opzioni grafiche e l'upscaling in stile FSR |
+| `grafica/8zf_xr.js` | Realtà virtuale (WebXR) per Meta Quest: schermo sospeso, controller, levette |
+| `grafica/8zg_xrui.js` | L'interfaccia HTML del gioco mostrata nel visore |
+| `grafica/8zh_xr3d.js` | Il mondo in 3D sul tavolo (diorama) |
+| `grafica/8zi_xrfp.js` | La prima persona: mondo a grandezza naturale, attacchi con i controller, pannelli fluttuanti |
+| `grafica/8zm_3d.js` | La vista 3D in WebGL 2: luce, ombre, materiali, cielo, orizzonte, stile voxel o liscio, telecamera |
+| `grafica/8zn_pausa.js` | Il menu di pausa e la sezione «Vista 3D» delle impostazioni |
+| `grafica/8zzl_grafica.js` | L'acqua su un foglio a parte, la risoluzione dinamica, le opzioni grafiche e l'upscaling in stile FSR |
 
 **Combattimento e compagni**
 
 | File | Contenuto |
 |---|---|
-| `8zu_combattimento.js` | Catene di colpi, colpo perfetto, colpi caricati, mosse di ogni arma, pose dell'eroe |
-| `8zv_domare.js` | Domare i mostri: sigilli, compagni, livelli ed evoluzioni, la stalla, il bestiario |
-| `8zzg_azione.js` | Il combattimento d'azione: clic verso il cursore, stamina, capriola, corsa, blocco del bersaglio |
-| `8zzu_boss.js` | I boss a tre fasi, con il punto debole e lo stordimento |
-| `8zzv_leve.js` | Le due leve dei piani dei dungeon, da tirare insieme (anche in rete) |
-| `8zzw_maledizioni.js` | Le maledizioni a scelta prima dei dungeon |
-| `8zzx_armi.js` | Le armi che crescono (nome, mossa speciale) |
-| `8zzy_torre.js` | La Torre della Corona, la sfida del giorno |
-| `8zzz_scavo.js` | La pala, i tesori sepolti e le grotte segrete |
+| `combattimento/8zu_combattimento.js` | Catene di colpi, colpo perfetto, colpi caricati, mosse di ogni arma, pose dell'eroe |
+| `combattimento/8zv_domare.js` | Domare i mostri: sigilli, compagni, livelli ed evoluzioni, la stalla, il bestiario |
+| `combattimento/8zzg_azione.js` | Il combattimento d'azione: clic verso il cursore, stamina, capriola, corsa, blocco del bersaglio |
+| `combattimento/8zzu_boss.js` | I boss a tre fasi, con il punto debole e lo stordimento |
+| `combattimento/8zzv_leve.js` | Le due leve dei piani dei dungeon, da tirare insieme (anche in rete) |
+| `combattimento/8zzw_maledizioni.js` | Le maledizioni a scelta prima dei dungeon |
+| `combattimento/8zzx_armi.js` | Le armi che crescono (nome, mossa speciale) |
+| `combattimento/8zzy_torre.js` | La Torre della Corona, la sfida del giorno |
+| `combattimento/8zzz_scavo.js` | La pala, i tesori sepolti e le grotte segrete |
 
 **Tomorrow**
 
 | File | Contenuto |
 |---|---|
-| `8zk_unici.js` | Oggetti unici: generatore dal seme, poteri, scheda, provenienza; scambi |
-| `8zl_aperto.js` | La base: menu, salvataggio a parte, Bacheca dei Contratti, bersagli, assedi, reputazione |
-| `8zo_tomorrow.js` | Il mondo: regioni senza fine, biomi, villaggi, dungeon, specie, contratti, mappa, orizzonte 3D |
-| `8zp_vivo.js` | Città, case con interni, abitanti, animali, santuari, il campo, le gemme, le battaglie |
-| `8zq_mappa.js` | La mappa del mondo interattiva e le finestre dei contratti |
-| `8zt_mondo.js` | Le regioni ricordate, il campo che resta, il pavimento a blocchi, i borghi |
-| `8zw_regno.js` | Conquista, insediamento, fazioni con sedi, emissari e stemmi |
-| `8zx_guerre.js` | Assalti delle fazioni, assedi e saccheggi fra giocatori (plugin Territori), la cronaca |
-| `8zy_tw_film.js` | Il filmato del reset dell'universo, le sue musiche e i cimeli di Aldoria |
-| `8zz_borghi.js` | Villaggi e città con strade, lotti, piazza, mercato e la gente con le sue abitudini |
-| `8zzb_editborgo.js` | L'editor dell'insediamento |
-| `8zzc_gestione.js` | Risorse, costi, Cisterna, Fattoria, Segheria, Cava, statistiche, cibo, acqua e abitanti |
-| `8zzd_editor2.js` | L'editor completo: tutti i pavimenti, i muri e gli arredi, edifici su misura |
-| `8zze_esercito.js` | La Caserma, i soldati, la potenza dell'esercito, le battaglie |
-| `8zzf_miniere.js` | Le miniere: lo scavo a mano, i minerali, i reperti storici |
-| `8zzh_casa.js` | La tua casa con il deposito, gli interni su misura e le mura del borgo |
-| `8zzi_citta.js` | Più città (fino a 8), la capitale, i materiali a prezzi del giorno |
-| `8zzj_legna.js` | Gli alberi da abbattere, il legno, la città fino al livello 15 |
-| `8zzk_viaggio.js` | La Pietra del viaggio con tutti i luoghi con una gemma del teletrasporto |
-| `8zzn_fazione.js` | Le fazioni dei giocatori (plugin Fazioni) |
-| `8zzq_ordine.js` | La città che cresce in ordine e le mura sul perimetro |
-| `8zzza_cittadini.js` | I bisogni dei cittadini (lavoro, felicità, tasse, proteste) |
-| `8zzzb_meteo.js` | Meteo e stagioni, con effetti sui borghi e sullo schermo |
-| `8zzzc_carovane.js` | Le carovane e gli assalti dei banditi |
-| `8zzzd_blocchi.js` | Costruire a blocchi nell'editor del borgo |
-| `8zzze_assedi.js` | Le guerre programmate fra le fazioni e gli assedi (plugin Fazioni) |
-| `8zzzr_bacheca.js` | La bacheca delle missioni dei giocatori (plugin Bacheca) |
+| `tomorrow/8zk_unici.js` | Oggetti unici: generatore dal seme, poteri, scheda, provenienza; scambi |
+| `tomorrow/8zl_aperto.js` | La base: menu, salvataggio a parte, Bacheca dei Contratti, bersagli, assedi, reputazione |
+| `tomorrow/8zo_tomorrow.js` | Il mondo: regioni senza fine, biomi, villaggi, dungeon, specie, contratti, mappa, orizzonte 3D |
+| `tomorrow/8zp_vivo.js` | Città, case con interni, abitanti, animali, santuari, il campo, le gemme, le battaglie |
+| `tomorrow/8zq_mappa.js` | La mappa del mondo interattiva e le finestre dei contratti |
+| `tomorrow/8zt_mondo.js` | Le regioni ricordate, il campo che resta, il pavimento a blocchi, i borghi |
+| `tomorrow/8zw_regno.js` | Conquista, insediamento, fazioni con sedi, emissari e stemmi |
+| `tomorrow/8zx_guerre.js` | Assalti delle fazioni, assedi e saccheggi fra giocatori (plugin Territori), la cronaca |
+| `tomorrow/8zy_tw_film.js` | Il filmato del reset dell'universo, le sue musiche e i cimeli di Aldoria |
+| `tomorrow/8zz_borghi.js` | Villaggi e città con strade, lotti, piazza, mercato e la gente con le sue abitudini |
+| `tomorrow/8zzb_editborgo.js` | L'editor dell'insediamento |
+| `tomorrow/8zzc_gestione.js` | Risorse, costi, Cisterna, Fattoria, Segheria, Cava, statistiche, cibo, acqua e abitanti |
+| `tomorrow/8zzd_editor2.js` | L'editor completo: tutti i pavimenti, i muri e gli arredi, edifici su misura |
+| `tomorrow/8zze_esercito.js` | La Caserma, i soldati, la potenza dell'esercito, le battaglie |
+| `tomorrow/8zzf_miniere.js` | Le miniere: lo scavo a mano, i minerali, i reperti storici |
+| `tomorrow/8zzh_casa.js` | La tua casa con il deposito, gli interni su misura e le mura del borgo |
+| `tomorrow/8zzi_citta.js` | Più città (fino a 8), la capitale, i materiali a prezzi del giorno |
+| `tomorrow/8zzj_legna.js` | Gli alberi da abbattere, il legno, la città fino al livello 15 |
+| `tomorrow/8zzk_viaggio.js` | La Pietra del viaggio con tutti i luoghi con una gemma del teletrasporto |
+| `tomorrow/8zzn_fazione.js` | Le fazioni dei giocatori (plugin Fazioni) |
+| `tomorrow/8zzq_ordine.js` | La città che cresce in ordine e le mura sul perimetro |
+| `tomorrow/8zzza_cittadini.js` | I bisogni dei cittadini (lavoro, felicità, tasse, proteste) |
+| `tomorrow/8zzzb_meteo.js` | Meteo e stagioni, con effetti sui borghi e sullo schermo |
+| `tomorrow/8zzzc_carovane.js` | Le carovane e gli assalti dei banditi |
+| `tomorrow/8zzzd_blocchi.js` | Costruire a blocchi nell'editor del borgo |
+| `tomorrow/8zzze_assedi.js` | Le guerre programmate fra le fazioni e gli assedi (plugin Fazioni) |
+| `tomorrow/8zzzr_bacheca.js` | La bacheca delle missioni dei giocatori (plugin Bacheca) |
 
 **Vita, mondo e sistemi**
 
 | File | Contenuto |
 |---|---|
-| `8zzm_novita.js` | Il portale dopo il boss che chiede prima di uscire, la musica a scelta, le mappe casella per casella, l'Allevamento |
-| `8zzo_dev2.js` | Il pannello sviluppatore che dà e crea tutto, con gli strumenti di Tomorrow |
-| `8zzp_sync.js` | In rete ogni nemico ha un padrone che lo guida e tutti ne vedono la stessa copia |
-| `8zzr_corona.js` | Il menu della Corona di Voxel in 3D |
-| `8zzs_disegnate.js` | Le scene disegnate in pixel art, con il testo lettera per lettera |
-| `8zzt_aiuti.js` | Aiuti comuni per le novità (campi da salvare, pannelli, giorno della sfida) |
-| `8zzt_versioni.js` | Il selettore delle versioni precedenti (serve il server) |
-| `8zzta_frasi.js` | Le frasi gialle del titolo |
-| `8zzzf_cavalli.js` | I cavalli (H), lo stallo e la corsa a cavallo |
-| `8zzzh_eventi.js` | Gli eventi del mondo ogni mezz'ora |
-| `8zzzi_scoperte.js` | Il diario delle scoperte |
-| `8zzzk_mestieri.js` | I mestieri e la Bottega (Fornello, Alambicco, Incudine), le ricette, il Ricettario |
-| `8zzzl_casa.js` | La lavagna di casa e la mensola dei trofei |
-| `8zzzm_foto.js` | La modalità foto (F8) |
-| `8zzzn_animali.js` | Gli animali da compagnia |
-| `8zzzo_carte.js` | Il duello delle carte elementali |
-| `8zzzp_incroci.js` | Gli incroci dei compagni |
-| `8zzzq_scelte.js` | Le scelte, la via, gli alleati, l'epilogo, i titoli |
-| `8zzzs_oltremare.js` | Thalassa, la Giungla di Smeraldo e il Tempio di Giada |
-| `8zzzt_classifiche.js` | Le classifiche della settimana |
-| `8zzzu_thalassa2.js` | Thalassa più ricca: luoghi, personaggi, Tavolette di Giada, il mistero della Perla |
-| `8zzzv_insegne.js` | Le insegne luminose del Motel e del Casinò |
-| `8zzzv_sovrascrivi.js` | Le due conferme prima di sovrascrivere una partita: la schermata nel menu e l'avviso finale |
-| `8zzzw_correzioni.js` | Niente cose una sopra l'altra, testi dei pannelli che vanno a capo, correzioni varie |
-| `8zzzx_thalassa3.js` | Thalassa e la Giungla di Smeraldo costruite da capo, con gli interni e gli arredi nuovi |
-| `8zzzy_eroe.js` | Esportare e importare l'eroe in un file, con il codice di controllo e le conferme |
-| `8zzzz_compagni.js` | I compagni in rete (visti dagli altri, colpi condivisi), negli scambi, le varianti degli incroci, il nome cambiato nella stalla |
-| `8zzzza_fermo.js` | Quando si apre una finestra l'eroe si ferma; un clic fuori da una finestra la chiude e basta |
-| `8zzzzb_elementi.js` | I nove elementi di mostri, armi e compagni (fuoco, ghiaccio, fulmine, acqua, veleno, terra, vento, ombra, luce) e i loro punti deboli |
-| `8zzzzc_chimere.js` | Le chimere: armi, armature e compagni montati con i pezzi di quelli che ci sono già |
-| `8zzzzd_serraglio.js` | Il Serraglio di Aldoria, la casa dei compagni, con la Domatrice Selene e le sue postazioni |
-| `8zzzze_dungeon.js` | Ogni dungeon un'altra dimensione: stanze di forme diverse, stile e arredi propri |
-| `8zzzzf_zaffiro.js` | Voxelia Dimension tolta dal gioco (lo Zaffiro della Corona passa ad Aldoria 3026) |
-| `8zzzzg_neo.js` | Aldoria 3026, la città del futuro nello Zaffiro, la Cronoporta e lo sblocco delle modalità |
-| `8zzzzh_corona80.js` | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album |
-| `8zzzzh_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |
-| `8zzzzi_avvisi.js` | Le scritte del gioco (eventi, cibo attivo, guerre…) non coprono il riquadro dell'eroe, le finestre e la fine della battaglia |
-| `8zzzzj_intralcio.js` | Gli animali da compagnia camminano dietro all'eroe; R, il pulsante verde e il clic scelgono prima porte, oggetti e personaggi |
+| `sistemi/8zzm_novita.js` | Il portale dopo il boss che chiede prima di uscire, la musica a scelta, le mappe casella per casella, l'Allevamento |
+| `sistemi/8zzo_dev2.js` | Il pannello sviluppatore che dà e crea tutto, con gli strumenti di Tomorrow |
+| `sistemi/8zzp_sync.js` | In rete ogni nemico ha un padrone che lo guida e tutti ne vedono la stessa copia |
+| `corona/8zzr_corona.js` | Il menu della Corona di Voxel in 3D |
+| `sistemi/8zzs_disegnate.js` | Le scene disegnate in pixel art, con il testo lettera per lettera |
+| `sistemi/8zzt_aiuti.js` | Aiuti comuni per le novità (campi da salvare, pannelli, giorno della sfida) |
+| `sistemi/8zzt_versioni.js` | Il selettore delle versioni precedenti (serve il server) |
+| `sistemi/8zzta_frasi.js` | Le frasi gialle del titolo |
+| `sistemi/8zzzf_cavalli.js` | I cavalli (H), lo stallo e la corsa a cavallo |
+| `sistemi/8zzzh_eventi.js` | Gli eventi del mondo ogni mezz'ora |
+| `sistemi/8zzzi_scoperte.js` | Il diario delle scoperte |
+| `sistemi/8zzzk_mestieri.js` | I mestieri e la Bottega (Fornello, Alambicco, Incudine), le ricette, il Ricettario |
+| `sistemi/8zzzl_casa.js` | La lavagna di casa e la mensola dei trofei |
+| `sistemi/8zzzm_foto.js` | La modalità foto (F8) |
+| `combattimento/8zzzn_animali.js` | Gli animali da compagnia |
+| `sistemi/8zzzo_carte.js` | Il duello delle carte elementali |
+| `sistemi/8zzzp_incroci.js` | Gli incroci dei compagni |
+| `storia/8zzzq_scelte.js` | Le scelte, la via, gli alleati, l'epilogo, i titoli |
+| `storia/8zzzs_oltremare.js` | Thalassa, la Giungla di Smeraldo e il Tempio di Giada |
+| `sistemi/8zzzt_classifiche.js` | Le classifiche della settimana |
+| `storia/8zzzu_thalassa2.js` | Thalassa più ricca: luoghi, personaggi, Tavolette di Giada, il mistero della Perla |
+| `storia/8zzzv_insegne.js` | Le insegne luminose del Motel e del Casinò |
+| `sistemi/8zzzv_sovrascrivi.js` | Le due conferme prima di sovrascrivere una partita: la schermata nel menu e l'avviso finale |
+| `sistemi/8zzzw_correzioni.js` | Niente cose una sopra l'altra, testi dei pannelli che vanno a capo, correzioni varie |
+| `storia/8zzzx_thalassa3.js` | Thalassa e la Giungla di Smeraldo costruite da capo, con gli interni e gli arredi nuovi |
+| `sistemi/8zzzy_eroe.js` | Esportare e importare l'eroe in un file, con il codice di controllo e le conferme |
+| `combattimento/8zzzz_compagni.js` | I compagni in rete (visti dagli altri, colpi condivisi), negli scambi, le varianti degli incroci, il nome cambiato nella stalla |
+| `sistemi/8zzzza_fermo.js` | Quando si apre una finestra l'eroe si ferma; un clic fuori da una finestra la chiude e basta |
+| `combattimento/8zzzzb_elementi.js` | I nove elementi di mostri, armi e compagni (fuoco, ghiaccio, fulmine, acqua, veleno, terra, vento, ombra, luce) e i loro punti deboli |
+| `combattimento/8zzzzc_chimere.js` | Le chimere: armi, armature e compagni montati con i pezzi di quelli che ci sono già |
+| `combattimento/8zzzzd_serraglio.js` | Il Serraglio di Aldoria, la casa dei compagni, con la Domatrice Selene e le sue postazioni |
+| `combattimento/8zzzze_dungeon.js` | Ogni dungeon un'altra dimensione: stanze di forme diverse, stile e arredi propri |
+| `aldoria3026/8zzzzf_zaffiro.js` | Voxelia Dimension tolta dal gioco (lo Zaffiro della Corona passa ad Aldoria 3026) |
+| `aldoria3026/8zzzzg_neo.js` | Aldoria 3026, la città del futuro nello Zaffiro, la Cronoporta e lo sblocco delle modalità |
+| `combattimento/8zzzzk_bilancio.js` | Il bilanciamento della 8.1: Campioni per piano, Cripta, Fucina, Tempio di Giada, Tomorrow ai livelli alti |
+| `corona/8zzzzh_corona80.js` | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album |
+| `sistemi/8zzzzh_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |
+| `sistemi/8zzzzi_avvisi.js` | Le scritte del gioco (eventi, cibo attivo, guerre…) non coprono il riquadro dell'eroe, le finestre e la fine della battaglia |
+| `sistemi/8zzzzj_intralcio.js` | Gli animali da compagnia camminano dietro all'eroe; R, il pulsante verde e il clic scelgono prima porte, oggetti e personaggi |
 
 </details>
 
@@ -822,14 +841,15 @@ che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`).
 sh build.sh             # rigenera src/9_changelog.js e voxelia.html, e controlla la sintassi
 node server.js          # per provarlo con il server (oppure apri voxelia.html nel browser)
 sh tools/verifica.sh    # la verifica completa: build, sintassi, versioni e un server di prova
-node tools/prova.js     # gioca qualche secondo di ogni modalità e si ferma se il gioco dà un errore
+node tools/prova.js     # le modalità, i salvataggi dopo un riavvio e due giocatori in rete
+node tools/bilancia.js  # un robot gioca i dungeon e dice quanta vita costa ogni nemico ("storia" per la sola Storia)
 ```
 
 La stessa verifica gira su GitHub a ogni push e a ogni pull request (workflow **Verifica**): una PR che rompe la build,
 la sintassi o i numeri di versione si vede prima del merge.
 
 ### Pubblicare una versione nuova
-1. Aggiorna il numero di versione in tre posti: `GAME_VER` in `src/1_core.js`; `<title>` e `<sup id="ver">` in
+1. Aggiorna il numero di versione in tre posti: `GAME_VER` in `src/base/1_core.js`; `<title>` e `<sup id="ver">` in
    `src/head.html`; `VER` e il commento iniziale in `server.js`.
 2. Scrivi la voce in cima a `CHANGELOG.md`, in italiano.
 3. Esegui `sh build.sh`, copia la build in `releases/voxelia_v<versione>.html` e aggiungi la riga in `releases/LEGGIMI.md`.

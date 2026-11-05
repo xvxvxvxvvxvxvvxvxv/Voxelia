@@ -14,7 +14,7 @@ permissions:
 jobs:
   verifica:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,3 +24,8 @@ jobs:
         run: sh tools/verifica.sh
         env:
           VERIFICA_CI: '1'
+      # 8.1: la prova automatica gioca ogni modalità, i salvataggi e due giocatori in rete (tools/prova.js)
+      - name: Playwright con Chromium
+        run: npm i --no-save playwright@1.49.1 && npx playwright install --with-deps chromium
+      - name: Prova automatica di Voxelia
+        run: node tools/prova.js

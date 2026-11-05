@@ -60,9 +60,9 @@ const CU80={w:-1,on:0,t:0};
 function cuoreEnter(){const s=LS.get(SAVEK,null);if(cr80n()<6){menuNote&&menuNote('Servono tutte e sei le schegge della Corona.');return}if(!s||!s.p){menuNote&&menuNote('Serve un eroe della Storia: è lui che entra nel Cuore della Corona.');return}
   albumClose();begin(s.df|0,s);setTimeout(()=>{if(!started)return;CU80.w=-1;CU80.on=1;CU80.t=2;load('cuore80','town');P.hp=P.mx;PA={ti:'Il Cuore della Corona',tx:'Le sei schegge si accendono tutte insieme e la Corona ti risucchia dentro. Sotto i tuoi piedi c\'è un pavimento d\'oro sospeso nel vuoto; intorno, sei pilastri con le sei gemme.\n\nLe epoche si stanno mescolando: dal passato, dal futuro e dai mondi senza confini arriva tutto quello che la Corona ha visto. Resisti alle cinque ondate e affronta l\'Eco della Corona.'};pn('txt')},600)}
 function cuoreTick(dt){if(Zk!=='cuore80'||!CU80.on||!started||PM==='txt')return;const L=ents.filter(e=>e.k==='en');if(L.length)return;CU80.t-=dt;if(CU80.t>0)return;CU80.t=3.5;CU80.w++;
-  const z=ZZ,cc=(N-1)/2;z.lv=Math.max(8,P.lv-6);
-  if(CU80.w>0){P.hp=Math.min(P.mx,P.hp+Math.round(P.mx*.4));P.pot++;flt(P,'+40% ❤ +🧪','#88ff88');hud()}
-  if(CU80.w<W80.length){const W=W80[CU80.w],n=3+CU80.w;banner('Ondata '+(CU80.w+1)+'/5 · '+W.n,W.s,'spade');tone(330,.2,'square',.06);
+  const z=ZZ,cc=(N-1)/2;z.lv=Math.max(8,P.lv-8);
+  if(CU80.w>0){P.hp=Math.min(P.mx,P.hp+Math.round(P.mx*.5));P.pot++;flt(P,'+50% ❤ +🧪','#88ff88');hud()}
+  if(CU80.w<W80.length){const W=W80[CU80.w],n=3+(CU80.w>>1);banner('Ondata '+(CU80.w+1)+'/5 · '+W.n,W.s,'spade');tone(330,.2,'square',.06);
     for(let i=0;i<n;i++){const a=i/n*6.283+CU80.w,x=Math.round(cc+Math.cos(a)*9),y=Math.round(cc+Math.sin(a)*9),k=W.e[i%W.e.length];if(!E[k])continue;const e=mk(k,x,y);e.al=1;e.ag=40;
       if(W.chim&&typeof petChim==='function'){const b=W.e[(i+2)%W.e.length];if(E[b]&&e.m&&e.m.g){e.m=petChim(e.m,E[b].m);e.n=(e.n||'')+' di Tomorrow';e.mx=Math.round(e.mx*1.2);e.hp=e.mx}}ents.push(e)}}
   else if(CU80.w===W80.length){banner('L\'Eco della Corona','Tutto quello che la Corona ha visto, in una sola forma','teschio');music('boss');const e=mk('eco80',Math.round(cc),Math.round(cc)-3);e.al=1;e.ag=40;e.eco80=1;ents.push(e)}

@@ -24,8 +24,8 @@ for f in plugins/*.js; do node --check "$f" || ko "$f ha un errore di sintassi";
 ok "sintassi di server.js e dei plugin"
 
 node -e "
-const fs=require('fs');const g=fs.readFileSync('src/1_core.js','utf8').match(/const GAME_VER='([^']+)'/),h=fs.readFileSync('src/head.html','utf8'),s=fs.readFileSync('server.js','utf8'),c=fs.readFileSync('CHANGELOG.md','utf8');
-const v=g&&g[1],bad=[];if(!v)bad.push('GAME_VER non trovato in src/1_core.js');
+const fs=require('fs');const g=fs.readFileSync('src/base/1_core.js','utf8').match(/const GAME_VER='([^']+)'/),h=fs.readFileSync('src/head.html','utf8'),s=fs.readFileSync('server.js','utf8'),c=fs.readFileSync('CHANGELOG.md','utf8');
+const v=g&&g[1],bad=[];if(!v)bad.push('GAME_VER non trovato in src/base/1_core.js');
 if(!h.includes('<title>Voxelia '+v+' '))bad.push('il <title> di src/head.html non dice '+v);
 if(!h.includes('<sup id=\"ver\">'+v+'</sup>'))bad.push('il numero nel menu (sup id=ver) non è '+v);
 if(!s.includes(\"const VER = '\"+v+\"'\"))bad.push('VER di server.js non è '+v);
@@ -51,7 +51,7 @@ const fail=m=>{console.error('  - '+m);process.exit(1)};
 (async()=>{
   let up=false;for(let i=0;i<100&&!up;i++){try{up=(await get('/salute')).s===200}catch(e){await new Promise(r=>setTimeout(r,200))}}
   if(!up)fail('il server non risponde (vedi il registro qui sotto)');
-  const v=fs.readFileSync('src/1_core.js','utf8').match(/const GAME_VER='([^']+)'/)[1];
+  const v=fs.readFileSync('src/base/1_core.js','utf8').match(/const GAME_VER='([^']+)'/)[1];
   const s=JSON.parse((await get('/salute')).b);if(s.versione!==v)fail('/salute dice '+s.versione+' invece di '+v);
   const g=await get('/',{'accept-encoding':'gzip'});if(g.s!==200)fail('/ risponde '+g.s);
   const html=(g.h['content-encoding']==='gzip'?zlib.gunzipSync(g.b):g.b).toString();

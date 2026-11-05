@@ -5,6 +5,24 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.1 — Ordine, prove e bilanciamento (5 novembre 2026)
+
+- **Il bilanciamento.** Un robot ha giocato da solo ogni dungeon e ha misurato quanta vita costa ogni nemico. Dove i numeri erano fuori scala, ora sono in linea:
+  - **Campioni**: al massimo 2 per piano, 3 sul piano del boss. Prima uscivano a caso, e nelle Caverne di Cristallo potevano essere 5 al primo piano.
+  - **Chimere dei dungeon**: non possono più essere anche Campioni. Insieme davano nemici con il triplo della vita.
+  - **Cripta Dimenticata**: zombie e scheletri sono un po' più deboli. Era il secondo dungeon, ma i nemici avevano il doppio della forza di quelli della Tana dei Goblin.
+  - **Fucina Infernale**: demoni, golem di magma, salamandre e fabbri demoni sono un po' più deboli. Prima erano più forti dei nemici dell'Abisso Sommerso, che è due livelli più su.
+  - **Tempio di Giada**: Guerrieri, Serpi e Sacerdotesse sono più deboli. Prima il Tempio (livello 14) era il posto più duro del gioco, più della Cittadella del Lich (livello 15).
+  - **Tomorrow**: i nemici crescevano più piano dell'eroe e ai livelli alti non facevano quasi danno. Dal livello 8 vita e attacco crescono del 3% in più per livello, quindi al livello 30 sono circa 1,7 volte quelli di prima.
+  - **Il Cuore della Corona**: 19 nemici in cinque ondate invece di 25. I nemici sono di 8 livelli sotto il tuo, e fra un'ondata e l'altra recuperi metà della vita (prima il 40%). Il robot del bilanciamento, che non schiva, adesso arriva fino all'Eco della Corona.
+- **La prova automatica, più grande.** `node tools/prova.js` non si limita più a giocare un po' ogni modalità:
+  - salva in Storia, Tomorrow e Aldoria 3026, ricarica la pagina e controlla che monete, livello e pozioni tornino com'erano;
+  - avvia il server con due giocatori e controlla che si vedano.
+
+  Gira da sola su GitHub a ogni modifica, insieme alla verifica.
+- **Il robot del bilanciamento**: `node tools/bilancia.js` rifà le misure, con «storia» o «tomorrow» per una sola modalità.
+- **I sorgenti in ordine.** Le parti del gioco ora stanno in cartelle (`src/base`, `src/storia`, `src/combattimento`, `src/tomorrow`, `src/aldoria3026`, `src/corona`, `src/studio`, `src/grafica`, `src/sistemi`). Il gioco costruito è identico a prima, byte per byte.
+
 ## 8.0 — La Corona Riunita (5 novembre 2026)
 
 - **Sei frammenti, uno per modalità.** Ogni gemma della Corona ora si conquista finendo la sua avventura:

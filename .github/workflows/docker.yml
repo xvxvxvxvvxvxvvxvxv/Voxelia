@@ -15,13 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # Il nome dell'immagine segue il proprietario del repository (ghcr.io vuole il nome in minuscolo) e la versione è
-      # quella del gioco (GAME_VER in src/1_core.js): così il workflow non va più aggiornato a mano a ogni versione
+      # quella del gioco (GAME_VER in src/base/1_core.js): così il workflow non va più aggiornato a mano a ogni versione
       # o se il repository cambia proprietario.
       - name: Nome e versione dell'immagine
         id: meta
         run: |
           echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/voxelia" >> "$GITHUB_OUTPUT"
-          echo "version=$(sed -n "s/^const GAME_VER='\([^']*\)'.*/\1/p" src/1_core.js)" >> "$GITHUB_OUTPUT"
+          echo "version=$(sed -n "s/^const GAME_VER='\([^']*\)'.*/\1/p" src/base/1_core.js)" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:

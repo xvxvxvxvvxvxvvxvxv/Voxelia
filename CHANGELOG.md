@@ -5,6 +5,10 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.57.1 — Manutenzione: le missioni di Aldoria 3026 non si chiudono da sole (5 novembre 2026)
+
+- **Aldoria 3026: «Continua» a metà missione non regala più la missione.** I nemici e l'auto del corriere di una missione non vengono salvati: riaprendo la partita durante «I Corvi di Neon», «Il nucleo», «Il corriere», «Assalto alla Banca Corona» o «Il Corvo», il passo da combattere risultava già fatto e la missione si chiudeva da sola, con crediti ed esperienza, senza combattere (anche lo scontro con Max «il Corvo»). Ora, quando continui, i Corvi, il Corvo o la Saetta del corriere tornano al loro posto e la missione riprende da dove eri. Se il passo aveva un tempo limite, resta il tempo che avevi.
+
 ## 7.57 — Aldoria 3026, la Cronoporta e le modalità che si sbloccano (5 novembre 2026)
 
 - **Aldoria 2026 diventa Aldoria 3026: la città fra mille anni.**

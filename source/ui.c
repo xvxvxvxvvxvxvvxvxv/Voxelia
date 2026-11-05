@@ -141,7 +141,7 @@ static void drawMinimap(float X, float Y, float S, bool legend) {
 enum {
 	A_CLOSE = 1, A_BACK, A_STORY, A_QACCEPT, A_QTURN, A_OPEN, A_HEAL, A_REST, A_SONG, A_BUY, A_SELL, A_SELLALL, A_FORGE, A_UPG,
 	A_EQUIP, A_DROPIT, A_QABANDON, A_LORE, A_RESUME, A_SAVE, A_SETTING, A_TITLE, A_CONT, A_NEW, A_PROLOG, A_HELP, A_DIFF,
-	A_EXITSTAY, A_EXITGO, A_BET, A_CPLAY, A_CONFIRM, A_NOP, A_NAME, A_NETTOG, A_NETURL, A_NETCODE, A_CHAT, A_WHO, A_ARBUY, A_SELLRES, A_SAIL, A_PLUG, A_OPENPLUG
+	A_EXITSTAY, A_EXITGO, A_BET, A_CPLAY, A_CONFIRM, A_NOP, A_NAME, A_NETTOG, A_NETURL, A_NETCODE, A_CHAT, A_WHO, A_ARBUY, A_SELLRES, A_SAIL, A_PLUG, A_OPENPLUG, A_X
 };
 typedef struct { char l[72]; char r[40]; u32 col; int act, arg; bool dis; } Opt;
 static Opt OPT[72]; static int NOPT = 0, SEL = 0, SCR = 0;
@@ -161,9 +161,12 @@ static void itemDesc(const Item *it, char *out, int n) {
 	char cr[16] = "", hp[16] = "";
 	if (it->cr) snprintf(cr, sizeof cr, " · CRIT +%d%%", it->cr);
 	if (it->hp) snprintf(hp, sizeof hp, " · PV +%d", it->hp);
-	snprintf(out, n, "%s %d%s%s", it->s == SL_W ? "ATT" : "DIF", iv(it), cr, hp);
+	char el[32] = ""; { static const char *R[6] = {"", "I", "II", "III", "IV", "V"}; int k = itemEl(it); if (k) snprintf(el, sizeof el, " · %s %s", elName(k), R[itemElLv(it)]); }
+	if (it->s == SL_W) { int ml; const char *t = wmTitle(it, &ml); int o = strlen(el); if (t) snprintf(el + o, sizeof el - o, " · «%.14s»", t); }
+	snprintf(out, n, "%s %d%s%s%s", it->s == SL_W ? "ATT" : "DIF", iv(it), cr, hp, el);
 }
 static u32 rarCol(int r) { u32 c = RC[r]; return C2D_Color32((c >> 16) & 255, (c >> 8) & 255, c & 255, 255); }
+u32 xRarCol(int r) { return rarCol(clampi(r, 0, 4)); }
 
 static void buildPanel(void);
 bool uiBlocking(void) { return PM != PM_NONE; }
@@ -257,7 +260,7 @@ static void buildNpc(void) {
 		case R_FISHER: case R_NAVAL: case R_DIM: case R_MOTEL: case R_MASTER: break;
 		}
 	}
-	if (id >= 0 && !strcmp(NPCS[id].id, "capitanomarina48")) opt("Salpa per Thalassa, il regno oltre il mare", A_SAIL, 0)->col = C_GOLD;
+	if (id >= 0 && xNpcStory(NPCS[id].id)) {}   // 7.48: Capitana Marina, Cancelliere Oreste, Regina Nerea
 	opt("Arrivederci", A_CLOSE, 0);
 }
 /* ---------------- multigiocatore ---------------- */
@@ -307,6 +310,7 @@ static void buildShop(void) {
 	o = opt("Pozione", A_BUY, 0); snprintf(o->r, sizeof o->r, "%d oro%s", px("pot", 25), isOffer("pot") ? " OFFERTA" : "");
 	o = opt("Scorta di 5 pozioni", A_BUY, 1); snprintf(o->r, sizeof o->r, "%d oro%s", px("pot5", 110), isOffer("pot5") ? " OFFERTA" : "");
 	o = opt("Equipaggiamento a sorpresa", A_BUY, 2); snprintf(o->r, sizeof o->r, "%d oro%s", px("rnd", 60 + P.lv * 20), isOffer("rnd") ? " OFFERTA" : "");
+	{ char r[32]; snprintf(r, sizeof r, "60 oro · ne hai %d", X.seal); uiXOpt("Sigillo di doma (per domare un mostro)", r, XARG(80, 1), C_GOLD, P.g < 60); uiXOpt("5 Sigilli di doma", "270 oro", XARG(80, 5), C_GOLD, P.g < 270); }
 	opt("Vendi tutti gli oggetti comuni", A_SELLALL, 0);
 	opt("Vendi tutto lo zaino", A_SELLALL, 1);
 	for (int i = 0; i < P.ninv; i++) {
@@ -330,6 +334,7 @@ static void buildSmith(void) {
 		snprintf(b, sizeof b, "Potenzia: %s", nm); o = opt(b, A_UPG, s); o->col = rarCol(it->r);
 		if (it->up >= 5) { snprintf(o->r, sizeof o->r, "massimo"); o->dis = true; } else snprintf(o->r, sizeof o->r, "+%d · %d oro", it->up + 1, px("upg", upc(it)));
 	}
+	xSmithOpts();   // 7.55: infusione elementale con le Essenze
 	opt("Indietro", A_BACK, 0);
 }
 static void buildAlch(void) {
@@ -405,6 +410,7 @@ static void buildPause(void) {
 	Opt *o;
 	opt("Riprendi", A_RESUME, 0);
 	opt("Salva la partita", A_SAVE, 0);
+	xPauseOpts();
 	o = opt("Musica", A_SETTING, 0); snprintf(o->r, sizeof o->r, "%s", SET.muOn ? "sì" : "no");
 	o = opt("Volume musica", A_SETTING, 1); snprintf(o->r, sizeof o->r, "< %d%% >", (int)roundf(SET.mu * 100));
 	o = opt("Volume effetti", A_SETTING, 2); snprintf(o->r, sizeof o->r, "< %d%% >", (int)roundf(SET.sf * 100));
@@ -506,6 +512,7 @@ static void buildPanel(void) {
 	case PM_ARENA: buildArena(); break;
 	case PM_SELLRES: buildSellRes(); break;
 	case PM_PLUG: plBuildPanel(); break;
+	case PM_X: xBuild(); break;
 	case PM_MAP:
 		snprintf(PT, sizeof PT, "%s", ZNAME);
 		opt("Chiudi", A_CLOSE, 0);
@@ -519,6 +526,13 @@ static void buildPanel(void) {
 void uiPlugTitle(const char *ti, const char *body) { snprintf(PT, sizeof PT, "%s", ti ? ti : ""); snprintf(PB, sizeof PB, "%s", body ? body : ""); }
 void uiPlugOpt(const char *l, const char *r, int arg, u32 col, bool dis) { Opt *o = opt(l, arg ? A_PLUG : A_NOP, arg); snprintf(o->r, sizeof o->r, "%s", r ? r : ""); o->col = col; o->dis = dis; }
 void uiOpenPlug(void) { uiOpenPanel(PM_PLUG); }
+
+/* ---------------- finestre della storia (story.c) ---------------- */
+void uiXTitle(const char *ti, const char *body) { snprintf(PT, sizeof PT, "%s", ti ? ti : ""); snprintf(PB, sizeof PB, "%s", body ? body : ""); }
+void uiXOpt(const char *l, const char *r, int arg, u32 col, bool dis) { Opt *o = opt(l, arg ? A_X : A_NOP, arg); snprintf(o->r, sizeof o->r, "%s", r ? r : ""); o->col = col ? col : C_TXT; o->dis = dis; }
+void uiLabel(float x, float y, float sc, u32 c, const char *s);
+extern char kbInit[64];
+void uiKeyboardFor(int mode, const char *init) { snprintf(kbInit, sizeof kbInit, "%s", init ? init : ""); kbMode = mode; wantKeyboard = true; }
 
 /* ---------------- azioni ---------------- */
 extern void titleStart(void);
@@ -574,6 +588,7 @@ static void doAct(Opt *o, int dir) {
 		if (PM == PM_PLAYERS) { PM = PNPC ? PM_NPC : PM_NET; buildPanel(); return; }
 		if (PM == PM_PLUG) { if (plPanelBack()) { SEL = 0; SCR = 0; buildPanel(); return; } if (PMback == PM_NET || PMback == PM_PAUSE) { PM = PMback; SEL = 0; buildPanel(); return; } uiClose(); return; }
 		if (PM == PM_NET) { PM = started ? PM_PAUSE : PM_TITLE; SEL = 0; buildPanel(); return; }
+		if (PM == PM_X) { uiClose(); return; }
 		if (PM == PM_SHOP || PM == PM_SMITH || PM == PM_ALCH || PM == PM_CASINO || PM == PM_ARENA || PM == PM_SELLRES) { if (PNPC) { PM = PM_NPC; buildPanel(); } else uiClose(); return; }
 		if (PM == PM_DIFF || PM == PM_CONFIRM || (PM == PM_HELP && !started)) { PM = PM_TITLE; SEL = 0; buildPanel(); return; }
 		if (PM == PM_HELP) { PM = PM_PAUSE; buildPanel(); return; }
@@ -582,8 +597,8 @@ static void doAct(Opt *o, int dir) {
 	case A_QACCEPT: if (PNPC) qAccept(PNPC->nid, a); break;
 	case A_QTURN: qTurn(a); break;
 	case A_OPEN: PM = a; SEL = 0; SCR = 0; CR[0] = 0; break;
-	case A_HEAL: P.hp = P.mx; msg("La Luce ti ristora completamente."); JINGLE(.1f, W_TRIANGLE, 72, 79, 84); break;
-	case A_REST: if (pay(10)) { P.hp = P.mx; msg("Dormi profondamente. Sei completamente ristorato."); } break;
+	case A_HEAL: domRestAll(); P.hp = P.mx; msg("La Luce ti ristora completamente."); JINGLE(.1f, W_TRIANGLE, 72, 79, 84); break;
+	case A_REST: if (pay(10)) { domRestAll(); P.hp = P.mx; msg("Dormi profondamente. Sei completamente ristorato."); } break;
 	case A_SONG: JINGLE(.18f, W_TRIANGLE, 67, 69, 71, 72, 74, 72, 71, 69, 67, 0, 64, 67, 72); msg("Lino intona la Ballata dell'Eroe di Aldoria..."); break;
 	case A_BUY:
 		if (a == 0 && pay(px("pot", 25))) P.pot++;
@@ -632,6 +647,7 @@ static void doAct(Opt *o, int dir) {
 	case A_ARBUY: { char b[48]; snprintf(b, sizeof b, "{\"t\":\"buy\",\"k\":%d}", a); netSendRaw(b); break; }
 	case A_SELLRES: if (a < 16) { P.g += P.res[a].n * 8; msg("Venduti %d %s", P.res[a].n, P.res[a].k); P.res[a].n = 0; tone(1200, .06f, W_TRIANGLE, .05f); } break;
 	case A_PLUG: if (plPanelAct(a)) { uiClose(); return; } SEL = 0; SCR = 0; break;
+	case A_X: { int pm0 = PM, r = xPanelAct(a); if (r == 1) { if (PM == pm0) uiClose(); return; } if (PM == PM_NONE) return; break; }
 	case A_OPENPLUG: plPanelPage(a); PMback = PM; PM = PM_PLUG; SEL = 0; SCR = 0; break;
 	case A_SAIL: uiClose(); goZone("thal48"); banner("Thalassa", "Il regno oltre il mare · parla con il Cancelliere Oreste"); return;
 	case A_NOP: if (PM == PM_INV) tone(300, .03f, W_TRIANGLE, .03f); return;
@@ -752,7 +768,7 @@ static void drawHud(void) {
 	  skillBox(162, 170, G_Y, "Area", 45, 0, 1, STEX || STA < 1 || P.at > 0);
 	  skillBox(241, 170, G_X, "Pozione", 0, P.pc, 2.5f, P.pot <= 0); }
 	if (IT) {
-		const char *v = IT->k == K_LEV ? "Tira la" : IT->k == K_NPC ? "Parla con" : IT->k == K_PO ? "Vai a" : IT->k == K_CH ? "Apri il forziere" : IT->k == K_DR ? "Raccogli" : "Raccogli";
+		const char *v = IT->k == K_X ? xVerb(IT) : IT->k == K_LEV ? "Tira la" : IT->k == K_NPC ? "Parla con" : IT->k == K_PO ? "Vai a" : IT->k == K_CH ? "Apri il forziere" : IT->k == K_DR ? "Raccogli" : "Raccogli";
 		snprintf(b, sizeof b, G_L " %s %s", v, IT->k == K_CH ? "" : IT->k == K_DR ? IT->it.n : IT->name);
 		txt(6, 195, .44f, C_GOLD, b);
 	} else {
@@ -762,6 +778,9 @@ static void drawHud(void) {
 		else if (ne >= 0) { if (cbHeavyCd() > 0) snprintf(b, sizeof b, G_A " %s · tieni: %s tra %ds", cbMoveName(), cbHeavyName(), (int)ceilf(cbHeavyCd())); else snprintf(b, sizeof b, G_A " %s · tieni: %s", cbMoveName(), cbHeavyName()); txt(6, 195, .42f, C2D_Color32(255, 140, 120, 255), b); }
 		else txt(6, 195, .42f, C_MU, G_PAD " muovi · START pausa · SELECT mappa");
 	}
+	// pulsanti della storia: compagni, doma (quando c'è un mostro da domare), sella (con un cavallo)
+	{ int n = 0; const char *L[3]; L[n++] = "Comp."; if (domNear() && X.seal > 0) L[n++] = "Doma"; if (X.cavOwn) L[n++] = cavOn() ? "Scendi" : "Sella";
+	  for (int i = 0; i < n; i++) { float x = 318 - (n - i) * 36; bool hi = !strcmp(L[i], "Doma"); rect(x, 193, 34, 17, hi ? C2D_Color32(110, 86, 30, 255) : C2D_Color32(42, 51, 80, 255)); txtC(x + 17, 194, .38f, hi ? C2D_Color32(255, 226, 138, 255) : C_TXT, L[i]); } }
 	for (int i = 0; i < 6; i++) {
 		const Btn *bt = &BTN[i];
 		rect(bt->x, bt->y, bt->w, bt->h, C2D_Color32(42, 51, 80, 255));
@@ -782,10 +801,12 @@ void uiDrawBottom(void) {
 }
 
 /* ---------------- schermo superiore: nomi, barre, numeri, annunci ---------------- */
+void uiLabel(float x, float y, float sc, u32 c, const char *s);
 static void label(float x, float y, float sc, u32 c, const char *s) {
 	txtC(x + 1, y + 1, sc, C2D_Color32(0, 0, 0, 200), s);
 	txtC(x, y, sc, c, s);
 }
+void uiLabel(float x, float y, float sc, u32 c, const char *s) { label(x, y, sc, c, s); }
 void uiDrawTopOverlay(float eyeShift) {
 	(void)eyeShift;
 	if (!TITLE_MODE) {
@@ -813,9 +834,11 @@ void uiDrawTopOverlay(float eyeShift) {
 			} else if (e->k == K_SHARD) label(sx, sy - 8, .42f, C_GOLD, e->name);
 			else if (e->k == K_PO && e == IT) label(sx, sy - 8, .4f, C2D_Color32(140, 230, 255, 255), e->name);
 		}
+		xDrawLabels();
 		// barra dell'eroe
 		{
-			float sx, sy; worldToScreen(P.px, P.py, 44, &sx, &sy);
+			float sx, sy; worldToScreen(P.px, P.py, 44 + xHeroZ(), &sx, &sy);
+			{ const char *tt = titleNow(); if (tt[0]) { char tb[48]; snprintf(tb, sizeof tb, "« %s »", tt); label(sx, sy - 12, .34f, C2D_Color32(255, 210, 122, 255), tb); } }
 			rect(sx - 13, sy, 26, 4, C2D_Color32(0, 0, 0, 170));
 			rect(sx - 13, sy, 26 * clampf(P.hp / P.mx, 0, 1), 4, C2D_Color32(68, 204, 68, 255));
 			if (P.iv > 0) label(sx, sy - 12, .34f, C2D_Color32(140, 231, 255, 255), "invulnerabile");
@@ -862,6 +885,8 @@ void uiDrawTopOverlay(float eyeShift) {
 				float sx, sy; worldToScreen(o->x, o->y, 44, &sx, &sy); if (sx < -40 || sx > 440 || sy < -20 || sy > 260) continue;
 				rect(sx - 13, sy, 26, 4, C2D_Color32(0, 0, 0, 170)); rect(sx - 13, sy, 26 * clampf(o->hp / (float)(o->mx ? o->mx : 1), 0, 1), 4, C2D_Color32(68, 170, 255, 255));
 				bool mate = plMate(o->id);
+				if (o->cavB >= 0) sy -= 20;
+				if (o->tt[0]) { char tb[48]; snprintf(tb, sizeof tb, "« %s »", o->tt); label(sx, sy - 24, .34f, C2D_Color32(255, 210, 122, 255), tb); }
 				char nm[40]; snprintf(nm, sizeof nm, "%s%s Lv%d", mate ? "+ " : "", o->n, o->lv); label(sx, sy - 12, .38f, inPit(o->x, o->y) ? C2D_Color32(255, 154, 154, 255) : mate ? C2D_Color32(125, 255, 176, 255) : C2D_Color32(170, 210, 255, 255), nm);
 				if (o->bt > 0 && o->bub[0]) { char bb[80]; float tot = fmaxf(5, marqueeTime(o->bub, .38f, 150) + 1.5f); marqueeStr(o->bub, .38f, 150, tot - o->bt, bb, sizeof bb); label(sx, sy - 26, .38f, C2D_Color32(255, 227, 138, 255), bb); } } }
 		plDrawTop();
@@ -932,6 +957,11 @@ void uiInput(u32 kd, u32 kh, touchPosition *tp, bool touched, bool tdown) {
 				if (k == 0) dodge(); else if (k == 1) lunge(); else if (k == 2) areaAtk(); else potion();
 				return;
 			}
+			if (tp->py >= 192 && tp->py < 211 && tp->px >= 210) {
+				int n = 0; int K[3]; K[n++] = 0; if (domNear() && X.seal > 0) K[n++] = 1; if (X.cavOwn) K[n++] = 2;
+				int i = n - 1 - (int)((318 - tp->px) / 36);
+				if (i >= 0 && i < n) { if (K[i] == 0) xOpen(XP_PETS); else if (K[i] == 1) domTry(); else cavToggle(); return; }
+			}
 			if (tp->py >= 192 && tp->py < 210 && IT) { act(IT); return; }
 		}
 		if (kd & KEY_START) { uiOpenPanel(PM_PAUSE); return; }
@@ -1001,5 +1031,7 @@ void uiAfterKeyboard(const char *s) {
 	else if (kbMode == 1) { if (strstr(s, "://")) snprintf(NETC.url, sizeof NETC.url, "%s", s); else snprintf(NETC.url, sizeof NETC.url, "https://%s", s); setSave(); }
 	else if (kbMode == 2) { int j = 0; for (const char *p = s; *p && j < 16; p++) { char c = *p; if (c >= 'A' && c <= 'Z') c += 32; if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) NETC.code[j++] = c; } NETC.code[j] = 0; setSave(); }
 	else if (kbMode == 3) netSendChat(s);
+	else if (kbMode == 4) xKbDone(s);
 	if (PM != PM_NONE) buildPanel();
 }
+bool uiHeldY(void) { return (hidKeysHeld() & KEY_Y) != 0; }

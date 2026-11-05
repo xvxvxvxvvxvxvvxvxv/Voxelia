@@ -3,6 +3,28 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.5 · contenuti di Voxelia 7.57
+
+**La Modalità Storia è quella del browser.** Prima il port aveva i contenuti della 7.50 e quasi nessuna delle
+meccaniche arrivate dopo: in rete chi giocava dal browser vedeva cose che sulla 3DS mancavano, e viceversa.
+- **Contenuti della 7.57:** mappe, personaggi, missioni e nemici riesportati (Thalassa e la giungla rifatte, il
+  Serraglio, i dungeon «dimensionali», i nuovi interni di Thalassa). Botteghe, stallo, Torre, Viandante e Casa
+  degli alleati stanno dove li mette il browser.
+- **Nemici condivisi in rete (7.41):** gli stessi nemici per tutti, nello stesso posto, guidati da un solo giocatore;
+  i colpi e le cadute arrivano a tutti. Provato con il browser 7.57 in locale in tutti e due i sensi.
+- **In rete si vedono** cavallo, animale, compagno (con nome, livello, variante) e titolo degli altri, e i tuoi.
+- **Cavalli e corsa**, **animali da compagnia** (con i ritrovamenti), **compagni domati** (sigilli, cattura, mossa
+  speciale, livelli ed evoluzione, stalla), **Serraglio** (potenzia, modifica, muta forma, pensione, uova chimera),
+  **incroci e varianti** (14 varianti con i loro colori).
+- **Elementi:** ogni mostro ha il suo elemento; armi elementali con gli effetti (bruciatura, gelo, fulmine, ...),
+  debolezze, Essenze dai mostri, infusione alla Fucina.
+- **Scelte:** i boss si arrendono (da soli) e si risparmiano o si finiscono; il Viandante e il suo dilemma del
+  giorno; la Casa degli alleati; le tre vie (prezzi e vita) e i titoli sopra l'eroe; la Cronaca.
+- **Il regno oltre il mare:** il capitolo completo, dalla Capitana Marina alla Corona di Corallo.
+- **Boss a fasi**, **armi che crescono**, **maledizioni dei dungeon**, **scavi**, **eventi a orario**, **diario delle
+  scoperte**, **Bottega dei mestieri**, **Torre della Corona**, **duello delle carte**.
+- I salvataggi della 1.4 si caricano: le novità si salvano in coda al file.
+
 ## 1.4 · contenuti di Voxelia 7.50
 
 **La musica è quella del gioco per browser.** Prima il port generava tutti i brani con il vecchio generatore

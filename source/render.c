@@ -421,6 +421,7 @@ static void buildDynamic(void) {
 	drawPeers();
 	heroQ1 = DQ;
 	drawFx();
+	xDrawWorld();
 	// sagoma dell'eroe dietro i muri: copia trasparente disegnata solo dove è nascosto
 	int hq = heroQ1 - heroQ0;
 	if (hq > 0 && TQ + hq < TQ_MAX) {

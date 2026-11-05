@@ -30,7 +30,7 @@ int defV(void) { return (int)roundf((iv(&P.eq[SL_H]) + iv(&P.eq[SL_C]) + iv(&P.e
 int critV(void) { int c = 5; for (int i = 0; i < 4; i++) if (P.eq[i].used) c += P.eq[i].cr; return c; }
 int maxHP(void) { int h = 60 + P.lv * 15; for (int i = 0; i < 4; i++) if (P.eq[i].used) h += P.eq[i].hp; return h; }
 int needXP(void) { return (int)roundf(20 + P.lv * P.lv * 11.5f); }
-void recalc(void) { P.mx = maxHP(); if (P.hp > P.mx) P.hp = P.mx; }
+void recalc(void) { P.mx = (int)roundf(maxHP() * xHpMul()); if (P.hp > P.mx) P.hp = P.mx; }
 
 void flt(float x, float y, const char *s, u32 c) {
 	if (NPOP >= 48) { memmove(POP, POP + 1, sizeof(Pop) * 47); NPOP = 47; }
@@ -74,7 +74,7 @@ static float pf(const char *k, int d) {
 	if (offerQ(k, d)) f *= .65f;
 	return f;
 }
-static float priceMul(void) { return (1 + .08f * P.st) * (1 + P.lv * .012f); }
+static float priceMul(void) { return (1 + .08f * P.st) * (1 + P.lv * .012f) * xPriceMul(); }
 int px(const char *k, int b) { int v = (int)roundf(b * pf(k, gDay()) * priceMul()); return v < 1 ? 1 : v; }
 int dayEvent(void) { return dayEv(gDay()); }
 bool isOffer(const char *k) { return offerQ(k, gDay()); }
@@ -85,6 +85,8 @@ bool pay(int c) {
 	if (P.g < c) { msg("Oro insufficiente"); tone(150, .15f, W_SQUARE, .05f); return false; }
 	P.g -= c; tone(1200, .06f, W_TRIANGLE, .05f); return true;
 }
+static void dropAt(Item it, float x, float y);
+void dropItemAt(Item it, float x, float y) { dropAt(it, x, y); }
 static void dropAt(Item it, float x, float y) {
 	if (blk(x, y)) { int u, v; nearFree((int)x, (int)y, &u, &v); if (!blk(u + .5f, v + .5f)) { x = u + .5f; y = v + .5f; } }
 	Ent *d = entNew(K_DR, x, y); if (d) d->it = it;
@@ -137,20 +139,22 @@ void gainXP(int x) {
 }
 typedef struct { int d; bool cr; } Roll;
 static Roll roll(float m) {
-	float d = atkV() * m * (.8f + frnd() * .4f); bool cr = false;
-	if (P.pf > 0 || frnd() * 100 < critV()) { d *= 1.8f; cr = true; P.pf = 0; }
+	float d = atkV() * m * wmMul() * torDmgMul() * (.8f + frnd() * .4f); bool cr = false;   // 7.44: +4% per livello di maestria; benedizioni della Torre
+	if (P.pf > 0 || frnd() * 100 < critV() + torCritAdd()) { d *= 1.8f; cr = true; P.pf = 0; }
 	Roll r = {(int)roundf(d), cr}; if (r.d < 1) r.d = 1; return r;
 }
 
 /* ---------------- combattimento ---------------- */
 static float dist(Ent *a, float x, float y) { return hyp(a->px - x, a->py - y); }
-static void mv(float *px, float *py, float dx, float dy) { if (!blk(*px + dx, *py)) *px += dx; if (!blk(*px, *py + dy)) *py += dy; }
+void mv(float *px, float *py, float dx, float dy) { if (!blk(*px + dx, *py)) *px += dx; if (!blk(*px, *py + dy)) *py += dy; }
 static void killEnt(Ent *e);
 extern void netEnemyHit(int id, float frac);
-static void hurtE(Ent *e, int d, bool cr) {
+static void killEnt(Ent *e);
+void hurtEnemyRaw(Ent *e, int d, bool cr) {
 	if (e->wb) { plBossHurt(e, d, cr); return; }   // il boss del mondo: la vita la tiene il server
-	netEnemyHit(e->id, d / fmaxf(1, e->mx));
+	{ extern void netEnemyHitE(Ent *, float); netEnemyHitE(e, d / fmaxf(1, e->mx)); }
 	e->hp -= d; e->fl = .12f; e->al = 1;
+	if (e->pup) { e->hme = gtime; if (e->hp < 1) e->hp = 1; }   // copia di un nemico di un altro: cade quando cade per il padrone
 	char b[16]; snprintf(b, sizeof b, cr ? "%d!" : "%d", d);
 	flt(e->px, e->py, b, cr ? 0xffd84a : 0xffffff);
 	tone(cr ? 330 : 220, .05f, W_SQUARE, .05f);
@@ -158,8 +162,14 @@ static void hurtE(Ent *e, int d, bool cr) {
 	sparks(e->px, e->py, cr ? 8 : 4, cr ? 0xffd84a : 0xffffff, 60);
 	if (e->hp <= 0) killEnt(e);
 }
+// i colpi dell'eroe: con l'elemento dell'arma (7.55)
+static void hurtE(Ent *e, int d, bool cr) { d = bossDmg(e, d); if (d <= 0) return; wmHit(); torOnHit(d); const Item *w = &P.eq[SL_W]; int k = itemEl(w); xHurtEnemy(e, d, cr, k ? (k << 3) | itemElLv(w) : 0); }
+void xHeroHit(Ent *e, float m) { Roll r = roll(m); hurtE(e, r.d, r.cr); }
 static void die(void);
+static void hurtP(float at);
+void hurtPfrom(float at) { hurtP(at); }
 static void hurtP(float at) {
+	at *= torHurtMul();
 	if (P.hp <= 0) return;
 	if (P.iv > 0) { flt(P.px, P.py, "Schivata!", 0x8ce7ff); P.pf = 3; tone(900, .05f, W_TRIANGLE, .05f); return; }
 	int d = (int)roundf(at * (.8f + frnd() * .4f) * 100 / (100 + defV() * 2));
@@ -279,22 +289,31 @@ static void dungeonClear(Ent *e) {
 	saveGame();
 }
 static void questKill(Ent *e);
+void killEnemy(Ent *e) { killEnt(e); }
+bool zonePendingTor(void) { return zonePending; }
+void actNoAsk(Ent *e) { e->xo = 1; act(e); }
 static void killEnt(Ent *e) {
+	if (chBossDown(e)) return;   // 7.48: il boss del dungeon si arrende (da soli)
 	int lv = ZLV;
 	const Diff *df = &DFS[P.df];
 	Ent dead = *e;
 	e->k = K_DEAD; e->t0 = gtime; e->fl = 0;
-	gainXP((int)roundf(dead.xp * df->x * nightXP()));
-	int gd = (int)roundf(fri(2, 6 + lv * 3) * (dead.boss ? 6 : 1) * (1 + ZRUN * .25f));
+	float mb = 1 + malBonus();   // 7.44: le maledizioni danno più oro ed esperienza
+	gainXP((int)roundf(dead.xp * df->x * nightXP() * mb * mestXpMul()));
+	int gd = (int)roundf(fri(2, 6 + lv * 3) * (dead.boss ? 6 : 1) * (1 + ZRUN * .25f) * mb * mestGoldMul() * torGoldMul());
 	P.g += gd;
 	char b[24]; snprintf(b, sizeof b, "+%d oro", gd); flt(dead.px, dead.py + .3f, b, 0xffd84a);
 	if (dead.boss) {
 		dropAt(mkUniq(dead.t, lv), dead.px, dead.py);
 		dropAt(mkItem(lv + 1, 2, -1), dead.px + .7f, dead.py + .2f);
-	} else if (frnd() < .4f * df->lt) dropAt(mkItem(lv + 1, 0, -1), dead.px, dead.py);
+		if (malBonus() >= .6f) dropAt(mkItem(lv + 1, 2, -1), dead.px - .6f, dead.py + .3f);
+	} else if (frnd() < .4f * df->lt * mb) dropAt(mkItem(lv + 1, 0, -1), dead.px, dead.py);
 	if (frnd() < .08f) { P.pot++; flt(P.px, P.py, "+1 pozione", 0x88ff88); }
 	P.kills++;
 	questKill(&dead);
+	xOnKill(&dead);
+	discKill(dead.t); evOnKill(&dead);
+	{ extern void syncKilled(Ent *); syncKilled(&dead); }
 	if (dead.boss) {
 		JINGLE(.11f, W_SQUARE, 60, 64, 67, 72, 76, 79);
 		char m[80]; snprintf(m, sizeof m, "Hai sconfitto %s!", dead.name);
@@ -306,6 +325,7 @@ static void killEnt(Ent *e) {
 	sparks(dead.px, dead.py, 10, E[dead.t].rng ? E[dead.t].rng : 0xdddddd, 70);
 }
 static void die(void) {
+	if (torDie()) return;   // cadere nella Torre non costa niente
 	JINGLE(.2f, W_TRIANGLE, 64, 60, 57, 52);
 	if (DFS[P.df].pm) {
 		MODE_DEAD = 1;
@@ -366,7 +386,7 @@ void dodge(void) {
 	if (P.moving) { P.dmk = 1; P.dmt = .34f; P.dmv = 7.6f; P.iv = .36f; stUse(20); }
 	else { dx = -dx; dy = -dy; P.dmk = 1; P.dmt = .18f; P.dmv = 7; P.iv = .22f; stUse(12); }
 	P.dmx = dx; P.dmy = dy; P.dmm = 1; P.ndmh = 0;
-	P.dgc = .42f;
+	P.dgc = .42f * torCdMul();
 	if (NFX < 64) FX[NFX++] = (Fx){FX_TRAIL, P.px, P.py, 0, .3f, .3f, 0, P.px + dx * 2.6f, P.py + dy * 2.6f, 0};
 	whoosh();
 }
@@ -374,6 +394,7 @@ void lunge(void) {
 	if (!started || P.dmk || P.hp <= 0 || P.at > 0) return;
 	if (stTired()) return;
 	stUse(40);   // colpo pesante: 26 + 14
+	wmLunge();   // 7.44: la mossa speciale dell'arma parte insieme all'affondo
 	const LgDef *T = lgType();
 	int ti = nearestEnemy(7);
 	float dx, dy;
@@ -403,6 +424,7 @@ void potion(void) {
 	if (P.pot <= 0) { msg("Non hai pozioni: comprale da Mira o da Ugo"); tone(150, .12f, W_SQUARE, .05f); return; }
 	if (P.hp >= P.mx) { msg("Sei già in piena salute"); return; }
 	if (P.pc > 0) { char b[40]; snprintf(b, sizeof b, "Pozione tra %ds", (int)ceilf(P.pc)); flt(P.px, P.py, b, 0x9adcff); return; }
+	if (malOn(3)) { flt(P.px, P.py, "Gola secca: niente pozioni", 0xc46bff); tone(150, .12f, W_SQUARE, .05f); return; }
 	P.pot--; P.pc = 2.5f;
 	int h = (int)roundf(P.mx * .35f);
 	P.hp = fminf(P.mx, P.hp + h);
@@ -578,7 +600,8 @@ void act(Ent *e) {
 		int lv = ZLV ? ZLV : (P.lv > 1 ? P.lv - 1 : 1);
 		int n = e->rich ? 3 : fri(1, 2);
 		for (int i = 0; i < n; i++) dropAt(mkItem(lv + 1, e->rich ? 1 : 0, -1), e->px + i * .5f - .4f, e->py + .5f);
-		int gd = (int)roundf(fri(10, 30) * (1 + lv) * (e->rich ? 3 : 1));
+		int gd = (int)roundf(fri(10, 30) * (1 + lv) * (e->rich ? 3 : 1) * (1 + malBonus()));
+		evOnChest(e);
 		P.g += gd;
 		if (e->hc) { int w = 0; for (int i = 1; i < 24; i++) if (P.hcT[i] < P.hcT[w]) w = i; P.hcK[w] = (u32)e->hc; P.hcT[w] = osGetTime(); }
 		tone(800, .1f, W_SQUARE, .05f);
@@ -587,10 +610,11 @@ void act(Ent *e) {
 		return;
 	}
 	case K_LEV: levPull(e); return;
+	case K_X: xAct(e); return;
 	case K_RES: {
 		if (e->rt > gtime) { msg("Qui non c'è più niente da raccogliere: torna più tardi"); return; }
 		e->rt = gtime + 60;
-		resAdd(e->res, 1);
+		resAdd(e->res, 1); discRes(e->res);
 		char b[48]; snprintf(b, sizeof b, "+1 %s", e->res); flt(e->px, e->py, b, 0x7aff7a);
 		tone(760, .07f, W_TRIANGLE, .05f);
 		for (int i = 0; i < P.nq; i++) { Quest *q = &P.q[i]; const QuestDef *T = &QT[q->id]; if (T->t == QK_GAT && T->r && !strcmp(T->r, e->res) && !qReady(q)) { q->c++; msg("%s: %d/%d", T->ti, q->c, T->n); if (qReady(q)) JINGLE(.12f, W_SQUARE, 67, 72); } }
@@ -600,7 +624,10 @@ void act(Ent *e) {
 	case K_PO:
 		if (e->seal) { msg("Una grata di ferro chiude la scala. Tira le due leve del piano nello stesso momento."); tone(150, .2f, W_SQUARE, .05f); return; }
 		if (e->lock[0] && !hasUnl(e->lock)) { msg("%s", e->lockMsg ? e->lockMsg : "Il passaggio è sbarrato."); tone(150, .2f, W_SQUARE, .05f); return; }
-		if (!zoneExists(e->to)) { msg("%s: questo luogo non è ancora disponibile su 3DS", e->name); tone(150, .2f, W_SQUARE, .05f); return; }
+		if (torExit(e)) return;   // 7.44: uscire dalla Torre chiude la prova
+		if (!e->xo && malAsk(e)) return;   // 7.44: le maledizioni, prima di entrare in un dungeon
+		e->xo = 0;
+		if (!zoneExists(e->to) && !torIsZone(e->to)) { msg("%s: questo luogo non è ancora disponibile su 3DS", e->name); tone(150, .2f, W_SQUARE, .05f); return; }
 		if (e->dgx && !e->ok && dgLeft()) { TGT = e; uiOpenPanel(PM_EXITASK); tone(330, .08f, W_TRIANGLE, .05f); return; }
 		goZone(e->to);
 		return;
@@ -867,6 +894,18 @@ void hurtPvp(int d, bool cr, const char *from, const char *n) {
 		msg("Sei stato sconfitto da %s! Torni nella sala d'attesa.", n);
 	}
 }
+// 7.41: il colpo di un altro su un nemico che guido io
+void enemyNetHitG(const char *g, float frac) {
+	for (int i = 0; i < NENT; i++) {
+		Ent *e = &ents[i];
+		if (e->k != K_EN || e->pup || !e->sg[0] || strcmp(e->sg, g)) continue;
+		int d = (int)roundf(frac * e->mx); if (d < 1) d = 1;
+		e->hp -= d; e->fl = .12f; e->al = 1;
+		char b[16]; snprintf(b, sizeof b, "%d", d); flt(e->px, e->py, b, 0xaaddff);
+		if (e->hp <= 0) killEnt(e);
+		return;
+	}
+}
 void enemyNetHit(int id, float frac) {
 	for (int i = 0; i < NENT; i++) {
 		Ent *e = &ents[i];
@@ -894,10 +933,13 @@ const char *arName(int k, int *cost) { *cost = AR[clampi(k, 0, 7)].c; return AR[
 /* ---------------- sblocchi e risorse ---------------- */
 bool hasUnl(const char *k) { for (int i = 0; i < 12; i++) if (P.unl[i][0] && !strcmp(P.unl[i], k)) return true; return false; }
 void addUnl(const char *k) { if (hasUnl(k)) return; for (int i = 0; i < 12; i++) if (!P.unl[i][0]) { snprintf(P.unl[i], 16, "%s", k); return; } }
-int resGet(const char *k) { for (int i = 0; i < 16; i++) if (P.res[i].k[0] && !strcmp(P.res[i].k, k)) return P.res[i].n; return 0; }
+int resGet(const char *k) { for (int i = 0; i < 16; i++) if (P.res[i].k[0] && !strcmp(P.res[i].k, k)) return P.res[i].n; for (int i = 0; i < 24; i++) if (X.xres[i].k[0] && !strcmp(X.xres[i].k, k)) return X.xres[i].n; return 0; }
 void resAdd(const char *k, int n) {
 	for (int i = 0; i < 16; i++) if (P.res[i].k[0] && !strcmp(P.res[i].k, k)) { P.res[i].n = clampi(P.res[i].n + n, 0, 60000); return; }
 	for (int i = 0; i < 16; i++) if (!P.res[i].k[0]) { snprintf(P.res[i].k, 16, "%s", k); P.res[i].n = clampi(n, 0, 60000); return; }
+	// 3DS 1.5: le risorse nuove (mestieri) quando i 16 posti dell'eroe sono pieni
+	for (int i = 0; i < 24; i++) if (X.xres[i].k[0] && !strcmp(X.xres[i].k, k)) { X.xres[i].n = clampi(X.xres[i].n + n, 0, 60000); return; }
+	for (int i = 0; i < 24; i++) if (!X.xres[i].k[0]) { snprintf(X.xres[i].k, 16, "%s", k); X.xres[i].n = clampi(n, 0, 60000); return; }
 }
 
 /* ---------------- aggiornamento ---------------- */
@@ -988,7 +1030,7 @@ void gameUpdate(float dt) {
 		float dx = kx + ky, dy = ky - kx, dd = hyp(dx, dy);
 		dx /= dd; dy /= dd;
 		RUNNING = runHeld && STA > 0 && !STEX;
-		float s = (3.9f + (RUNNING ? 1.95f : 0)) * dt * fminf(1, mag), r = .24f;
+		float s = (3.9f + (RUNNING ? 1.95f : 0)) * dt * fminf(1, mag) * xSpeedMul(), r = .24f;
 		if (RUNNING) { STA = fmaxf(0, STA - 16 * dt); stT = gtime; if (STA <= 0) { STEX = true; stTired(); } }
 		float sgx = dx > 0 ? 1 : dx < 0 ? -1 : 0, sgy = dy > 0 ? 1 : dy < 0 ? -1 : 0;
 		if (!blk(P.px + dx * s + sgx * r, P.py)) P.px += dx * s;
@@ -999,7 +1041,9 @@ void gameUpdate(float dt) {
 	}
 	// oggetto con cui interagire
 	IT = NULL;
-	{ float bd = 2.0f; for (int i = 0; i < NENT; i++) { Ent *e = &ents[i]; if (!interactable(e)) continue; float q = dist(e, P.px, P.py); if (q < bd) { bd = q; IT = e; } } }
+	{ float bd = 2.0f; for (int i = 0; i < NENT; i++) { Ent *e = &ents[i]; if (!interactable(e) && !(e->k == K_X && e->xk != XK_ANI && xInteractable(e))) continue; float q = dist(e, P.px, P.py); if (q < bd) { bd = q; IT = e; } }
+	  // l'animale si accarezza solo quando lì vicino non c'è altro (7.54.2)
+	  if (!IT) { bd = 1.7f; for (int i = 0; i < NENT; i++) { Ent *e = &ents[i]; if (e->k != K_X || e->xk != XK_ANI || !xInteractable(e)) continue; float q = dist(e, P.px, P.py); if (q < bd) { bd = q; IT = e; } } } }
 	cbUpdate(dt, attackHeld);
 	if (TGT && TGT->k != K_EN) TGT = NULL;
 	if (TGT && !P.dmk && !cbBusy()) {
@@ -1008,7 +1052,7 @@ void gameUpdate(float dt) {
 		if (dd > 6.5f) TGT = NULL;
 		else if (dd <= rg) { if (gtime - cbEnd > .35f) cbDo(0, false, true); }
 		else if (!P.moving) {
-			float dx = (TGT->px - P.px) / dd, dy = (TGT->py - P.py) / dd, sp = 3.9f * dt;
+			float dx = (TGT->px - P.px) / dd, dy = (TGT->py - P.py) / dd, sp = 3.9f * dt * xSpeedMul();
 			mv(&P.px, &P.py, dx * sp, dy * sp);
 			P.dr[0] = dx; P.dr[1] = dy; P.face = faceOf(dx, dy); P.moving = 1;
 		}
@@ -1036,7 +1080,17 @@ void gameUpdate(float dt) {
 		if (e->k == K_DEAD && gtime - e->t0 > .7f) { entDel(e); continue; }
 		if (e->k != K_EN) continue;
 		e->fl -= dt; e->cdt -= dt; e->slt -= dt;
+		if (e->pup) continue;                               // copia del nemico di un altro giocatore (7.41)
+		if (e->cbs > gtime) continue;                       // stordito, congelato o preso dal sigillo
+		if (e->ptg) { if (xPetAlive(e->ptg)) continue; e->ptg = 0; }   // insegue il compagno
+		float spK = e->eSl > gtime ? e->eSlK : 1;
 		float d = dist(e, P.px, P.py);
+		// 7.41: un altro eroe più vicino: il nemico va da lui, e il colpo glielo manda il gioco
+		{ extern Peer *syncNearestPeer(Ent *, float); extern void syncEH(const char *, float); Peer *tp = (e->al || d < e->ag) ? syncNearestPeer(e, d) : NULL;
+		  if (tp) { float pd = hyp(tp->x - e->px, tp->y - e->py);
+			if (pd > e->r * .9f) { float k = fminf(1, e->sp * dt * spK / fmaxf(pd, .01f)); mv(&e->px, &e->py, (tp->x - e->px) * k, (tp->y - e->py) * k); e->face = faceOf(tp->x - e->px, tp->y - e->py); }
+			else if (e->cdt <= 0) { e->cdt = e->cd; e->atkT = gtime; e->atkD[0] = (tp->x - e->px) / fmaxf(pd, .01f); e->atkD[1] = (tp->y - e->py) / fmaxf(pd, .01f); e->face = faceOf(e->atkD[0], e->atkD[1]); syncEH(tp->id, e->at); }
+			e->al = 1; continue; } }
 		if (d < e->ag || e->al) {
 			e->al = d < e->ag * 2.5f;
 			const EnemyDef *b = &E[e->t];
@@ -1059,7 +1113,7 @@ void gameUpdate(float dt) {
 				fxAdd(FX_WARN, e->px, e->py, 2.6f, 1.1f, e->at * 1.5f);
 				tone(70, .3f, W_SAW, .05f);
 			}
-			if (d > e->r * .9f) enMove(e, d, dt);
+			if (d > e->r * .9f) enMove(e, d, dt * spK);
 			else if (e->cdt <= 0) {
 				e->cdt = e->cd;
 				float dd = d > .001f ? d : 1;
@@ -1108,13 +1162,14 @@ void gameUpdate(float dt) {
 		music(b ? MUS_BOSS : zoneMusic(ZMUS));   // di notte in città il notturno, come nel browser
 		npcMarks();
 	}
+	xTick(dt);
 	if ((saveT -= dt) <= 0) { saveT = 30; saveGame(); }
 }
 
 /* ---------------- nuova partita e salvataggi ---------------- */
 void newGame(int df, const char *name) {
 	char nm[16]; snprintf(nm, sizeof nm, "%s", name && *name ? name : "Eroe");   // name può puntare a P.name
-	memset(&P, 0, sizeof P);
+	memset(&P, 0, sizeof P); xNew();
 	STA = 100 + 1; STEX = false;
 	P.hp = 75; P.mx = 75; P.lv = 1; P.g = 30; P.pot = 3; P.gt = 480;
 	P.eq[SL_W] = (Item){SL_W, 0, 0, 0, 3, 0, 0, "Pugnale", 1};
@@ -1138,6 +1193,21 @@ void newGame(int df, const char *name) {
 	if (VOX_TEST == 6) loadZone("arena", "town");
 	if (VOX_TEST == 7) loadZone("thal48", NULL);
 	if (VOX_TEST == 8) { P.gt = 1340; loadZone("peaks", "town"); }
+	// 3DS 1.5: cavallo, animale e compagno; la Casa degli alleati e il Viandante; un mostro da domare
+	if (VOX_TEST >= 20 && VOX_TEST <= 26) {
+		X.cavOwn = 3; X.cavSel = 1; X.cavCol = 1; X.cavOn = 1; X.seal = 5;
+		X.ani[0].t = 0; snprintf(X.ani[0].n, 16, "Fido"); X.nani = 1; X.aniOn = 0;
+		XPet *p = &X.pets[0]; memset(p, 0, sizeof *p); snprintf(p->t, sizeof p->t, "lupo"); snprintf(p->n, sizeof p->n, "Lupo"); p->lv = 12; X.npet = 1; X.pet = 0;
+		X.bossCh[0] = 1; X.titles = 1; X.title = 0; X.ess[1] = 9;
+		P.eq[SL_W].el = (1 << 3) | 2;
+	}
+	if (VOX_TEST == 20) loadZone("campi", "town");
+	if (VOX_TEST == 23) loadZone("forest", "town");
+	if (VOX_TEST == 24) { X.cavOn = 0; resAdd("grano", 5); resAdd("uova", 5); resAdd("mela", 3); resAdd("ferro", 6); resAdd("carbone", 4); loadZone("town", NULL); P.px = 32.5f; P.py = 41.5f; xOpen(XP_MEST); }
+	if (VOX_TEST == 26) { X.cavOn = 0; loadZone("town", NULL); xOpen(XP_TORRE); }
+	if (VOX_TEST == 25) { X.cavOn = 0; X.ess[6] = 20; loadZone("in_serraglio", "town"); xOpen(XP_SERR); }
+	if (VOX_TEST == 21) { X.cavOn = 0; loadZone("town", NULL); P.px = 34.5f; P.py = 37.4f; }
+	if (VOX_TEST == 22) { X.pet = -1; loadZone("forest", "town"); for (int i = 0; i < NENT; i++) if (ents[i].k == K_EN && !ents[i].boss) { ents[i].px = P.px + 2; ents[i].py = P.py + 1; ents[i].hp = ents[i].mx * .2f; break; } }
 #ifdef VOX_URL
 	snprintf(NETC.url, sizeof NETC.url, "%s", VOX_URL); snprintf(NETC.code, sizeof NETC.code, "test3ds"); netStart();
 #endif
@@ -1161,7 +1231,7 @@ void saveGame(void) {
 	if (!started || MODE_DEAD) return;
 	FILE *f = fopen(SAVEF, "wb"); if (!f) return;
 	SaveFile s; s.magic = SAVE_MAGIC; s.ver = SAVE_VER; s.size = sizeof(Hero); s.p = P;
-	fwrite(&s, sizeof s, 1, f); fclose(f);
+	fwrite(&s, sizeof s, 1, f); xSave(f); fclose(f);
 }
 bool hasSave(void) {
 	FILE *f = fopen(SAVEF, "rb"); if (!f) return false;
@@ -1170,9 +1240,12 @@ bool hasSave(void) {
 bool loadGame(void) {
 	FILE *f = fopen(SAVEF, "rb"); if (!f) return false;
 	static SaveFile s;
-	size_t n = fread(&s, sizeof s, 1, f); fclose(f);
-	if (n != 1 || s.magic != SAVE_MAGIC || s.ver != SAVE_VER || s.size != sizeof(Hero)) return false;
+	size_t n = fread(&s, sizeof s, 1, f);
+	if (n != 1 || s.magic != SAVE_MAGIC || s.ver != SAVE_VER || s.size != sizeof(Hero)) { fclose(f); return false; }
+	bool hasX = xLoad(f); fclose(f);
 	P = s.p;
+	// salvataggio di prima della 1.5: il byte dell'elemento delle armi era riempimento, va azzerato
+	if (!hasX) { for (int i = 0; i < 4; i++) P.eq[i].el = 0; for (int i = 0; i < INV; i++) P.inv[i].el = 0; }
 	P.dmk = 0; P.iv = P.at = P.sk = P.pc = P.sw = P.dgc = P.lgc = P.pf = P.fl = 0;
 	if (P.hp <= 0) P.hp = P.mx;
 	MODE_DEAD = 0; started = true; lastDay = 0;

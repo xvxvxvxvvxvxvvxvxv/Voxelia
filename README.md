@@ -4,7 +4,7 @@
 Si gioca da soli o con gli amici. Si esplora la città di Aldoria e il regno intorno e si combatte nei dungeon. In
 Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costruiscono mondi da far giocare agli altri.
 
-**Versione attuale: 8.2** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.3** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.md)
 
@@ -826,7 +826,7 @@ nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della
 | `aldoria3026/8zzzzg_neo.js` | Aldoria 3026, la città del futuro nello Zaffiro, la Cronoporta e lo sblocco delle modalità |
 | `aldoria3026/8zzzzl_stelle.js` | Oltre il cielo: la Stella di Aldric, la mappa galattica, le sonde, i pianeti, l'equipaggio, i potenziamenti e la rotta dei Costruttori |
 | `aldoria3026/8zzzzm_veicoli.js` | I veicoli del 3026 ridisegnati: più grandi, con cabina a vetri, fari e i dettagli di ogni modello; il rover a sei ruote |
-| `combattimento/8zzzzk_bilancio.js` | Il bilanciamento della 8.1: Campioni per piano, Cripta, Fucina, Tempio di Giada, Tomorrow ai livelli alti |
+| `combattimento/8zzzzk_bilancio.js` | Il bilanciamento: Campioni per piano, Cripta, Fucina, Tempio di Giada, Tomorrow ai livelli alti (8.1); nemici, Campioni e prezzi che seguono il tuo livello (8.3) |
 | `corona/8zzzzh_corona80.js` | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album |
 | `sistemi/8zzzzh_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |
 | `sistemi/8zzzzi_avvisi.js` | Le scritte del gioco (eventi, cibo attivo, guerre…) non coprono il riquadro dell'eroe, le finestre e la fine della battaglia |

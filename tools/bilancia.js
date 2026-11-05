@@ -7,6 +7,7 @@
    Il livello dell'eroe è quello del dungeon più 2, con un equipaggiamento raro del suo livello.
    Serve Playwright con Chromium (vedi tools/prova.js).  Uso:  node tools/bilancia.js */
 const path=require('path');let chromium;try{({chromium}=require('playwright'))}catch(e){console.error('✗ manca Playwright: npm i -D playwright && npx playwright install chromium');process.exit(2)}
+const HERO=+(process.env.HERO||3);
 const FILE='file://'+path.resolve(__dirname,'..','voxelia.html');
 // gira dentro la pagina: prepara l'eroe e combatte per al massimo `sec` secondi di gioco
 const SIM=`window.__seme=function(n){let a=n>>>0||1;const f=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};Math.random=f;R=f};
@@ -32,7 +33,7 @@ window.__sim=function(sec,attesa,gruppo){window.__morto=0;window.__bevute=0;let 
   const media=async(nome,prep)=>{const R=[];for(let i=0;i<5;i++){const r=await p.evaluate(`(()=>{__seme(${i*7919+nome.length});${prep};try{cl()}catch(e){};return __sim(90,0,3)})()`).catch(e=>({err:e.message}));R.push(r)}
     const ok=R.filter(r=>!r.err&&!r.uscito),morti=ok.filter(r=>r.morto).length,c=Math.round(ok.reduce((a,r)=>a+r.perNemico,0)/Math.max(1,ok.length));
     console.log((nome+'                              ').slice(0,30)+(ok.length?'ogni nemico costa in media '+c+'% della vita · morto '+morti+' volte su '+ok.length:'errore: '+(R[0].err||'').split('\n')[0]))};
-  if(SOLO!=='tomorrow'&&SOLO!=='cuore')for(const[k,n,lv,ent]of DGS)await media('Storia · '+n,`__eroe(${lv+2});load('${k}@1','${ent}');__eroe(${lv+2})`);
+  if(SOLO!=='tomorrow'&&SOLO!=='cuore')for(const[k,n,lv,ent]of DGS)await media('Storia · '+n,`__eroe(${lv+HERO});load('${k}@1','${ent}');__eroe(${lv+HERO})`);
   if(SOLO==='storia'){await b.close();return}
   const SOLO_TW=SOLO==='tomorrow';
   // Tomorrow

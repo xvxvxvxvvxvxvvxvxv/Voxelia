@@ -5,6 +5,20 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.3 — La difficoltà che cresce con te (5 novembre 2026)
+
+- **I nemici della Storia seguono due livelli**: quello del dungeon o della zona, e il tuo.
+  - Ogni dungeon chiede di essere un po' più forti: i nemici partono 2 livelli sopra il dungeon. Quando entri, un avviso dice il livello dei nemici e quello consigliato. Se sei sotto, l'avviso è rosso.
+  - Se sei più in alto, i nemici recuperano il 60% della distanza. A livello 30 i goblin della Tana sono di livello 20: più facili di te, ma non più innocui.
+  - Vale per i dungeon e le zone aperte. Città, interni, Tomorrow e Aldoria 3026 non cambiano.
+  - Oro e oggetti dei nemici seguono il loro livello, quindi chi rischia guadagna di più.
+- **Più Campioni ai livelli alti**: la probabilità sale con il tuo livello, fino al +12%. Il limite per piano è 2, più 1 ogni 10 livelli (e 1 in più sul piano del boss).
+- **Il mercato segue il livello**: nella Storia i prezzi dei negozi salgono di un altro 2% a livello dal livello 5. A livello 30 si paga circa il doppio di un eroe all'inizio: una pozione costa 62 monete invece di 31. In cima ai negozi c'è scritto di quanto sono saliti.
+- **Cripta e Fucina**: quello che la 8.1 aveva alleggerito torna a metà strada. Il Tempio di Giada resta come nella 8.1, perché con i nemici due livelli più su era di nuovo il posto più duro del gioco.
+- **Le prove del robot**:
+  - all'altezza del livello consigliato ogni nemico costa tra l'11% e il 40% della vita;
+  - con 12 livelli in più costa tra il 5% e il 24%.
+
 ## 8.2 — Aldoria 3026: oltre il cielo (5 novembre 2026)
 
 Quando finisci le missioni della città, allo spazioporto di Aldoria 3026 ti aspetta la **Stella di Aldric**, la prima nave a salto. Ispirazione: Mass Effect.

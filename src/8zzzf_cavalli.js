@@ -27,8 +27,11 @@ function cavL(col,mane,dir,mov,ph){const s=mov?Math.sin(ph):0,c2=typeof shx==='f
   for(const[u,v,q]of[[-.17,.22,0],[.07,.22,1],[-.17,-.36,1],[.07,-.36,0]]){const lift=(q?s:-s)*3;B(u,v,Math.max(0,lift),.1,.12,16-Math.max(0,lift),c2)}
   B(-.19,-.44,15,.38,.86,12,col);B(-.2,-.14,27,.4,.34,3,'#7a2a1a');B(-.21,-.12,26,.42,.3,1.5,'#d4af37');
   B(-.1,.34,24,.2,.2,12,col);B(-.11,.46,33,.22,.34,8,col);B(-.12,.76,33,.24,.06,4,c2);B(-.04,.3,30,.08,.28,10,mane);B(-.06,-.56,18,.12,.14,13,mane);return L}
-function cavDraw(e,b,col,mov){const C=CAVC[col]||CAVC.baio,d=e.dr||(e===P?P.dr:null)||[0,1],dir=Math.abs(d[0])>Math.abs(d[1])?(d[0]>0?'x':'-x'):(d[1]>0?'y':'-y');
-  const L=cavL(b&&b.k==='corsiero'?'#d8b048':C[1],b&&b.k==='corsiero'?'#fff0b0':C[2],dir,mov,t*13+(e.px+e.py));drawL(typeof isoOrder==='function'?isoOrder(L,0):L,e.px,e.py,0)}
+// 7.54.1: il cavallo guarda dove guarda l'eroe, in tutti gli otto versi (prima seguiva solo l'ultimo passo, in quattro
+// versi: quando l'eroe si girava per colpire, raccogliere o mirare, il cavallo restava di traverso sotto di lui)
+function cavDraw(e,b,col,mov){const C=CAVC[col]||CAVC.baio,d=e.dr||(e===P?P.dr:null)||[0,1];
+  const fc=e===P?(P.fc|0):e.k==='pl'&&e.fc!=null?(e.fc|0):faceOf(d[0],d[1]);
+  const L=cavL(b&&b.k==='corsiero'?'#d8b048':C[1],b&&b.k==='corsiero'?'#fff0b0':C[2],'y',mov,t*13+(e.px+e.py));drawHero(L,e.px,e.py,0,0,fc)}
 const _ent746c=ent;ent=function(e){if(e===P&&cavOn()){const mv2=P.path.length||P.km;cavDraw(P,cavB(),P.cav.col,mv2);P.az=16}
   else if(e.k==='pl'){const q=NET.peers&&NET.peers[e.id];if(q&&q.cav){cavDraw(e,CAV46[q.cav[0]|0],q.cav[1],e.mv>0);e.az=16}else e.az=0}
   if(e.k==='stalla46'){stallaDraw(e);return}if(e.k==='gara46'){garaDraw(e);return}_ent746c(e)};

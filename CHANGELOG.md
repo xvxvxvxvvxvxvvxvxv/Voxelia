@@ -5,6 +5,14 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.54.1 — Il menu sta nella finestra, le scritte non coprono più le finestre, il cavallo guarda dove guardi tu (5 novembre 2026)
+
+- **Niente più spazio vuoto sotto la difficoltà.** Nella Modalità Storia le carte della difficoltà riempiono tutto il pannello «Nuova partita», anche quando il pannello dell'eroe accanto è più alto (con i pulsanti per esportare e importare l'eroe lo era diventato).
+- **Il menu si adatta alla finestra.** La schermata della Corona riempie sempre la finestra, né più né meno: il titolo in alto, i pulsanti in basso e la Corona nello spazio che resta, anche quando la finestra si allarga o si stringe. Le altre schermate (Storia, Tomorrow, Parco giochi…) si rimpiccioliscono quanto serve per starci intere, invece di scorrere su e giù oltre la pagina; scorrono solo quando servirebbe rimpicciolirle troppo, come sui telefoni in verticale.
+- **Le scritte del gioco non coprono più il resto.** L'evento in corso («Un drago attacca…»), il cibo o l'elisir attivo («Torta di mele · 14:28»), la guerra tra fazioni, la maledizione e i contatori di miniera e insediamento stavano sopra a tutto: coprivano il riquadro dell'eroe, la schermata di fine battaglia e le finestre del gioco, e due insieme si accavallavano. Ora stanno sotto le finestre e si mettono da sole nel primo posto libero: il cibo sotto il riquadro dell'eroe (che cambia altezza con stamina, notte e giocatori), le altre una sotto l'altra al centro, sotto il nome della zona e i riquadri della battaglia.
+- **Anche gli avvisi passeggeri stanno sotto le finestre.** I titoli grandi («Vittoria!»), il nome della zona, il «Perfetto!» delle combo e i pulsanti d'azione in basso finiscono sotto una finestra quando la apri. A fine battaglia il titolo «Vittoria!» o «Sconfitta» compare sotto il riquadro con i pulsanti, e il nome della zona non si vede più in trasparenza dietro la barra della battaglia.
+- **Il cavallo guarda dove guarda l'eroe.** Prima seguiva solo l'ultimo passo e in quattro versi: quando l'eroe si girava per colpire, raccogliere o mirare, il cavallo restava di traverso sotto di lui, e i cavalli degli altri giocatori guardavano sempre dalla stessa parte. Ora si gira con l'eroe in tutti gli otto versi, anche per gli altri giocatori.
+
 ## 7.54 — I compagni in rete, negli scambi e con le varianti; la Torre fuori dai piedi; l'eroe non cammina più da solo (4 novembre 2026)
 
 - **I compagni degli altri si vedono.** In rete ogni giocatore vede il compagno in campo degli altri, con il nome, il livello, la forma evoluta e la variante: cammina con il suo padrone, attacca con lui e ha la sua barra della vita. Nel profilo di un eroe (doppio clic) c'è anche la sua stalla.

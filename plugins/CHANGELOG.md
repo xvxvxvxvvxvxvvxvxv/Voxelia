@@ -3,6 +3,13 @@
 Stato al 5 novembre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
 
+## Guardiano 2.9 (gioco 7.54)
+
+- **Cure e pasti scambiati per trucchi.** Dalla 7.47 il Pane dolce cura subito il 30% della vita e alza la vita massima del 15% per dieci minuti, il Banchetto del cavaliere del 10%. Dalla 7.48 la via della spada dà +6% e la benedizione di Quetzal +5%. Il Guardiano non li conosceva: dopo due foto del sensore segnalava «vita massima 86 invece di 75» con gravità alta, e con l'automoderazione o `azione: 'espelli'` l'eroe veniva espulso. Anche la forza e la difesa dei pasti (Torta di mele, Frittata di mare, Banchetto) durano fino a 870 secondi e superavano il limite di 90 delle pozioni di forza e di pietra.
+- Il sensore manda il pasto o l'elisir attivo, se l'eroe ha scelto una via e se ha la benedizione di Quetzal (`bon` nella foto). Il server rifà il conto della vita massima come il gioco: livello e oggetti, Fragile, Vigore, poi pasto, via della spada e Quetzal, con gli stessi arrotondamenti. La via segue il karma, che cambia senza ricalcolare la vita, quindi con una via scelta valgono la vita con e senza il +6%.
+- Il controllo resta esatto: chi gonfia la vita massima a mano, chi si dà il bonus di un pasto senza averlo mangiato e chi allunga la forza oltre la durata di un pasto viene ancora segnalato. Il limite di 870 secondi vale solo con un pasto di forza o difesa attivo. Il controllo della forza e della pietra prima non scattava mai, perché i secondi scendono da una foto all'altra e le due foto di fila non erano mai uguali: ora conta solo che siano troppi. Il controllo del server senza sensore (vita massima impossibile per il livello) tiene conto di un pasto (+15%) in ogni momento, e di via e Quetzal solo se il sensore li ha visti.
+- Provato nel gioco 7.54 con il server e il plugin: con la 2.8 il Pane dolce dava la segnalazione alta, con la 2.9 Pane dolce, Banchetto, Torta di mele, Frittata di mare, via della spada e Quetzal non danno segnalazioni. Vita massima gonfiata, forza a 3000 secondi e bonus del pasto senza pasto vengono segnalati.
+
 ## Annunci a schermo (gioco 7.54)
 
 - Gli eventi che chiamano i giocatori non arrivano più solo in chat: compare anche uno stendardo al centro dello schermo, lo stesso del «Giorno N» e del level up (con le scene spente diventa l'avviso in alto, come nel gioco).
@@ -45,6 +52,11 @@ Dove una modifica non ha cambiato il numero di versione, è segnata come «senza
 - **Nuovo plugin Torre:** la classifica della Torre della Corona, la sfida del giorno (dieci piani uguali per tutti i giocatori fino a mezzanotte UTC).
 - Il gioco manda, alla fine di ogni salita, i piani superati e il tempo; il plugin tiene il miglior risultato di ogni eroe per ogni giorno (gli ultimi 14), lo rimanda a chi apre l'ingresso della Torre e annuncia chi arriva in cima per primo.
 - Non accetta risultati di altri giorni, più di dieci piani o tempi troppo brevi. Comando `/torre`, pagina web `/plugins/torre/`. Config: `giorni` (14), `inClassifica` (20), `annunciaVetta` (sì).
+
+## Guardiano 2.8 (gioco 7.44)
+
+- Unisce la 2.7 del main (pannello sviluppatore) con le modifiche per Tomorrow della 7.27. Il sensore manda le benedizioni Vigore della Torre della Corona e la maledizione Fragile. Il server tiene conto di Vigore (al massimo una benedizione per piano: al piano N fino a N × 25%) e di Fragile (−30%, solo nei dungeon). Nella Torre il controllo dei colpi aggiunge il 20% per ogni Forza e si ferma con Scoppio.
+- Tomorrow (7.16-7.21): eroi, copie e statistiche separati da quelli del regno, bottino che cresce col livello delle regioni, santuario, pasto al campo e tempio con forza e difesa fino a 600 secondi. Oggetti unici (7.14) riconosciuti dal seme.
 
 ## Guardiano 2.7 (gioco 7.42.3)
 

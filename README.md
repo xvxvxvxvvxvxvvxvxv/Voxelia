@@ -4,7 +4,7 @@
 Si gioca da soli o con gli amici. Si esplora la città di Aldoria e il regno intorno e si combatte nei dungeon. In
 Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costruiscono mondi da far giocare agli altri.
 
-**Versione attuale: 7.54** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 7.54.1** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.md)
 
@@ -654,7 +654,7 @@ docker-compose.yml      avvio con Docker Compose
 `build.sh` mette in fila `src/head.html` e i file `src/[numero]_*.js` in ordine alfabetico (`LC_ALL=C`, per cui
 `75_tempo.js` viene prima di `7_net.js`). Tutto il codice condivide un unico ambito globale: i file successivi possono
 estendere o sostituire le funzioni di quelli precedenti. Per questo i file nuovi si aggiungono in fondo, con un nome
-che viene dopo gli altri (`8zzzzb_…`, `8zzzzc_…`).
+che viene dopo gli altri (`8zzzzd_…`, `8zzzze_…`).
 
 <details>
 <summary><b>Che cosa c'è in ogni file di <code>src/</code></b></summary>
@@ -799,6 +799,8 @@ che viene dopo gli altri (`8zzzzb_…`, `8zzzzc_…`).
 | `8zzzy_eroe.js` | Esportare e importare l'eroe in un file, con il codice di controllo e le conferme |
 | `8zzzz_compagni.js` | I compagni in rete (visti dagli altri, colpi condivisi), negli scambi, le varianti degli incroci, il nome cambiato nella stalla |
 | `8zzzza_fermo.js` | Quando si apre una finestra l'eroe si ferma; un clic fuori da una finestra la chiude e basta |
+| `8zzzzb_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |
+| `8zzzzc_avvisi.js` | Le scritte del gioco (eventi, cibo attivo, guerre…) non coprono il riquadro dell'eroe, le finestre e la fine della battaglia |
 
 </details>
 

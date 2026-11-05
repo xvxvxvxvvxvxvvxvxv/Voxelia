@@ -5,6 +5,52 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 7.56 — Aldoria 2026: la città moderna nello Zaffiro (5 novembre 2026)
+
+Lo Zaffiro della Corona si è riacceso, intero. Dentro c'è **Aldoria mille anni dopo**: una metropoli del 2026, con un eroe nuovo e un salvataggio tutto suo.
+
+- **La città.** 36 isolati su una griglia di viali, ognuno con il suo quartiere:
+  - i grattacieli di vetro del centro, con le finestre accese;
+  - le villette con il giardino e la zona industriale con i magazzini;
+  - il porto con i container e le gru;
+  - la spiaggia con le palme, gli ombrelloni e la torretta del bagnino;
+  - il parco con il lago;
+  - la piazza con la statua di Re Aldric.
+
+  Per le strade ci sono strisce pedonali, semafori che cambiano colore, lampioni che di notte si accendono, panchine, alberi e cartelloni, e passanti che girano per i marciapiedi e parlano.
+- **Le auto.** Il traffico gira per i viali: svolta agli incroci, si ferma davanti agli ostacoli e suona il clacson. Altre auto sono parcheggiate.
+  - Ci si sale con **R** (o toccandole). Se c'è qualcuno al volante, scende di corsa.
+  - Si guida con **WASD** o la levetta (l'auto gira verso la direzione premuta), **Spazio** per frenare, **R** per scendere.
+  - Otto modelli: berlina, sportiva, SUV, furgone, taxi, pick-up, volante della polizia, ambulanza.
+  - Le auto si ammaccano, fumano e, se si insiste, prendono fuoco ed esplodono.
+- **Le armi da fuoco.** Pistola, mitraglietta, fucile a pompa e fucile d'assalto, in mano all'eroe.
+  - Si spara **cliccando su un nemico** (l'eroe si ferma alla sua gittata) o con **Spazio/X** verso il nemico più vicino davanti a te. I proiettili si fermano sui muri.
+  - Anche il bottino è del 2026: pistole e mitra, berretti, giacche di pelle, giubbotti antiproiettile.
+- **La polizia.** Le stelle del ricercato salgono fino a 5 se investi i passanti, spari alla gente, rubi una volante o colpisci gli agenti.
+  - Più stelle vuol dire più agenti che arrivano a cercarti, e da 4 stelle le squadre speciali.
+  - Se per un po' nessuno ti vede, le stelle scendono. Alla Stazione di polizia si paga la multa.
+- **Soldi e negozi.**
+  - Armeria Ferro & Piombo.
+  - Motori Aldric: le auto comprate si chiamano con il telefono (📱 o tasto **T**).
+  - Moda 2026: vestiti e cambio di look.
+  - Officina di Nino: riparazioni.
+  - Ospedale San Lia, dove ti risvegli se cadi e perdi il 10% dei soldi.
+  - Il tuo appartamento, dove si riposa e si salva.
+  - Bar del Drago, l'edicola e la gelateria.
+  - I Corvi lasciano dollari.
+- **La storia.** Otto missioni con i discendenti dei personaggi di Aldoria (Tommaso del Bar, Nino il meccanico, la Dottoressa Lia, il Commissario Marcus) contro la banda dei Corvi, che cerca le schegge dello Zaffiro:
+  1. l'arrivo;
+  2. la prima auto;
+  3. il porto;
+  4. una corsa a tempo con le medicine;
+  5. il magazzino;
+  6. l'inseguimento del corriere;
+  7. la rapina alla Banca Corona;
+  8. lo scontro finale con **Max «il Corvo» Malakar**.
+
+  Il prossimo obiettivo ha una colonna di luce. Chi ha una missione per te ha il segno giallo sopra la testa.
+- **Con gli amici.** Con lo stesso codice stanza si gira nella stessa città e si vedono gli altri, anche quando guidano.
+
 ## 7.55 — Il Serraglio, gli elementi, le chimere e i dungeon come un'altra dimensione; lo Zaffiro si è spezzato (5 novembre 2026)
 
 - **Il Serraglio di Aldoria, la casa dei compagni.** È un edificio nuovo vicino al lungomare a est, accanto al recinto dei cavalli. Dentro c'è la **Domatrice Selene** con cinque postazioni:

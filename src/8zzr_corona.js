@@ -5,8 +5,8 @@
 const CRGEM=[
  {k:'story',g:'Rubino',c:[230,40,58],m:'Modalità Storia',s:'Il Regno Perduto',d:'Crea il tuo eroe, scegli la difficoltà, rivivi il prologo e riunisci la Corona di Voxel.',go:()=>mode('story')},
  {k:'ow',g:'Smeraldo',c:[40,214,110],m:'Tomorrow',s:'Un mondo senza confini',d:'Fonda la tua città, allarga il regno, stringi alleanze con altre fazioni e conquista il mondo, da solo o con gli amici.',go:()=>mode('ow')},
- // 7.55: lo Zaffiro della Dimension si è spezzato. Resta sulla Corona, in pezzi, in attesa di quello che nascerà dai suoi frammenti.
- {k:'rotta',g:'Zaffiro infranto',c:[38,62,120],broken:1,m:'La gemma spezzata',s:'In attesa',d:'',go:()=>{},lock:()=>true,lk:'Lo Zaffiro si è spezzato e la cabina blu se n\'è andata con lui. I frammenti brillano ancora, piano: qualcosa di nuovo sta per nascere qui.'},
+ // 7.56: lo Zaffiro spezzato nella 7.55 si è riacceso, intero: dentro c'è Aldoria nel 2026 (8zzzzg_neo.js).
+ {k:'neo',g:'Zaffiro',c:[50,110,240],m:'Aldoria 2026',s:'La città mille anni dopo',d:'Una metropoli di vetro e asfalto: guida qualsiasi auto, compra armi e vestiti, scappa dalla polizia e ferma i Corvi, con gli amici o da solo.',go:()=>mode('neo')},
  {k:'parco',g:'Ametista',c:[170,70,235],m:'Parco giochi',s:'Voxelia Studio',d:'Costruisci i tuoi mondi con mappe, personaggi, dialoghi, missioni, armi, musiche e cinematiche, e giocali.',go:()=>mode('parco')},
  {k:'mondi',g:'Topazio',c:[255,170,30],m:'Mondi della community',s:'Gioca e pubblica',d:'Gioca ai mondi creati dagli altri giocatori, dai le stelle, commenta e pubblica i tuoi.',go:()=>mbOpen()},
  {k:'film',g:'Diamante',c:[200,240,255],m:'Prologo e filmati',s:'La storia della Corona',d:'Il prologo raccontato dall\'inizio e le scene della storia che hai già sbloccato.',go:()=>playIntro(),alt:[['▶ Prologo',()=>playIntro()],['🎞 Scene della storia',()=>filmMenu()]]}];

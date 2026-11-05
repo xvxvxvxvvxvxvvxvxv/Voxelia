@@ -13,7 +13,7 @@
    - in battaglia il nome della zona non si vede più in trasparenza dietro la barra e il riquadro della battaglia;
    - a fine battaglia il titolo grande «Vittoria!» o «Sconfitta» compare sotto il riquadro con i pulsanti, non sopra. */
 const AVV={top:['mal43','minehud','sethud','war44','ev46'],left:['mst49'],t:0,
-  ost:['hud','zn','mm','qt','clk','v3b','gbtn','twbtns','v3rot','tjz'],
+  ost:['hud','zn','mm','qt','clk','v3b','gbtn','twbtns','v3rot','tjz','neohud'],
   ovr:['set','mappa','look','chg','ovrm','vmenu','fmenu','tmn','mb','mpub','mmod']};
 const avvVis=el=>{if(!el||el.hidden)return false;const cs=getComputedStyle(el);if(cs.display==='none'||cs.visibility==='hidden'||+cs.opacity===0)return false;const r=el.getBoundingClientRect();return r.width>1&&r.height>1};
 const avvHit=(a,b)=>a.l<b.r&&a.r>b.l&&a.t<b.b&&a.b>b.t;

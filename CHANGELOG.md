@@ -105,6 +105,9 @@ Quando finisci le missioni della città, allo spazioporto di Aldoria 3026 ti asp
 - **L'Album della Corona.** Un nuovo pulsante nel menu apre l'album, con i frammenti presi (e quando), quelli mancanti con cosa serve per averli, e l'ingresso al Cuore.
 - Nella Corona del menu ogni gemma mostra se il suo frammento è già tuo.
 - **Prova automatica**: `node tools/prova.js` gioca qualche secondo di ogni modalità e si ferma se il gioco dà un errore.
+## 7.57.1 — Manutenzione: le missioni di Aldoria 3026 non si chiudono da sole (5 novembre 2026)
+
+- **Aldoria 3026: «Continua» a metà missione non regala più la missione.** I nemici e l'auto del corriere di una missione non vengono salvati: riaprendo la partita durante «I Corvi di Neon», «Il nucleo», «Il corriere», «Assalto alla Banca Corona» o «Il Corvo», il passo da combattere risultava già fatto e la missione si chiudeva da sola, con crediti ed esperienza, senza combattere (anche lo scontro con Max «il Corvo»). Ora, quando continui, i Corvi, il Corvo o la Saetta del corriere tornano al loro posto e la missione riprende da dove eri. Se il passo aveva un tempo limite, resta il tempo che avevi.
 
 ## 7.57 — Aldoria 3026, la Cronoporta e le modalità che si sbloccano (5 novembre 2026)
 

@@ -30,7 +30,9 @@ function lv83(lv0){const b=(lv0|0)+DIF83.sopra,pl=P?(P.lv|0):1;return pl>b?Math.
 function camp83(){return BIL81.camp+Math.floor(((P&&P.lv)|0)/10)}
 function scala83(k,z){if(!z||MODE!=='story'||(typeof owOn==='function'&&owOn())||(typeof OW!=='undefined'&&OW.on))return false;if(k==='town'||k==='arena'||k==='cuore80'||z.int||z.lay||z.ed||z.war||z.neo||z.sp82)return false;return!!(z.dg||z.dist||z.th||z.lv>0)}
 {const z0=zd;zd=function(k){const z=z0(k);try{if(z&&scala83(k,z)){if(z.lv0==null)z.lv0=z.lv;z.lv=lv83(z.lv0)}else if(z&&z.lv0!=null){z.lv=z.lv0}}catch(_){}return z}}
-{const e0=eliteP;eliteP=function(z){const p=e0(z);if(p>0&&MODE==='story'&&P)return Math.min(.32,p+Math.min(.12,Math.max(0,(P.lv|0)-5)*.004));return p}}
+// 8.3.1: solo nella Storia, come il livello dei nemici e i prezzi: Tomorrow gira anch'esso con MODE 'story' e i suoi
+// Campioni passavano dal 4% al 14% a livello 30, sommati alla crescita dei nemici di Tomorrow (8.1)
+{const e0=eliteP;eliteP=function(z){const p=e0(z);if(p>0&&MODE==='story'&&P&&!(typeof owOn==='function'&&owOn())&&!(typeof OW!=='undefined'&&OW.on))return Math.min(.32,p+Math.min(.12,Math.max(0,(P.lv|0)-5)*.004));return p}}
 {const l0=loadPost;loadPost=function(k){l0(k);try{const z=ZZ;if(z&&z.dg&&z.lv0!=null&&MODE==='story'){const rec=z.lv0+DIF83.sopra+1,low=(P.lv|0)<rec;
   setTimeout(()=>{if(Zk===k)banner((low?'⚠ ':'')+'Nemici di livello '+z.lv,'Livello consigliato '+rec+(low?' · sei sotto: vai piano':' · Campioni fino a '+(camp83()+(z.boss?1:0))+' per piano'),low?'teschio':'spade')},3200)}}catch(_){}}}
 /* ---- 8.3: il mercato segue il tuo livello ----
@@ -40,4 +42,6 @@ function scala83(k,z){if(!z||MODE!=='story'||(typeof owOn==='function'&&owOn())|
 const MER83={da:5,per:.02};
 const mer83=()=>MODE==='story'&&P&&!(typeof OW!=='undefined'&&OW.on)?1+Math.max(0,(P.lv|0)-MER83.da)*MER83.per:1;
 {const p0=priceMul;priceMul=function(){return p0()*mer83()}}
-{const d0=dayBanner;dayBanner=function(){const h=d0(),m=Math.round((priceMul()-1)*100);if(MODE!=='story'||!P||m<=0)return h;return h+`<div class="mu" style="margin:-2px 0 6px">📈 Al livello ${P.lv|0} i prezzi sono più alti del ${m}% rispetto a un eroe all'inizio</div>`}}
+// 8.3.1: il confronto è con un eroe all'inizio (livello 1, che paga già l'1,2% in più): prima a livello 1 la riga diceva
+// «più alti dell'1% rispetto a un eroe all'inizio» e ai livelli alti contava qualche punto di troppo (104% invece di 102%)
+{const d0=dayBanner;dayBanner=function(){const h=d0(),m=Math.round((priceMul()/1.012-1)*100);if(MODE!=='story'||!P||m<=0)return h;return h+`<div class="mu" style="margin:-2px 0 6px">📈 Al livello ${P.lv|0} i prezzi sono più alti del ${m}% rispetto a un eroe all'inizio</div>`}}

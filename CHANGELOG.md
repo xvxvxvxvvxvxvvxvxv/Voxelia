@@ -5,6 +5,11 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.3.1 — Manutenzione: i Campioni di Tomorrow e la riga dei prezzi (6 novembre 2026)
+
+- **Tomorrow: i Campioni tornano quelli di prima.** L'aumento dei Campioni con il livello della 8.3 era pensato per la Storia, ma valeva anche in Tomorrow: a livello 30 un nemico su sette era un Campione (prima uno su venticinque), in aggiunta ai nemici di Tomorrow che già crescono con l'eroe. Ora, come il livello dei nemici e i prezzi della 8.3, vale solo nella Storia.
+- **La riga dei prezzi nei negozi fa il conto giusto.** A livello 1 diceva «i prezzi sono più alti dell'1% rispetto a un eroe all'inizio», cioè rispetto a te stesso; ai livelli alti contava un paio di punti in più (a livello 30 il 104% invece del 102%). Ora il confronto è davvero con un eroe all'inizio: la riga compare solo quando i prezzi sono saliti. I prezzi non cambiano.
+
 ## 8.3 — La difficoltà che cresce con te (5 novembre 2026)
 
 - **I nemici della Storia seguono due livelli**: quello del dungeon o della zona, e il tuo.

@@ -8,7 +8,7 @@ u8 OCCT[MAXN][MAXN];
 u32 TCOL[MAXN][MAXN];
 char Zk[32] = "town";
 char ZNAME[96];
-int ZELZ;
+int ZELZ, ZLV0;
 int ZLV, ZRUN, ZMUS, ZINT, ZOUT, ZDG = -1, ZDN = 0;
 u32 ZBG = 0x7fb6e6, ZTC = 0xffb04a;
 Ent ents[MAXE];
@@ -116,6 +116,7 @@ Ent *mkEn(int t, int x, int y) {
 	if (malOn(0)) { e->sp *= 1.3f; e->cd *= .85f; e->cdt = e->cd; }   // maledizioni: nemici veloci
 	if (malOn(1)) e->at *= 1.3f;                                          // furia
 	snprintf(e->name, sizeof e->name, "%s", b->n);
+	if (!b->np) hardMk(e);   // 7.11/8.3: il regno più difficile, i Campioni
 	return e;
 }
 static int poSt(const char *s) {
@@ -188,6 +189,7 @@ static bool loadFiles(const char *k, int run) {
 	snprintf(ZNAME, sizeof ZNAME, "%s", jgs(z, "n", k));
 	{ extern int ZELZ; ZELZ = elKey(jgs(z, "elz", "")); }
 	ZLV = (int)jgn(z, "lv", 0); ZINT = jgn(z, "int", 0) != 0; ZOUT = jgn(z, "out", 0) != 0;
+	ZLV0 = ZLV; ZLV = lv83(k, ZLV);   // 8.3: i nemici seguono il livello del dungeon e il tuo
 	ZBG = jcolor(jgs(z, "bg", NULL), 0x141820);
 	ZTC = jcolor(jgs(z, "tc", NULL), 0xffb04a);
 	ZMUS = musicFor(jgs(z, "mus", ""));
@@ -276,6 +278,7 @@ void loadZone(const char *k, const char *from) {
 	P.ndmh = 0; P.dmk = 0;
 	{ extern float STA; extern bool STEX; extern int stMax(void); STA = stMax(); STEX = false; }
 	camX = 32 * (P.px - P.py); camY = 16 * (P.px + P.py) - 10;
+	hardZone();
 	xZoneLoad();
 	npcMarks();
 	rBuildZone(ZBOX, ZNB);

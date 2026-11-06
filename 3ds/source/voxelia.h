@@ -16,7 +16,7 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.5"            // versione del port per 3DS
+#define PORT_VER "1.6"            // versione del port per 3DS
 #define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
 #define GAME_VER "3DS " PORT_VER
 #define MAXN 96
@@ -187,6 +187,7 @@ typedef struct {
 	float eBu, ePo, eSl, eSlK, eFz, eWe, hme, ntx, nty;
 	char sg[24]; s8 own;
 	u8 bph, bstg; float bshd, bwkO, bwkN, bstn;   // boss a fasi (7.44)
+	u8 pk, fury, champ;                           // branco, ultima furia, Campione (7.11)
 } Ent;
 extern Ent ents[MAXE];
 extern int NENT;

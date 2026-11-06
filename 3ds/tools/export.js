@@ -52,7 +52,7 @@ const JS=`(${function(){
     const grid=[];for(let y=0;y<n;y++)for(let x=0;x<n;x++)grid.push(M[y][x]);
     const lights=L.filter(l=>l&&isFinite(l[0])).map(l=>[+l[0].toFixed(2),+l[1].toFixed(2),Math.round(l[2]),Math.round(l[3]),String(l[4]),+(+l[5]).toFixed(2)]);
     const elz=typeof ELTH55!=='undefined'?(ELTH55[z.th]||ELTH55[DG[z.dg]&&DG[z.dg].th]||''):'';
-    return{k,elz,N:n,n:z.n,lv:z.lv|0,bg:z.bg||'#141820',mus:z.mus||'',int:z.int?1:0,dg:z.dg||'',dn:z.dn||0,boss:z.boss||'',out:SKY[k]?1:0,tc:z.tc||'',sp,vp,grid,occ,boxes:B,lights,ents:E2}}
+    return{k,elz,N:n,n:z.n,lv:(z.lv0!=null?z.lv0:z.lv)|0,bg:z.bg||'#141820',mus:z.mus||'',int:z.int?1:0,dg:z.dg||'',dn:z.dn||0,boss:z.boss||'',out:SKY[k]?1:0,tc:z.tc||'',sp,vp,grid,occ,boxes:B,lights,ents:E2}}
   // eroe componibile: corpo, corazza, elmo, scudo e arma per tipo, in coordinate locali (senza posa)
   function capHero(){const oRC=RC.slice();const MK=['#fe0100','#fe0200','#fe0300','#fe0400','#fe0500'];for(let i=0;i<5;i++)RC[i]=MK[i];
     const H=[];const ty=(w,h,c,s)=>[EQT.w[w],h<0?'-':EQT.h[h],c<0?'-':EQT.c[c],s<0?'-':EQT.s[s]].join('.');
@@ -80,7 +80,7 @@ const JS=`(${function(){
   window.__VX={capZone,capEn,capNpc,capHero,capX,MODELS,col};return 1}})()`;
 setTimeout(()=>{try{
   ev('begin(1,null)');ev(JS);
-  const skip=/^(neo_|dim_|mare$|arrembaggio|stiva|sogno|bat_|mare_|cella|occhio|culto|vecchia|torre\d|cava43|abissi46)/;
+  const skip=/^(neo_|pl82_|cuore80|dim_|mare$|arrembaggio|stiva|sogno|bat_|mare_|cella|occhio|culto|vecchia|torre\d|cava43|abissi46)/;
   const zones=ev('Object.keys(Z)').filter(k=>!skip.test(k));
   const dgs=ev('Object.keys(DG).map(k=>[k,DG[k].fls])');
   const list=[];for(const k of zones)list.push([k,0]);for(const[d,f]of dgs)for(let fl=1;fl<=f;fl++)for(let run=0;run<2;run++)list.push([d+'@'+fl,run]);

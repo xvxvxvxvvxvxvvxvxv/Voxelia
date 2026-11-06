@@ -3,6 +3,13 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.6.1 · contenuti di Voxelia 8.3
+
+**Il nome dell'eroe in rete.** All'accensione il gioco prende il nome della console. Se ti collegavi al server
+prima di caricare la partita (o cambiavi nome dopo), il server teneva quel nome: in chat, nel pannello admin e nella
+lista dei giocatori compariva il nome della console invece di quello dell'eroe. Ora, quando il nome dell'eroe cambia,
+il gioco lo comunica subito al server.
+
 ## 1.6 · contenuti di Voxelia 8.3
 
 **La difficoltà della Storia è quella del browser.**

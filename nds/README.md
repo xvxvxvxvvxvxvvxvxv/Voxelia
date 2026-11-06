@@ -1,6 +1,6 @@
-# Voxelia DS 1.2 — Il Regno Perduto
+# Voxelia DS 1.2.1 — Il Regno Perduto
 
-Versione del port: **1.2** (contenuti di Voxelia **7.50**).
+Versione del port: **1.2.1** (contenuti di Voxelia **7.50**).
 
 Port per **Nintendo DS / DS Lite / DSi** di *Voxelia 7.50 – Il Regno Perduto*. Usa la stessa base del port
 per 3DS (branch `3ds`):

@@ -27,6 +27,7 @@ char netStatus[64] = "non collegato";
 float netPing = -1;
 Peer PEERS[MAXPEER];
 static char myId[16];
+static char helloName[16];   // il nome mandato al server con il saluto
 static int runsN[10];
 static float pT = 0;
 static int hitSeq = 0;
@@ -282,7 +283,7 @@ static int netLoop(void *arg) {
 		rn = 0;
 		setSt("collegato, in attesa del server…");
 		// saluto: codice della stanza e nome
-		{ char b[160]; JW w = {b, 0, sizeof b}; jwRaw(&w, "{\"t\":\"hello\",\"code\":"); jwStr(&w, NETC.code); jwRaw(&w, ",\"name\":"); jwStr(&w, P.name); jwRaw(&w, "}");
+		{ char b[160]; JW w = {b, 0, sizeof b}; snprintf(helloName, sizeof helloName, "%s", P.name); jwRaw(&w, "{\"t\":\"hello\",\"code\":"); jwStr(&w, NETC.code); jwRaw(&w, ",\"name\":"); jwStr(&w, P.name); jwRaw(&w, "}");
 		  wsSend(1, b, w.n); }
 		bool ok = true;
 		while (ok && nRun && !nQuit) {
@@ -374,7 +375,16 @@ void netEnemyHit(int id, float frac) {
 	if (NHITS >= 14) { memmove(HITS, HITS + 1, sizeof HITS[0] * 13); NHITS = 13; }
 	snprintf(HITS[NHITS++], 48, "[%d,%.4f,%d]", id, frac, ++hitSeq);
 }
+// il nome che ha il server: se cambia (partita caricata dopo il collegamento, nuovo eroe, nome cambiato) si
+// rimanda il saluto, così chat, pannello admin e giocatori mostrano il nome dell'eroe e non quello della console
+
+static void nameCheck(void) {
+	if (!netOk || !strcmp(helloName, P.name)) return;
+	snprintf(helloName, sizeof helloName, "%s", P.name);
+	char b[160]; JW w = {b, 0, sizeof b}; jwRaw(&w, "{\"t\":\"hello\",\"code\":"); jwStr(&w, NETC.code); jwRaw(&w, ",\"name\":"); jwStr(&w, P.name); jwRaw(&w, "}"); netSendRaw(b);
+}
 static void sendState(void) {
+	nameCheck();
 	char b[1400]; JW w = {b, 0, sizeof b};
 	char rk[64]; rmKey(rk, sizeof rk);
 	int c, h, ww, s, tw, th, tc, ts; heroEqPack(&c, &h, &ww, &s, &tw, &th, &tc, &ts);
@@ -408,13 +418,14 @@ static void setTime(J *gm) { if (gm && gm->t == JNUM) P.gt = (float)gm->d; }
 static void onMsg(J *m) {
 	const char *t = jgs(m, "t", "");
 	if (!strcmp(t, "id")) {
+		bool again = netOk;   // un secondo saluto (nome cambiato): niente messaggi doppi
 		netOk = true; snprintf(myId, sizeof myId, "%s", jgs(m, "id", "")); setSt("collegato");
 		memset(runsN, 0, sizeof runsN);
 		JFOR(r, jget(m, "runs")) { int i = dgIdx(r->key); if (i >= 0) runsN[i] = (int)jnum(r, 0); }
 		J *ar = jget(m, "ar"); arPts[0] = (int)jgn(ar, "w", 0); arPts[1] = (int)jgn(ar, "l", 0); arPts[2] = (int)jgn(ar, "pts", 0); arPts[3] = (int)jgn(ar, "ap", 0);
 		setTime(jget(m, "gm"));
-		chatLog("", "Collegato al server di Voxelia", 1);
-		plOnConnect();
+		if (!again) chatLog("", "Collegato al server di Voxelia", 1);
+		if (!again) plOnConnect();
 	} else if (!strcmp(t, "s")) {
 		J *p = jget(m, "p");
 		bool seen[MAXPEER] = {0};

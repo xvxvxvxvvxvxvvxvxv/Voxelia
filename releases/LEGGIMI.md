@@ -16,10 +16,11 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-112 versioni, dalla più recente.
+113 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
+| [8.3.1](voxelia_v8.3.1.html) | 6 novembre 2026 | Manutenzione: i Campioni di Tomorrow come prima, la riga dei prezzi nei negozi fa il conto giusto | 3.179 KB |
 | [8.3](voxelia_v8.3.html) | 5 novembre 2026 | La difficoltà che cresce con te: nemici, Campioni e prezzi seguono il tuo livello | 3.178 KB |
 | [8.2](voxelia_v8.2.html) | 5 novembre 2026 | Aldoria 3026 oltre il cielo: la nave, la mappa galattica, le sonde, otto pianeti e la rotta dei Costruttori; veicoli ridisegnati | 3.172 KB |
 | [8.1](voxelia_v8.1.html) | 5 novembre 2026 | Ordine, prove e bilanciamento: sorgenti in cartelle, prova automatica più grande, dungeon e Cuore in linea | 3.109 KB |

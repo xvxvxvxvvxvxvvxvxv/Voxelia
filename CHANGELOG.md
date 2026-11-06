@@ -3,6 +3,24 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.6 · contenuti di Voxelia 8.3
+
+**La difficoltà della Storia è quella del browser.**
+- **I nemici seguono due livelli (8.3):** quello del dungeon o della zona (i nemici partono 2 livelli sopra) e il
+  tuo (se sei più in alto recuperano il 60% della distanza). Vale nei dungeon e nelle zone aperte, non in città,
+  negli interni o nella Torre. Oro e oggetti seguono il livello dei nemici.
+- **Avviso all'ingresso dei dungeon:** il livello dei nemici e quello consigliato; se sei sotto, con il punto
+  esclamativo e «vai piano».
+- **Il regno più difficile (7.11), che sul 3DS non c'era:** nemici più forti secondo la difficoltà, i **Campioni**
+  (più grossi, più forti, più bottino), i branchi (un nemico che ti vede chiama i vicini) e l'ultima furia dei boss.
+- **I Campioni (8.1/8.3):** al massimo 2 per piano più 1 ogni 10 livelli (uno in più sul piano del boss); la
+  probabilità sale con il tuo livello, fino al +12%.
+- **Il mercato segue il livello (8.3):** dal livello 5 i prezzi salgono del 2% a livello; in cima al negozio di
+  Ugo c'è scritto di quanto.
+- **Bilanciamento (8.1/8.3):** Cripta, Fucina e Tempio di Giada con i valori del browser; dati riesportati dalla 8.3.
+- Le novità della 8.0 (il Cuore della Corona) e della 8.2 (lo spazio di Aldoria 3026) sono di altre modalità e
+  restano solo nel browser.
+
 ## 1.5 · contenuti di Voxelia 7.57
 
 **La Modalità Storia è quella del browser.** Prima il port aveva i contenuti della 7.50 e quasi nessuna delle

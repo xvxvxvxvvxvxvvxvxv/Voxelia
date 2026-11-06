@@ -304,6 +304,7 @@ static void buildSellRes(void) {
 static void buildShop(void) {
 	snprintf(PT, sizeof PT, "Mercante Ugo · %d oro", P.g);
 	int ev = dayEvent();
+	{ int m = (int)roundf((mer83() - 1) * 100); if (m > 0) snprintf(PS, sizeof PS, "Al livello %d i prezzi sono più alti del %d%% rispetto a un eroe all'inizio", P.lv, m); }
 	snprintf(PB, sizeof PB, "Giorno %d. %s", gDay(), ev == 1 ? "Saldi di stagione: tutto costa il 20% in meno!" : ev == 2 ? "Mercato in rialzo: tutto costa il 20% in più." : "I prezzi cambiano ogni giorno, a mezzanotte.");
 	char b[72];
 	Opt *o;

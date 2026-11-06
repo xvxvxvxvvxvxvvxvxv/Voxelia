@@ -107,6 +107,7 @@ void syncOnState(J *peers) {
 				int lv0 = ZLV, lv = (int)jnum(jat(r, 10), ZLV); ZLV = lv;
 				e = mkEn(t, clampi((int)x, 0, N - 1), clampi((int)y, 0, N - 1)); ZLV = lv0;
 				if (!e) continue;
+				e->champ = 0; e->scl = 0; snprintf(e->name, sizeof e->name, "%s", E[t].n);   // il Campione lo dice il padrone (nel nome)
 				snprintf(e->sg, sizeof e->sg, "%s", g); e->pup = 1; e->px = x; e->py = y; e->ntx = x; e->nty = y;
 				const char *nm = jstr(jat(r, 7), NULL); if (nm && jat(r, 7)->t == JSTR) snprintf(e->name, sizeof e->name, "%s", nm);
 				e->zn = ((int)jnum(jat(r, 6), 0) & 16) ? 1 : 0;

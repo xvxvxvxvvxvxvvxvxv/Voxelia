@@ -338,7 +338,7 @@ static void domTick(void) {
 			if (X.npet >= domMax()) { msg("La stalla è piena: libera un compagno (Compagni) per domarne altri"); X.seal++; return; }
 			XPet *p = &X.pets[X.npet]; memset(p, 0, sizeof *p);
 			snprintf(p->t, sizeof p->t, "%s", E[e->t].id);
-			const char *nm = E[e->t].n; if (!strncmp(nm, "Campione ", 9)) nm += 9; else if (!strncmp(nm, "Elite ", 6)) nm += 6;
+			const char *nm = E[e->t].n; if (!strncmp(nm, "Campione · ", 12)) nm += 12; else if (!strncmp(nm, "Campione ", 9)) nm += 9; else if (!strncmp(nm, "Elite ", 6)) nm += 6;
 			snprintf(p->n, sizeof p->n, "%s", nm);
 			p->lv = clampi(ZLV ? ZLV : 1, 1, P.lv); p->hp = domStats(p).mx; p->el = elOfEnemy(e->t); p->elv = 1; p->sz = 1;
 			bool nw = !bstHas(p->t); bstAdd(p->t);
@@ -518,6 +518,7 @@ void xTick(float dt) {
 	if (!started) return;
 	extern void syncTick(float); syncTick(dt);
 	bossTick(dt); evTick(dt);
+	hardTick(dt);
 	serrTick(dt); mestTick(dt); torTick(dt); incTick(dt);
 	cavRaceTick(); aniTick(dt); domTick(); domPetTick(dt); peerTick(dt); elTick(dt); chTick(dt);
 }

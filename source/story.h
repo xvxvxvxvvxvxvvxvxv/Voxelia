@@ -154,6 +154,8 @@ int crtBuild(int page); int crtAct(int a, int i);
 int incBuild(int page); int incAct(int a, int i); void incTick(float dt); float pvBonus(const XPet *p); const char *pvName(int v); void pvSet(int v, int vh); extern u8 gVar; extern s16 gVarH; bool zonePendingTor(void);
 int xPanelAct3(int a, int i);
 void x3DrawLabels(void);
+// story9.c: la difficoltà della Storia (7.11, 8.1, 8.3)
+int lv83(const char *k, int lv0); void hardMk(Ent *e); void hardZone(void); void hardTick(float dt); float mer83(void); extern int ZLV0;
 // ui.c
 void uiXTitle(const char *ti, const char *body);
 void uiXOpt(const char *l, const char *r, int arg, u32 col, bool dis);

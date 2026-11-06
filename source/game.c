@@ -986,6 +986,9 @@ static void zoneTick(float dt) {
 
 void gameUpdate(float dt) {
 	if (dt > .1f) dt = .1f;
+#ifdef VOX_TEST
+	if (VOX_TEST == 27 && gtime > 50 && strcmp(P.name, "totoro3ds")) snprintf(P.name, sizeof P.name, "totoro3ds");   // prova: il nome cambia dopo il collegamento
+#endif
 	gtime += dt;
 	zoneTick(dt);
 	plTick(dt);

@@ -5,6 +5,10 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.3.2 — Manutenzione: i falò non chiudono più i passaggi (10 novembre 2026)
+
+- **I falò dei dungeon non tagliano più fuori un pezzo del piano.** Il fuoco e i due ceppi stanno in diagonale e non si attraversano: messi in un passaggio stretto facevano da muro. Nel ciclo attuale, al primo piano della Piramide restavano chiuse 73 caselle con due nemici dentro; succedeva anche alla Fucina, all'Abisso, alla Cittadella, al Tempio di Giada e nelle grotte segrete degli scavi, dove a volte restavano murati i forzieri. Se un falò lascerebbe una parte del piano irraggiungibile, ora non si accende: gli altri restano dove erano.
+
 ## 8.3.1 — Manutenzione: i Campioni di Tomorrow e la riga dei prezzi (6 novembre 2026)
 
 - **Tomorrow: i Campioni tornano quelli di prima.** L'aumento dei Campioni con il livello della 8.3 era pensato per la Storia, ma valeva anche in Tomorrow: a livello 30 un nemico su sette era un Campione (prima uno su venticinque), in aggiunta ai nemici di Tomorrow che già crescono con l'eroe. Ora, come il livello dei nemici e i prezzi della 8.3, vale solo nella Storia.

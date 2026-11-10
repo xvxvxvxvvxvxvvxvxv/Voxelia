@@ -5,6 +5,36 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.6 — La Storia rinnovata: Aldoria, animazioni, diario (10 novembre 2026)
+
+Il grande aggiornamento della Modalità Storia.
+
+- **Aldoria ridisegnata.** Gli edifici restano dove sono, quindi porte, interni e missioni non cambiano. Cambia tutto quello che c'è in mezzo:
+  - il **Fiume Argento** scende da nord al mare, con quattro ponti di pietra; al di là c'è l'Oltrefiume (Osservatorio, Municipio, Scuderia, Serraglio);
+  - la **Piazza della Fontana** è grande, rotonda e lastricata a cerchi;
+  - i due viali sono lastricati e alberati, le altre strade acciottolate, con vicoli nuovi fra le case e la piazzetta del pozzo;
+  - i **Giardini della Regina**: uno stagno, sentieri, aiuole, alberi in fiore, panchine, un gazebo;
+  - il **porto** con la banchina di legno e due moli nuovi; il giardino del castello; le bandiere alle porte;
+  - lampioni che si accendono di notte, fioriere, canneti lungo il fiume, un mulino ad acqua.
+- **Sette quartieri**, ognuno con il suo nome che compare quando ci entri: Piazza, Porto, Castello, Giardini, Artigiani, Oltrefiume, Vicoli.
+- **Musica per quartiere**: cinque brani nuovi (porto, giardini, castello, artigiani, Oltrefiume). «Le vie di Aldoria» resta in piazza e fra le case. Nessun brano vecchio è stato tolto: dalle Impostazioni dell'audio si può tornare alla musica di prima in tutta la città.
+- **Suoni d'ambiente** in città: l'acqua del fiume e della fontana, i gabbiani al porto, gli uccelli nei giardini, il martello della fucina. Si spengono dalle Impostazioni.
+- **Gente nuova**: il Giardiniere Olmo, il Barcaiolo Remo, la Lavandaia Ines, il Pittore Leandro, la Guardia Bruna del Ponte, l'Apprendista Celeste, i bambini Pia e Teo, e i gabbiani sul molo.
+- **16 missioni secondarie nuove**, legate ai quartieri: le rose dei Giardini, le reti e le perle del fiume, i colori del pittore, le ronde sul ponte, le lenti dell'Osservatorio.
+- **Quello che dice la gente cambia con la storia**: il Capitano Marcus, Tommaso, l'Araldo, Ugo, Nino, Mamma Rosa, il Vecchio Gerald, le guardie e i passanti hanno battute diverse a ogni fase, dall'arrivo fino a quando sei Campione.
+- **Animazioni nuove dell'eroe**, con il modello di sempre:
+  - da fermo si guarda intorno, si stiracchia e dopo un po' si siede;
+  - in corsa si piega in avanti e alza la polvere;
+  - colpito sussulta, e barcolla con i colpi forti; quando cade crolla a terra e al risveglio si rialza;
+  - si china per aprire un forziere o raccogliere, porta la fiaschetta alla bocca per bere.
+- **Emote**: saluto, inchino, applauso, danza, esulta, siediti. Dal pulsante 🙂 accanto alla chat o scrivendo /saluto e così via. In rete le vedono anche gli altri.
+- **Il Diario delle missioni** al posto del vecchio elenco: per la storia e per ogni missione dice **dove andare**, con la barra di avanzamento e la ricompensa. Sotto, le missioni che puoi prendere adesso e da chi.
+- **La guida**: «📍 Segui» su una missione e ai piedi dell'eroe compare una scia d'oro verso la meta: la persona, il nemico più vicino, oppure la porta o il cancello da prendere.
+- **I primi passi**: per gli eroi nuovi, un cartellino con sette cose da provare e un premio alla fine. Si può chiudere.
+- **Zaino**: «Equipaggia il meglio» e l'ordinamento per rarità, potenza o tipo.
+- **Mappa di Aldoria**: mostra il fiume e la città nuova, con i nomi dei quartieri e il segnale della meta.
+- **Pannello sviluppatore**: la scheda 🎭 Animazioni prova ogni animazione.
+
 ## 8.5 — Il pannello sviluppatore prova tutto (10 novembre 2026)
 
 Primo passo dell'aggiornamento della Modalità Storia: gli strumenti per costruirla e provarla. Il pannello sviluppatore (🛠 nel menu, F9 in gioco) ha sei schede nuove.

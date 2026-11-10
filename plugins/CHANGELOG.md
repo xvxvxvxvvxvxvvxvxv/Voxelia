@@ -1,7 +1,24 @@
 # Changelog dei plugin di Voxelia
 
-Stato al 5 novembre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
+Stato al 10 novembre 2026. Versioni prese dal campo `version` di ogni file, date e modifiche dai thread del progetto.
 Dove una modifica non ha cambiato il numero di versione, è segnata come «senza cambio di versione».
+
+## Guardiano 2.10 (gioco 8.3.2)
+
+- **Oro dei mostri scambiato per trucco.** Quando un eroe sconfiggeva più mostri insieme, o mostri che danno molto oro, il Guardiano segnalava «+14.727 oro in un secondo senza spiegazione». Dalla 7.11 in poi l'oro di un'uccisione cresce con Campioni, drago degli eventi (7.46), mestiere dell'oro (+30%), unici avidi, maledizioni (fino a +140%) e Fortuna della Torre, e con i livelli della 8.3; per il Guardiano niente di tutto questo era una spiegazione.
+  - Il sensore ora misura l'oro che il gioco dà dentro `kill()`, qualunque sia il bonus, e lo manda con la foto (che parte subito dopo una raffica di uccisioni). Il server lo conta come «mostri sconfitti», ma non più di 15 mostri al secondo e non più dell'oro che un mostro può dare a quel livello, con tutti i bonus del gioco.
+  - Chi gioca senza sensore (pagina caricata prima che il plugin fosse acceso: basta ricaricarla) non manda i mostri. Per loro la soglia di un secondo è almeno l'oro di due mostri al loro livello; il controllo sul minuto resta com'era.
+- **Equipaggiamento creato nel server scambiato per trucco.** Le chimere della Fucina di Borin (7.55) erano segnalate come «oggetti impossibili» con gravità alta. Esempi: «critico +24% (il massimo nel gioco è 20%)» e «valore 598 possibile solo da un oggetto di livello 113». Con l'automoderazione questo portava al ripristino, all'espulsione e alla sospensione. Ogni Fusione dà il valore del migliore × 1,08 più il 12% dell'altro, il critico più alto + 1 e la vita più alta + 5: fusione dopo fusione questi valori crescono senza tetto.
+  - Il sensore fa una foto subito prima e subito dopo ogni Fusione. Il server controlla che siano spariti due oggetti validi dello stesso tipo e che la chimera nuova abbia i conti del gioco, poi la mette in un registro (nei dati del plugin, con valore, critico, vita e rarità di nascita). Da lì in poi la chimera va bene finché non supera quei valori, più la tempra.
+  - Il registro segue la chimera negli scambi, anche se lo scambio le dà un codice nuovo.
+  - Le chimere che un eroe aveva già prima della 2.10 (nella copia dell'eroe sul server) entrano nel registro così come sono al primo ingresso, se le fusioni possono darle.
+  - Una chimera fuori dal registro ma possibile con al massimo 12 fusioni diventa «chimere da controllare», con gravità bassa: senza punti e senza ripristino, solo una nota per l'admin.
+  - Restano «oggetti impossibili», con gravità alta, le chimere oltre quel limite e quelle del registro con valori più alti di quando sono nate.
+- **Altri oggetti del gioco.** Nei limiti degli oggetti ora entrano anche la tempra dell'incudine (7.49, fino a 3 volte: +7% di valore e +10% di prezzo ogni volta), le chimere trovate come bottino (+8% di valore, +25% di prezzo) e l'elemento delle armi (7.55, prezzo +20% e infusioni). Il sensore manda per ogni oggetto anche chimera, tempra e livello dell'elemento. Gli scambi e gli oggetti a terra usano lo stesso giudizio: una chimera da controllare non viene più bloccata.
+- Provato nel gioco 8.3.2 con il server e il plugin. Con la 2.9 dodici goblin sconfitti insieme davano la segnalazione dell'oro. La lancia e la corazza dello screenshot davano «oggetti impossibili» con gravità alta, con lo stesso testo della segnalazione. Con la 2.10:
+  - non ci sono segnalazioni per i goblin, per otto fusioni di fila, per la tempra a 3 e per le due chimere dello screenshot, che entrano nel registro al primo ingresso;
+  - restano segnalati con gravità alta 60.000 monete dal nulla, una chimera finta da 99.999 e un elmo gonfiato;
+  - una chimera passata con uno scambio resta nel registro, mentre se viene ritoccata dopo è segnalata con gravità alta.
 
 ## Guardiano 2.9 (gioco 7.54)
 

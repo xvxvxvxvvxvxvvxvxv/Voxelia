@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* Bilanciamento di Voxelia (8.1). Un robot gioca da solo il primo piano di ogni dungeon della Storia, i dungeon di
-   Tomorrow, una sparatoria di Aldoria 3026 e il Cuore della Corona, e dice per ognuno quanta vita perde, quanti nemici
+   Tomorrow e il Cuore della Corona, e dice per ognuno quanta vita perde, quanti nemici
    abbatte e quanto ci mette. Il robot combatte come un giocatore prudente: attacca il nemico più vicino e beve una
    pozione sotto un terzo della vita, ma non schiva e non usa abilità. Per questo i numeri sono un po' peggio di quelli
    di chi gioca davvero: servono a vedere i posti fuori scala rispetto agli altri.
@@ -37,14 +37,11 @@ window.__sim=function(sec,attesa,gruppo){window.__morto=0;window.__bevute=0;let 
   if(SOLO==='storia'){await b.close();return}
   const SOLO_TW=SOLO==='tomorrow';
   // Tomorrow
-  await p.evaluate(`localStorage.setItem('voxelia_unl55',JSON.stringify({ow:1,neo:1}));toMenu();owGo(1,null);for(let i=0;i<5;i++){try{introEnd()}catch(e){}try{cineSkip()}catch(e){}}`+SIM);await p.waitForTimeout(2500);
+  await p.evaluate(`localStorage.setItem('voxelia_unl55',JSON.stringify({ow:1}));toMenu();owGo(1,null);for(let i=0;i<5;i++){try{introEnd()}catch(e){}try{cineSkip()}catch(e){}}`+SIM);await p.waitForTimeout(2500);
   if(process.env.OWPER)await p.evaluate('BIL81.owPer='+(+process.env.OWPER));
   if(SOLO!=='cuore')for(const lv of[5,10,20,30,40]){const q=await p.evaluate(`(()=>{for(let r=0;r<60;r++)for(let a=-r;a<=r;a++)for(const b of[-r,r]){const L=twLv(a,b);if(L>=${lv}&&L<=${lv}+4)return[a,b,L]}return null})()`).catch(()=>null);
     if(q)await media('Tomorrow · dungeon liv. '+(q[2]+1),`__eroe(${q[2]+3});load(twDid(${q[0]},${q[1]})+'@1','tw:${q[0]},${q[1]}');__eroe(${q[2]+3})`)}
   if(SOLO_TW){await b.close();return}
-  // Aldoria 3026: la banda della missione 3
-  await p.evaluate(`toMenu();mode('neo');neoBegin(null);cl();`+SIM);await p.waitForTimeout(2000);
-  if(SOLO!=='cuore')await prova('Aldoria 3026 · la banda',`__eroe(8);P.eq.w=gunItem('pis',1);recalc();nmFix().m=2;PA=ents.find(e=>e.nid==='tommaso55');nmStart();cl();const e=ents.find(e=>e.ms55);if(e){P.px=e.px-3;P.py=e.py}`);
   // il Cuore della Corona, con l'eroe della Storia al livello 25
   await p.evaluate(`toMenu();localStorage.setItem('voxelia_intro','1');begin(1,null);`+SIM);await p.waitForTimeout(1500);
   await p.evaluate(`__eroe(25);P.st=4;save();for(const g of GEM80)cr80Got(g.k,1);cuoreEnter()`);await p.waitForTimeout(1800);

@@ -16,10 +16,11 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-114 versioni, dalla più recente.
+115 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
+| [8.4](voxelia_v8.4.html) | 10 novembre 2026 | Storia e Tomorrow al centro: Aldoria 3026 tolta, lo Zaffiro torna spezzato, cinque schegge | 3.047 KB |
 | [8.3.2](voxelia_v8.3.2.html) | 10 novembre 2026 | Manutenzione: i falò dei dungeon non chiudono più i passaggi | 3.180 KB |
 | [8.3.1](voxelia_v8.3.1.html) | 6 novembre 2026 | Manutenzione: i Campioni di Tomorrow come prima, la riga dei prezzi nei negozi fa il conto giusto | 3.179 KB |
 | [8.3](voxelia_v8.3.html) | 5 novembre 2026 | La difficoltà che cresce con te: nemici, Campioni e prezzi seguono il tuo livello | 3.178 KB |

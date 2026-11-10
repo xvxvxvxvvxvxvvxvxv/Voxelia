@@ -3,7 +3,8 @@
    1. gioca qualche secondo di ogni modalità: la Storia (città, un dungeon, il Serraglio), Tomorrow e il
       Cuore della Corona;
    2. salva in Storia e Tomorrow, ricarica la pagina e controlla che la partita torni com'era;
-   3. avvia server.js e fa entrare due giocatori nella stessa città, controllando che si vedano.
+   3. apre tutte le schede del pannello sviluppatore e gli fa provare tutte le zone del gioco (8.5);
+   4. avvia server.js e fa entrare due giocatori nella stessa città, controllando che si vedano.
    Si ferma con un errore se il gioco ne lancia uno o se un controllo non torna.
    Serve Playwright con Chromium:  npm i -D playwright && npx playwright install chromium
    Uso, dalla cartella del progetto:  node tools/prova.js   (prima: sh build.sh)
@@ -17,6 +18,8 @@ const PASSI=[
   ['Storia: il Serraglio',`load('in_serraglio','town');SR55.tab='pot';pn('serr55');cl();`],
   ['Tomorrow',`localStorage.setItem('voxelia_unl55',JSON.stringify({ow:1}));toMenu();owGo(1,null);for(let i=0;i<5;i++){try{introEnd()}catch(e){}try{cineSkip()}catch(e){}}`],
   ['La gemma spezzata non porta da nessuna parte',`toMenu();mode('neo');mode('dim');if(MODE==='neo'||started)throw new Error('lo Zaffiro si apre ancora');if(typeof neoBegin!=='undefined'||E.neo_agente)throw new Error('resta codice del 3026');`],
+  ['Il pannello sviluppatore: tutte le schede',`toMenu();DEV.on=true;devMark();devStart();for(const k of['film','zone','eroe','altro','give','twdv','st3','ch3','wd3','dbg3','con3','sv3']){DEV.tab=k;devOpen();if($('dvc').innerHTML.length<50)throw new Error('scheda vuota: '+k)}dv3Run('P.lv');DV3.grid=DV3.ents=DV3.hud=1;devClose();`],
+  ['Il pannello sviluppatore: la prova di tutte le zone',`DV3.grid=DV3.ents=0;window.__zone=dv3TestAll().then(()=>{const T=DV3.test,E=T.res.filter(r=>r.err.length);if(T.i<T.n)throw new Error('la prova si è fermata a '+T.i+'/'+T.n);if(E.length)throw new Error(E.map(r=>r.z+': '+r.err[0]).join(' · '))});`,`await window.__zone;DV3.hud=0;dv3Hud();devClose();toMenu();`],
   ['Il Cuore della Corona',`try{cineSkip()}catch(e){}toMenu();for(const k of GEM80.map(g=>g.k))cr80Got(k,1);if(LS.get(SAVEK,null))cuoreEnter()`]];
 // salvataggi: [nome, come si comincia e si salva, come si ricarica, che cosa deve tornare]
 const SALVA=[
@@ -28,7 +31,7 @@ const salute=port=>new Promise(r=>{const q=http.get('http://127.0.0.1:'+port+'/s
 (async()=>{const b=await chromium.launch();const err=[];
   const pagina=async(url)=>{const p=await b.newPage({viewport:{width:1280,height:800}});p.on('pageerror',e=>err.push(e.message));await p.goto(url);await p.waitForTimeout(1500);return p};
   console.log('— Le modalità');let p=await pagina(FILE);
-  for(const[n,code]of PASSI){const e0=err.length;try{await p.evaluate(code)}catch(e){err.push(e.message)}await p.waitForTimeout(4000);
+  for(const[n,code,poi]of PASSI){const e0=err.length;try{await p.evaluate(code)}catch(e){err.push(e.message)}await p.waitForTimeout(4000);if(poi)try{await p.evaluate('(async()=>{'+poi+'})()')}catch(e){err.push(e.message.split('\n')[0])}
     const st=await p.evaluate(()=>({zona:typeof Zk!=='undefined'?Zk:'',modo:typeof MODE!=='undefined'?MODE:''})).catch(()=>({}));
     if(err.length>e0)male(n+' — '+err.slice(e0).join(' | '));else bene(n+' ('+st.modo+' · '+st.zona+')')}
   console.log('— I salvataggi (si salva, si ricarica la pagina, si riprende)');

@@ -5,6 +5,30 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.5 — Il pannello sviluppatore prova tutto (10 novembre 2026)
+
+Primo passo dell'aggiornamento della Modalità Storia: gli strumenti per costruirla e provarla. Il pannello sviluppatore (🛠 nel menu, F9 in gioco) ha sei schede nuove.
+
+- **📜 Storia e missioni.** Tutte le 130 missioni secondarie in un elenco: ognuna si può accettare, completare o azzerare, anche tutte insieme. Sotto, le variabili della storia (fase, vero finale, capitoli segreti, luoghi aperti) si leggono e si cambiano una per una.
+- **🧪 Trucchi.**
+  - Combattimento: invincibile, un colpo e via, stamina infinita, abilità senza attesa, nemici che non ti vedono.
+  - Equipaggiamento leggendario completo e tutte le abilità con un pulsante.
+  - Movimento: attraversare i muri con WASD, teletrasporto con Alt+clic sulla mappa.
+  - Tempo: velocità da ×0,25 a ×8, pausa e avanzamento di un fotogramma alla volta.
+- **🌦 Mondo.** Ora del giorno e salto di giorni; meteo e stagione a scelta (in Tomorrow); qualunque pannello del gioco da aprire; tutti gli 89 brani da ascoltare.
+- **🔍 Debug.**
+  - Sopra il gioco: la griglia delle collisioni (verde libero, rosso chiuso, blu acqua), il raggio di vista e di attacco dei nemici, i percorsi, nome e vita di ogni cosa.
+  - Un riquadro con zona, posizione, casella, conteggi, fotogrammi al secondo ed errori.
+  - L'elenco di tutto quello che c'è nella zona, con ricerca: vai, elimina, guarda tutti i campi e cambiane uno.
+- **⌨ Console.** Una riga per eseguire codice con tutto il gioco a portata di mano, e l'elenco degli errori e degli avvisi raccolti da quando hai aperto la pagina, da copiare.
+- **💾 Stati e prove.**
+  - **Stati**: una fotografia della partita (eroe, zaino, missioni, storia, zona e posizione), fino a otto. Ricaricandola parte una partita di prova che non tocca i salvataggi veri.
+  - **Salvataggi veri**: si esportano in un file e si importano, per passare a un altro una partita con un difetto.
+  - **Prova questa zona**: controlla che passaggi, personaggi e nemici siano raggiungibili e che non ci siano errori.
+  - **Prova tutte le zone**: carica una dopo l'altra tutte le 139 zone del gioco, le fa girare e le disegna, e alla fine elenca quelle da guardare. Ci mette una decina di secondi.
+- La prova automatica (`tools/prova.js`) ora apre tutte le schede del pannello e fa girare la prova di tutte le zone, anche su GitHub.
+- Vale tutto quello che valeva: le partite di prova non si salvano, sul server serve la password admin e ogni pulsante finisce nel registro.
+
 ## 8.4 — Storia e Tomorrow al centro (10 novembre 2026)
 
 - **Aldoria 3026 non c'è più.** La città del futuro, la Cronoporta e lo spazio (la nave, la mappa galattica, i pianeti) sono stati tolti, per concentrare il gioco sulla Modalità Storia e su Tomorrow.

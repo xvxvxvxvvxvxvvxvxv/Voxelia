@@ -828,7 +828,11 @@ function campfires(sp){const r=sd(hs(Zk+'falo')),d=bfs(sp[0],sp[1]),free=(x,y)=>
     return!ents.some(e=>(e.k==='en'&&Math.abs(e.px-x-.5)<5&&Math.abs(e.py-y-.5)<5)||(e.k!=='en'&&e.k!=='tc'&&Math.abs((e.px|0)-x)<=1&&Math.abs((e.py|0)-y)<=1))};
   const C=[];for(let y=2;y<N-2;y++)for(let x=2;x<N-2;x++){const v=d[y*N+x];if(v>2&&free(x,y))C.push([x,y,v])}if(!C.length)return;
   const pick=(a,b)=>{const L=C.filter(c=>c[2]>=a&&c[2]<=b);return L.length?L[Math.floor(r()*L.length)]:null},max=Math.max(...C.map(c=>c[2]));
-  for(const q of[pick(3,9),pick(max*.4,max*.6),pick(max*.7,max*.85)]){if(!q)continue;const[x,y]=q;if(M[y][x]!==0)continue;M[y][x]=6;DEC[y][x]=',';if(M[y+1][x-1]===0){M[y+1][x-1]=6;DEC[y+1][x-1]='m'}if(M[y-1][x+1]===0){M[y-1][x+1]=6;DEC[y-1][x+1]='m'}}}
+  // 8.3.2: fuoco e ceppi stanno in diagonale e fanno muro; in un passaggio stretto tagliavano fuori un pezzo di dungeon
+  // (nemici, forzieri, a volte la scala). Se dopo il falò il resto del piano non si raggiunge più, quel falò non si accende.
+  const reach=()=>{const d2=bfs(sp[0],sp[1]);let n=0;for(let i=0;i<d2.length;i++)if(d2[i]>=0)n++;return n};let tot=reach();
+  for(const q of[pick(3,9),pick(max*.4,max*.6),pick(max*.7,max*.85)]){if(!q)continue;const[x,y]=q;if(M[y][x]!==0)continue;const put=[[x,y,',']];if(M[y+1][x-1]===0)put.push([x-1,y+1,'m']);if(M[y-1][x+1]===0)put.push([x+1,y-1,'m']);
+    for(const[a,b,c]of put){M[b][a]=6;DEC[b][a]=c}const now=reach();if(now<tot-put.length){for(const[a,b]of put){M[b][a]=0;DEC[b][a]=''}}else tot=now}}
 let CAMPM=0;
 function campTick(dt){if(!ZZ||!ZZ.dg||P.hp<=0)return;let near=false;const x0=P.px|0,y0=P.py|0;for(let y=y0-2;y<=y0+2&&!near;y++)for(let x=x0-2;x<=x0+2;x++)if(y>0&&x>0&&y<N&&x<N&&DEC[y][x]===','&&Math.hypot(x+.5-P.px,y+.5-P.py)<1.9){near=true;break}
   if(!near){CAMPM=0;return}if(ents.some(e=>e.k==='en'&&e.al&&dist(e,P)<7))return;if(!CAMPM){CAMPM=1;msg('Ti riposi accanto al fuoco: la vita torna piano piano.')}

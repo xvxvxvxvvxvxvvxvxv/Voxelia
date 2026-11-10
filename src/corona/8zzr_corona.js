@@ -5,8 +5,8 @@
 const CRGEM=[
  {k:'story',g:'Rubino',c:[230,40,58],m:'Modalità Storia',s:'Il Regno Perduto',d:'Crea il tuo eroe, scegli la difficoltà, rivivi il prologo e riunisci la Corona di Voxel.',go:()=>mode('story')},
  {k:'ow',g:'Smeraldo',c:[40,214,110],m:'Tomorrow',s:'Un mondo senza confini',d:'Fonda la tua città, allarga il regno, stringi alleanze con altre fazioni e conquista il mondo, da solo o con gli amici.',go:()=>mode('ow')},
- // 7.56: lo Zaffiro spezzato nella 7.55 si è riacceso, intero: dentro c'è Aldoria nel 3026 (8zzzzg_neo.js).
- {k:'neo',g:'Zaffiro',c:[50,110,240],m:'Aldoria 3026',s:'La città fra mille anni',d:'Torri di vetro e neon, veicoli a levitazione, androidi e armi laser. Ferma i Corvi di Neon e, alla fine, attraversa la Cronoporta per viaggiare nel tempo.',go:()=>mode('neo')},
+ // 8.4: Aldoria 3026 è stata tolta. Lo Zaffiro resta sulla Corona, spezzato, come nella 7.55.
+ {k:'rotta',g:'Zaffiro infranto',c:[38,62,120],broken:1,m:'La gemma spezzata',s:'In attesa',d:'',go:()=>{},lock:()=>true,lk:'Lo Zaffiro si è spezzato, e la città del futuro se n\'è andata con lui. I frammenti brillano ancora, piano. La Corona adesso guarda al Regno Perduto e a Tomorrow.'},
  {k:'parco',g:'Ametista',c:[170,70,235],m:'Parco giochi',s:'Voxelia Studio',d:'Costruisci i tuoi mondi con mappe, personaggi, dialoghi, missioni, armi, musiche e cinematiche, e giocali.',go:()=>mode('parco')},
  {k:'mondi',g:'Topazio',c:[255,170,30],m:'Mondi della community',s:'Gioca e pubblica',d:'Gioca ai mondi creati dagli altri giocatori, dai le stelle, commenta e pubblica i tuoi.',go:()=>mbOpen()},
  {k:'film',g:'Diamante',c:[200,240,255],m:'Prologo e filmati',s:'La storia della Corona',d:'Il prologo raccontato dall\'inizio e le scene della storia che hai già sbloccato.',go:()=>playIntro(),alt:[['▶ Prologo',()=>playIntro()],['🎞 Scene della storia',()=>filmMenu()]]}];

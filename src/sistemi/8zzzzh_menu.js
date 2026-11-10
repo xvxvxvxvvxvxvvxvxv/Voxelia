@@ -20,7 +20,7 @@ const menuFitSoon=()=>{if(!MFIT.raf)MFIT.raf=requestAnimationFrame(menuFit)};
 addEventListener('resize',menuFitSoon);
 if(window.visualViewport)visualViewport.addEventListener('resize',menuFitSoon);
 // ogni volta che il menu cambia schermata o contenuto
-for(const f of['mode','contHTML','owMenu','toMenu','edMenu','crPick','crStep','neoMenu']){if(typeof window[f]!=='function')continue;const f0=window[f];window[f]=function(){const r=f0.apply(this,arguments);menuFitSoon();setTimeout(menuFitSoon,250);setTimeout(menuFitSoon,900);return r}}
+for(const f of['mode','contHTML','owMenu','toMenu','edMenu','crPick','crStep']){if(typeof window[f]!=='function')continue;const f0=window[f];window[f]=function(){const r=f0.apply(this,arguments);menuFitSoon();setTimeout(menuFitSoon,250);setTimeout(menuFitSoon,900);return r}}
 // il contenuto può cambiare altezza anche da solo (animazioni d'entrata, icone che arrivano): si ricontrolla quando cambia
 if(typeof ResizeObserver!=='undefined'){const w=document.querySelector('#menu .mwrap');if(w){let last='';new ResizeObserver(()=>{const m=$('menu'),k=(m?m.scrollHeight:0)+'|'+innerHeight+'|'+innerWidth;if(k!==last){last=k;menuFitSoon()}}).observe(w)}}
 setTimeout(menuFitSoon,60);setTimeout(menuFitSoon,1200);setTimeout(menuFitSoon,3500);

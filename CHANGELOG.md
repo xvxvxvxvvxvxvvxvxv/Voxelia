@@ -5,6 +5,24 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.4 — Storia e Tomorrow al centro (10 novembre 2026)
+
+- **Aldoria 3026 non c'è più.** La città del futuro, la Cronoporta e lo spazio (la nave, la mappa galattica, i pianeti) sono stati tolti, per concentrare il gioco sulla Modalità Storia e su Tomorrow.
+  - Sulla Corona lo Zaffiro torna **spezzato**, e la sua gemma non si apre.
+  - I salvataggi del 3026 non vengono cancellati dal browser, ma non si possono più aprire.
+  - Il gioco è più leggero: circa 140 KB di codice in meno.
+- **Le schegge della Corona sono cinque**, e due stanno nella Storia:
+  - **Rubino**: sconfiggi il Re Lich;
+  - **Diamante**: arriva al vero finale della Storia e chiudi l'Occhio (prima era nella Cronoporta);
+  - **Smeraldo**: vinci un dungeon di Tomorrow di livello 20 o più;
+  - **Ametista** e **Topazio**: come prima, nel Parco giochi e nei Mondi della community.
+
+  Chi aveva già la scheggia di Zaffiro la conserva nel salvataggio, ma non conta più. Chi ha già visto il vero finale riceve subito il Diamante.
+- **Il Cuore della Corona** si apre con le cinque schegge e ha cinque pilastri. Al posto dell'ondata degli androidi c'è **l'Oltremare**, con i guerrieri, le serpi e le sacerdotesse di Thalassa. L'Eco della Corona evoca spettri invece di droni.
+- **L'Album della Corona** mostra solo Storia, Tomorrow, Studio e mondi.
+- Tomorrow si apre come prima, sconfiggendo il Re Lich.
+- La prova automatica controlla che la gemma spezzata non porti da nessuna parte, e la prova in rete usa due giocatori nella Storia.
+
 ## 8.3.2 — Manutenzione: i falò non chiudono più i passaggi (10 novembre 2026)
 
 - **I falò dei dungeon non tagliano più fuori un pezzo del piano.** Il fuoco e i due ceppi stanno in diagonale e non si attraversano: messi in un passaggio stretto facevano da muro. Nel ciclo attuale, al primo piano della Piramide restavano chiuse 73 caselle con due nemici dentro; succedeva anche alla Fucina, all'Abisso, alla Cittadella, al Tempio di Giada e nelle grotte segrete degli scavi, dove a volte restavano murati i forzieri. Se un falò lascerebbe una parte del piano irraggiungibile, ora non si accende: gli altri restano dove erano.

@@ -9,6 +9,7 @@
 // Il sensore gira nel browser del giocatore, quindi un baro esperto può zittirlo: il Guardiano segnala anche quello.
 // Regali che NON vanno segnalati: quelli del pannello admin e di tutti i plugin (p.give) li vede da solo, gli scambi pure.
 // globalThis.VoxeliaGuardiano.grazia(nome, sec) resta per i plugin che regalano in altri modi.
+// 2.10: l'oro dei mostri sconfitti (con tutti i bonus della 8.x) è spiegato; chimere della Fusione, tempra ed elementi non sono più trucchi.
 // 2.9: pasti, elisir e via dell'eroe (7.47-7.48) cambiano vita massima, forza e difesa: Pane dolce e Banchetto non sono più trucchi.
 // 2.8: benedizioni della Torre della Corona e maledizioni dei dungeon (7.44); eroi di Tomorrow separati da quelli del regno (7.16).
 // 2.7: chi sblocca il pannello sviluppatore del gioco con la password admin non viene segnalato finché vale lo sblocco (12 ore).
@@ -55,7 +56,7 @@ function sensore(ID, INT) {
   if (window.__vxgSensore) return; window.__vxgSensore = 1;
   const WATCH = ['upd', 'hurtP', 'hurtE', 'die', 'kill', 'gainXP', 'recalc', 'roll', 'blk', 'mv', 'pay', 'sell', 'sellAll', 'pot', 'keyDir', 'load'];
   const SIG = /C\.god|C\.onehit|C\.nocd|C\.speed|C\.noclip|C\.aura|C\.magnet|C\.reach|__vxc|\[Cheat\]/;
-  let ref = null, colpi = 0, colpiMax = 0, muri = 0, raffica = 0, k0 = null, kt = 0, zk0 = null, zt = 0, ultimo = '';
+  let ref = null, colpi = 0, colpiMax = 0, muri = 0, raffica = 0, oroK = 0, uccK = 0, k0 = null, kt = 0, zk0 = null, zt = 0, ultimo = '';
   const vivo = () => typeof P !== 'undefined' && P && typeof started !== 'undefined' && started && (typeof MODE === 'undefined' || MODE !== 'dim');
   function cattura() {
     // i colpi sui mostri passano da qui: il più forte possibile è l'Ombra (2,5 × 1,8 × critico 1,8 × tiro 1,2 = 9,72 volte l'attacco);
@@ -65,8 +66,23 @@ function sensore(ID, INT) {
       try { if (!rem && e && e.k === 'en' && vivo() && typeof atk === 'function') { const a = Math.max(1, atk()), tor = torre(); let bn = P.elb && typeof Zk !== 'undefined' && Zk === 'occhio' ? 1.2 : 1; bn *= 1 + .2 * tor.forza; if (!tor.esplosione && d > a * 9.72 * bn * 1.05 + 2) { colpi++; colpiMax = Math.max(colpiMax, d / a); } } } catch (x) {}
       return o.apply(this, arguments);
     };
+    // 2.10: l'oro che il gioco dà dentro kill() (mostro, Campione, drago degli eventi, mestiere dell'oro, unici avidi,
+    // maledizioni, Fortuna della Torre): si misura qui, attorno a tutto, e il server lo conta come spiegato
+    const k0 = window.kill;
+    if (typeof k0 === 'function') window.kill = function (e) {
+      let g0 = null; try { if (e && e.k === 'en' && vivo() && ents.includes(e)) g0 = +P.g || 0; } catch (x) {}
+      const r = k0.apply(this, arguments);
+      try { if (g0 != null && vivo() && P.g > g0) { oroK += P.g - g0; uccK++; if (oroK >= 300) presto(); } } catch (x) {}
+      return r;
+    };
+    // 2.10: una foto subito prima e una subito dopo la Fusione alla Fucina (7.55): il server vede i due oggetti che spariscono
+    // (anche uno appena raccolto) e la chimera che nasce
+    const f0 = window.fuDo;
+    if (typeof f0 === 'function') window.fuDo = function () { invia(); const r = f0.apply(this, arguments); presto(); return r; };
     ref = {}; for (const n of WATCH) ref[n] = window[n];
   }
+  let prT = 0;
+  const presto = () => { if (!prT) prT = setTimeout(() => { prT = 0; invia(); }, 400); };
   // 7.44: le benedizioni della Torre della Corona (Forza: +20% danni, Vigore: +25% vita, Scoppio: chi cade ferisce i vicini
   // con un quarto della sua vita) e la maledizione Fragile dei dungeon (-30% vita): valgono finché si resta lì
   function torre() {
@@ -99,16 +115,18 @@ function sensore(ID, INT) {
   const sostituite = () => ref ? WATCH.filter(n => window[n] !== ref[n]) : [];
   const ogg = i => i && typeof i === 'object' ? { u: String(i.u || '').slice(0, 16), s: i.s, r: +i.r || 0, v: +i.v || 0, n: String(i.n || '').slice(0, 40), p: +i.p || 0, hp: +i.hp || 0, cr: +i.cr || 0, up: +i.up || 0, ml: +i.ml || 0, ar: i.ar ? 1 : 0,
     // 7.14: un oggetto unico (seme in uq) ha poteri, e i controlli lo trattano come tale: basta dire che lo è
-    uq: i.uq && typeof i.uq === 'object' ? { lv: +i.uq.lv || 0 } : undefined } : null;
+    uq: i.uq && typeof i.uq === 'object' ? { lv: +i.uq.lv || 0 } : undefined,
+    // 2.10: chimera (7.55, mx55 "testa~resto~colore"), tempra dell'incudine (7.49, tp) ed elemento dell'arma (7.55, elv)
+    mx: i.mx55 && /~/.test(String(i.mx55)) ? 1 : 0, tp: +i.tp || 0, el: i.el ? (+i.elv || 1) : 0 } : null;
   function foto() {
     const eq = P.eq || {}, d = {};
     for (const k in (P.done || {})) if (P.done[k] > 0) d[k] = P.done[k] | 0;
     const f = { lv: P.lv, xp: P.xp, g: P.g, hp: P.hp, mx: P.mx, pot: P.pot, bA: P.bA || 0, bD: P.bD || 0, inv: typeof INV === 'number' ? INV : 24,
       eq: { w: ogg(eq.w), h: ogg(eq.h), c: ogg(eq.c), s: ogg(eq.s) }, it: (P.inv || []).slice(0, 80).map(ogg), ds: (P.stash || []).slice(0, 80).map(ogg), sh: (P.sh || []).slice(0, 20).map(String), done: d,
-      tor: torre().vita, mal: torre().fragile, bon: bonus(), rs: risorse(), z: typeof Zk === 'string' ? Zk : '', segni: segni(), fn: sostituite(), colpi, colpiMax: Math.round(colpiMax * 10) / 10, muri, raffica };
+      tor: torre().vita, mal: torre().fragile, bon: bonus(), rs: risorse(), z: typeof Zk === 'string' ? Zk : '', segni: segni(), fn: sostituite(), colpi, colpiMax: Math.round(colpiMax * 10) / 10, muri, raffica, oroK, uccK };
     // 7.16: in Tomorrow l'eroe è un altro (salvataggio suo) e il bottino cresce con il livello delle regioni visitate
     try { if (typeof twOn === 'function' && twOn()) { f.tw = 1; let m = 0; for (const k in (P.tw.vis || {})) { const q = /^tw:(-?\d+),(-?\d+)$/.exec(k); if (q) m = Math.max(m, twLv(+q[1], +q[2])); } f.twMax = m; } } catch (e) {}
-    colpi = 0; colpiMax = 0; muri = 0; raffica = 0;
+    colpi = 0; colpiMax = 0; muri = 0; raffica = 0; oroK = 0; uccK = 0;
     return f;
   }
   function invia() { try { if (vivo() && typeof NET !== 'undefined' && NET.ok && typeof VXP !== 'undefined') VXP.send(ID, 'foto', foto()); } catch (e) {} }
@@ -150,7 +168,7 @@ function sensore(ID, INT) {
 
 module.exports = {
   name: 'Guardiano',
-  version: '2.9',
+  version: '2.10',
   author: 'Voxelia',
   description: 'Riconosce oro, livelli, statistiche e oggetti ottenuti con trucchi o cheat esterni; pagina admin con le prove',
   defaults: {
@@ -211,6 +229,8 @@ module.exports = {
   },
 
   setup(api) {
+    // 2.10: da quando c'è la 2.10 (le chimere delle copie più vecchie entrano nel registro)
+    if (!api.store.da210) { api.store.da210 = Date.now(); api.save(); }
     const C = api.config, stato = new Map(), grazie = new Map(), svil = new Map(), chiave = n => String(n).toLowerCase();
     const st = () => { const s = api.store; if (!Array.isArray(s.lista)) s.lista = []; for (const k of ['storico', 'stat', 'statSegn', 'copie', 'mod', 'sospesi', 'silenziati']) if (!s[k] || typeof s[k] !== 'object') s[k] = {}; return s; };
     // 7.16: un eroe di Tomorrow ha un salvataggio suo anche con lo stesso nome: copia, storico e statistiche si tengono a parte
@@ -256,7 +276,7 @@ module.exports = {
     // ripristino completo: oro e livello di inizio sessione, oggetti impossibili, frammenti senza boss
     function ripristinoCompleto(p, perche) {
       const s = stato.get(p.id) || {}; if (!s.foto) return false;
-      const u = []; for (const i of ['w', 'h', 'c', 's'].map(k => s.foto.eq && s.foto.eq[k]).concat(s.foto.it || [], s.foto.ds || [])) if (i && oggettoStrano(i, p.lv, s)) u.push(String(i.u));
+      const u = []; for (const i of ['w', 'h', 'c', 's'].map(k => s.foto.eq && s.foto.eq[k]).concat(s.foto.it || [], s.foto.ds || [])) if (i && giudica(i, p.lv, s).g === 'alta') u.push(String(i.u));
       ripristina(p, Object.assign({ perche, sh: 1, u }, s.inizio ? { oro: s.inizio.oro, lv: s.inizio.lv, xp: s.inizio.xp } : {}));
       return s.inizio || true;
     }
@@ -347,8 +367,18 @@ module.exports = {
     const zonaMax = () => { const s = st(); return Math.max(20, s.zonaMax || 0); };
     function aggiornaZone() {
       const s = st(); let m = s.zonaMax || 0;
-      for (const room of Object.keys(api.rooms())) { const r = api.server.runs(room); for (const d in DG) m = Math.max(m, DG[d][0] + 3 * (r[d] || 0) + DG[d][1] - 1 + 3); }
-      if (m !== s.zonaMax) { s.zonaMax = m; api.save(); }
+      let c = s.cicloMax || 0;
+      for (const room of Object.keys(api.rooms())) { const r = api.server.runs(room); for (const d in DG) m = Math.max(m, DG[d][0] + 3 * (r[d] || 0) + DG[d][1] - 1 + 3); for (const d in r) c = Math.max(c, +r[d] || 0); }
+      if (m !== s.zonaMax || c !== s.cicloMax) { s.zonaMax = m; s.cicloMax = c; api.save(); }
+    }
+    // 2.10: l'oro più alto che un mostro può dare quando cade, a questo livello: base del gioco (6 + 3 × livello, × 6 per un boss,
+    // +25% a ciclo del dungeon), più Campione (7.11) e drago degli eventi (7.46), e i bonus che lo moltiplicano: mestiere dell'oro
+    // (+30%, 7.49), maledizioni (fino a +140%, solo nei dungeon, 7.43), unici avidi (fino a +80%, 7.14), Fortuna della Torre
+    // (+50% a benedizione, 7.44). Il livello dei nemici della 8.3 non supera quello dell'eroe o della zona più alta, più 2.
+    function oroUccisione(lv, x, zona, tutti) {
+      const L = Math.max(lv | 0, x && x.tw ? twMax(x) : zonaMax()) + 10, R = Math.max(0, st().cicloMax || 0), z = String(zona || '');
+      const tp = /^torre(\d+)$/.exec(z), base = (6 + 3 * L) * 6 * (1 + .25 * R) + (20 + 4 * L) + (300 + 60 * L) + 445;
+      return base * 1.3 * (tutti || z.includes('@') ? 2.4 : 1) * 1.8 * (tp ? 1 + .5 * +tp[1] : 1);
     }
     const lvOggettiMax = (lv, x) => Math.max(2 * lv + 10, x && x.tw ? twMax(x) + 6 : zonaMax() + 4);
     // vita massima più alta possibile: 60 + 15/livello + elmo, corazza e scudo migliori (unici e arena: base + 3 × livello oggetto)
@@ -357,6 +387,38 @@ module.exports = {
     const bonusFoto = f => { const b = f && f.bon && typeof f.bon === 'object' ? f.bon : {}; return { pasto: [1.1, 1.15].includes(+b.pasto) ? +b.pasto : 1, buff: b.buff ? 1 : 0, spada: b.spada ? 1 : 0, quetzal: b.quetzal ? 1 : 0 }; };
     // vita massima più alta che i bonus possono dare: un pasto si mangia in ogni momento (prima che arrivi la foto), via e Quetzal restano
     const bonusMax = x => { const b = bonusFoto(x && x.foto); return 1.15 * (b.spada ? 1.06 : 1) * (b.quetzal ? 1.05 : 1); };
+
+    // 2.10: le chimere (7.55). Alla Fucina di Borin la Fusione di due oggetti dello stesso tipo dà un oggetto con il valore
+    // del migliore × 1,08 più il 12% dell'altro, il critico più alto + 1 e la vita più alta + 5: fusione dopo fusione crescono
+    // senza un tetto. Il Guardiano tiene un registro delle chimere che ha visto nascere (sensore: due oggetti spariti, la
+    // chimera comparsa, conti giusti) e di quelle che l'eroe aveva già prima della 2.10; una chimera del registro va bene
+    // finché non supera i valori con cui è nata (più la tempra dell'incudine).
+    const TEMPRA = 1.07, FUSIONI_MAX = 12;
+    const registro = () => { const s = st(); if (!s.chimere || typeof s.chimere !== 'object') s.chimere = {}; return s.chimere; };
+    const tpOf = it => Math.max(0, Math.min(3, +it.tp || 0));
+    const ivOf = it => (+it.v || 0) * (1 + .12 * (+it.up || 0)) * (1 + .04 * (+it.ml || 0));
+    function registra(it, come) {
+      const R = registro(), u = String(it.u || '').slice(0, 16); if (!u) return;
+      R[u] = { s: it.s, r: +it.r || 0, v: +it.v || 0, cr: +it.cr || 0, hp: +it.hp || 0, tp: tpOf(it), t: Date.now(), da: come };
+      const k = Object.keys(R); if (k.length > 5000) for (const n of k.sort((a, b) => R[a].t - R[b].t).slice(0, k.length - 5000)) delete R[n];
+      api.save();
+    }
+    const nelRegistro = it => {
+      const q = it && it.mx && it.u ? registro()[String(it.u).slice(0, 16)] : null; if (!q || q.s !== it.s) return false;
+      return (+it.r || 0) <= q.r && (+it.cr || 0) <= q.cr && (+it.hp || 0) <= q.hp && (+it.v || 0) <= Math.round(q.v * Math.pow(TEMPRA, Math.max(0, tpOf(it) - q.tp))) + 1;
+    };
+    // una chimera fuori dal registro: possibile con al massimo FUSIONI_MAX fusioni (ognuna al più × 1,2 il valore, +1 il critico, +5 la vita)?
+    const entroFusioni = (it, lv, x) => { const F = Math.pow(1.2, FUSIONI_MAX);
+      return !oggettoStrano(Object.assign({}, it, { mx: 0, v: Math.max(1, (+it.v || 0) / F), p: (+it.p || 0) / F, cr: Math.max(0, (+it.cr || 0) - FUSIONI_MAX), hp: Math.max(0, (+it.hp || 0) - 5 * FUSIONI_MAX) }), lv, x); };
+    // giudizio completo: '' va bene; g 'bassa' per una chimera che il Guardiano non ha visto nascere ma che le fusioni possono dare
+    function giudica(it, lv, x) {
+      const m = oggettoStrano(it, lv, x); if (!m) return { m: '', g: '' };
+      // una chimera del registro con valori più alti di quando è nata è stata ritoccata
+      const q = it && it.mx && it.u ? registro()[String(it.u).slice(0, 16)] : null;
+      if (q) return { m: m + ' (questa chimera è nata con valore ' + q.v + ', critico +' + q.cr + '% e vita +' + q.hp + ')', g: 'alta' };
+      if (it && it.mx && entroFusioni(it, lv, x)) return { m: m + ' (chimera che il Guardiano non ha visto nascere: possibile con più Fusioni alla Fucina)', g: 'bassa' };
+      return { m, g: 'alta' };
+    }
 
     // un oggetto che il gioco non può creare: restituisce il motivo, o '' se va bene
     function oggettoStrano(it, lv, x) {
@@ -371,18 +433,39 @@ module.exports = {
       if (!(v >= 1) || !isFinite(v)) return 'valore ' + v + ' non valido';
       if (up < 0 || up > 5 || up % 1) return 'potenziamento +' + up + ' (il fabbro arriva a +5)';
       if (ml < 0 || ml > 10 || ml % 1) return 'maestria ' + ml + ' (massimo 10)';
-      if (cr < 0 || cr > (uq ? 30 : 20)) return 'critico +' + cr + '% (il massimo nel gioco è ' + (uq ? 30 : 20) + '%)';
+      const tp = +it.tp || 0, el = +it.el || 0, mx = !!it.mx;
+      if (tp < 0 || tp > 3 || tp % 1) return 'tempra ' + tp + ' (l\'incudine arriva a 3)';
+      if (el < 0 || el > 5 || el % 1) return 'elemento di livello ' + el + ' (massimo 5)';
       if (hp < 0 || p < 0) return 'valori negativi';
-      // livello dell'oggetto ricavato dal valore: il minimo (tiro migliore da unico) e il massimo (tiro peggiore)
-      const k = s === 'w' ? 2 : 1.4, b = ibase(s, 0), alto = it.ar ? 3.9 : RM[r] * 1.15 * 1.15, basso = it.ar ? 3.2 : RM[r] * .85;
+      // 7.49: la tempra alza il valore del 7% e il prezzo del 10% a ogni colpo; 7.55: l'elemento alza il prezzo del 20% (+20 a
+      // livello) e ogni infusione aggiunge il 30% di quanto costa; una chimera trovata come bottino vale l'8% in più e costa il 25% in più
+      const fp = Math.pow(1.15, up) * Math.pow(1.1 / TEMPRA, tp) * (mx ? 1.16 : 1), extra = el ? 20 * el + 3000 : 0;
+      // una chimera nata da una Fusione vista dal Guardiano (o che l'eroe aveva già prima della 2.10)
+      if (mx && nelRegistro(it)) return p > v * (uq ? 20 : 6) * fp + 5 + up + extra ? 'prezzo di vendita ' + p + ' troppo alto per un oggetto di valore ' + v : '';
+      if (cr < 0 || cr > (uq ? 30 : 20)) return 'critico +' + cr + '% (il massimo nel gioco è ' + (uq ? 30 : 20) + '%)';
+      // livello dell'oggetto ricavato dal valore: il minimo (tiro migliore da unico, con chimera e tempra) e il massimo (tiro peggiore)
+      const k = s === 'w' ? 2 : 1.4, b = ibase(s, 0), alto = (it.ar ? 3.9 : RM[r] * 1.15 * 1.15) * (mx ? 1.08 : 1) * Math.pow(TEMPRA, tp), basso = it.ar ? 3.2 : RM[r] * .85;
       const lvMin = (v / alto - b) / k, lvTop = (v / basso - b) / k + 1, L = lvOggettiMax(lv, x);
       if (lvMin > L) return 'valore ' + v + ' possibile solo da un oggetto di livello ' + Math.ceil(lvMin) + ' (ora al massimo ' + L + ')';
       if (hp > (uq ? 220 + 8 * Math.max(0, lvTop) : 160 + 3 * Math.max(0, lvTop))) return 'punti vita +' + hp + ' troppo alti per un oggetto di valore ' + v;
-      if (p > v * (uq ? 20 : 6) * Math.pow(1.15, up) + 5 + up) return 'prezzo di vendita ' + p + ' troppo alto per un oggetto di valore ' + v;
+      if (p > v * (uq ? 20 : 6) * fp + 5 + up + extra) return 'prezzo di vendita ' + p + ' troppo alto per un oggetto di valore ' + v;
       return '';
     }
     const descr = it => (it && it.n ? it.n : 'oggetto') + (it && it.up ? ' +' + it.up : '') + ' (' + ['comune', 'raro', 'epico', 'leggendario', 'arena'][+it.r] + ', valore ' + it.v + (it.hp ? ', vita +' + it.hp : '') + (it.cr ? ', critico +' + it.cr + '%' : '') + ')';
-    const pulito = it => it && typeof it === 'object' ? { n: String(it.n || '').slice(0, 40), s: it.s, r: it.r, v: it.v, p: it.p, hp: it.hp, cr: it.cr, up: it.up, ml: it.ml, ar: it.ar ? 1 : 0 } : it;
+    const pulito = it => it && typeof it === 'object' ? { n: String(it.n || '').slice(0, 40), s: it.s, r: it.r, v: it.v, p: it.p, hp: it.hp, cr: it.cr, up: it.up, ml: it.ml, ar: it.ar ? 1 : 0, mx: it.mx ? 1 : 0, tp: +it.tp || 0, el: +it.el || 0 } : it;
+    // 2.10: la Fusione vista tra due foto: due oggetti dello stesso tipo spariti e una chimera nuova con i conti del gioco
+    function fusioneOk(a, b, n, lv, x) {
+      if (!a || !b || a.s !== n.s || b.s !== n.s || a.uq || b.uq || a.ar || b.ar || a.s === 'x') return false;
+      if (oggettoStrano(a, lv, x) || oggettoStrano(b, lv, x)) return false;
+      const A = ivOf(a), B = ivOf(b), val = Math.round(Math.max(A, B) * 1.08 + Math.min(A, B) * .12), r = Math.min(3, Math.max(+a.r || 0, +b.r || 0));
+      const cr = (+a.cr || +b.cr) ? Math.max(+a.cr || 0, +b.cr || 0) + 1 : n.s === 'w' ? 4 + 2 * r : 0;
+      const hp = (+a.hp || +b.hp) ? Math.max(+a.hp || 0, +b.hp || 0) + 5 : n.s !== 'w' ? 14 * r + 2 * (lv + 1) : 0;
+      return (+n.r || 0) <= r && (+n.v || 0) <= Math.round(val * Math.pow(TEMPRA, tpOf(n))) + 1 && (+n.cr || 0) <= cr && (+n.hp || 0) <= hp;
+    }
+    const tuttiDi = f => f ? ['w', 'h', 'c', 's'].map(k => f.eq && f.eq[k]).concat(Array.isArray(f.it) ? f.it : [], Array.isArray(f.ds) ? f.ds : []).filter(i => i && typeof i === 'object') : [];
+    const firma = it => [it.s, String(it.n || '').slice(0, 40), +it.r || 0, +it.v || 0, +it.cr || 0, +it.hp || 0].join('|');
+    // gli oggetti come li manda il gioco (scambi, oggetti a terra) nella forma della foto del sensore
+    const comeFoto = i => i && typeof i === 'object' ? Object.assign({}, i, { mx: i.mx || (i.mx55 && /~/.test(String(i.mx55)) ? 1 : 0), el: typeof i.el === 'string' ? (i.el ? +i.elv || 1 : 0) : +i.el || 0 }) : i;
 
     // ---------- ogni secondo: oro, livelli, vita, posizione ----------
     api.every(1000, () => {
@@ -444,8 +527,10 @@ module.exports = {
         // per le statistiche conta quello che si guadagna giocando (anche vendendo), non i regali, gli scambi e il deposito
         acc(x, p.lv).oro += q.d - Object.entries(sp.fonti).filter(([k]) => /^(regalo|scambio|deposito|grazia|plugin)/.test(k)).reduce((a, [, v]) => a + v, 0);
         if (resto <= 0) continue;
+        // 2.10: senza il sensore il server non vede i mostri sconfitti: la soglia è almeno l'oro di due mostri a quel livello
+        // (un colpo ad area), senza maledizioni fuori dai dungeon. Con il sensore l'oro dei mostri arriva già spiegato.
         const soglia = q.zona === 'in_casino' ? Math.max(C.oroSecondo, CASINO_MAX)
-          : (C.oroSecondo + (tomorrow(q.zona) ? (+C.oroSecondoPerLivelloTomorrow || 0) * Math.max(p.lv, twMax(x)) : 0)) * gm;
+          : Math.max(C.oroSecondo + (tomorrow(q.zona) ? (+C.oroSecondoPerLivelloTomorrow || 0) * Math.max(p.lv, twMax(x)) : 0), x.foto ? 0 : 2 * oroUccisione(p.lv, x, q.zona)) * gm;
         // quello già segnalato qui non si ripete nella finestra di un minuto
         (x.inspiegato || (x.inspiegato = [])).push({ t: q.t, d: resto > soglia ? 0 : resto, casino: q.zona === 'in_casino' });
         if (resto > soglia) segnala(p, 'oro', '+' + fmt(q.d) + ' oro in un secondo, ' + fmt(resto) + ' senza spiegazione', { g: x.foto && resto > 2 * soglia ? 'alta' : 'media',
@@ -522,6 +607,9 @@ module.exports = {
     function confrontaCopia(p, x, f) {
       x.copiaFatta = 1;
       const c = C.copia !== 'spento' && st().copie[chiave(p.name) + mondo(x)]; if (!c) return;
+      // 2.10: le chimere che l'eroe aveva già quando è uscito l'ultima volta prima della 2.10 (le versioni vecchie non le
+      // capivano e le segnalavano): se le fusioni possono darle, entrano nel registro così come sono
+      if (c.t < (st().da210 || 0)) { const noti0 = new Set(c.u); for (const i of tuttiDi(f)) if (i.mx && noti0.has(String(i.u)) && !registro()[String(i.u).slice(0, 16)] && oggettoStrano(i, +f.lv || 0, x) && entroFusioni(i, +f.lv || 0, x)) registra(i, 'prima della 2.10'); }
       const tutti = ['w', 'h', 'c', 's'].map(k => f.eq && f.eq[k]).concat(f.it || [], f.ds || []).filter(i => i && i.u), noti = new Set(c.u);
       const nuovi = tutti.filter(i => !noti.has(String(i.u))), sh = (Array.isArray(f.sh) ? f.sh.map(String) : []).filter(q => !c.sh.includes(q));
       const lv = (+f.lv || 0) - c.lv, oro = (+f.g || 0) - c.g, diff = [];
@@ -555,12 +643,28 @@ module.exports = {
       const eq = f.eq && typeof f.eq === 'object' ? f.eq : {}, inv = Array.isArray(f.it) ? f.it.slice(0, 120) : [];
       const ds = Array.isArray(f.ds) ? f.ds.slice(0, 120) : [];
       const tutti = ['w', 'h', 'c', 's'].map(k => eq[k]).concat(inv, ds).filter(i => i && typeof i === 'object');
+      // 2.10: oro dei mostri sconfitti, misurato dal sensore attorno a kill(). Non più di 15 mostri al secondo dalla foto
+      // precedente, e per ognuno non più dell'oro che un mostro può dare a quel livello
+      const dtF = x.fotoT ? Math.min(600, (ora - x.fotoT) / 1000) : Math.max(2, +C.sensoreSec || 5), uk = Math.min(num(f.uccK) | 0, Math.ceil(15 * (dtF + 1)));
+      if (uk > 0 && num(f.oroK) > 0) credita(x, Math.min(num(f.oroK), uk * oroUccisione(lv, x, f.z || p.zone, 1) * Math.max(.5, +api.server.cfg.gm || 1)), 0, 'mostri sconfitti');
       // vendite: oggetti spariti dallo zaino dalla foto precedente (spiegano l'oro che sale)
       if (x.foto) {
         const ora_u = new Set(tutti.map(i => String(i.u))); let v = 0;
         for (const i of x.oggetti || []) if (!ora_u.has(String(i.u))) v += Math.max(0, Math.min(num(i.p), 1e6));
         if (v > 0) credita(x, v, 0, 'oggetti venduti');
         const dr = num(x.foto.rs) - num(f.rs); if (dr > 0) credita(x, Math.min(dr, 1e6), 0, 'risorse e pesci venduti');
+      }
+      // 2.10: chimere nate tra la foto precedente e questa (Fusione alla Fucina) o arrivate con uno scambio: vanno nel registro
+      if (x.foto) {
+        const prima = tuttiDi(x.foto), oraU = new Set(tutti.map(i => String(i.u))), primaU = new Set(prima.map(i => String(i.u)));
+        const spariti = prima.filter(i => !oraU.has(String(i.u))), usati = new Set(), R = registro();
+        for (const n of tutti) {
+          if (!n.mx || primaU.has(String(n.u)) || R[String(n.u).slice(0, 16)]) continue;
+          const arr = (x.arrivi || []).findIndex(q => q.f === firma(n) && ora - q.t < 120000);
+          if (arr >= 0) { registra(Object.assign({}, n, { v: x.arrivi[arr].v, cr: x.arrivi[arr].cr, hp: x.arrivi[arr].hp, r: x.arrivi[arr].r }), 'scambio'); x.arrivi.splice(arr, 1); continue; }
+          const L = spariti.filter(i => i.s === n.s && !usati.has(String(i.u)));
+          fuori: for (let a = 0; a < L.length; a++) for (let b = a + 1; b < L.length; b++) if (fusioneOk(L[a], L[b], n, lv, x)) { usati.add(String(L[a].u)); usati.add(String(L[b].u)); registra(n, 'fusione'); break fuori; }
+        }
       }
       x.oggetti = tutti.map(i => ({ u: i.u, p: i.p }));
       if (!x.inizio || x.inizio.xp == null) x.inizio = Object.assign(x.inizio || { oro: num(f.g), lv, t: ora }, { xp: num(f.xp) });
@@ -604,10 +708,12 @@ module.exports = {
       if (senza.length) segnala(p, 'frammenti', 'frammenti della Corona senza aver battuto il boss: ' + senza.join(', '), { g: 'alta', chiave: 'sh:' + senza.join(','), prove: { frammenti: sh, bossBattuti: done }, rip: { sh: 1 } });
 
       // oggetti impossibili (indossati e nello zaino)
-      const brutti = []; for (const i of tutti) { const m = oggettoStrano(i, lv, x); if (m) brutti.push({ u: String(i.u), m, it: pulito(i) }); }
+      const brutti = []; for (const i of tutti) { const q = giudica(i, lv, x); if (q.m) brutti.push({ u: String(i.u), m: q.m, g: q.g, it: pulito(i) }); }
       const nuovi = brutti.filter(b => !x.chiavi.has('ogg:' + b.u));
-      if (nuovi.length) segnala(p, 'oggetti impossibili', nuovi.slice(0, 3).map(b => descr(b.it) + ': ' + b.m).join('; ') + (nuovi.length > 3 ? ' e altri ' + (nuovi.length - 3) : ''),
-        { g: 'alta', chiave: 'ogg:' + nuovi.map(b => b.u).join(','), prove: { oggetti: nuovi.slice(0, 8) }, rip: { u: nuovi.map(b => b.u) } });
+      // 2.10: le chimere non viste nascere ma possibili con le fusioni sono una nota per l'admin (gravità bassa, senza ripristino)
+      for (const g of ['alta', 'bassa']) { const N = nuovi.filter(b => b.g === g); if (!N.length) continue;
+        segnala(p, g === 'alta' ? 'oggetti impossibili' : 'chimere da controllare', N.slice(0, 3).map(b => descr(b.it) + ': ' + b.m).join('; ') + (N.length > 3 ? ' e altri ' + (N.length - 3) : ''),
+          { g, chiave: 'ogg:' + N.map(b => b.u).join(','), prove: { oggetti: N.slice(0, 8) }, rip: g === 'alta' ? { u: N.map(b => b.u) } : null }); }
       for (const b of nuovi) x.chiavi.add('ogg:' + b.u);
 
       if (num(f.colpi) > 0) segnala(p, 'colpi impossibili', f.colpi + ' colpi sui mostri fino a ' + num(f.colpiMax) + ' volte l\'attacco (il massimo possibile è 9,7, o 11,7 con la benedizione della Regina Elara)', { g: 'alta', chiave: 'colpi:' + Math.floor(ora / 300000), prove: { colpi: f.colpi, voltePiuDellAttacco: f.colpiMax } });
@@ -645,7 +751,7 @@ module.exports = {
       // scambi e oggetti a terra: oro che non si ha, oggetti che il gioco non sa creare
       if ((m.t === 'tr' && m.a === 'off') || m.t === 'drop') {
         const its = m.t === 'drop' ? [m.it] : (Array.isArray(m.it) ? m.it.slice(0, 12) : []), brutti = [];
-        for (const i of its) { const e = oggettoStrano(i, p.lv, X(p)); if (e) brutti.push({ it: pulito(i), m: e }); }
+        for (const i of its.map(comeFoto)) { const q = giudica(i, p.lv, X(p)); if (q.g === 'alta') brutti.push({ it: pulito(i), m: q.m }); }
         const oro = m.t === 'tr' ? Math.max(0, +m.g || 0) : 0, senzaOro = oro > p.gold + 100;
         if (brutti.length) segnala(p, 'oggetti impossibili', (m.t === 'drop' ? 'gettato a terra: ' : 'offerto in uno scambio: ') + brutti.map(b => descr(b.it) + ': ' + b.m).join('; '), { g: 'alta', prove: { oggetti: brutti } });
         if (senzaOro) segnala(p, 'scambio', 'offre ' + fmt(oro) + ' oro ma ne ha ' + fmt(p.gold), { g: 'alta', prove: { offerto: oro, posseduto: p.gold } });
@@ -655,6 +761,10 @@ module.exports = {
     // l'oro ricevuto con uno scambio non è un guadagno sospetto; i grossi passaggi di oro si annotano
     api.on('trade', (a, b, da, db) => {
       const ga = Math.max(0, da && da.gold | 0), gb = Math.max(0, db && db.gold | 0);
+      // 2.10: lo scambio dà agli oggetti un codice nuovo: una chimera del registro si riconosce dai valori nella foto dopo
+      const passa = (da0, chi) => { if (finto(chi)) return; const R = registro(); for (const i of (da0 && Array.isArray(da0.give) ? da0.give : [])) { const q = i && i.u && R[String(i.u).slice(0, 16)]; if (!q) continue;
+        const y = X(chi); (y.arrivi || (y.arrivi = [])).push({ t: Date.now(), f: firma(i), v: q.v, cr: q.cr, hp: q.hp, r: q.r }); if (y.arrivi.length > 20) y.arrivi.shift(); } };
+      passa(da, b); passa(db, a);
       if (!finto(b) && ga) credita(X(b), ga, 0, 'scambio con ' + a.name);
       if (!finto(a) && gb) credita(X(a), gb, 0, 'scambio con ' + b.name);
       for (const [chi, a2, g] of [[a, b, ga], [b, a, gb]]) if (C.travasoOro > 0 && g >= C.travasoOro) segnala(chi, 'travaso di oro', 'ha dato ' + fmt(g) + ' oro a ' + a2.name + ' in uno scambio', { g: 'bassa', prove: { a: a2.name, oro: g } });

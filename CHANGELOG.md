@@ -28,6 +28,12 @@ Il grande aggiornamento della Modalità Storia.
   - colpito sussulta, e barcolla con i colpi forti;
   - si accovaccia per aprire un forziere o raccogliere, alza la fiaschetta per bere.
 - **Emote**: saluto ed esulta. Dal pulsante 🙂 accanto alla chat o scrivendo /saluto e /esulta. In rete le vedono anche gli altri.
+- **Controllo delle compenetrazioni** (tutta Aldoria guardata casella per casella e in immagini; le altre zone della Storia passate con un controllo automatico che misura ogni arredo):
+  - il fiume a nord entrava sotto il muro del Colosseo e cancellava il lungofiume: ora corre dritto, con il selciato fra l'acqua e l'arena, e il mulino è tornato sulla riva;
+  - 16 siepi, cespugli e lampioni della città di prima restavano in mezzo ai vicoli e al lungofiume nuovi: tolti, ora lì si passa;
+  - il gazebo dei Giardini entrava negli alberi e nelle aiuole accanto: le caselle intorno sono libere;
+  - le bandiere alle porte entravano nell'arredo vicino: sono più corte;
+  - nelle altre zone il controllo non ha trovato arredi dentro muri o edifici, né personaggi su caselle chiuse.
 - **Correzioni dopo la prima prova**: la **Torre della Corona** ora sta accanto al Colosseo, sul prato fra l'arena e la strada, e non occupa il selciato; l'**acqua** di fiume, laghetto e mare è più bassa del selciato, con una sponda di pietra (prima sembrava più alta); tolte le animazioni che venivano confuse (inchino, applauso, danza, seduta, stiracchiata, caduta a terra).
 - **Il Diario delle missioni** al posto del vecchio elenco: per la storia e per ogni missione dice **dove andare**, con la barra di avanzamento e la ricompensa. Sotto, le missioni che puoi prendere adesso e da chi.
 - **La guida**: «📍 Segui» su una missione e ai piedi dell'eroe compare una scia d'oro verso la meta: la persona, il nemico più vicino, oppure la porta o il cancello da prendere.

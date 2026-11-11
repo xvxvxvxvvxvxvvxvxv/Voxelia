@@ -14,7 +14,8 @@ const AL86={on:0,st:null,N:0,ch:null};
 const alOn=()=>AL86.on&&Zk==='town'&&AL86.st&&AL86.N===N;
 const alStory=()=>MODE==='story'&&!(typeof OW!=='undefined'&&OW.on);
 const AL_PC=[35.5,35.5],AL_PR=8.3;           // centro e raggio della piazza
-function alRiver(y){if(y<16)return[55+Math.round(Math.sin(y*.55)*.9),3];if(y<54)return[55,2];return[56,2]}
+// (nella prima 8.6 a nord il fiume serpeggiava ed entrava sotto il muro del Colosseo: ora corre dritto, con il lungofiume fra l'acqua e l'arena)
+function alRiver(y){if(y<54)return[55,2];return[56,2]}
 const AL_BR=[[16,17],[34,37],[52,53],[62,63]];  // i ponti: le righe delle strade che attraversano il fiume
 function alBuild(){const n=N,st=AL86.st=new Uint8Array(n*n),ch=AL86.ch=new Set();AL86.N=n;AL86.on=1;
   const S=(x,y,c)=>{st[y*n+x]=c.charCodeAt(0)},inb=(x,y)=>x>0&&y>0&&x<n-1&&y<n-1;
@@ -33,7 +34,7 @@ function alBuild(){const n=N,st=AL86.st=new Uint8Array(n*n),ch=AL86.ch=new Set()
     if(!bridge(y)&&hh(y*3.1,7)>.72)Pp(x0+w,y,'r');if(!bridge(y)&&hh(y*1.7,3)>.86)Pp(x0-3,y,'r')}
   for(const[a,b]of AL_BR)for(let y=a;y<=b;y++)for(let x=57;x<=59;x++)if(inb(x,y)&&M[y][x]===4&&!st[y*n+x])S(x,y,y>=62?'W':y>=34&&y<=37?'V':'C');
   for(const[x,y]of[[55,22],[56,45],[57,58]])if(M[y][x]===2)DEC[y][x]='O';
-  Pp(58,7,'m');
+  Pp(57,7,'m');
   // 3. la piazza rotonda
   for(let y=26;y<=45;y++)for(let x=26;x<=45;x++){const d=Math.hypot(x+.5-AL_PC[0],y+.5-AL_PC[1]);if(d>AL_PR)continue;if(M[y][x]===0||M[y][x]===4)road(x,y,'P');else if(M[y][x]===6)S(x,y,'P')}
   for(let i=0;i<8;i++){const a=i/8*6.283+.39,x=Math.round(AL_PC[0]+Math.cos(a)*(AL_PR+1.2)-.5),y=Math.round(AL_PC[1]+Math.sin(a)*(AL_PR+1.2)-.5);Pp(x,y,i%2?'b':'l')}
@@ -43,7 +44,7 @@ function alBuild(){const n=N,st=AL86.st=new Uint8Array(n*n),ch=AL86.ch=new Set()
     else if(d<3.5||Math.abs(x+.5-gx)<.6||Math.abs(y+.5-gy)<.6){if(M[y][x]===6&&d>=3.5)continue;if(M[y][x]===6){M[y][x]=0;DEC[y][x]=''}road(x,y,'S')}}
   for(let y=39;y<=51;y++)for(let x=40;x<=52;x++){if(M[y][x]!==0)continue;const d=Math.hypot((x+.5-gx)*.85,y+.5-gy),r=hh(x*2.3,y*1.9);
     if(d>4.2&&d<5.2&&(x+y)%2===0)Pp(x,y,'f');else if(d>5.4&&r>.62)Pp(x,y,r>.86?'T':'t');else if(d>5.4&&r<.08)Pp(x,y,'h')}
-  for(const[x,y]of[[43,42],[50,42],[43,49],[50,49]])Pp(x,y,'b');Pp(49,40,'g');Pp(44,51,'s');
+  for(const[x,y]of[[43,42],[50,42],[43,49],[50,49]])Pp(x,y,'b');if(Pp(49,40,'g'))for(let v=39;v<=41;v++)for(let u=48;u<=50;u++)if((u!==49||v!==40)&&M[v][u]===6&&!entNear(u,v,.6)){M[v][u]=0;DEC[v][u]='';ch.add(v*n+u)}Pp(44,51,'s');
   // 5. i vicoli e la piazzetta del pozzo
   for(let x=18;x<=30;x++){road(x,24,'C');road(x,31,'C')}for(let y=18;y<=33;y++)road(23,y,'C');for(let x=18;x<=33;x++)road(x,43,'C');for(let y=38;y<=51;y++)road(31,y,'C');
   for(let y=22;y<=25;y++)for(let x=29;x<=32;x++)road(x,y,'P');if(M[23][30]===4){M[23][30]=6;DEC[23][30]='⌂w';ch.add(23*n+30)}Pp(28,22,'o');Pp(33,25,'o');
@@ -56,6 +57,10 @@ function alBuild(){const n=N,st=AL86.st=new Uint8Array(n*n),ch=AL86.ch=new Set()
   // 8. il porto: due moli, casse, bitte
   for(const x0 of[21,43])for(let y=64;y<=69;y++)for(let x=x0;x<x0+3;x++)if(M[y][x]===2&&DEC[y][x]!=='O'){M[y][x]=4;DEC[y][x]='';ch.add(y*n+x)}
   for(const[x,y]of[[20,61],[24,61],[42,61],[46,61],[16,61],[36,61]])Pp(x,y,'k');
+  // 8b. niente arredi in mezzo alle vie: siepi, cespugli e lampioni della città di prima che restavano dentro un vicolo
+  // o un lungofiume nuovo (strada da due lati opposti) diventano selciato
+  {const R=(x,y)=>M[y][x]===4,OUT=['h','r','l','j','⌂l','⌂o','⌂c'];for(let y=2;y<62;y++)for(let x=2;x<n-2;x++){if(M[y][x]!==6||!OUT.includes(DEC[y][x])||entNear(x,y,.6))continue;
+    const a=R(x-1,y)&&R(x+1,y)?st[y*n+x-1]:R(x,y-1)&&R(x,y+1)?st[(y-1)*n+x]:-1;if(a<0)continue;M[y][x]=4;DEC[y][x]='';st[y*n+x]=a||67;ch.add(y*n+x)}}
   // 9. le bandiere alle porte della città
   for(const[x,y]of[[33,2],[38,2],[69,33],[69,38],[2,33],[2,38],[15,2],[18,2]])Pp(x,y,'p');
   // chi era sulle caselle che ora sono acqua o arredo si sposta sulla casella libera più vicina
@@ -112,7 +117,7 @@ const ALP={
   m:(x,y)=>{box(x+.05,y+.05,0,.9,.9,20,'#c8b89a');box(x,y,20,1,1,3,'#7a3a2a');box(x+.15,y+.15,23,.7,.7,4,'#8a4636');box(x+.35,y+.96,3,.3,.04,8,'#4a3020');
     const a=t*1.4;box(x-.12,y+.42,9,.14,.16,1.2,'#4a3a2a');for(let i=0;i<8;i++){const q=a+i*.785;box(x-.3,y+.44+Math.cos(q)*.42,9.4+Math.sin(q)*13,.2,.12,1.6,i%2?'#6a4a2a':'#7a5a34')}},
   r:(x,y)=>{for(let i=0;i<6;i++){const a=hh(x+i,y),b=hh(x,y+i);box(x+.1+a*.75,y+.1+b*.75,0,.05,.05,6+a*8,'#5a8a3a');if(i%2)box(x+.08+a*.75,y+.08+b*.75,6+a*8,.09,.09,3,'#6a4a2a')}},
-  p:(x,y)=>{box(x+.36,y+.36,0,.28,.28,3,'#8a8a94');box(x+.46,y+.46,3,.08,.08,40,'#c8c8d0');for(let i=0;i<5;i++)box(x+.54+i*.14,y+.47+Math.sin(t*3+i*.9)*.05,31-i*.3,.14,.05,10,i%2?'#c8283a':'#e0b030',1.1);box(x+.43,y+.43,43,.14,.14,2,'#d4af37')},
+  p:(x,y)=>{box(x+.36,y+.36,0,.28,.28,3,'#8a8a94');box(x+.46,y+.46,3,.08,.08,40,'#c8c8d0');for(let i=0;i<4;i++)box(x+.54+i*.11,y+.47+Math.sin(t*3+i*.9)*.04,31-i*.3,.11,.05,10,i%2?'#c8283a':'#e0b030',1.1);box(x+.43,y+.43,43,.14,.14,2,'#d4af37')},
   o:(x,y)=>{box(x+.2,y+.2,0,.6,.6,5,'#a89a84');box(x+.26,y+.26,5,.48,.48,1,'#4a3a2a');const C=['#ff5a7a','#ffd84a','#c46bff'];for(let i=0;i<4;i++)box(x+.3+(i%2)*.24,y+.3+(i>>1)*.24,6,.14,.14,3+hh(x+i,y)*2,C[(x+y+i)%3],1.1)},
   k:(x,y)=>{box(x+.08,y+.3,0,.5,.5,7,'#8a6a42');box(x+.1,y+.32,7,.46,.46,.5,'#a07c50');box(x+.5,y+.1,0,.4,.4,9,'#6a4a2a');box(x+.48,y+.08,3,.44,.44,1,'#3a3a40');box(x+.3,y+.4,7.5,.4,.4,6,'#9a7a4a')},
   h:(x,y)=>{box(x+.05,y+.2,0,.9,.6,7,'#2f6a34');box(x+.1,y+.25,7,.8,.5,2,'#3a7a3e')}};

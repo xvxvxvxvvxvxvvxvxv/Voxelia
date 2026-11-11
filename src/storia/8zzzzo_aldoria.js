@@ -63,6 +63,27 @@ function alBuild(){const n=N,st=AL86.st=new Uint8Array(n*n),ch=AL86.ch=new Set()
   for(const e of ents)if(e.k==='po'&&e.st==='door'){const x=e.px|0,y=e.py|0;if(inb(x,y)&&!WK(M[y][x])&&M[y][x]!==3){M[y][x]=4;DEC[y][x]='';S(x,y,'C')}}}
 {const g0=genTown;genTown=function(){AL86.on=0;const sp=g0();try{if(alStory())alBuild()}catch(e){AL86.on=0;console.warn('Aldoria ridisegnata',e)}return sp}}
 {const l0=loadPost;loadPost=function(k){if(k!=='town')AL86.on=0;l0(k)}}
+/* ---- la Torre della Corona: accanto al Colosseo, sul prato a sud dell'arena (x49-51, y13-15). La torre occupa solo
+   il prato: la strada davanti (y16-17) resta libera, la porta dà sul selciato. ---- */
+function alTower(){if(!alOn())return null;const x=50,y=16;for(let v=y-3;v<y;v++)for(let u=x-1;u<=x+1;u++){const m=M[v][u];if(m!==0&&m!==6)return null}if(!WK(M[y][x]))return null;
+  for(let v=y-3;v<y;v++)for(let u=x-1;u<=x+1;u++){DEC[v][u]='';AL86.st[v*N+u]=0}
+  for(const e of ents)if(e.px!=null&&e.k!=='po'&&e.px>=x-1&&e.px<x+2&&e.py>=y-3&&e.py<y){e.px=x+2.5;e.py=y-1.5;if(e.path)e.path=[]}
+  return[x,y]}
+/* ---- l'acqua: fiume, laghetto e mare stanno più in basso del selciato (prima erano 3 punti sotto e sembravano
+   a filo, o più alti). Ora la superficie è 9 punti sotto, con una sponda di pietra dove tocca la terra. ---- */
+{const f0=floor;floor=function(x,y,c,h){if(c!==2||!alOn()||DEC[y][x]==='ɷ'||(x===35&&y===35)||(ZZ&&ZZ.pool)||(typeof PIERD!=='undefined'&&PIERD.has(y*N+x))){f0(x,y,c,h);return}
+  const d=DEC[y][x];
+  if(WMODE!==2){const W=(u,v)=>v<0||u<0||v>=N||u>=N||M[v][u]===2;
+    box(x,y,-15,1,1,6,'#3b86d6',.86+Math.sin(t*2+x+y)*.07);
+    if(!W(x,y-1)){box(x,y,-9,1,.07,9,'#8f887c',.82);box(x,y+.07,-9,1,.3,0,'#2c6cb8')}
+    if(!W(x-1,y)){box(x,y,-9,.07,1,9,'#8f887c',1);box(x+.07,y,-9,.3,1,0,'#2c6cb8')}
+    if(SET.ultra&&g===G0){const ph=hh(x*3.1,y*7.7)*6.283,a=Math.pow(Math.max(0,Math.sin(t*2.3+ph)),12);if(a>.05){g.globalAlpha=a;box(x+.2+hh(x,y*2)*.5,y+.2+hh(x*2,y)*.5,-9,.13,.13,0,'#ffffff');g.globalAlpha=1}
+      const b=Math.sin((x-y)*.55-t*1.1);if(b>.8){g.globalAlpha=(b-.8)*1.1;box(x+.1,y+.1,-9,.9,.9,0,'#e6f4ff');g.globalAlpha=1}}}
+  if(WMODE===1)return;
+  if(d==='^'){const b2=Math.sin(t*2+x)*1.5;box(x+.4,y+.4,-9+b2,.2,.2,6,'#e8483a');box(x+.42,y+.42,-3+b2,.16,.16,3,'#ffffff')}
+  if(d==='O'){box(x+.1,y-.3,-9,.8,1.6,6,'#7a5a3a');box(x+.45,y+.3,-3,.08,.08,26,'#5a4a3a');box(x+.5,y,3,.04,.7,16,'#eeeeee')}}}
+// il disegno veloce dell'acqua (4b_fast) la mette alla quota vecchia: ad Aldoria ogni casella d'acqua passa da qui sopra
+{const w0=fWspec;fWspec=function(x,y){return w0(x,y)||alOn()}}
 /* ---- il suolo ---- */
 {const f0=floor;floor=function(x,y,c,h){if(!alOn()||c===2||c===1||c===3){f0(x,y,c,h);return}const s=AL86.st[y*N+x];if(!s){f0(x,y,c,h);return}const l=.92+h*.1;
   switch(String.fromCharCode(s)){

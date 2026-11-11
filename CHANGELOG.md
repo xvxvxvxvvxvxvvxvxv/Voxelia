@@ -22,12 +22,13 @@ Il grande aggiornamento della Modalità Storia.
 - **Gente nuova**: il Giardiniere Olmo, il Barcaiolo Remo, la Lavandaia Ines, il Pittore Leandro, la Guardia Bruna del Ponte, l'Apprendista Celeste, i bambini Pia e Teo, e i gabbiani sul molo.
 - **16 missioni secondarie nuove**, legate ai quartieri: le rose dei Giardini, le reti e le perle del fiume, i colori del pittore, le ronde sul ponte, le lenti dell'Osservatorio.
 - **Quello che dice la gente cambia con la storia**: il Capitano Marcus, Tommaso, l'Araldo, Ugo, Nino, Mamma Rosa, il Vecchio Gerald, le guardie e i passanti hanno battute diverse a ogni fase, dall'arrivo fino a quando sei Campione.
-- **Animazioni nuove dell'eroe**, con il modello di sempre:
-  - da fermo si guarda intorno, si stiracchia e dopo un po' si siede;
+- **Animazioni nuove dell'eroe**, poche e pulite, con il modello di sempre (il corpo si muove tutto insieme, senza pezzi che si staccano):
+  - da fermo gira la testa e si guarda intorno;
   - in corsa si piega in avanti e alza la polvere;
-  - colpito sussulta, e barcolla con i colpi forti; quando cade crolla a terra e al risveglio si rialza;
-  - si china per aprire un forziere o raccogliere, porta la fiaschetta alla bocca per bere.
-- **Emote**: saluto, inchino, applauso, danza, esulta, siediti. Dal pulsante 🙂 accanto alla chat o scrivendo /saluto e così via. In rete le vedono anche gli altri.
+  - colpito sussulta, e barcolla con i colpi forti;
+  - si accovaccia per aprire un forziere o raccogliere, alza la fiaschetta per bere.
+- **Emote**: saluto ed esulta. Dal pulsante 🙂 accanto alla chat o scrivendo /saluto e /esulta. In rete le vedono anche gli altri.
+- **Correzioni dopo la prima prova**: la **Torre della Corona** ora sta accanto al Colosseo, sul prato fra l'arena e la strada, e non occupa il selciato; l'**acqua** di fiume, laghetto e mare è più bassa del selciato, con una sponda di pietra (prima sembrava più alta); tolte le animazioni che venivano confuse (inchino, applauso, danza, seduta, stiracchiata, caduta a terra).
 - **Il Diario delle missioni** al posto del vecchio elenco: per la storia e per ogni missione dice **dove andare**, con la barra di avanzamento e la ricompensa. Sotto, le missioni che puoi prendere adesso e da chi.
 - **La guida**: «📍 Segui» su una missione e ai piedi dell'eroe compare una scia d'oro verso la meta: la persona, il nemico più vicino, oppure la porta o il cancello da prendere.
 - **I primi passi**: per gli eroi nuovi, un cartellino con sette cose da provare e un premio alla fine. Si può chiudere.

@@ -127,6 +127,8 @@ function torDoor(){if(!ZZ||ents.some(e=>e.k==='torre43'))return;let c=null;const
   const calm=(x,y)=>{for(let v=y-3;v<=y;v++)for(let u=x-1;u<=x+1;u++)if(!grass(u,v))return false;for(let v=y-4;v<=y;v++)for(let u=x-2;u<=x+2;u++)if(road(u,v))return false;
     if(!(M[y+1]&&(M[y+1][x]===0||M[y+1][x]===4)))return false;return!ents.some(e=>(e.k==='po'||e.k==='npc'||e.k==='board'||e.k==='owb'||e.k==='tr'||e.k==='ani47s')&&e.px>x-3&&e.px<x+3.5&&e.py>y-5&&e.py<y+3.5)};
   const place=(x,y)=>{for(let v=y-3;v<=y-1;v++)for(let u=x-1;u<=x+1;u++){M[v][u]=6;DEC[v][u]='¨'}ents.push({k:'torre43',px:x+.5,py:y+.5,n:'Torre della Corona'})};
+  // 8.6: nell'Aldoria ridisegnata la torre sta accanto al Colosseo, sul prato fra l'arena e la strada
+  if(town&&typeof alTower==='function'){const q=alTower();if(q){place(q[0],q[1]);return}}
   for(const q of town?[[60,14],[60,15]]:[])if(calm(q[0],q[1])){place(q[0],q[1]);return}
   for(let r=0;r<12;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!==r)continue;const x=c[0]+dx,y=c[1]+dy;if(calm(x,y)){place(x,y);return}}
   for(let r=0;r<10;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!==r)continue;const x=c[0]+dx,y=c[1]+dy;

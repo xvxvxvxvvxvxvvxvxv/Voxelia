@@ -44,6 +44,6 @@ const _loadPost748t=loadPost;loadPost=function(k){_loadPost748t(k);try{clsPlace(
 ITK.add('cls48b');
 const _act748t=act;act=function(e){if(e&&e.k==='cls48b'){CLS.d=null;pn('cls48');return}_act748t(e)};
 const _ent748t=ent;ent=function(e){if(e.k==='cls48b'){drawL([[-.4,-.1,0,.8,.2,6,'#8a8a94'],[-.34,-.08,6,.68,.16,26,'#e8e0c8'],[-.38,-.1,32,.76,.2,3,'#d4af37']],e.px,e.py,0);
-  [['#ffd84a',20],['#d8d8e8',14],['#d08a4a',8]].forEach(([c,z],i)=>box(e.px-.25+i*.18,e.py-.12,z+6,.12,.02,3,c,1.2));return}_ent748t(e)};
+  [['#ffd84a',20],['#d8d8e8',14],['#d08a4a',8]].forEach(([c,z],i)=>box(e.px-.25+i*.18,e.py+.08,z+6,.12,.02,3,c,1.2));return}_ent748t(e)};
 {const p0=pn;pn=function(m,arg){p0(m,arg);if(m==='dia'&&PM==='dia'){const pe=$('pn');if(pe&&!pe.querySelector('.cls48b'))pe.insertAdjacentHTML('afterbegin',`<button class="cls48b" onclick="CLS.d=null;pn('cls48')">🏅 Classifiche della settimana</button>`)}}}
 (function(){const st=document.createElement('style');st.textContent=`button.cls48b{width:100%;margin-bottom:6px}.cls48me{background:#ffd27a22;border-radius:4px}`;document.head.appendChild(st)})();

@@ -20,7 +20,7 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
-| [8.6.2](voxelia_v8.6.2.html) | 11 novembre 2026 | Manutenzione: i ponti si vedono anche nella vista classica, le rive non sono più coperte dall'acqua, tolta la casetta degli alleati | 3.135 KB |
+| [8.6.2](voxelia_v8.6.2.html) | 11 novembre 2026 | Manutenzione: i ponti si vedono anche nella vista classica, le rive non sono più coperte dall'acqua, tolta la casetta degli alleati, il fiume finisce alla strada della Scuderia, la musica di prima | 3.135 KB |
 | [8.6](voxelia_v8.6.html) | 10 novembre 2026 | La Storia rinnovata: Aldoria ridisegnata, quartieri con musica, missioni nuove, animazioni, diario e guida | 3.132 KB |
 | [8.5](voxelia_v8.5.html) | 10 novembre 2026 | Il pannello sviluppatore prova tutto: missioni, trucchi, debug, console, stati e prova di tutte le zone | 3.079 KB |
 | [8.4](voxelia_v8.4.html) | 10 novembre 2026 | Storia e Tomorrow al centro: Aldoria 3026 tolta, lo Zaffiro torna spezzato, cinque schegge | 3.047 KB |

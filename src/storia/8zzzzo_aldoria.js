@@ -1,7 +1,7 @@
 /* ================= 8.6: ALDORIA RIDISEGNATA =================
    La città della Storia era una griglia di strade dritte con il prato in mezzo. Gli edifici restano dove sono (porte,
    interni, personaggi e missioni non cambiano); cambia tutto quello che c'è in mezzo:
-   - il FIUME ARGENTO scende da nord al mare al posto della cerchia est, con quattro ponti di pietra; al di là c'è
+   - il FIUME ARGENTO scende da nord al posto della cerchia est, con due ponti di pietra (finisce davanti alla strada della Scuderia); al di là c'è
      l'Oltrefiume (Osservatorio, Municipio, Scuderia, Serraglio);
    - la PIAZZA DELLA FONTANA è grande e rotonda, lastricata a cerchi; i due viali sono lastricati e alberati, le altre
      strade acciottolate, con vicoli nuovi fra le case e la piazzetta del pozzo;
@@ -15,8 +15,9 @@ const alOn=()=>AL86.on&&Zk==='town'&&AL86.st&&AL86.N===N;
 const alStory=()=>MODE==='story'&&!(typeof OW!=='undefined'&&OW.on);
 const AL_PC=[35.5,35.5],AL_PR=8.3;           // centro e raggio della piazza
 // (nella prima 8.6 a nord il fiume serpeggiava ed entrava sotto il muro del Colosseo: ora corre dritto, con il lungofiume fra l'acqua e l'arena)
-function alRiver(y){if(y<54)return[55,2];return[56,2]}
-const AL_BR=[[16,17],[34,37],[52,53],[62,63]];  // i ponti: le righe delle strade che attraversano il fiume
+// 8.6.2: il fiume finisce davanti alla strada della Scuderia (y52); più a sud è tornato il sentiero di prima
+function alRiver(y){return[55,y<52?2:0]}
+const AL_BR=[[16,17],[34,37]];  // i ponti: le righe delle strade che attraversano il fiume
 function alBuild(){const n=N,st=AL86.st=new Uint8Array(n*n),ch=AL86.ch=new Set();AL86.N=n;AL86.on=1;
   const S=(x,y,c)=>{st[y*n+x]=c.charCodeAt(0)},inb=(x,y)=>x>0&&y>0&&x<n-1&&y<n-1;
   const entNear=(x,y,r)=>ents.some(e=>e.px!=null&&Math.abs(e.px-.5-x)<=r&&Math.abs(e.py-.5-y)<=r);
@@ -28,7 +29,7 @@ function alBuild(){const n=N,st=AL86.st=new Uint8Array(n*n),ch=AL86.ch=new Set()
   // 1. le strade di prima: viali lastricati, vie acciottolate, lungomare di legno
   for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(M[y][x]===4&&y<64)S(x,y,y>=62?'W':(x>=34&&x<=37)||(y>=34&&y<=37)?'V':'C');
   // 2. il fiume, con il lungofiume a ovest e i ponti
-  for(let y=1;y<64;y++){const[x0,w]=alRiver(y);for(let x=x0;x<x0+w;x++){if(!inb(x,y)||M[y][x]===3||M[y][x]===1)continue;
+  for(let y=1;y<52;y++){const[x0,w]=alRiver(y);for(let x=x0;x<x0+w;x++){if(!inb(x,y)||M[y][x]===3||M[y][x]===1)continue;
       if(bridge(y)){M[y][x]=4;DEC[y][x]='';S(x,y,'B')}else{M[y][x]=2;DEC[y][x]='';st[y*n+x]=0;ch.add(y*n+x)}}
     for(const x of[x0-1,x0-2])if(inb(x,y)&&(M[y][x]===0||M[y][x]===4)&&!bridge(y))road(x,y,'C');
     if(!bridge(y)&&hh(y*3.1,7)>.72)Pp(x0+w,y,'r');if(!bridge(y)&&hh(y*1.7,3)>.86)Pp(x0-3,y,'r')}
@@ -88,9 +89,13 @@ function alPar(x,y,s){const yy=s?y+.84:y;box(x,yy,3,1,.16,8,'#8f8778',s?1:.9);bo
     // (prima ne copriva il bordo, e copriva i parapetti dei ponti: nella vista classica i ponti non si vedevano)
     const eL=!W(x+1,y),sL=!W(x,y+1),a=bs?.39:.29,w=eL?1-.29:1,d=sL?1-a:1;
     if(WMODE===0&&bn){alPar(x,y-1,1);box(x+.16,y-.012,-9,.68,.012,6.5,'#2b3038');box(x+.26,y-.012,-2.5,.48,.012,2.5,'#2b3038')}
-    if(WMODE===1)box(x,y,-15,1,1,6,C,lt);else if(!eL&&!sL&&!W(x+1,y+1)){box(x,y,-9,1,.71,0,C,lt);box(x,y+.71,-9,.71,.29,0,C,lt)}else box(x,y,-9,w,d,0,C,lt);
-    if(!W(x,y-1)&&!bn){box(x,y,-9,1,.07,9,'#8f887c',.82);box(x,y+.07,-9,w,.3,0,'#2c6cb8')}
-    if(!W(x-1,y)){box(x,y,-9,.07,1,9,'#8f887c',1);box(x+.07,y,-9,.3,d,0,'#2c6cb8')}
+    if(WMODE===1){
+      // vista 3D: la telecamera gira, quindi la sponda di pietra va su tutti i lati che toccano la terra (prima ne
+      // mancavano due e fra la terra e l'acqua si vedeva il vuoto sotto la mappa)
+      box(x,y,-15,1,1,6,C,lt);if(!W(x,y-1))box(x,y,-9,1,.07,9,'#8f887c');if(!W(x-1,y))box(x,y,-9,.07,1,9,'#8f887c');if(sL)box(x,y+.93,-9,1,.07,9,'#8f887c');if(eL)box(x+.93,y,-9,.07,1,9,'#8f887c')}
+    else{if(!eL&&!sL&&!W(x+1,y+1)){box(x,y,-9,1,.71,0,C,lt);box(x,y+.71,-9,.71,.29,0,C,lt)}else box(x,y,-9,w,d,0,C,lt);
+      if(!W(x,y-1)&&!bn){box(x,y,-9,1,.07,9,'#8f887c',.82);box(x,y+.07,-9,w,.3,0,'#2c6cb8')}
+      if(!W(x-1,y)){box(x,y,-9,.07,1,9,'#8f887c',1);box(x+.07,y,-9,.3,d,0,'#2c6cb8')}}
     if(WMODE===0&&bs)alPar(x,y+1,0);
     if(SET.ultra&&g===G0){const ph=hh(x*3.1,y*7.7)*6.283,a=Math.pow(Math.max(0,Math.sin(t*2.3+ph)),12);if(a>.05){g.globalAlpha=a;box(x+.1+hh(x,y*2)*.45,y+.1+hh(x*2,y)*.45,-9,.13,.13,0,'#ffffff');g.globalAlpha=1}
       const b=Math.sin((x-y)*.55-t*1.1);if(b>.8){g.globalAlpha=(b-.8)*1.1;box(x+.05,y+.05,-9,w-.1,d-.1,0,'#e6f4ff');g.globalAlpha=1}}}
@@ -139,9 +144,9 @@ function alDist(x,y){if(y>=56)return'porto';if(x>=57)return'oltre';if(x<34&&y<17
 // le musiche dei quartieri: quella di sempre («Le vie di Aldoria») resta al centro e fra le case, e in tutta la città se lo scegli
 Object.assign(TRK,{al_porto:{bpm:92,root:48,sc:'dor',pr:[0,3,6,4,0,5,3,4],ld:'triangle',dn:.5,dr:1,bs:[0,7,12,7],arp:1},al_giardini:{bpm:72,root:57,sc:'maj',pr:[0,4,5,3],ld:'sine',dn:.4,dr:0,arp:1,pad:1},
   al_nobile:{bpm:84,root:55,sc:'maj',pr:[0,3,4,0,5,1,4,0],ld:'square',dn:.42,dr:0,pad:1,bs:[0,4,7,4]},al_artigiani:{bpm:112,root:50,sc:'dor',pr:[0,6,3,4],ld:'sawtooth',dn:.55,dr:1,bs:[0,0,7,5]},al_oltre:{bpm:96,root:52,sc:'maj',pr:[0,5,1,4,0,3,4,4],ld:'triangle',dn:.55,dr:1,arp:1}});
-{const z0=zoneMus;zoneMus=function(){const m=z0();if(m!=='town'||!alOn()||SET.almus===0||!AL86.d)return m;return(ALQ[AL86.d]&&ALQ[AL86.d].m)||m}}
+{const z0=zoneMus;zoneMus=function(){const m=z0();if(m!=='town'||!alOn()||SET.almus!==1||!AL86.d)return m;return(ALQ[AL86.d]&&ALQ[AL86.d].m)||m}}
 // i suoni d'ambiente: acqua, gabbiani, uccelli, il martello della fucina
-function alAmb(){if(!AU.ac||!SET.sf||SET.alamb===0||PM)return;const t0=AU.ac.currentTime,d=AL86.d,x=P.px,y=P.py,r=Math.random();const[rx,rw]=alRiver(clamp(y|0,1,63));
+function alAmb(){if(!AU.ac||!SET.sf||SET.alamb===0||PM)return;const t0=AU.ac.currentTime,d=AL86.d,x=P.px,y=P.py,r=Math.random();const[rx,rw]=alRiver(clamp(y|0,1,51));
   try{if(Math.abs(x-(rx+rw/2))<5&&y<64||d==='porto'||Math.hypot(x-AL_PC[0],y-AL_PC[1])<5||Math.hypot(x-46.5,y-45.5)<4)nz(t0,.7+r*.5,.014,700+r*900,'bandpass');
     if(d==='porto'&&r<.4){note(86,t0,.16,'sine',.022,.02);note(83,t0+.17,.22,'sine',.02,.02);if(r<.15){note(86,t0+.55,.14,'sine',.018,.02);note(82,t0+.7,.25,'sine',.016,.02)}}
     if(d==='giardini'&&r<.7){const b=94+Math.floor(r*10);for(let i=0;i<3+(r*4|0);i++)note(b+(i%3)*2+(i&1?3:0),t0+i*.09,.06,'sine',.018,.005)}
@@ -153,7 +158,7 @@ function alAmb(){if(!AU.ac||!SET.sf||SET.alamb===0||PM)return;const t0=AU.ac.cur
   if(AL86.ps!==P.st){AL86.ps=P.st;alLines()}}}
 {const l0=loadPost;loadPost=function(k){l0(k);AL86.d=null;AL86.ps=null;try{if(alStory())alLines()}catch(e){}}}
 // nelle impostazioni dell'audio
-{const s0=setBody;setBody=function(k){let h=s0(k);if(k==='audio')h+=sGrp('Aldoria',`<div class="row"><label for="s_almus">Musica diversa per ogni quartiere<br><small class="mu">Spenta: in tutta la città suona «Le vie di Aldoria», come prima</small></label><input type="checkbox" id="s_almus" ${SET.almus!==0?'checked':''} onchange="setv('almus',this.checked?1:0);AU.want='';if(started)music(zoneMus())"></div><div class="row"><label for="s_alamb">Suoni d'ambiente in città<br><small class="mu">Acqua, gabbiani al porto, uccelli nei giardini, il martello della fucina</small></label><input type="checkbox" id="s_alamb" ${SET.alamb!==0?'checked':''} onchange="setv('alamb',this.checked?1:0)"></div>`);return h}}
+{const s0=setBody;setBody=function(k){let h=s0(k);if(k==='audio')h+=sGrp('Aldoria',`<div class="row"><label for="s_almus">Musica diversa per ogni quartiere<br><small class="mu">Spenta (come all'inizio): in tutta la città suona «Le vie di Aldoria», come prima</small></label><input type="checkbox" id="s_almus" ${SET.almus===1?'checked':''} onchange="setv('almus',this.checked?1:0);AU.want='';if(started)music(zoneMus())"></div><div class="row"><label for="s_alamb">Suoni d'ambiente in città<br><small class="mu">Acqua, gabbiani al porto, uccelli nei giardini, il martello della fucina</small></label><input type="checkbox" id="s_alamb" ${SET.alamb!==0?'checked':''} onchange="setv('alamb',this.checked?1:0)"></div>`);return h}}
 /* ---- la gente dei quartieri ---- */
 Object.assign(NPCS,{
   olmo:{n:'Giardiniere Olmo',c:'#4a7a3a',hat:'#c8a84a',qs:['qa1','qa2','qa3'],ln:['Le rose della Regina fioriscono due volte l\'anno, se le tratti bene.','Lo stagno? L\'ho scavato io, con mio padre. Trent\'anni fa.']},

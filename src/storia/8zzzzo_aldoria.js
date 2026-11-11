@@ -74,16 +74,26 @@ function alTower(){if(!alOn())return null;const x=50,y=16;for(let v=y-3;v<y;v++)
   for(let v=y-3;v<y;v++)for(let u=x-1;u<=x+1;u++){DEC[v][u]='';AL86.st[v*N+u]=0}
   for(const e of ents)if(e.px!=null&&e.k!=='po'&&e.px>=x-1&&e.px<x+2&&e.py>=y-3&&e.py<y){e.px=x+2.5;e.py=y-1.5;if(e.path)e.path=[]}
   return[x,y]}
+// il parapetto di un ponte: il muretto con la copertina chiara e un pilastrino con la sfera alle due estremità
+const alB=(x,y)=>x>=0&&y>=0&&x<N&&y<N&&AL86.st[y*N+x]===66;
+function alPar(x,y,s){const yy=s?y+.84:y;box(x,yy,3,1,.16,8,'#8f8778',s?1:.9);box(x,yy-.02,11,1,.2,2,'#c4bcac');
+  for(const[e,px]of[[!alB(x-1,y),x],[!alB(x+1,y),x+.78]])if(e){box(px,yy-.03,3,.22,.22,14,'#a39b8c');box(px-.02,yy-.05,17,.26,.26,2,'#c4bcac');box(px+.05,yy+.02,19,.12,.12,3,'#d4af37')}}
 /* ---- l'acqua: fiume, laghetto e mare stanno più in basso del selciato (prima erano 3 punti sotto e sembravano
    a filo, o più alti). Ora la superficie è 9 punti sotto, con una sponda di pietra dove tocca la terra. ---- */
 {const f0=floor;floor=function(x,y,c,h){if(c!==2||!alOn()||DEC[y][x]==='ɷ'||(x===35&&y===35)||(ZZ&&ZZ.pool)||(typeof PIERD!=='undefined'&&PIERD.has(y*N+x))){f0(x,y,c,h);return}
   const d=DEC[y][x];
   if(WMODE!==2){const W=(u,v)=>v<0||u<0||v>=N||u>=N||M[v][u]===2;
-    box(x,y,-15,1,1,6,'#3b86d6',.86+Math.sin(t*2+x+y)*.07);
-    if(!W(x,y-1)){box(x,y,-9,1,.07,9,'#8f887c',.82);box(x,y+.07,-9,1,.3,0,'#2c6cb8')}
-    if(!W(x-1,y)){box(x,y,-9,.07,1,9,'#8f887c',1);box(x+.07,y,-9,.3,1,0,'#2c6cb8')}
-    if(SET.ultra&&g===G0){const ph=hh(x*3.1,y*7.7)*6.283,a=Math.pow(Math.max(0,Math.sin(t*2.3+ph)),12);if(a>.05){g.globalAlpha=a;box(x+.2+hh(x,y*2)*.5,y+.2+hh(x*2,y)*.5,-9,.13,.13,0,'#ffffff');g.globalAlpha=1}
-      const b=Math.sin((x-y)*.55-t*1.1);if(b>.8){g.globalAlpha=(b-.8)*1.1;box(x+.1,y+.1,-9,.9,.9,0,'#e6f4ff');g.globalAlpha=1}}}
+    const bn=alB(x,y-1),bs=alB(x,y+1),lt=.86+Math.sin(t*2+x+y)*.07,C='#3b86d6';
+    // 8.6.2: l'acqua bassa si disegna dopo il pavimento, quindi la superficie si ferma dove comincia la riva davanti
+    // (prima ne copriva il bordo, e copriva i parapetti dei ponti: nella vista classica i ponti non si vedevano)
+    const eL=!W(x+1,y),sL=!W(x,y+1),a=bs?.39:.29,w=eL?1-.29:1,d=sL?1-a:1;
+    if(WMODE===0&&bn){alPar(x,y-1,1);box(x+.16,y-.012,-9,.68,.012,6.5,'#2b3038');box(x+.26,y-.012,-2.5,.48,.012,2.5,'#2b3038')}
+    if(WMODE===1)box(x,y,-15,1,1,6,C,lt);else if(!eL&&!sL&&!W(x+1,y+1)){box(x,y,-9,1,.71,0,C,lt);box(x,y+.71,-9,.71,.29,0,C,lt)}else box(x,y,-9,w,d,0,C,lt);
+    if(!W(x,y-1)&&!bn){box(x,y,-9,1,.07,9,'#8f887c',.82);box(x,y+.07,-9,w,.3,0,'#2c6cb8')}
+    if(!W(x-1,y)){box(x,y,-9,.07,1,9,'#8f887c',1);box(x+.07,y,-9,.3,d,0,'#2c6cb8')}
+    if(WMODE===0&&bs)alPar(x,y+1,0);
+    if(SET.ultra&&g===G0){const ph=hh(x*3.1,y*7.7)*6.283,a=Math.pow(Math.max(0,Math.sin(t*2.3+ph)),12);if(a>.05){g.globalAlpha=a;box(x+.1+hh(x,y*2)*.45,y+.1+hh(x*2,y)*.45,-9,.13,.13,0,'#ffffff');g.globalAlpha=1}
+      const b=Math.sin((x-y)*.55-t*1.1);if(b>.8){g.globalAlpha=(b-.8)*1.1;box(x+.05,y+.05,-9,w-.1,d-.1,0,'#e6f4ff');g.globalAlpha=1}}}
   if(WMODE===1)return;
   if(d==='^'){const b2=Math.sin(t*2+x)*1.5;box(x+.4,y+.4,-9+b2,.2,.2,6,'#e8483a');box(x+.42,y+.42,-3+b2,.16,.16,3,'#ffffff')}
   if(d==='O'){box(x+.1,y-.3,-9,.8,1.6,6,'#7a5a3a');box(x+.45,y+.3,-3,.08,.08,26,'#5a4a3a');box(x+.5,y,3,.04,.7,16,'#eeeeee')}}}
@@ -99,7 +109,7 @@ function alTower(){if(!alOn())return null;const x=50,y=16;for(let v=y-3;v<y;v++)
     case'S':{box(x,y,-6,1,1,6,(x+y)&1?'#dcc89c':'#d5c093',l);const a=hh(x*5,y*3);if(a>.5)box(x+a*.6,y+.3,0,.1,.1,.3,'#b8a070');return}
     case'W':{pierTile(x,y,h);return}
     case'B':{box(x,y,-6,1,1,9,(x+y)&1?'#b4ac9e':'#aaa294',l);box(x+.48,y,3,.04,1,.15,'#8c8476');
-      const n2=y>0&&M[y-1][x]===2,s2=y<N-1&&M[y+1][x]===2;if(n2){box(x,y,3,1,.14,7,'#8f8778');box(x+.4,y-.02,10,.2,.18,3,'#a39b8c')}if(s2){box(x,y+.86,3,1,.14,7,'#8f8778');box(x+.4,y+.84,10,.2,.18,3,'#a39b8c')}return}}
+      const n2=y>0&&M[y-1][x]===2,s2=y<N-1&&M[y+1][x]===2;if(n2)alPar(x,y,0);if(s2)alPar(x,y,1);return}}
   f0(x,y,c,h)}}
 /* ---- gli arredi ---- */
 const ALP={

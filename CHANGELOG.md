@@ -5,6 +5,12 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.6.2 — I ponti nella vista classica (11 novembre 2026)
+
+- **I ponti si vedono anche nella vista classica.** Nella vista 3D i quattro ponti sul Fiume Argento avevano i parapetti, nella classica no: l'acqua (abbassata nella 8.6) veniva disegnata dopo il selciato e li copriva. Ora i parapetti si disegnano al turno giusto, sono più alti, con la copertina chiara e un pilastrino con la sfera dorata alle estremità; sul lato a valle si vede l'arco sotto il ponte.
+- **Lo stesso difetto altrove**: per lo stesso motivo l'acqua copriva una striscia del bordo di tutte le rive che le stanno davanti (riva est del fiume, sponda sud del laghetto dei Giardini, lato dei moli). Ora la superficie si ferma dove comincia la riva.
+- **Tolta la casetta blu degli alleati**, che stava incastrata fra la Casa abbandonata e la Sartoria. I doni dei nemici risparmiati non si perdono: si ritirano dal Viandante in piazza, con il pulsante 🕊 Alleati.
+
 ## 8.6 — La Storia rinnovata: Aldoria, animazioni, diario (10 novembre 2026)
 
 Il grande aggiornamento della Modalità Storia.

@@ -1,6 +1,6 @@
 /* ================= 7.48: le scelte che cambiano la storia =================
    - Quando il boss di un dungeon sta per cadere, si arrende: lo RISPARMI o lo FINISCI. Il bottino è lo stesso, ma la storia no.
-     Chi risparmi diventa un alleato: lo ritrovi ad Aldoria, nella Casa degli alleati, e ogni giorno ti fa un dono.
+     Chi risparmi diventa un alleato: ogni giorno ti fa un dono, che ritiri dal Viandante in piazza (8.6.2: prima c'era la Casa degli alleati).
    - Ogni giorno in piazza c'è un Viandante con un dilemma (un ladruncolo affamato, una vedova, un goblin ferito…): due
      risposte, una più generosa e una più dura, ognuna con il suo piccolo premio.
    - Le scelte fanno la tua via: 🕊 della misericordia (prezzi -10%, doni degli alleati più ricchi), ⚔ della spada (vita
@@ -38,7 +38,7 @@ X43P.sp48=()=>{const e=ST48.cur;if(!e||!ents.includes(e))return`<p class="mu">No
   <p class="x43t">Via di adesso: ${STP[stPath()].i} ${STP[stPath()].n} (${karma()>0?'+':''}${karma()})</p>`};
 function stEnd(e,v){const s=stFix(),id=ZZ.dg,first=s.b[id]==null;s.b[id]=v;e.cho48=v>0?2:3;e.cbs=0;ST48.cur=null;cl();const n=e.n,m=e.m;kill(e);
   if(v>0){const i=ents.findIndex(x=>x.k==='dead'&&x.m===m);if(i>=0)ents.splice(i,1);if(cineOK())sparks(e.px,e.py,30,['#ffffff','#9adcff','#ffe08a'],140);vf({k:'ring',x:e.px,y:e.py,r0:.4,r:2.2,c:'200,230,255',d:.7,w:6});
-    setTimeout(()=>banner('Hai risparmiato '+n,'Lo ritroverai nella Casa degli alleati, ad Aldoria','stella'),first?2600:400)}
+    setTimeout(()=>banner('Hai risparmiato '+n,'Ogni giorno ti farà un dono: ritiralo dal Viandante, in piazza','stella'),first?2600:400)}
   else setTimeout(()=>banner('Hai finito '+n,'Il regno è più sicuro, e la tua fama di guerriero cresce','spada'),first?2600:400);
   stCheck();save()}
 const stSpare=()=>ST48.cur&&stEnd(ST48.cur,1),stFinish=()=>ST48.cur&&stEnd(ST48.cur,-1);
@@ -60,15 +60,16 @@ function dilPick(side){const s=stFix(),k=dayKey();if(s.d[k]!=null)return;const D
   tone(side>0?660:330,.1,'triangle',.05);msg(side>0?'Il Viandante sorride: «Il regno ha bisogno di gente come te.»':'Il Viandante annuisce piano: «Anche questa è una scelta.»');stCheck();save();pn('dil48')}
 X43P.dil48=()=>{const s=stFix(),D=dilToday(),done=s.d[dayKey()];return`<h3>🧭 Il Viandante</h3><p class="x43t">«Ogni giorno il regno ti mette davanti a una scelta. Oggi è questa.»</p><p><i>${esc(D.q)}</i></p>
   ${done!=null?`<p class="x43t">Hai già scelto: <b>${esc((done>0?D.a:D.b)[0])}</b>. Torna domani per un'altra storia.</p>`:`<div class="x43c"><button onclick="dilPick(1)"><i>🕊</i><b>${esc(D.a[0])}</b></button><button onclick="dilPick(-1)"><i>⚔</i><b>${esc(D.b[0])}</b></button></div>`}
-  <p class="x43t">${STP[stPath()].i} ${STP[stPath()].n} · <button onclick="pn('cro48')">📜 Cronaca</button></p><button onclick="cl()">Chiudi</button>`};
+  <p class="x43t">${STP[stPath()].i} ${STP[stPath()].n} · <button onclick="pn('cro48')">📜 Cronaca</button> <button onclick="pn('al48')">🕊 Alleati${stAllies().length?' ('+stAllies().length+')':''}</button></p><button onclick="cl()">Chiudi</button>`};
 /* ---- la Casa degli alleati ---- */
 const stAllies=()=>{const s=stFix();return Object.keys(s.b).filter(id=>s.b[id]>0&&DG[id]&&E[DG[id].boss])};
 function alGift(id){const s=stFix(),k=dayKey();s.g={[k]:s.g[k]||{}};if(s.g[k][id])return;s.g[k][id]=1;const g2=Math.round((80+P.lv*15)*(stPath()==='pace'?1.5:1));P.g+=g2;P.pot++;goldFly(g2);
   msg(E[DG[id].boss].n+' ti regala '+g2+' monete e una pozione');tone(700,.08,'triangle');hud();save();pn('al48')}
-X43P.al48=()=>{const L=stAllies(),s=stFix(),G=s.g[dayKey()]||{};return`<h3>🕊 Casa degli alleati</h3><p class="x43t">Qui vivono i nemici che hai risparmiato. Ogni giorno ognuno ti fa un dono${stPath()==='pace'?' (più ricco, per la tua via)':''}.</p>
-  ${L.length?L.map(id=>{const b=E[DG[id].boss];return`<div class="x43r"><span><b>${esc(b.n)}</b> <small class="mu">da ${esc(DG[id].n)}</small></span>${G[id]?'<i class="mu">ci vediamo domani</i>':`<button onclick="alGift('${id}')">🎁 Ritira il dono</button>`}</div>`}).join(''):'<p class="mu">La casa è vuota: quando un boss si arrende, risparmialo.</p>'}<button onclick="cl()">Chiudi</button>`};
+X43P.al48=()=>{const L=stAllies(),s=stFix(),G=s.g[dayKey()]||{};return`<h3>🕊 Gli alleati</h3><p class="x43t">I nemici che hai risparmiato. Ogni giorno ognuno ti fa un dono${stPath()==='pace'?' (più ricco, per la tua via)':''}.</p>
+  ${L.length?L.map(id=>{const b=E[DG[id].boss];return`<div class="x43r"><span><b>${esc(b.n)}</b> <small class="mu">da ${esc(DG[id].n)}</small></span>${G[id]?'<i class="mu">ci vediamo domani</i>':`<button onclick="alGift('${id}')">🎁 Ritira il dono</button>`}</div>`}).join(''):'<p class="mu">Ancora nessuno: quando un boss si arrende, risparmialo.</p>'}<button onclick="pn('dil48')">← Il Viandante</button> <button onclick="cl()">Chiudi</button>`};
 function stPlace(){if(!ZZ||!started||Zk!=='town'||(typeof OW!=='undefined'&&OW.on))return;if(!ents.some(e=>e.k==='dil48')){const q=spot47([34,36],2);if(q){const e={k:'dil48',px:q[0]+.5,py:q[1]+.5,n:'Il Viandante'};try{e.m=npcModel('viandante',{},e)}catch(_){e.m=hum('#6a5a3a',SKIN,1,[5,'#4a3a2a'])}ents.push(e)}}
-  if(!ents.some(e=>e.k==='al48')){const q=spot47([26,44],2.2);if(q)ents.push({k:'al48',px:q[0]+.5,py:q[1]+.5,n:'Casa degli alleati'})}}
+  // 8.6.2: la casetta blu degli alleati non c'è più (stava incastrata fra due case): i doni si ritirano dal Viandante
+  }
 const _loadPost748q=loadPost;loadPost=function(k){_loadPost748q(k);try{stPlace()}catch(e){console.warn('scelte',e)}if(P&&P.st48)ST48.path=stPath()};
 ITK.add('dil48');ITK.add('al48');
 const _act748q=act;act=function(e){if(e&&e.k==='dil48'){pn('dil48');return}if(e&&e.k==='al48'){pn('al48');return}_act748q(e)};

@@ -9,6 +9,7 @@
 float UIS = 1.8f, VW = SCR_W / 1.8f, VH = SCR_H / 1.8f;
 
 /* ---------------- programmi ---------------- */
+int glFails = 0;   // shader che non si sono compilati o collegati
 GLuint glProgram(const char *vs, const char *fs, const char **attrs, int nattr) {
 	const char *pre =
 #ifdef __vita__
@@ -23,13 +24,13 @@ GLuint glProgram(const char *vs, const char *fs, const char **attrs, int nattr) 
 		glShaderSource(s, 2, src[i], NULL);
 		glCompileShader(s);
 		GLint ok = 0; glGetShaderiv(s, GL_COMPILE_STATUS, &ok);
-		if (!ok) { char log[1024] = ""; glGetShaderInfoLog(s, sizeof log, NULL, log); printf("shader: %s\n", log); }
+		if (!ok) { char log[1024] = ""; glGetShaderInfoLog(s, sizeof log, NULL, log); printf("shader: %s\n", log); plLog("shader %s non compilato: %s", i ? "dei pixel" : "dei vertici", log); glFails++; }
 		glAttachShader(p, s);
 	}
 	for (int i = 0; i < nattr; i++) glBindAttribLocation(p, i, attrs[i]);
 	glLinkProgram(p);
 	GLint ok = 0; glGetProgramiv(p, GL_LINK_STATUS, &ok);
-	if (!ok) { char log[1024] = ""; glGetProgramInfoLog(p, sizeof log, NULL, log); printf("programma: %s\n", log); }
+	if (!ok) { char log[1024] = ""; glGetProgramInfoLog(p, sizeof log, NULL, log); printf("programma: %s\n", log); plLog("programma non collegato: %s", log); glFails++; }
 	return p;
 }
 

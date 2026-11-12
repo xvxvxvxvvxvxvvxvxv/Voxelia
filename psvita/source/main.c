@@ -176,20 +176,29 @@ static bool autoStep(PlInput *in, float dt) {
 
 int main(int argc, char **argv) {
 	(void)argc; (void)argv;
-	if (!plGfxInit()) return 1;
+	if (!plGfxInit()) { plFatal("La grafica della console non si avvia (vitaGL)."); return 1; }
 	setLoad();
 	uiApplyScale();
+	plLog("impostazioni lette");
 	g2Init();
+	plLog("interfaccia e carattere pronti");
 	rInit();
+	{ extern int glFails; if (glFails) plFatal("Gli shader del gioco non si compilano su questa console. Controlla ur0:data/libshacccg.suprx e manda ux0:data/voxelia/log.txt a chi sviluppa il port."); }
+	plLog("renderer pronto");
 	dataInit();
+	plLog("dati pronti: %d nemici, %d personaggi, %d missioni", NE, NNPC, NQT);
+	if (!NE || !NNPC) plFatal("Mancano i dati del gioco (app0:data/data.json). Reinstalla voxelia.vpk.");
 	gameInit();
 	uiInit();
 	auInit();
+	plLog("audio pronto");
 	netInit();
+	plLog("rete pronta");
 	snprintf(P.name, sizeof P.name, "Eroe");
 	// il nome dell'eroe parte da quello dell'utente della console
 	{ char nm[16] = ""; plUserName(nm, sizeof nm); if (nm[0]) snprintf(P.name, sizeof P.name, "%s", nm); }
 	titleStart();
+	plLog("titolo pronto");
 	camS = SET.zoom;
 #ifndef __vita__
 	AUTO = getenv("VOX_AUTO");
@@ -278,7 +287,7 @@ int main(int argc, char **argv) {
 		camS += (SET.zoom - camS) * k;
 		float sx = camX, sy = camY;
 		if (shake > 0) { camX += (frnd() - .5f) * shake * 30; camY += (frnd() - .5f) * shake * 30; }
-		rFrame();
+		{ static int fr = 0; if (fr < 2) plLog("fotogramma %d: inizio", fr + 1); rFrame(); if (fr < 2) plLog("fotogramma %d: disegnato", fr + 1); if (fr == 600) plLog("10 secondi di gioco: tutto bene"); fr++; }
 		camX = sx; camY = sy;
 	}
 	saveGame();

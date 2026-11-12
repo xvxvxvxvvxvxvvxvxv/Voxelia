@@ -243,6 +243,7 @@ static bool loadFiles(const char *k, int run) {
 }
 
 void loadZone(const char *k, const char *from) {
+	plLog("zona %s (da %s)", k, from ? from : "-");
 	float relx = P.px / (N ? N : 1), rely = P.py / (N ? N : 1);
 	char key[32]; snprintf(key, sizeof key, "%s", k);
 	extern bool torIsZone(const char *k); bool gen = torIsZone(key);

@@ -75,6 +75,8 @@ void plPoll(PlInput *in);
 
 /* ---------------- grafica ---------------- */
 bool plGfxInit(void);
+void plLog(const char *fmt, ...);        // registro di avvio: SAVE_ROOT/log.txt
+void plFatal(const char *msg);           // messaggio di errore e uscita, invece di un crash
 void plGfxExit(void);
 void plSwap(void);
 // tastiera di sistema (bloccante): true se confermato

@@ -3,6 +3,17 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi, missioni e musiche.
 
+## 1.0.1 · contenuti di Voxelia 8.5
+
+**Avvio più sicuro sulla console.** La 1.0 si chiudeva all'avvio con l'errore C2-12828-1 su alcune console.
+- Se manca il compilatore di shader della console (`ur0:data/libshacccg.suprx`), il gioco lo dice con un messaggio
+  e spiega come estrarlo, invece di chiudersi. Lo cerca anche in `ur0:data/external/`.
+- Se gli shader non si compilano o mancano i dati, un messaggio lo dice.
+- **Registro di avvio** in `ux0:data/voxelia/log.txt`: memoria libera, ogni passo dell'avvio, le zone caricate e i
+  primi fotogrammi. Se il gioco si chiude, l'ultima riga dice dove.
+- Stack del thread principale da 1 MB (era quello predefinito), più memoria lasciata a rete, moduli e tastiera,
+  e se l'antialiasing 4x non parte il gioco riprova senza.
+
 ## 1.0 · contenuti di Voxelia 8.5
 
 **Il primo port per PlayStation Vita.** Nasce dal motore del port 3DS 1.6.1 (che segue la Modalità Storia del

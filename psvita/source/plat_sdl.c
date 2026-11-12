@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 static SDL_Window *win;
 static SDL_GLContext ctx;
@@ -34,6 +35,8 @@ void plRandom(void *buf, size_t n) {
 void plMkdirs(void) { mkdir(SAVE_ROOT, 0777); }
 void plUserName(char *out, int n) { const char *u = getenv("VOX_NAME"); snprintf(out, n, "%s", u ? u : ""); }
 
+void plLog(const char *fmt, ...) { if (!getenv("VOX_LOG")) return; va_list ap; va_start(ap, fmt); vprintf(fmt, ap); va_end(ap); putchar('\n'); }
+void plFatal(const char *msg) { printf("ERRORE: %s\n", msg); exit(1); }
 bool plGfxInit(void) {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS) != 0) { printf("SDL: %s\n", SDL_GetError()); return false; }
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);

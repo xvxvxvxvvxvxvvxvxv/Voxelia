@@ -7,6 +7,7 @@
 #include <psp2/kernel/processmgr.h>
 #include <psp2/kernel/threadmgr.h>
 #include <psp2/kernel/rng.h>
+#include <psp2/kernel/sysmem.h>
 #include <psp2/ctrl.h>
 #include <psp2/touch.h>
 #include <psp2/audioout.h>
@@ -19,10 +20,12 @@
 #include <psp2/net/netctl.h>
 #include <psp2/power.h>
 #include <psp2/io/stat.h>
+#include <psp2/message_dialog.h>
+#include <stdarg.h>
 
 // memoria: il gioco usa il heap di newlib (zone, modelli, geometria), vitaGL il resto per la GPU
-int _newlib_heap_size_user = 192 * 1024 * 1024;
-unsigned int sceLibcHeapSize = 4 * 1024 * 1024;
+int _newlib_heap_size_user = 160 * 1024 * 1024;
+const SceSize sceUserMainThreadStackSize = 1024 * 1024;   // il motore usa qualche buffer sullo stack: 1 MB invece di 256 KB
 
 u64 osGetTime(void) { return sceKernelGetProcessTimeWide() / 1000; }
 void plSleepMs(int ms) { sceKernelDelayThread(ms * 1000); }
@@ -51,7 +54,39 @@ void plUserName(char *out, int n) {
 	out[j] = 0;
 }
 
+/* ---------------- registro di avvio ed errori ---------------- */
+// Ogni passo dell'avvio finisce in ux0:data/voxelia/log.txt: se il gioco si chiude, l'ultima riga dice dove.
+void plLog(const char *fmt, ...) {
+	static bool first = true;
+	if (first) plMkdirs();
+	FILE *f = fopen(SAVE_ROOT "/log.txt", first ? "w" : "a");
+	first = false;
+	if (!f) return;
+	va_list ap; va_start(ap, fmt); vfprintf(f, fmt, ap); va_end(ap);
+	fputc('\n', f); fclose(f);
+}
+static bool vglOk = false;
+void plFatal(const char *msg) {
+	plLog("ERRORE: %s", msg);
+	if (vglOk) {
+		SceMsgDialogUserMessageParam up; memset(&up, 0, sizeof up);
+		up.buttonType = SCE_MSG_DIALOG_BUTTON_TYPE_OK; up.msg = (const SceChar8 *)msg;
+		SceMsgDialogParam p; sceMsgDialogParamInit(&p);
+		p.mode = SCE_MSG_DIALOG_MODE_USER_MSG; p.userMsgParam = &up;
+		if (sceMsgDialogInit(&p) >= 0) {
+			while (sceMsgDialogGetStatus() != SCE_COMMON_DIALOG_STATUS_FINISHED) {
+				glClearColor(.05f, .06f, .1f, 1); glClear(GL_COLOR_BUFFER_BIT);
+				vglSwapBuffers(GL_TRUE);
+			}
+			sceMsgDialogTerm();
+		}
+	}
+	sceKernelExitProcess(0);
+}
+static bool fileExists(const char *p) { SceIoStat st; return sceIoGetstat(p, &st) >= 0; }
+
 bool plGfxInit(void) {
+	plLog("Voxelia PS Vita " PORT_VER " (dati " DATA_VER "): avvio");
 	// la CPU a 444 MHz e la GPU a 222 MHz, come i giochi che ne hanno bisogno
 	scePowerSetArmClockFrequency(444); scePowerSetBusClockFrequency(222);
 	scePowerSetGpuClockFrequency(222); scePowerSetGpuXbarClockFrequency(166);
@@ -61,7 +96,22 @@ bool plGfxInit(void) {
 	sceAppUtilSystemParamGetInt(SCE_SYSTEM_PARAM_ID_LANG, (int *)&cp.language);
 	cp.enterButtonAssign = SCE_SYSTEM_PARAM_ENTER_BUTTON_CROSS;
 	sceCommonDialogSetConfigParam(&cp);
-	if (!vglInitExtended(0, SCR_W, SCR_H, 6 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X)) return false;
+	SceKernelFreeMemorySizeInfo mi; mi.size = sizeof mi;
+	if (sceKernelGetFreeMemorySize(&mi) >= 0) plLog("memoria libera: utente %d KB, cdram %d KB, phycont %d KB", mi.size_user / 1024, mi.size_cdram / 1024, mi.size_phycont / 1024);
+	// la GPU prende quasi tutta la memoria che resta: 24 MB restano per thread, rete, moduli e tastiera
+	if (!vglInitExtended(0, SCR_W, SCR_H, 24 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X)) {
+		plLog("vitaGL con MSAA 4x non parte: riprovo senza");
+		if (!vglInitExtended(0, SCR_W, SCR_H, 24 * 1024 * 1024, SCE_GXM_MULTISAMPLE_NONE)) { plLog("ERRORE: vitaGL non parte"); return false; }
+	}
+	vglOk = true;
+	plLog("vitaGL pronto");
+	// vitaGL compila gli shader sulla console con il compilatore di sistema: senza, il gioco non può disegnare
+	bool sh1 = fileExists("ur0:data/libshacccg.suprx"), sh2 = fileExists("ur0:data/external/libshacccg.suprx");
+	plLog("libshacccg.suprx: ur0:data %s, ur0:data/external %s", sh1 ? "sì" : "no", sh2 ? "sì" : "no");
+	if (!sh1 && !sh2)
+		plFatal("Manca il compilatore di shader della console (ur0:data/libshacccg.suprx).\n\n"
+			"Voxelia, come quasi tutti gli homebrew in 3D, ne ha bisogno per disegnare il mondo. "
+			"Estrailo con ShaRKBR33D (cerca \"extract libshacccg.suprx\" nella Vita Troubleshooting Guide), poi riavvia il gioco.");
 	vglSetupRuntimeShaderCompiler(SHARK_OPT_UNSAFE, GL_TRUE, GL_FALSE, GL_TRUE);
 	vglWaitVblankStart(GL_TRUE);
 	sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG_WIDE);

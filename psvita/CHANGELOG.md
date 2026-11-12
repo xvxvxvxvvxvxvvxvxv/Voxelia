@@ -22,5 +22,6 @@ browser), ma è pensato per l'hardware della Vita e per un solo schermo, come il
   come `psvita`. Tastiera di sistema per nome, chat, server e codice stanza.
 - **Il pannello sviluppatore della 8.5**: trucchi, tempo, zone, missioni, musica, griglia delle collisioni,
   riquadro di debug e prova della zona.
+- **La riga dei prezzi nel negozio (8.3.1)** fa il conto giusto, come nel port 3DS 1.7.
 - **Build di prova per PC** (SDL2 + OpenGL) con le prove automatiche: tutte le 134 zone, combattimento, dungeon,
   boss, salvataggi, rete in chiaro e TLS, anche con AddressSanitizer.

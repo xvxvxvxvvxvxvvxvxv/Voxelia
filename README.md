@@ -50,8 +50,8 @@ What's new in every version, newest first, is in [CHANGELOG.md](CHANGELOG.md) (i
 
 - **A single file.** The whole game is `voxelia.html`: graphics, music, text and logic. To play alone you need no
   installation, libraries or internet connection.
-- **A big kingdom**: 120 areas (84 interiors to explore), 8 multi-floor dungeons, 196 characters, 130 quests, 78 kinds
-  of enemies including 14 bosses. Beyond the sea lies a second kingdom, **Thalassa**.
+- **A big kingdom**: 121 areas (84 interiors to explore), 12 multi-floor dungeons, 196 characters, 130 quests, 93 kinds
+  of enemies including 18 bosses. Beyond the sea lies a second kingdom, **Thalassa**; after the true ending, **Act II**.
 - **A story told through cutscenes** shot in the game's real locations, with choices that change the ending.
 - **Tomorrow**: a borderless world, generated as you walk, where you conquer land, found cities and wage war with the
   factions, together with other players too.
@@ -221,6 +221,10 @@ a five-phase battle.
   chapter, with the Jade Seals, Quetzal's Temple, the Jade Tablets and the mystery of the Pearl. Thalassa is a white
   city on the bay, with the Queen's Palace, the Serpent Square, the Siren Tavern, the Spice Market, the piers and the
   lighthouse; the Emerald Jungle has the waterfall, the river with rope bridges and the temple among the ruins.
+- **Act II · The Lost Constellation** (8.6), after the true ending: the nights grow longer and the stars of the Lantern
+  go out in the sky, where Aldric the First imprisoned Morvath, the Last Guardian. From the Observatory dome the Star
+  Portal leads to the Twilight Valley: three dungeons relight the three stars (the Well of Dead Stars, the Eclipse
+  Forge, the Garden of the Upturned Moon) and open Morvath's Keep.
 
 ### Difficulty
 
@@ -234,6 +238,12 @@ a five-phase battle.
 On every difficulty enemies attack **in packs** and **Champions** appear, bigger enemies with a golden halo and
 guaranteed loot. Bosses fight in **three phases**, have a **weak point** that stuns them and below a quarter of their
 health they enter their **last fury**. Voxelia Studio worlds keep the balance chosen by their author.
+
+**The Kingdom Threat** (8.6): in the Story the kingdom becomes more dangerous as you go on, with the story and with the
+game days that pass. It goes from 0 to 10 and is shown under the clock. At every level enemies learn something: the
+warriors' guard, the beasts' dodges, charges and heavy blows announced by red circles, spread shots, pack fury;
+Champions have powers (Shield, Swift, Vampire, Explosive, Summoner) and bosses new moves (Cross, Ring, Last Breath).
+From level 2 nights in the open areas are more dangerous, from 3 raiders invade the quarters of Aldoria.
 
 ---
 
@@ -836,6 +846,10 @@ a translation of their own. The game's logic never sees the translation.
 | `combattimento/8zzzze_dungeon.js` | Every dungeon another dimension: rooms of different shapes, their own style and furniture |
 | `corona/8zzzzf_zaffiro.js` | The Shattered Sapphire: Voxelia Dimension (7.55) and Aldoria 3026 (8.4) removed from the game; unlocking Tomorrow |
 | `sistemi/8zzzzn_dev3.js` | The developer panel to test everything (8.5): story quests and variables, cheats, world, on-screen debug, console, states and testing every area |
+| `combattimento/8zzzzq_minaccia.js` | The Kingdom Threat (8.6): the level from story and days, the enemies' new moves, Champion powers, the bosses' extra moves |
+| `combattimento/8zzzzr_notti.js` | Dangerous nights and invasions of Aldoria's quarters (8.6) |
+| `storia/8zzzzs_atto2.js` | Act II · The Lost Constellation (8.6): the Twilight Valley, four dungeons, creatures, bosses and cutscenes |
+| `sistemi/8zzzzt_dev86.js` | The developer panel's "☠ Threat and Act II" tab (8.6) |
 | `combattimento/8zzzzk_bilancio.js` | Balancing: Champions per floor, Crypt, Forge, Jade Temple, Tomorrow at high levels (8.1); enemies, Champions and prices that follow your level (8.3) |
 | `corona/8zzzzh_corona80.js` | The Reunited Crown: the six shards, the Heart of the Crown and the Album |
 | `sistemi/8zzzzh_menu.js` | The menu fits the window: the Crown fills the screen, the other screens shrink instead of scrolling |

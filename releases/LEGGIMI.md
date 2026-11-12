@@ -17,11 +17,12 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-117 versions, newest first.
+118 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
-| [8.7](voxelia_v8.7.html) | November 12, 2026 | Voxelia in English: English is the default language, the first stage of the translation (menus, interface, Story Mode) and the repository in English | 3,395 KB |
+| [8.7](voxelia_v8.7.html) | November 12, 2026 | Voxelia in English: English is the default language, the first stage of the translation (menus, interface, Story Mode) and the repository in English | 3,482 KB |
+| [8.6](voxelia_v8.6.html) | November 12, 2026 | The Kingdom Threat and Act II: enemies with new moves, Champions with powers, tougher bosses, nights and invasions, the lost constellation | 3,145 KB |
 | [8.5](voxelia_v8.5.html) | November 10, 2026 | The developer panel tests everything: quests, cheats, debug, console, states and testing every area | 3,079 KB |
 | [8.4](voxelia_v8.4.html) | November 10, 2026 | Story and Tomorrow at the center: Aldoria 3026 removed, the Sapphire broken again, five splinters | 3,047 KB |
 | [8.3.2](voxelia_v8.3.2.html) | November 10, 2026 | Maintenance: dungeon campfires no longer block passages | 3,180 KB |

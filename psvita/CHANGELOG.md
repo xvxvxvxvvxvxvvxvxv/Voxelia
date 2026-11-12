@@ -3,6 +3,13 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi, missioni e musiche.
 
+## 1.0.3 · contenuti di Voxelia 8.5
+
+**Il gioco parte.** La causa dei problemi all'avvio era una sola: la funzione che avvia vitaGL non dice se è
+riuscita, ma solo se ha dovuto ridurre la risoluzione, e il port la leggeva al contrario. Così, con la grafica già
+pronta, la 1.0 usciva subito (errore C2-12828-1) e la 1.0.1 e la 1.0.2 provavano ad avviarla una seconda volta e si
+fermavano con l'animazione di vitaGL sullo schermo. Trovato grazie al registro `ux0:data/voxelia/log.txt`.
+
 ## 1.0.2 · contenuti di Voxelia 8.5
 
 **Schermata di caricamento.** Con la 1.0.1 su alcune console restava l'animazione di vitaGL (il logo che gira)

@@ -99,10 +99,9 @@ bool plGfxInit(void) {
 	SceKernelFreeMemorySizeInfo mi; mi.size = sizeof mi;
 	if (sceKernelGetFreeMemorySize(&mi) >= 0) plLog("memoria libera: utente %d KB, cdram %d KB, phycont %d KB", mi.size_user / 1024, mi.size_cdram / 1024, mi.size_phycont / 1024);
 	// la GPU prende quasi tutta la memoria che resta: 24 MB restano per thread, rete, moduli e tastiera
-	if (!vglInitExtended(0, SCR_W, SCR_H, 24 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X)) {
-		plLog("vitaGL con MSAA 4x non parte: riprovo senza");
-		if (!vglInitExtended(0, SCR_W, SCR_H, 24 * 1024 * 1024, SCE_GXM_MULTISAMPLE_NONE)) { plLog("ERRORE: vitaGL non parte"); return false; }
-	}
+	// attenzione: vglInitExtended non dice se è riuscita, ma solo se ha dovuto ridurre la risoluzione
+	// (GL_TRUE = risoluzione ridotta). Se qualcosa va storto si ferma da sola; qui si va avanti in ogni caso.
+	if (vglInitExtended(0, SCR_W, SCR_H, 24 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X)) plLog("vitaGL: risoluzione ridotta dalla console");
 	vglOk = true;
 	// il primo scambio dei buffer chiude l'animazione di vitaGL: da qui in poi lo schermo è del gioco
 	glClearColor(.06f, .07f, .11f, 1); glClear(GL_COLOR_BUFFER_BIT); vglSwapBuffers(GL_FALSE);

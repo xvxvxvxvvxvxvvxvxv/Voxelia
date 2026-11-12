@@ -326,7 +326,7 @@ void chatLog(const char *who, const char *s, int sys);
 void uiMinimapDirty(void);
 void uiTitleInit(void);
 extern int PM;
-enum { PM_NONE, PM_NPC, PM_TXT, PM_SHOP, PM_SMITH, PM_ALCH, PM_INV, PM_QUEST, PM_DIARY, PM_PAUSE, PM_TITLE, PM_DIFF, PM_DEAD, PM_EXITASK, PM_CASINO, PM_MAP, PM_HELP, PM_CONFIRM, PM_NET, PM_CHAT, PM_PLAYERS, PM_SELLRES, PM_ARENA, PM_PLUG, PM_X, PM_DEV };
+enum { PM_NONE, PM_NPC, PM_TXT, PM_SHOP, PM_SMITH, PM_ALCH, PM_INV, PM_QUEST, PM_DIARY, PM_PAUSE, PM_TITLE, PM_DIFF, PM_DEAD, PM_EXITASK, PM_CASINO, PM_MAP, PM_HELP, PM_CONFIRM, PM_NET, PM_CHAT, PM_PLAYERS, PM_SELLRES, PM_ARENA, PM_PLUG, PM_X };
 
 /* ---------------- gioco ---------------- */
 void gameInit(void);
@@ -488,15 +488,6 @@ void setLoad(void);
 int enemyIdx(const char *id);
 extern int NDG;
 #include "story.h"
-/* ---------------- pannello sviluppatore (dev.c, 8.5) ---------------- */
-typedef struct { bool god, oneHit, sta, nocd, ghost, pause, grid, info; float speed; } DevState;
-extern DevState DEV;
-void devOpen(void);
-void devBuild(void);
-int devAct(int arg, int dir);
-void devDrawWorld(void);
-void devDrawOverlay(void);
-void uiDevOpt(const char *l, const char *r, int arg, u32 col, bool dis);
 void uiXTitle(const char *ti, const char *body);
 void rFlat(float x, float y, float z, float w, float d, u32 c, u8 a);
 int zoneCount(void);

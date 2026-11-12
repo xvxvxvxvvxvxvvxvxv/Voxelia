@@ -24,8 +24,6 @@ su un monitor grande.
 - **Audio a 48 kHz** in stereo su un thread a parte, con il sintetizzatore e i brani del browser.
 - **Multigiocatore** con `ws://` e `wss://` (sceNet con il risolutore DNS della console, mbedtls 2.28 incluso nel
   port); la PS4 si presenta ai plugin come `ps4`.
-- **Il pannello sviluppatore della 8.5**: trucchi, tempo, zone, missioni, musica, griglia delle collisioni,
-  riquadro di debug e prova della zona.
 - Salvataggi, impostazioni e registro di avvio in `/data/voxelia/`.
 - **Build di prova per PC** (SDL2) con lo stesso rasterizzatore e le prove automatiche: tutte le 134 zone,
   combattimento, dungeon, finestre, tastiera a schermo e rete con due giocatori, anche con AddressSanitizer.

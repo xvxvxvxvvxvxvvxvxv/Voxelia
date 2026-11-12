@@ -13,7 +13,7 @@ DualShock 4 con il **touchpad come mouse**, audio a 48 kHz, multigiocatore con i
 |---|---|
 | ![Titolo](screenshots/titolo.jpg) | ![La foresta di notte](screenshots/foresta_notte.jpg) |
 | ![Un dungeon](screenshots/dungeon.jpg) | ![La mappa](screenshots/mappa.jpg) |
-| ![La tastiera a schermo](screenshots/tastiera.jpg) | ![Pannello sviluppatore](screenshots/sviluppo.jpg) |
+| ![La tastiera a schermo](screenshots/tastiera.jpg) | |
 
 ## Installazione
 
@@ -39,7 +39,7 @@ non va. La partita si salva da sola ogni 30 secondi e a ogni cambio di zona.
 | **Quadrato** | Colpo ad area |
 | **Triangolo** | Pozione (cura il 35%, una ogni 2,5 secondi) |
 | Levetta destra, **L2** / **R2** | Zoom (L2 allontana, R2 avvicina) |
-| **OPTIONS** | Pausa: salvataggio, volumi, zoom, opzioni, multigiocatore, pannello sviluppatore |
+| **OPTIONS** | Pausa: salvataggio, volumi, zoom, opzioni, multigiocatore |
 | **Premi il touchpad** | Mappa grande della zona (e, quando compare un riquadro di un plugin, lo sceglie: Croce accetta, Cerchio rifiuta) |
 | **Scorri il dito sul touchpad** | Muove il **puntatore**, come il mouse del browser |
 | **Tocco leggero sul touchpad** oppure **R3** | Il clic del mouse: sul terreno l'eroe ci va da solo, su un nemico lo attacca, su una persona, un forziere, una porta o un oggetto ci va e lo usa. Clicca anche i pulsanti dell'interfaccia e le righe delle finestre |
@@ -86,7 +86,6 @@ port può mostrare il gioco come il browser su un monitor grande.
 - **Audio a 48 kHz** in stereo (la frequenza della PS4), con lo stesso sintetizzatore e le stesse 96 voci.
 - **Tastiera a schermo del gioco** al posto della tastiera di sistema della Vita.
 - **Rete con sceNet**: socket e risolutore DNS della console, TLS con mbedtls 2.28 (incluso, si compila con il port).
-- Il **pannello sviluppatore della 8.5** come sulla Vita.
 
 ## Contenuti: quelli della 8.5
 

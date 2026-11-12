@@ -78,9 +78,10 @@ function genValle({R4,D,RS,EN,gate,scat,n}){const r=sd(hs('valle86'));
   const[hx,hy]=A2P.hub;clear(hx-3,hy-3,hx+3,hy+3);road(A2P.ent,[hx,hy+3]);road([hx,hy-3],[A2P.ro[0],A2P.ro[1]+4]);
   for(const s of A2P.sh){clear(s[0]-3,s[1]-3,s[0]+3,s[1]+3);road([hx,hy],[s[0],s[1]])}
   // il cuore della costellazione, in mezzo: tre fiamme, una per stella
-  ents.push({k:'lan86',i:-1,px:hx+.5,py:hy+.5,n:'Il cuore della Lanterna'});
+  // (le lanterne sono arredi fissi: non ci si passa attraverso)
+  M[hy][hx]=6;DEC[hy][hx]='✦';
   // i tre santuari, ognuno con la porta del suo dungeon e la sua lanterna
-  A2D.forEach((id,i)=>{const[x,y]=A2P.sh[i];ents.push(po(x,y-1,id+'@1',{st:'dun',n:DG[id].n}));ents.push({k:'lan86',i,px:x+2.5,py:y+.5,n:'La stella di '+A2STAR[i]});
+  A2D.forEach((id,i)=>{const[x,y]=A2P.sh[i];ents.push(po(x,y-1,id+'@1',{st:'dun',n:DG[id].n}));M[y][x+2]=6;DEC[y][x+2]='✶';
     for(const[a,b]of[[-3,-3],[3,-3],[-3,3],[3,3]])D(x+a,y+b,'◊')});
   // la Rocca: un recinto di mura nere con la porta sbarrata finché le tre stelle non sono accese
   const[rx,ry]=A2P.ro;for(let y=ry-5;y<=ry+4;y++)for(let x=rx-7;x<=rx+7;x++){if(x<1||y<1||x>n-2||y>n-2)continue;M[y][x]=0;DEC[y][x]='';if((y===ry-5||x===rx-7||x===rx+7||y===ry+4)&&!(y===ry+4&&Math.abs(x-rx)<=1)){M[y][x]=6;DEC[y][x]='▥'}}
@@ -98,6 +99,8 @@ function genValle({R4,D,RS,EN,gate,scat,n}){const r=sd(hs('valle86'));
   if(from.startsWith('rocca86'))return[rx,ry+2];return[ex,ey-2]}
 // gli arredi della Valle: alberi morti, cristalli di stella, menhir con le rune, le mura e le torri della Rocca
 const A2PR={
+  '✦':(x,y)=>lan86Draw({i:-1,px:x+.5,py:y+.5}),
+  '✶':(x,y)=>lan86Draw({i:lan86At(x,y),px:x+.5,py:y+.5}),
   '◘':(x,y)=>{const k=hh(x*3.3,y*1.9);box(x+.18+k*.2,y+.22,0,.46,.4,4+k*3,'#3a3450');box(x+.26+k*.2,y+.28,4+k*3,.3,.26,2,'#4a4468');if(k>.6)box(x+.58,y+.6,0,.2,.18,2.5,'#332c48')},
   '⸸':(x,y)=>{const k=hh(x,y),hx=.15+k*.3,c='#2a2238',c2='#3a3050';box(x+hx,y+.4,0,.14,.14,14+k*6,c);box(x+hx-.14,y+.38,10+k*3,.16,.08,2,c2);box(x+hx-.18,y+.38,12+k*3,.06,.08,5,c2);box(x+hx+.12,y+.4,14+k*4,.18,.07,2,c2);box(x+hx+.26,y+.4,16+k*4,.06,.07,5,c2);
     if(k>.55){box(x+hx-.2,y+.37,17+k*3,.07,.07,.07*0+1.5,'#9a8aff',1.4);box(x+hx+.3,y+.39,21+k*4,.06,.06,1.5,'#9a8aff',1.4)}},
@@ -111,13 +114,13 @@ const A2PR={
 Z.valle86={n:'Valle del Crepuscolo',lv:18,N:56,a:'#4a4470',b:'#433e68',bg:'#2a2050',mus:'cittadella',pt:'mote',gen:genValle,rd:['#6a6088','#625a80'],wl:'#2a2240',wh:14,dist:1,nolamp:1,en:['lupo86','cavaliere86','ombra86']};
 SKY.valle86=SKY.peaks||SKY.town;
 // le lanterne: spente (pietra fredda) o accese (la fiamma azzurra della stella); quella in mezzo ha tre fiamme
-function lan86Draw(e){const o=a2Fix(),lit=i=>!!o.l[i],x=e.px,y=e.py;
+function lan86Draw(e){const o=a2Fix(),lit=i=>!!o.l[i],x=e.px,y=e.py;if(e.i==null)return;
   if(e.i<0){box(x-.45,y-.45,0,.9,.9,4,'#3a3450');box(x-.3,y-.3,4,.6,.6,24,'#2a2440');box(x-.4,y-.4,28,.8,.8,3,'#4a4468');
     for(let i=0;i<3;i++){const a=i*2.094+.5,px=x+Math.cos(a)*.24,py=y+Math.sin(a)*.24,on=lit(i);box(px-.07,py-.07,31,.14,.14,on?7+Math.sin(t*6+i)*1.2:2,on?'#bfd0ff':'#4a4a5a',on?1.6:1);if(on){nlight(px,py,36,1.6,'191,208,255',.8);if(SET.ultra)GLOW.push([px,py,38,30,'191,208,255',.35])}}return}
   const on=lit(e.i);box(x-.2,y-.2,0,.4,.4,3,'#3a3450');box(x-.06,y-.06,3,.12,.12,26,'#2a2440');box(x-.22,y-.22,29,.44,.44,2,'#4a4468');box(x-.18,y-.18,31,.36,.36,8,on?'#dfe8ff':'#3a3a48',on?1.5:.9);box(x-.22,y-.22,39,.44,.44,2,'#4a4468');
   if(on){box(x-.08,y-.08,32,.16,.16,6+Math.sin(t*7)*1.2,'#9ab8ff',1.8);nlight(x,y,34,2.2,'191,208,255',.9);if(SET.ultra)GLOW.push([x,y,36,40,'191,208,255',.4])}}
-{const n0=ent;ent=function(e){if(e&&e.k==='lan86'){lan86Draw(e);return}n0(e)}}
-if(typeof FKEEP!=='undefined')FKEEP.add('lan86');
+// la lanterna di un santuario è a due caselle dalla sua porta: da lì si sa quale stella è
+const lan86At=(x,y)=>A2P.sh.findIndex(s=>s[0]+2===x&&s[1]===y);
 /* ---- i passi della storia ---- */
 const A2S=['Parla con Re Malakar nel castello','Parla con l\'Astronomo Tolomeo nell\'Osservatorio (nord-est)','Sali alla cupola dell\'Osservatorio: Stella apre il Portale delle Stelle','Riaccendi le stelle della Lanterna nella Valle del Crepuscolo','Entra nella Rocca di Morvath e affrontalo','Torna da Re Malakar','Atto II completato: sei il Portatore dell\'Alba'];
 function a2Obj(){const o=a2Fix();if(o.s===3)return A2S[3]+': '+a2N()+'/3';return A2S[Math.min(6,o.s)]}

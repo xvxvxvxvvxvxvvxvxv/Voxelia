@@ -5,9 +5,12 @@
    pozione sotto un terzo della vita, ma non schiva e non usa abilità. Per questo i numeri sono un po' peggio di quelli
    di chi gioca davvero: servono a vedere i posti fuori scala rispetto agli altri.
    Il livello dell'eroe è quello del dungeon più 2, con un equipaggiamento raro del suo livello.
-   Serve Playwright con Chromium (vedi tools/prova.js).  Uso:  node tools/bilancia.js */
+   Serve Playwright con Chromium (vedi tools/prova.js).  Uso:  node tools/bilancia.js
+   8.6: con MINACCIA=5 node tools/bilancia.js storia  il robot gioca la Storia con la Minaccia del Regno a 5. */
 const path=require('path');let chromium;try{({chromium}=require('playwright'))}catch(e){console.error('✗ manca Playwright: npm i -D playwright && npx playwright install chromium');process.exit(2)}
 const HERO=+(process.env.HERO||3);
+// 8.6: MINACCIA=0..10 fissa la Minaccia del Regno della Storia (senza, il robot gioca con quella di un eroe appena nato)
+const MIN86=process.env.MINACCIA!=null?+process.env.MINACCIA:null;
 const FILE='file://'+path.resolve(__dirname,'..','voxelia.html');
 // gira dentro la pagina: prepara l'eroe e combatte per al massimo `sec` secondi di gioco
 const SIM=`window.__seme=function(n){let a=n>>>0||1;const f=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};Math.random=f;R=f};
@@ -25,6 +28,7 @@ window.__sim=function(sec,attesa,gruppo){window.__morto=0;window.__bevute=0;let 
   return fine(0)};`;
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1024,height:700}});const err=[];p.on('pageerror',e=>err.push(e.message));
   await p.goto(FILE);await p.waitForTimeout(1500);await p.evaluate(`localStorage.setItem('voxelia_intro','1');SET.cine=0;begin(1,null);`+SIM);await p.waitForTimeout(1500);
+  if(MIN86!=null)await p.evaluate('TH86.dev='+MIN86);if(process.env.OFF)await p.evaluate('for(const k of '+JSON.stringify(process.env.OFF.split(','))+')TH86.off[k]=1');
   const righe=[];const prova=async(nome,prep,sec=120,attesa=0,gruppo=0)=>{let r;try{await p.evaluate(`(()=>{__seme(12345);${prep}})()`);await p.waitForTimeout(500);r=await p.evaluate(`(()=>{try{cl()}catch(e){}return __sim(${sec},${attesa?1:0},${gruppo})})()`)}catch(e){r={err:e.message.split('\n')[0]}}
     righe.push([nome,r]);const s=r.err?'errore: '+r.err:(r.morto?'💀 MORTO dopo '+r.t+' s':'vita minima '+r.minimo+'%')+' · '+r.uccisi+'/'+r.n0+' nemici in '+r.t+' s · ogni nemico costa '+r.perNemico+'% della vita · pozioni '+r.pozioni;console.log((nome+'                              ').slice(0,30)+s)};
   // la Storia: primo piano di ogni dungeon

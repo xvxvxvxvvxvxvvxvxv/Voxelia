@@ -5,6 +5,30 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.6 — La Minaccia del Regno e la costellazione perduta (12 novembre 2026)
+
+La Modalità Storia diventa più impegnativa andando avanti, e dopo il vero finale c'è un capitolo nuovo.
+
+- **☠ La Minaccia del Regno.** Un livello da 0 (Quieta) a 10 (Il Crepuscolo), sotto l'orologio: toccandolo si legge che cosa fa ogni livello. Sale con la **storia** (frammenti, Malakar, il vero finale, le stelle dell'Atto II) e con i **giorni** passati con il tuo eroe (24 minuti veri = un giorno, fino a +4). Vale nei dungeon e nelle zone aperte della Storia, non in città, negli interni, in Tomorrow, nelle battaglie e nell'arena. A difficoltà Facile sale più piano. Quando sale di livello un annuncio dice che cosa cambia.
+- **I nemici imparano mosse nuove**, sempre annunciate (si schivano con la capriola):
+  - dal livello 1 i guerrieri si mettono **in guardia** (scudo azzurro sopra la testa: parano quasi tutto, ma due colpi rompono la guardia e restano storditi con la corazza spezzata); arcieri e maghi **indietreggiano** se ti avvicini (mentre si spostano non tirano);
+  - dal 2 le bestie agili **schivano** di lato una parte dei colpi;
+  - dal 3 le **cariche** (una fila di cerchi rossi, poi lo scatto) e i **colpi pesanti** dei nemici grossi (un cerchio rosso davanti a loro);
+  - dal 4 attaccano più spesso; dal 5 arcieri e maghi tirano **a ventaglio**; dal 6 la guardia regge tre colpi; dal 7 la **furia del branco** (quando un nemico cade, quelli vicini si infuriano per cinque secondi);
+  - a ogni livello i nemici hanno il 2% di vita e l'1,5% di attacco in più.
+- **I Campioni hanno poteri**, scritti sopra «★ Campione» (anche nella vista 3D) e nel nome: **Scudo** (una barriera azzurra da rompere prima, si ricarica una volta), **Veloce**, **Vampiro** (vicino a lui perdi vita e lui la recupera), **Esplosivo** (quando cade, scappa dal cerchio rosso), **Evocatore** (a metà vita chiama due rinforzi). Uno dal livello 1, due dal 5, tre dal 9; in cambio hanno un po' meno vita e attacco di un Campione semplice. Con la Minaccia ne escono un po' di più.
+- **Boss più duri**: le tre fasi della 7.44 restano, e con la Minaccia si aggiungono la **Croce** (quattro file di cerchi intorno al boss, dal livello 3, dalla seconda fase), l'**Anello** (cerchi tutto intorno a te con un solo varco, dal 5, in terza fase) e l'**Ultimo Respiro** (dall'8: quasi sconfitto, il boss è immune un attimo e poi scatena Croce ed esplosione insieme).
+- **🌙 Le notti pericolose.** Dal livello 2, di notte, nelle zone aperte (foresta, deserto, picchi, giungla, valle) dal buio arrivano altre creature, una o due alla volta, sempre più spesso.
+- **⚔ Le invasioni.** Dal livello 3, ogni due giorni di gioco i predoni attaccano un quartiere di Aldoria (Porto, Campi dell'Est o Quartiere Nobile). Sotto l'orologio si vede dove e quanto tempo resta (6 ore di gioco). Nel quartiere arrivano tre ondate, l'ultima con il Capitano dei predoni (un Campione con i poteri). Respinti: oro, esperienza e un oggetto raro. Se il tempo finisce il quartiere viene saccheggiato e per un giorno i prezzi salgono del 10%.
+- **✦ Atto II · La costellazione perduta**, dopo il vero finale. Le notti si allungano e in cielo si spengono tre stelle: sulle carte manca la Lanterna, la costellazione dove Aldric il Primo chiuse **Morvath, l'Ultimo Custode**. Re Malakar → l'Astronomo Tolomeo → Stella sulla cupola dell'Osservatorio, che apre il **Portale delle Stelle** verso la **Valle del Crepuscolo**, una zona nuova con alberi morti, cristalli di stella e menhir con le rune. Lì tre dungeon nuovi riaccendono le tre stelle (si vedono tornare a brillare sulle lanterne della Valle):
+  - **Il Pozzo delle Stelle Spente** (livello 18) e **Vespero, la Stella Caduta**;
+  - **La Forgia dell'Eclissi** (livello 21) e **il Colosso dell'Eclissi**;
+  - **Il Giardino della Luna Capovolta** (livello 24) e **Selene, la Strega della Luna**;
+  - con le tre stelle si apre **La Rocca di Morvath** (livello 24): a metà vita Morvath fa l'**Eclissi** (la stanza si fa buia e arrivano le ombre).
+  Undici creature nuove, quattro boss con il loro oggetto unico, tre filmati. Alla fine: 15000 oro, la Lama del Portatore dell'Alba, lo Scudo della Lanterna, il titolo **«Portatore dell'Alba»**, e la Minaccia del Regno scende di un livello e mezzo. Il capitolo si segue nell'elenco delle missioni, con il «!» sopra chi devi cercare, e nella Cronaca.
+- **Pannello sviluppatore**: la scheda **☠ Minaccia e Atto II** (forzare la Minaccia, aggiungere giorni, far comparire un nemico per ruolo o un Campione con i poteri, notte subito, cominciare/vincere/perdere un'invasione, ogni passo dell'Atto II, i dungeon nuovi, i filmati); i quattro boss nuovi anche nella scheda 👑 Boss.
+- **Prove**: `tools/prova.js` prova la Minaccia (mosse, Campioni, boss, notti, invasioni) e l'Atto II dall'inizio alla fine. `tools/bilancia.js` gioca anche i dungeon nuovi, e con `MINACCIA=5` gioca con la Minaccia fissata: i numeri sono stati usati per bilanciare mosse, poteri e creature.
+
 ## 8.5 — Il pannello sviluppatore prova tutto (10 novembre 2026)
 
 Primo passo dell'aggiornamento della Modalità Storia: gli strumenti per costruirla e provarla. Il pannello sviluppatore (🛠 nel menu, F9 in gioco) ha sei schede nuove.

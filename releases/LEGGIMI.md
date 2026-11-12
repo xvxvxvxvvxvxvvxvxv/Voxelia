@@ -16,10 +16,11 @@ gioco di allora. Cosa cambia in ogni versione è in [CHANGELOG.md](../CHANGELOG.
 
 ## Elenco
 
-116 versioni, dalla più recente.
+117 versioni, dalla più recente.
 
 | Versione | Data | Novità | Peso |
 |---|---|---|---|
+| [8.6](voxelia_v8.6.html) | 12 novembre 2026 | La Minaccia del Regno e l'Atto II: nemici con mosse nuove, Campioni con poteri, boss più duri, notti e invasioni, la costellazione perduta | 3.144 KB |
 | [8.5](voxelia_v8.5.html) | 10 novembre 2026 | Il pannello sviluppatore prova tutto: missioni, trucchi, debug, console, stati e prova di tutte le zone | 3.079 KB |
 | [8.4](voxelia_v8.4.html) | 10 novembre 2026 | Storia e Tomorrow al centro: Aldoria 3026 tolta, lo Zaffiro torna spezzato, cinque schegge | 3.047 KB |
 | [8.3.2](voxelia_v8.3.2.html) | 10 novembre 2026 | Manutenzione: i falò dei dungeon non chiudono più i passaggi | 3.180 KB |

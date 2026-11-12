@@ -21,7 +21,7 @@ memoria per tenere in gioco tutto il mondo.
 2. Serve anche **`ur0:data/libshacccg.suprx`**, il compilatore di shader della console: vitaGL lo usa per gli
    shader del gioco. Quasi tutti gli homebrew in 3D lo richiedono; se manca, si estrae in un minuto con
    *ShaRKBR33D* (vedi la guida «Extract libshacccg.suprx» della Vita Troubleshooting Guide).
-3. Copia `voxelia.vpk` sulla console e installalo con VitaShell. Compare la bolla **Voxelia** (ID `VXLA00001`).
+3. Copia `voxelia_psvita_v1.0.3.vpk` (il numero è la versione) sulla console e installalo con VitaShell. Compare la bolla **Voxelia** (ID `VXLA00001`).
 
 I salvataggi vanno in `ux0:data/voxelia/save.dat`, le impostazioni in `ux0:data/voxelia/settings.dat`.
 Ogni avvio scrive anche `ux0:data/voxelia/log.txt`: se il gioco si chiude, l'ultima riga dice dove si è fermato.
@@ -130,7 +130,7 @@ con lo stesso protocollo) e la Vita si vedono con l'equipaggiamento e si scrivon
 Con Docker non serve installare niente:
 
 ```bash
-./build.sh          # -> build/voxelia.vpk
+./build.sh          # -> build/voxelia_psvita_v<versione>.vpk
 ```
 
 Con VitaSDK installato (servono i pacchetti `vitaGL`, `vitashark`, `mathneon` e `mbedtls`, tutti in `vdpm`):

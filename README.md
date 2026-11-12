@@ -43,7 +43,7 @@ I dettagli, i comandi e i limiti di ogni console sono nel README della sua carte
 |---|---|---|
 | 3DS | Homebrew Launcher (custom firmware, per esempio Luma3DS) | `voxelia.3dsx` in `sdmc:/3ds/`; per l'audio serve `sdmc:/3ds/dspfirm.cdc` |
 | DS | flashcart o DSi con TWiLight Menu++ | `voxelia.nds` sulla scheda; in rete il DS e il DS Lite vanno solo su reti aperte o WEP |
-| PS Vita | HENkaku/Ensō, VitaShell e `ur0:data/libshacccg.suprx` | `voxelia.vpk` con VitaShell |
+| PS Vita | HENkaku/Ensō, VitaShell e `ur0:data/libshacccg.suprx` | `voxelia_psvita_v<versione>.vpk` con VitaShell |
 | PS4 | firmware con homebrew (per esempio GoldHEN) e Debug Settings | `voxelia.pkg` con il Package Installer |
 | PSP | firmware personalizzato | `EBOOT.PBP` in `PSP/GAME/VOXELIA/` (vedi `psp/LEGGIMI.txt`) |
 

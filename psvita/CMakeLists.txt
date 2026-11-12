@@ -1,5 +1,5 @@
 # Voxelia PS Vita - build per la console con VitaSDK (https://vitasdk.org).
-#   mkdir build && cd build && cmake .. && make      ->  voxelia.vpk
+#   mkdir build && cd build && cmake .. && make      ->  voxelia_psvita_v<versione>.vpk
 # Oppure, senza installare niente, con Docker:  ./build.sh
 cmake_minimum_required(VERSION 3.16)
 
@@ -13,6 +13,12 @@ endif()
 
 project(voxelia C)
 include("${VITASDK}/share/vita.cmake" REQUIRED)
+
+# la versione del port è una sola, in source/voxelia.h (PORT_VER): da lì il nome del pacchetto
+file(STRINGS ${CMAKE_SOURCE_DIR}/source/voxelia.h PORT_VER_LINE REGEX "^#define PORT_VER ")
+string(REGEX REPLACE ".*\"([0-9.]+)\".*" "\\1" PORT_VER "${PORT_VER_LINE}")
+set(VPK_NAME "voxelia_psvita_v${PORT_VER}.vpk")
+message(STATUS "Voxelia PS Vita ${PORT_VER} -> ${VPK_NAME}")
 
 set(VITA_APP_NAME "Voxelia")
 set(VITA_TITLEID  "VXLA00001")
@@ -42,7 +48,7 @@ foreach(f ${DATA_FILES})
   list(APPEND DATA_ARGS FILE ${CMAKE_SOURCE_DIR}/${f} ${f})
 endforeach()
 
-vita_create_vpk(voxelia.vpk ${VITA_TITLEID} eboot.bin
+vita_create_vpk(${VPK_NAME} ${VITA_TITLEID} eboot.bin
   VERSION ${VITA_VERSION}
   NAME ${VITA_APP_NAME}
   FILE ${CMAKE_SOURCE_DIR}/sce_sys/icon0.png sce_sys/icon0.png

@@ -1,0 +1,15 @@
+# Voxelia PS4 - build di prova per PC (Linux: SDL2, mbedtls), con lo stesso rasterizzatore software della console.
+# Uso: make -f Makefile.pc && ./voxelia_pc   (dalla cartella ps4, che contiene data/)
+CC ?= cc
+SRC := $(filter-out source/plat_ps4.c,$(wildcard source/*.c))
+OBJ := $(SRC:source/%.c=build_pc/%.o)
+CFLAGS += -O2 -g -Wall -Wno-unused-function -Wno-misleading-indentation -Wno-format-truncation -Wno-stringop-truncation -Wno-unused-result -ffast-math $(shell pkg-config --cflags sdl2) $(EXTRA)
+LIBS := $(shell pkg-config --libs sdl2) -lmbedtls -lmbedx509 -lmbedcrypto -lpthread -lm
+
+voxelia_pc: $(OBJ)
+	$(CC) $(EXTRA) -o $@ $(OBJ) $(LIBS)
+build_pc/%.o: source/%.c source/*.h
+	@mkdir -p build_pc
+	$(CC) $(CFLAGS) -c $< -o $@
+clean:
+	rm -rf build_pc voxelia_pc

@@ -9,7 +9,7 @@ per 3DS (cartella [`3ds/`](../3ds)):
 
 | | |
 |---|---|
-| **Scarica** | [`releases/voxelia_nds_v1.3.zip`](releases/voxelia_nds_v1.3.zip): `voxelia.nds`, README, CHANGELOG e PLUGIN |
+| **Scarica** | [`releases/voxelia_nds_v1.3.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/nds/releases/voxelia_nds_v1.3.zip): `voxelia.nds`, README, CHANGELOG e PLUGIN |
 | **Novità** | [CHANGELOG.md](CHANGELOG.md) · **Plugin del server:** [PLUGIN.md](PLUGIN.md) |
 | **In questa cartella** | il port DS: il codice (`source/`), i dati per la ROM (`nitro/`, ricavati da quelli del 3DS), mbedtls per l'ARM9 (`libs/`), gli strumenti (`tools/`) e gli zip di ogni versione (`releases/`) |
 | **Gli altri port** | nelle cartelle accanto di questo branch: 3DS in [`3ds/`](../3ds), PS Vita in [`psvita/`](../psvita), PS4 in [`ps4/`](../ps4), PSP in [`psp/`](../psp); il gioco per browser e il server sul branch `main` |

@@ -17,11 +17,11 @@ ogni versione. Non ci sono più branch separati per i singoli port: questo è l'
 
 | Console | Versione | Contenuti | Cartella | Scarica |
 |---|---|---|---|---|
-| **Nintendo 3DS** / New 3DS / 2DS | 1.7 | Voxelia 8.5 | [`3ds/`](3ds) | [`voxelia_3ds_v1.7.zip`](3ds/releases/voxelia_3ds_v1.7.zip) |
-| **Nintendo DS** / DS Lite / DSi | 1.3 | Voxelia 8.5 | [`nds/`](nds) | [`voxelia_nds_v1.3.zip`](nds/releases/voxelia_nds_v1.3.zip) |
-| **PlayStation Vita** / PS TV | 1.0.6 | Voxelia 8.5 | [`psvita/`](psvita) | [`voxelia_psvita_v1.0.6.zip`](psvita/releases/voxelia_psvita_v1.0.6.zip) |
-| **PlayStation 4** | 1.0 | Voxelia 8.5 | [`ps4/`](ps4) | [`voxelia_ps4_v1.0.zip`](ps4/releases/voxelia_ps4_v1.0.zip) |
-| **PlayStation Portable** | — | Voxelia 7.50 | [`psp/`](psp) | [`voxelia_v7.50_psp.zip`](psp/releases/voxelia_v7.50_psp.zip) |
+| **Nintendo 3DS** / New 3DS / 2DS | 1.7 | Voxelia 8.5 | [`3ds/`](3ds) | [`voxelia_3ds_v1.7.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/3ds/releases/voxelia_3ds_v1.7.zip) |
+| **Nintendo DS** / DS Lite / DSi | 1.3 | Voxelia 8.5 | [`nds/`](nds) | [`voxelia_nds_v1.3.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/nds/releases/voxelia_nds_v1.3.zip) |
+| **PlayStation Vita** / PS TV | 1.0.6 | Voxelia 8.5 | [`psvita/`](psvita) | [`voxelia_psvita_v1.0.6.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/psvita/releases/voxelia_psvita_v1.0.6.zip) |
+| **PlayStation 4** | 1.0 | Voxelia 8.5 | [`ps4/`](ps4) | [`voxelia_ps4_v1.0.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/ps4/releases/voxelia_ps4_v1.0.zip) |
+| **PlayStation Portable** | — | Voxelia 7.50 | [`psp/`](psp) | [`voxelia_v7.50_psp.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/psp/releases/voxelia_v7.50_psp.zip) |
 
 Le versioni precedenti di ogni port sono nella `releases/` della sua cartella. La [`releases/`](releases) nella
 radice ha solo le build complete del gioco per browser (`voxelia_v<versione>.html`, descritte in

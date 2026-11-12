@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - le meccaniche della Modalità Storia arrivate nel browser dopo la 7.50 (fino alla 7.57):
+// Voxelia PS Vita (motore del port 3DS) - le meccaniche della Modalità Storia arrivate nel browser dopo la 7.50 (fino alla 7.57):
 // cavalli e corsa (7.46), animali da compagnia (7.47/7.49), compagni domati (7.20/7.54), elementi ed Essenze (7.55),
 // scelte, alleati, vie e titoli (7.48), con gli stessi messaggi di rete del browser, così chi gioca dal browser
 // vede sulla 3DS quello che vede dagli altri browser (e viceversa).

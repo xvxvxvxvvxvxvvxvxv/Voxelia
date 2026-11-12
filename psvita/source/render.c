@@ -142,6 +142,9 @@ void rInit(void) {
 	progFlat = glProgram(VS_FLAT, FS_COL, AT, 2);
 	uProjL = glGetUniformLocation(progLit, "uProj"); uAmbL = glGetUniformLocation(progLit, "uAmb");
 	uLposL = glGetUniformLocation(progLit, "uLpos"); uLcolL = glGetUniformLocation(progLit, "uLcol");
+	// alcuni driver vogliono il nome del primo elemento dell'array
+	if (uLposL < 0) uLposL = glGetUniformLocation(progLit, "uLpos[0]");
+	if (uLcolL < 0) uLcolL = glGetUniformLocation(progLit, "uLcol[0]");
 	uProjF = glGetUniformLocation(progFlat, "uProj"); uAmbF = glGetUniformLocation(progFlat, "uAmb");
 	SVB = malloc(sizeof(Vtx) * 4 * SQ_MAX);
 	DVB = malloc(sizeof(Vtx) * 4 * DQ_MAX);

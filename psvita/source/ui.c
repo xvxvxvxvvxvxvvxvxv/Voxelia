@@ -679,10 +679,10 @@ static void panelRect(void) {
 		PW = fminf(470, VW - 20); PH = VH - 16; PX0 = (VW - PW) / 2; PY0 = 8;
 	}
 	// finestre con poco dentro (dialoghi, conferme): alte quanto serve, al centro
-	if (PM != PM_MAP && PM != PM_TITLE) {
+	if (PM != PM_MAP) {
 		float bodyMax = (PM == PM_TXT || PM == PM_HELP) ? PH - 70 : (PH - 50) * .5f;
 		float need = 28 + (PS[0] ? 13 : 0) + (PB[0] ? txtWrapMax(-2000, -2000, PW - 20, .45f, 0, PB, bodyMax) + 5 : 0) + NOPT * ROWH + 19;
-		if (need < PH) { PY0 += (PH - need) / 2; PH = need; }
+		if (need < PH) { if (PM != PM_TITLE) PY0 += (PH - need) / 2; PH = need; }
 	}
 }
 static void glyphHint(float x, float y, const char *s) { txt(x, y, .36f, C_MU, s); }
@@ -1023,8 +1023,10 @@ static void refreshPanels(void) {
 	// il pannello dei plugin si aggiorna da solo (gruppo, chat)
 	{ static int fr = 0; if (PM == PM_PLUG && ++fr % 30 == 0) { int sel = SEL, scr = SCR; buildPanel(); SEL = sel < NOPT ? sel : NOPT - 1; SCR = scr; } }
 }
+bool uiHidden = false;   // solo per le immagini delle prove automatiche
 void uiDraw(void) {
 	refreshPanels();
+	if (uiHidden) return;
 	drawOverlay();
 	if (PM == PM_NONE && started) drawHud();
 	else if (PM != PM_NONE) drawPanel();

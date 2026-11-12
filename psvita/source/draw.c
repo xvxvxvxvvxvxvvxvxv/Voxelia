@@ -1,4 +1,4 @@
-// Voxelia 3DS - entità: modelli animati della 7.50 (fotogrammi esportati, 8 direzioni), eroe componibile,
+// Voxelia PS Vita (motore del port 3DS) - entità: modelli animati della 7.50 (fotogrammi esportati, 8 direzioni), eroe componibile,
 // altri giocatori, forzieri, torce, oggetti a terra ed effetti.
 #include "voxelia.h"
 

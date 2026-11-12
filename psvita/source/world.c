@@ -1,4 +1,4 @@
-// Voxelia 3DS - il mondo: ogni zona arriva dalla versione browser 7.50 (romfs:/z_<zona>.bin e .json):
+// Voxelia PS Vita (motore del port 3DS) - il mondo: ogni zona arriva dalla versione browser 7.50 (romfs:/z_<zona>.bin e .json):
 // collisioni, geometria voxel esatta, luci ed entità. I piani dei dungeon esistono in due varianti per ciclo.
 #include "voxelia.h"
 

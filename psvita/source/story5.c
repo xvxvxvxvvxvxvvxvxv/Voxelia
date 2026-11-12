@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - la Bottega dei mestieri (7.47/7.49, src/8zzzk_mestieri.js): Fornello (pasti), Alambicco
+// Voxelia PS Vita (motore del port 3DS) - la Bottega dei mestieri (7.47/7.49, src/8zzzk_mestieri.js): Fornello (pasti), Alambicco
 // (pozioni, sigilli, elisir), Incudine (forgia, tempra, fusione), la Dispensa e il banco del Mercato.
 // Sulla console non si pesca: per le ricette con il pesce vale il pesce che portano il gatto e il pinguino.
 #include "voxelia.h"

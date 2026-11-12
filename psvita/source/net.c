@@ -1,4 +1,4 @@
-// Voxelia 3DS - multigiocatore: client WebSocket (ws:// o wss:// con mbedtls) verso il server.js di Voxelia,
+// Voxelia PS Vita (motore del port 3DS) - multigiocatore: client WebSocket (ws:// o wss:// con mbedtls) verso il server.js di Voxelia,
 // con lo stesso protocollo del gioco per browser: hello, posizione 10 volte al secondo ('p'), stato degli altri
 // ('s'), chat, ping, ora del mondo condivisa, arena PvP, cicli dei dungeon, comandi dell'admin.
 #include "voxelia.h"

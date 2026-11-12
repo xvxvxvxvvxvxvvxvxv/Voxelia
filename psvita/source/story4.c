@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - il Serraglio di Aldoria (7.55, src/8zzzzd_serraglio.js): la Domatrice Selene potenzia e
+// Voxelia PS Vita (motore del port 3DS) - il Serraglio di Aldoria (7.55, src/8zzzzd_serraglio.js): la Domatrice Selene potenzia e
 // modifica i compagni, cambia loro forma, li tiene in pensione e vende le uova chimera.
 // Sulla console la chimera ha il corpo di una specie (i modelli sono quelli esportati): la testa dell'altra resta nel nome.
 #include "voxelia.h"

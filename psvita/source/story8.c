@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - il duello delle carte (7.47/7.49, src/8zzzo_carte.js), al Tavolo della Taverna del Drago Ubriaco.
+// Voxelia PS Vita (motore del port 3DS) - il duello delle carte (7.47/7.49, src/8zzzo_carte.js), al Tavolo della Taverna del Drago Ubriaco.
 // Ogni carta è un personaggio di Aldoria con un elemento e un valore: fuoco batte natura, natura batte acqua, acqua
 // batte fuoco (+3 a chi ha l'elemento giusto). Il Re (10), il giullare (vince solo contro il 9 e il 10) e il Saggio
 // (ha sempre l'elemento giusto). Cinque mani con cinque carte della tua collezione: vince chi ne prende di più.

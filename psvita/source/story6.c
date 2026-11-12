@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - la Torre della Corona (7.44/7.49, src/8zzy_torre.js): dieci piani di sale generate a caso,
+// Voxelia PS Vita (motore del port 3DS) - la Torre della Corona (7.44/7.49, src/8zzy_torre.js): dieci piani di sale generate a caso,
 // sempre più difficili; ripulita la sala si sceglie una di tre benedizioni e si sale. Ai piani 5 e 10 c'è un boss.
 // Cadere nella Torre non costa niente: la prova finisce e si prende il premio dei piani fatti.
 // Sulla console le sale si costruiscono qui, casella per casella (pavimento, muri, fosse, lava).

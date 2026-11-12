@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - elementi ed Essenze (7.55), scelte, alleati, vie e titoli (7.48).
+// Voxelia PS Vita (motore del port 3DS) - elementi ed Essenze (7.55), scelte, alleati, vie e titoli (7.48).
 // Regole e numeri da src/8zzzzb_elementi.js e src/8zzzq_scelte.js della versione browser.
 #include "voxelia.h"
 #include "story.h"

@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - armi che crescono e boss a fasi (7.44), diario delle scoperte (7.46), scavi (7.44),
+// Voxelia PS Vita (motore del port 3DS) - armi che crescono e boss a fasi (7.44), diario delle scoperte (7.46), scavi (7.44),
 // maledizioni dei dungeon (7.44) ed eventi del mondo a orario (7.46).
 // Regole e numeri da src/8zzx_armi.js, 8zzu_boss.js, 8zzzi_scoperte.js, 8zzz_scavo.js, 8zzw_maledizioni.js e
 // 8zzzh_eventi.js della versione browser.

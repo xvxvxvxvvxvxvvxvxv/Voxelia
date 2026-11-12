@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.6 - la difficoltà della Modalità Storia del browser:
+// Voxelia PS Vita (motore del port 3DS) - la difficoltà della Modalità Storia del browser:
 // - 7.11 (src/storia/8v_sfida.js): nemici più forti per difficoltà, i Campioni, i branchi, l'ultima furia dei boss;
 // - 8.1 (src/combattimento/8zzzzk_bilancio.js): al massimo 2 Campioni per piano (3 con il boss), niente chimere-Campioni;
 // - 8.3: i nemici partono 2 livelli sopra il dungeon e recuperano il 60% della distanza dal tuo livello; più Campioni

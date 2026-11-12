@@ -1,4 +1,4 @@
-// Voxelia 3DS - un piccolo lettore e scrittore JSON: per i dati esportati dalla versione browser
+// Voxelia PS Vita (motore del port 3DS) - un piccolo lettore e scrittore JSON: per i dati esportati dalla versione browser
 // (romfs) e per i messaggi del server multigiocatore.
 #include "json.h"
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-// Voxelia 3DS - audio: le musiche e gli effetti del gioco originale, sintetizzati sul momento.
+// Voxelia PS Vita (motore del port 3DS) - audio: le musiche e gli effetti del gioco originale, sintetizzati sul momento.
 // Il sequencer delle musiche (scritte e procedurali) è in music.c, comune al port DS; qui c'è il sintetizzatore,
 // che fa ciò che fa il Web Audio nel browser: strumenti a due oscillatori con filtro passa-basso, vibrato e
 // inviluppi (rampe lineari ed esponenziali, avvicinamento al valore di tenuta), batteria con rumore filtrato e

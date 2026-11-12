@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - gli incroci dei compagni (7.47, src/8zzzp_incroci.js) e le varianti (7.54, src/8zzzz_compagni.js).
+// Voxelia PS Vita (motore del port 3DS) - gli incroci dei compagni (7.47, src/8zzzp_incroci.js) e le varianti (7.54, src/8zzzz_compagni.js).
 // Due compagni dal livello 5 fanno un uovo che si schiude in tre minuti: il piccolo ha la forma del primo genitore,
 // la media della forza dei due (un po' di più, molto di più con una mutazione) e a volte una variante di colore.
 #include "voxelia.h"

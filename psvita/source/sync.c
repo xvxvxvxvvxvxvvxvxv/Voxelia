@@ -1,4 +1,4 @@
-// Voxelia 3DS 1.5 - in rete tutti vedono gli stessi nemici (7.41, src/8zzp_sync.js della versione browser).
+// Voxelia PS Vita (motore del port 3DS) - in rete tutti vedono gli stessi nemici (7.41, src/8zzp_sync.js della versione browser).
 // Ogni nemico ha un «padrone» che lo muove e combatte; gli altri ne vedono la copia esatta:
 // - i nemici della zona li guida chi è nella zona da più tempo; se esce, li prende chi resta;
 // - i nemici attaccano l'eroe più vicino e i colpi arrivano a chi li prende; i colpi di tutti arrivano al padrone;

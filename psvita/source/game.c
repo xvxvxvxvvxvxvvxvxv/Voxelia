@@ -1,4 +1,4 @@
-// Voxelia 3DS - logica di gioco: eroe, combattimento, nemici, missioni, storia, negozi, salvataggi.
+// Voxelia PS Vita (motore del port 3DS) - logica di gioco: eroe, combattimento, nemici, missioni, storia, negozi, salvataggi.
 #include "voxelia.h"
 
 Hero P;

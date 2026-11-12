@@ -108,6 +108,7 @@ static void tapFollow(float dt) {
 
 /* ---------------- prove automatiche (solo nella build per PC) ---------------- */
 #ifndef __vita__
+static int autoZ = -1;   // "allzones": tutte le zone, una dopo l'altra
 static const char *AUTO = NULL; static float autoWait = 0; static u32 autoKey = 0, autoHold = 0; static float autoHoldT = 0;
 static float autoSX = 0, autoSY = 0, autoST = 0; static int autoTapX = -1, autoTapY = -1;
 extern char plShotFile[512];   // plat_sdl.c: salvata subito prima dello scambio dei buffer
@@ -125,6 +126,16 @@ static bool autoStep(PlInput *in, float dt) {
 	if (autoST > 0) { in->lx = autoSX; in->ly = autoSY; autoST -= dt; }
 	if (autoTapX >= 0) { in->tdown = in->touch = true; in->tx = autoTapX; in->ty = autoTapY; in->ntouch = 1; autoTapX = -1; return true; }
 	if (autoWait > 0) { autoWait -= dt; return true; }
+	if (autoZ >= 0) {
+		const char *z = zoneKeyAt(autoZ);
+		if (!z) { printf("[prova] tutte le zone: %d caricate\n", autoZ); autoZ = -1; return true; }
+		char kk[48]; snprintf(kk, sizeof kk, "%s", z); char *h = strchr(kk, '#'); int run = 0; if (h) { run = atoi(h + 1); *h = 0; }
+		if (strchr(kk, '@')) { int d = dgIdx(strtok(strdup(kk), "@")); if (d >= 0) P.runs[d] = run; }
+		loadZone(kk, NULL);
+		extern int rQuads(void);
+		printf("[prova] zona %d %s: %s N=%d entità %d luci %d\n", autoZ, z, ZNAME, N, NENT, NSLIGHT);
+		autoZ++; autoWait = .12f; return true;
+	}
 	if (autoKey) { in->ku |= autoKey; autoKey = 0; }
 	while (*AUTO == ' ' || *AUTO == ';') AUTO++;
 	if (!*AUTO) return true;
@@ -152,6 +163,8 @@ static bool autoStep(PlInput *in, float dt) {
 		if (best) { int ox, oy; if (nearFree((int)best->px, (int)best->py + 1, &ox, &oy)) { P.px = ox + .5f; P.py = oy + .5f; } act(best); }
 	}
 	else if (!strcmp(a, "dev")) devOpen();
+	else if (!strcmp(a, "allzones")) autoZ = 0;
+	else if (!strcmp(a, "hud")) { extern bool uiHidden; uiHidden = !atoi(b); }
 	else if (!strcmp(a, "net")) { snprintf(NETC.url, sizeof NETC.url, "%s", b); snprintf(NETC.code, sizeof NETC.code, "%s", c); netStart(); }
 	else if (!strcmp(a, "chat")) netSendChat(cmd + 5);
 	else if (!strcmp(a, "netlog")) { int np = 0; for (int i = 0; i < MAXPEER; i++) if (PEERS[i].used) { np++; printf("[prova] altro eroe: %s lv %d in %s a %.1f,%.1f\n", PEERS[i].n, PEERS[i].lv, PEERS[i].rm, PEERS[i].x, PEERS[i].y); } printf("[prova] rete: %s · ok %d · ping %.0f · altri %d\n", netStatus, netOk, netPing, np); }

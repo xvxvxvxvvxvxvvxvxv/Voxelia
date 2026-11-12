@@ -7,7 +7,7 @@ CFLAGS += -O2 -g -Wall -Wno-unused-function -Wno-misleading-indentation -Wno-for
 LIBS := $(shell pkg-config --libs sdl2) -lGL -lmbedtls -lmbedx509 -lmbedcrypto -lpthread -lm
 
 voxelia_pc: $(OBJ)
-	$(CC) -o $@ $(OBJ) $(LIBS)
+	$(CC) $(EXTRA) -o $@ $(OBJ) $(LIBS)
 build_pc/%.o: source/%.c source/*.h
 	@mkdir -p build_pc
 	$(CC) $(CFLAGS) -c $< -o $@

@@ -1,4 +1,4 @@
-// Voxelia 3DS - plugin del server (modalità storia).
+// Voxelia PS Vita (motore del port 3DS) - plugin del server (modalità storia).
 // Nel browser i plugin aggiungono al gioco il loro codice JavaScript (api.client) e parlano con il server con
 // messaggi {t:'x', pl, e, d}. Sulla 3DS quel codice non può girare: qui c'è la sua versione nativa, con gli stessi
 // messaggi, per i plugin ufficiali che riguardano la modalità storia:
@@ -472,7 +472,7 @@ static bool isKnown(const char *pl, const char *ev) {
 	}
 	return false;
 }
-#define CLIENT_INFO "{\"tipo\":\"3ds\",\"versione\":\"" PORT_VER "\",\"gioco\":\"" DATA_VER "\",\"eventi\":[\"banner\",\"avviso\",\"chat\",\"suono\",\"domanda\",\"chiudi\",\"riquadro\",\"punto\",\"menu\",\"origine?\",\"client?\"]}"
+#define CLIENT_INFO "{\"tipo\":\"psvita\",\"versione\":\"" PORT_VER "\",\"gioco\":\"" DATA_VER "\",\"eventi\":[\"banner\",\"avviso\",\"chat\",\"suono\",\"domanda\",\"chiudi\",\"riquadro\",\"punto\",\"menu\",\"origine?\",\"client?\"]}"
 // la 3DS si presenta a ogni plugin la prima volta che le scrive (api.onClient('client', ...))
 static char seenPl[24][24]; static int nSeenPl = 0;
 static void meetPlugin(const char *pl) {

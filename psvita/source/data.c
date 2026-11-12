@@ -1,4 +1,4 @@
-// Voxelia 3DS - tabelle del gioco lette da romfs:/data.json (esportato dalla versione browser 7.50),
+// Voxelia PS Vita (motore del port 3DS) - tabelle del gioco lette da romfs:/data.json (esportato dalla versione browser 7.50),
 // oggetti e modelli animati (romfs:/models.bin, romfs:/hero.bin).
 #include "voxelia.h"
 

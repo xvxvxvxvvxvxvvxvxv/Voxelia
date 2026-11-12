@@ -3,6 +3,14 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi, missioni e musiche.
 
+## 1.0.4 · contenuti di Voxelia 8.5
+
+**Il mondo si vede.** Con la 1.0.3 sulla console si vedevano personaggi, ombre e interfaccia, ma il mondo (strade,
+case, stanze) e l'eroe erano invisibili, con solo il colore del cielo e qualche striscia. vitaGL, quando posizioni e
+colori stanno nello stesso vertex buffer, tiene la posizione di partenza in un campo a 16 bit: tutto quello che il
+gioco disegnava oltre i primi 64 KB del buffer leggeva dati sbagliati. Ora posizioni e colori stanno in due buffer
+separati, e vitaGL usa un puntatore normale.
+
 ## 1.0.3 · contenuti di Voxelia 8.5
 
 **Il gioco parte.** La causa dei problemi all'avvio era una sola: la funzione che avvia vitaGL non dice se è

@@ -21,7 +21,13 @@ typedef struct { float x, y, z, e; u8 r, g, b, a; } Vtx;
 
 static GLuint progLit, progFlat;
 static GLint uProjL, uAmbL, uLposL, uLcolL, uProjF, uAmbF;
-static GLuint vboStatic, vboDyn, vboTr, ibo;
+// Tre flussi (fisso, dinamico, trasparente), ognuno con DUE vertex buffer: posizioni (x, y, z, emissione) e colori.
+// Su vitaGL gli attributi interleaved nello stesso VBO finiscono in un offset GXM a 16 bit: oltre i primi 64 KB il
+// disegno andava a pescare dati sbagliati (mondo invisibile, solo il cielo). Con buffer separati l'offset è un
+// puntatore a 32 bit.
+enum { ST_STATIC, ST_DYN, ST_TR };
+static GLuint vboPos[3], vboCol[3], ibo;
+static float *splitPos; static u32 *splitCol; static int splitCap = 0;
 static bool useFlat = false;
 static Vtx *SVB, *DVB, *TVB;
 static int SQ, DQ, TQ;
@@ -158,11 +164,31 @@ void rInit(void) {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(u16) * 6 * QPB, IDX, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	free(IDX);
-	glGenBuffers(1, &vboStatic); glGenBuffers(1, &vboDyn); glGenBuffers(1, &vboTr);
+	glGenBuffers(3, vboPos); glGenBuffers(3, vboCol);
 }
 void rExit(void) {
-	glDeleteBuffers(1, &vboStatic); glDeleteBuffers(1, &vboDyn); glDeleteBuffers(1, &vboTr); glDeleteBuffers(1, &ibo);
+	glDeleteBuffers(3, vboPos); glDeleteBuffers(3, vboCol); glDeleteBuffers(1, &ibo);
+	free(splitPos); free(splitCol);
 	free(SVB); free(DVB); free(TVB);
+}
+
+// divide i vertici in posizioni e colori e li carica nei due buffer del flusso
+static void upload(int st, const Vtx *v, int nq, GLenum usage) {
+	int nv = nq * 4;
+	if (nv > splitCap) {
+		free(splitPos); free(splitCol);
+		splitCap = nv;
+		splitPos = malloc(sizeof(float) * 4 * nv); splitCol = malloc(sizeof(u32) * nv);
+	}
+	for (int i = 0; i < nv; i++) {
+		splitPos[i * 4] = v[i].x; splitPos[i * 4 + 1] = v[i].y; splitPos[i * 4 + 2] = v[i].z; splitPos[i * 4 + 3] = v[i].e;
+		memcpy(&splitCol[i], &v[i].r, 4);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, vboPos[st]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * nv, splitPos, usage);
+	glBindBuffer(GL_ARRAY_BUFFER, vboCol[st]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(u32) * nv, splitCol, usage);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 /* ---------------- geometria fissa della zona ---------------- */
@@ -198,20 +224,18 @@ void rBuildZone(const QBox *B, int nb) {
 		CH[cy][cx] = (Chunk){q0, nA, SQ - q0, curZmax};
 	}
 	gEmit = 0;
-	glBindBuffer(GL_ARRAY_BUFFER, vboStatic);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vtx) * 4 * (SQ ? SQ : 1), SVB, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	upload(ST_STATIC, SVB, SQ ? SQ : 1, GL_STATIC_DRAW);
 	dMin = -400; dMax = 16 * 2 * N + 900;
 }
 
-static GLuint curVbo = 0;
-static void drawQuads(GLuint vbo, int q0, int nq) {
+static void drawQuads(int st, int q0, int nq) {
 	if (nq <= 0) return;
-	if (vbo != curVbo) { glBindBuffer(GL_ARRAY_BUFFER, vbo); curVbo = vbo; }
 	while (nq > 0) {
 		int n = nq > QPB ? QPB : nq;
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vtx), (void *)(intptr_t)(q0 * 4 * sizeof(Vtx)));
-		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vtx), (void *)(intptr_t)(q0 * 4 * sizeof(Vtx) + 16));
+		glBindBuffer(GL_ARRAY_BUFFER, vboPos[st]);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 16, (void *)(intptr_t)(q0 * 4 * 16));
+		glBindBuffer(GL_ARRAY_BUFFER, vboCol[st]);
+		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, 4, (void *)(intptr_t)(q0 * 4 * 4));
 		glDrawElements(GL_TRIANGLES, n * 6, GL_UNSIGNED_SHORT, 0);
 		q0 += n; nq -= n;
 	}
@@ -322,11 +346,8 @@ static void buildDynamic(void) {
 		// ma più vicina, così la sagoma non copre l'eroe quando è già visibile
 		for (int i = 0; i < xrayN * 4; i++) { Vtx *v = TVB + 4 * TQ + i; v->x += .03f; v->y += .03f; v->z += .96f; v->r = 0x9a; v->g = 0xdc; v->b = 0xff; v->a = 110; v->e = 1; }
 	} else xrayN = 0;
-	glBindBuffer(GL_ARRAY_BUFFER, vboDyn);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vtx) * 4 * (DQ ? DQ : 1), DVB, GL_STREAM_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, vboTr);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vtx) * 4 * (TQ + xrayN + 1), TVB, GL_STREAM_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	upload(ST_DYN, DVB, DQ ? DQ : 1, GL_STREAM_DRAW);
+	upload(ST_TR, TVB, TQ + xrayN + 1, GL_STREAM_DRAW);
 	curStream = 0;
 }
 
@@ -337,7 +358,6 @@ static void drawWorld(float ar, float ag, float ab, bool dark) {
 	setLights(ar, ag, ab, dark);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glEnableVertexAttribArray(0); glEnableVertexAttribArray(1);
-	curVbo = 0;
 	glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST); glDepthFunc(GL_GREATER); glDepthMask(GL_TRUE);
@@ -356,35 +376,34 @@ static void drawWorld(float ar, float ag, float ab, bool dark) {
 		// il blocco tocca la zona davanti all'eroe? allora i muri si disegnano a tratti, saltando quelli trasparenti
 		float px = P.px, py = P.py;
 		bool near = x1 + 1 > px - 6 && x0 - 1 < px + 8 && y1 + 1 > py - 6 && y0 - 1 < py + 8;
-		if (!near) { drawQuads(vboStatic, c->q0, c->nq); continue; }
-		drawQuads(vboStatic, c->q0, c->nA);
+		if (!near) { drawQuads(ST_STATIC, c->q0, c->nq); continue; }
+		drawQuads(ST_STATIC, c->q0, c->nA);
 		int run0 = -1, runN = 0;
 		for (int y = (int)y0; y < (int)y1 && y < N; y++) for (int x = (int)x0; x < (int)x1 && x < N; x++) {
 			TRange r = OCC[y][x];
 			if (!r.n) continue;
-			if (faded(x, y)) { if (runN) drawQuads(vboStatic, run0, runN); run0 = -1; runN = 0; continue; }
+			if (faded(x, y)) { if (runN) drawQuads(ST_STATIC, run0, runN); run0 = -1; runN = 0; continue; }
 			if (run0 < 0) { run0 = r.q0; runN = r.n; }
 			else if (run0 + runN == r.q0) runN += r.n;
-			else { drawQuads(vboStatic, run0, runN); run0 = r.q0; runN = r.n; }
+			else { drawQuads(ST_STATIC, run0, runN); run0 = r.q0; runN = r.n; }
 		}
-		if (runN) drawQuads(vboStatic, run0, runN);
+		if (runN) drawQuads(ST_STATIC, run0, runN);
 	}
-	if (heroQ0) drawQuads(vboDyn, 0, heroQ0);
+	if (heroQ0) drawQuads(ST_DYN, 0, heroQ0);
 	// sagoma dell'eroe dove il mondo lo copre: disegnata prima dell'eroe, così conta solo la profondità del mondo
 	if (xrayN) {
 		glDepthFunc(GL_LESS); glDepthMask(GL_FALSE);
-		drawQuads(vboTr, xrayQ0, xrayN);
+		drawQuads(ST_TR, xrayQ0, xrayN);
 		glDepthFunc(GL_GREATER); glDepthMask(GL_TRUE);
 	}
-	if (DQ > heroQ0) drawQuads(vboDyn, heroQ0, DQ - heroQ0);
+	if (DQ > heroQ0) drawQuads(ST_DYN, heroQ0, DQ - heroQ0);
 	// trasparenze: ombre, cerchi d'avviso, muri davanti all'eroe (senza scrivere la profondità)
 	glDepthMask(GL_FALSE);
-	if (xrayQ0) drawQuads(vboTr, 0, xrayQ0);
+	if (xrayQ0) drawQuads(ST_TR, 0, xrayQ0);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_DEPTH_TEST);
 	glDisableVertexAttribArray(0); glDisableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, 0); glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	curVbo = 0;
 }
 
 static u32 bgColor(void) {

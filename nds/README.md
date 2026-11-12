@@ -3,7 +3,7 @@
 Versione del port: **1.3** (contenuti di Voxelia **8.5**).
 
 Port per **Nintendo DS / DS Lite / DSi** di *Voxelia 8.5 – Il Regno Perduto*. Usa la stessa base del port
-per 3DS (branch `3ds`):
+per 3DS (cartella [`3ds/`](../3ds)):
 - **in comune con il 3DS:** logica del gioco, mondo, missioni e storia, interfaccia, rete e plugin del server;
 - **riscritti per il DS:** grafica, testo, audio e comandi.
 
@@ -11,8 +11,8 @@ per 3DS (branch `3ds`):
 |---|---|
 | **Scarica** | [`releases/voxelia_nds_v1.3.zip`](releases/voxelia_nds_v1.3.zip): `voxelia.nds`, README, CHANGELOG e PLUGIN |
 | **Novità** | [CHANGELOG.md](CHANGELOG.md) · **Plugin del server:** [PLUGIN.md](PLUGIN.md) |
-| **Su questo branch** | solo il port DS: il codice (`source/`), i dati per la ROM (`nitro/`, ricavati da quelli del 3DS), mbedtls per l'ARM9 (`libs/`), gli strumenti (`tools/`) e gli zip di ogni versione (`releases/`) |
-| **Gli altri port** | 3DS sul branch [`3ds`](../../tree/3ds); tutti i port insieme (3DS, DS, PS Vita, PS4, PSP) sul branch [`ports`](../../tree/ports); il gioco per browser e il server sul branch `main` |
+| **In questa cartella** | il port DS: il codice (`source/`), i dati per la ROM (`nitro/`, ricavati da quelli del 3DS), mbedtls per l'ARM9 (`libs/`), gli strumenti (`tools/`) e gli zip di ogni versione (`releases/`) |
+| **Gli altri port** | nelle cartelle accanto di questo branch: 3DS in [`3ds/`](../3ds), PS Vita in [`psvita/`](../psvita), PS4 in [`ps4/`](../ps4), PSP in [`psp/`](../psp); il gioco per browser e il server sul branch `main` |
 
 ![Voxelia DS](screenshots/ds.png)
 

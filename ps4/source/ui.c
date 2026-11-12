@@ -137,7 +137,7 @@ static void drawMinimap(float X, float Y, float S, bool legend) {
 enum {
 	A_CLOSE = 1, A_BACK, A_STORY, A_QACCEPT, A_QTURN, A_OPEN, A_HEAL, A_REST, A_SONG, A_BUY, A_SELL, A_SELLALL, A_FORGE, A_UPG,
 	A_EQUIP, A_DROPIT, A_QABANDON, A_LORE, A_RESUME, A_SAVE, A_SETTING, A_TITLE, A_CONT, A_NEW, A_PROLOG, A_HELP, A_DIFF,
-	A_EXITSTAY, A_EXITGO, A_BET, A_CPLAY, A_CONFIRM, A_NOP, A_NAME, A_NETTOG, A_NETURL, A_NETCODE, A_CHAT, A_WHO, A_ARBUY, A_SELLRES, A_SAIL, A_PLUG, A_OPENPLUG, A_X, A_DEV, A_OPENDEV
+	A_EXITSTAY, A_EXITGO, A_BET, A_CPLAY, A_CONFIRM, A_NOP, A_NAME, A_NETTOG, A_NETURL, A_NETCODE, A_CHAT, A_WHO, A_ARBUY, A_SELLRES, A_SAIL, A_PLUG, A_OPENPLUG, A_X
 };
 typedef struct { char l[72]; char r[40]; u32 col; int act, arg; bool dis; } Opt;
 static Opt OPT[72]; static int NOPT = 0, SEL = 0, SCR = 0;
@@ -424,7 +424,6 @@ static void buildPause(void) {
 	if (netOk) { Opt *o = opt("Funzioni del server", A_OPENPLUG, 0); snprintf(o->r, sizeof o->r, "emote, gruppo, /hub"); o->col = C_GOLD; }
 	opt("Registro della chat", A_OPENPLUG, 3);
 	opt("Comandi", A_HELP, 0);
-	{ Opt *o = opt("Pannello sviluppatore", A_OPENDEV, 0); snprintf(o->r, sizeof o->r, "8.5"); o->col = C2D_Color32(255, 160, 80, 255); }
 	opt("Salva e torna al titolo", A_TITLE, 0);
 }
 static void buildTitle(void) {
@@ -514,7 +513,6 @@ static void buildPanel(void) {
 	case PM_SELLRES: buildSellRes(); break;
 	case PM_PLUG: plBuildPanel(); break;
 	case PM_X: xBuild(); break;
-	case PM_DEV: devBuild(); break;
 	case PM_MAP:
 		snprintf(PT, sizeof PT, "%s", ZNAME);
 		opt("Chiudi", A_CLOSE, 0);
@@ -531,7 +529,6 @@ void uiOpenPlug(void) { uiOpenPanel(PM_PLUG); }
 
 /* ---------------- finestre della storia (story.c) ---------------- */
 void uiXTitle(const char *ti, const char *body) { snprintf(PT, sizeof PT, "%s", ti ? ti : ""); snprintf(PB, sizeof PB, "%s", body ? body : ""); }
-void uiDevOpt(const char *l, const char *r, int arg, u32 col, bool dis) { Opt *o = opt(l, A_DEV, arg); snprintf(o->r, sizeof o->r, "%s", r ? r : ""); o->col = col ? col : C_TXT; o->dis = dis; }
 void uiXOpt(const char *l, const char *r, int arg, u32 col, bool dis) { Opt *o = opt(l, arg ? A_X : A_NOP, arg); snprintf(o->r, sizeof o->r, "%s", r ? r : ""); o->col = col ? col : C_TXT; o->dis = dis; }
 void uiLabel(float x, float y, float sc, u32 c, const char *s);
 extern char kbInit[64];
@@ -596,7 +593,6 @@ static void doAct(Opt *o, int dir) {
 		uiClose(); return;
 	case A_BACK:
 		if (PM == PM_PLAYERS) { PM = PNPC ? PM_NPC : PM_NET; buildPanel(); return; }
-		if (PM == PM_DEV) { PM = PM_PAUSE; SEL = 0; SCR = 0; buildPanel(); return; }
 		if (PM == PM_PLUG) { if (plPanelBack()) { SEL = 0; SCR = 0; buildPanel(); return; } if (PMback == PM_NET || PMback == PM_PAUSE) { PM = PMback; SEL = 0; buildPanel(); return; } uiClose(); return; }
 		if (PM == PM_NET) { PM = started ? PM_PAUSE : PM_TITLE; SEL = 0; buildPanel(); return; }
 		if (PM == PM_X) { uiClose(); return; }
@@ -661,8 +657,6 @@ static void doAct(Opt *o, int dir) {
 	case A_X: { int pm0 = PM, r = xPanelAct(a); if (r == 1) { if (PM == pm0) uiClose(); return; } if (PM == PM_NONE) return; break; }
 	case A_OPENPLUG: plPanelPage(a); PMback = PM; PM = PM_PLUG; SEL = 0; SCR = 0; break;
 	case A_SAIL: uiClose(); goZone("thal48"); banner("Thalassa", "Il regno oltre il mare · parla con il Cancelliere Oreste"); return;
-	case A_DEV: { int r = devAct(a, dir); if (r == 1) { uiClose(); return; } if (r == 2) { PM = PM_PAUSE; SEL = 0; SCR = 0; break; } if (r == 3) { SEL = 0; SCR = 0; } break; }
-	case A_OPENDEV: devOpen(); return;
 	case A_NOP: if (PM == PM_INV) tone(300, .03f, W_TRIANGLE, .03f); return;
 	}
 	if (PM != PM_NONE) buildPanel();
@@ -980,7 +974,6 @@ static void drawOverlay(void) {
 				char nm[40]; snprintf(nm, sizeof nm, "%s%s Lv%d", mate ? "+ " : "", o->n, o->lv); label(sx, sy - 12, .38f, inPit(o->x, o->y) ? C2D_Color32(255, 154, 154, 255) : mate ? C2D_Color32(125, 255, 176, 255) : C2D_Color32(154, 220, 255, 255), nm);
 				if (o->bt > 0 && o->bub[0]) { char bb[80]; float tot = fmaxf(5, marqueeTime(o->bub, .38f, 150) + 1.5f); marqueeStr(o->bub, .38f, 150, tot - o->bt, bb, sizeof bb); label(sx, sy - 26, .38f, C2D_Color32(255, 227, 138, 255), bb); } } }
 		plDrawTop();
-		devDrawOverlay();
 		if (msgT > 0) {
 			// i messaggi lunghi vanno su due righe, sempre dentro lo schermo
 			u8 al = (u8)(clampf(msgT, 0, 1) * 255);
@@ -1110,7 +1103,7 @@ void uiInput(const PlInput *in) {
 	if (kd & (KEY_R | KEY_ZR)) { SEL += visRows > 1 ? visRows - 1 : 6; if (SEL >= NOPT) SEL = NOPT - 1; }
 	if (NOPT && (kd & (KEY_DLEFT | KEY_DRIGHT | KEY_CPAD_LEFT | KEY_CPAD_RIGHT))) {
 		Opt *o = &OPT[SEL];
-		if (o->act == A_SETTING || o->act == A_BET || o->act == A_DEV) doAct(o, (kd & (KEY_DLEFT | KEY_CPAD_LEFT)) ? -1 : 1);
+		if (o->act == A_SETTING || o->act == A_BET) doAct(o, (kd & (KEY_DLEFT | KEY_CPAD_LEFT)) ? -1 : 1);
 	}
 	bool back = false;
 	if (NOPT && (kd & KEY_A)) doAct(&OPT[SEL], 0);

@@ -2,7 +2,7 @@
 
 Versione nativa per PlayStation Portable (homebrew, serve il firmware personalizzato).
 Grafica a blocchi isometrica disegnata con il GU della PSP, niente vista 3D.
-Per installarla basta l'archivio `releases/voxelia_v7.50_psp.zip`: le istruzioni per i giocatori sono in `LEGGIMI.txt`.
+Per installarla basta l'archivio [`releases/voxelia_v7.50_psp.zip`](releases/voxelia_v7.50_psp.zip): le istruzioni per i giocatori sono in `LEGGIMI.txt`.
 
 ## Compilare
 

@@ -163,7 +163,6 @@ static bool autoStep(PlInput *in, float dt) {
 		for (int i = 0; i < NENT; i++) { Ent *e = &ents[i]; if (e->k != K_NPC) continue; if (b[0] && !strstr(e->name, b)) continue; float d = hyp(e->px - P.px, e->py - P.py); if (d < bd) { bd = d; best = e; } }
 		if (best) { int ox, oy; if (nearFree((int)best->px, (int)best->py + 1, &ox, &oy)) { P.px = ox + .5f; P.py = oy + .5f; } act(best); }
 	}
-	else if (!strcmp(a, "dev")) devOpen();
 	else if (!strcmp(a, "allzones")) autoZ = 0;
 	else if (!strcmp(a, "hud")) { extern bool uiHidden; uiHidden = !atoi(b); }
 	else if (!strcmp(a, "net")) { snprintf(NETC.url, sizeof NETC.url, "%s", b); snprintf(NETC.code, sizeof NETC.code, "%s", c); netStart(); }
@@ -290,8 +289,7 @@ int main(int argc, char **argv) {
 			if (TAP.on) runHeld = runHeld || hyp(TAP.gx - P.px, TAP.gy - P.py) > 9;
 		} else TAP.on = false;
 
-		// pannello sviluppatore: velocità del tempo e pausa del mondo (l'interfaccia e la rete vanno avanti)
-		gameUpdate(DEV.pause && started ? 0 : dt * (started ? DEV.speed : 1));
+		gameUpdate(dt);
 		netTick(dt);
 		uiTick(dt);
 

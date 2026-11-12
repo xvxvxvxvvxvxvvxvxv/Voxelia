@@ -215,7 +215,7 @@ function setBody(k){const rng=(q,l,min=0,max=1,st=.05)=>`<div class="row"><label
   const chk=(q,l)=>`<div class="row"><label for="s_${q}">${l}</label><input type="checkbox" id="s_${q}" ${SET[q]?'checked':''} onchange="setv('${q}',this.checked?1:0)"></div>`;
   switch(k){
   case 'gen':return sGrp('Lingua',`<div class="row"><label for="s_lang">Lingua del gioco</label><select id="s_lang" onchange="setLang(this.value)">${[['it','Italiano'],['en','English'],['el','Eldoriano (la lingua di Eldoria)']].map(([v,n])=>`<option value="${v}" ${SET.lang===v?'selected':''}>${n}</option>`).join('')}</select></div>
-<p class="mu">English traduce menu, comandi, impostazioni e la maggior parte dei pulsanti; dialoghi e missioni restano in italiano. L'eldoriano è la lingua antica del regno: trasforma tutti i testi, sempre allo stesso modo.</p>`)
+<p class="mu">English è la lingua di partenza del gioco (la traduzione si completa a tappe); Italiano mostra il testo originale. L'eldoriano è la lingua antica del regno: trasforma tutti i testi, sempre allo stesso modo.</p>`)
     +sGrp('Eroe',`<div class="row"><label>Pelle, capelli, vestiti, mantello e corporatura</label><button onclick="closeSet();openLook()">🎨 Aspetto dell'eroe</button></div>`)
     +sGrp('Gioco',`<div class="row"><label>Tutte le modifiche, versione per versione</label><button onclick="openChg()">Novità</button></div><p class="mu">Voxelia ${GAME_VER} · le impostazioni vengono salvate automaticamente in questo browser.</p>`);
   case 'audio':return sGrp('Volume',rng('mv','Volume generale')+rng('sf','Volume effetti'))+sGrp('Musica',chk('muOn','Musica di sottofondo')+rng('mu','Volume musica'))

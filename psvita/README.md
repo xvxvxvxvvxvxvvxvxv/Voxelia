@@ -1,6 +1,6 @@
-# Voxelia PS Vita 1.0.5 — Il Regno Perduto
+# Voxelia PS Vita 1.0.6 — Il Regno Perduto
 
-Versione del port: **1.0.5** (contenuti di Voxelia **8.5**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.0.6** (contenuti di Voxelia **8.5**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
 Port per **PlayStation Vita** (e PS TV) di *Voxelia 8.5 – Il Regno Perduto*, il gioco di ruolo voxel isometrico per
 browser. È un programma nativo in C (VitaSDK + vitaGL), costruito sul motore del port 3DS ma pensato per la Vita:
@@ -13,7 +13,7 @@ memoria per tenere in gioco tutto il mondo.
 |---|---|
 | ![Titolo](screenshots/titolo.jpg) | ![La foresta di notte](screenshots/foresta_notte.jpg) |
 | ![Un dungeon](screenshots/dungeon.jpg) | ![Thalassa](screenshots/thalassa.jpg) |
-| ![Multigiocatore](screenshots/multigiocatore.jpg) | ![Pannello sviluppatore](screenshots/sviluppo.jpg) |
+| ![Multigiocatore](screenshots/multigiocatore.jpg) | ![La mappa](screenshots/mappa.jpg) |
 
 ## Installazione
 
@@ -21,7 +21,7 @@ memoria per tenere in gioco tutto il mondo.
 2. Serve anche **`ur0:data/libshacccg.suprx`**, il compilatore di shader della console: vitaGL lo usa per gli
    shader del gioco. Quasi tutti gli homebrew in 3D lo richiedono; se manca, si estrae in un minuto con
    *ShaRKBR33D* (vedi la guida «Extract libshacccg.suprx» della Vita Troubleshooting Guide).
-3. Copia `voxelia_psvita_v1.0.5.vpk` (il numero è la versione) sulla console e installalo con VitaShell. Compare la bolla **Voxelia** (ID `VXLA00001`).
+3. Copia `voxelia_psvita_v1.0.6.vpk` (il numero è la versione) sulla console e installalo con VitaShell. Compare la bolla **Voxelia** (ID `VXLA00001`).
 
 I salvataggi vanno in `ux0:data/voxelia/save.dat`, le impostazioni in `ux0:data/voxelia/settings.dat`.
 Ogni avvio scrive anche `ux0:data/voxelia/log.txt`: se il gioco si chiude, l'ultima riga dice dove si è fermato.
@@ -41,7 +41,7 @@ La partita si salva da sola ogni 30 secondi e a ogni cambio di zona.
 | **Quadrato** | Colpo ad area |
 | **Triangolo** | Pozione (cura il 35%, una ogni 2,5 secondi) |
 | Levetta destra, oppure due dita sullo schermo | Zoom |
-| START | Pausa: salvataggio, volumi, zoom, opzioni, multigiocatore, pannello sviluppatore |
+| START | Pausa: salvataggio, volumi, zoom, opzioni, multigiocatore |
 | SELECT | Mappa grande della zona (e, quando compare un riquadro di un plugin, lo sceglie: Croce accetta, Cerchio rifiuta) |
 
 **L'interfaccia è quella del browser, sopra il mondo**: in alto a sinistra l'eroe (vita, esperienza, stamina, oro,
@@ -76,7 +76,6 @@ a quello che il browser mostra.
 - **Tocca per muoverti**, **zoom con due dita** e **levetta destra**, come il mouse e la rotella del browser.
 - **Audio a 44,1 kHz in stereo** (il 3DS suonava a 22 kHz), con lo stesso sintetizzatore e 96 voci.
 - **Tastiera di sistema** della Vita per nome, chat, server e codice stanza.
-- **Il pannello sviluppatore della 8.5**, che sul 3DS non c'è (vedi sotto).
 - CPU a 444 MHz e GPU a 222 MHz, memoria estesa (`ATTRIBUTE2=12`).
 
 ## Contenuti: quelli della 8.5
@@ -99,18 +98,6 @@ Per riesportare i dati da una versione nuova:
 ```bash
 cd tools && VOXELIA_HTML=/percorso/di/voxelia.html ./aggiorna.sh
 ```
-
-### Il pannello sviluppatore (8.5)
-
-Menu di pausa → **Pannello sviluppatore**, come il 🛠 del browser:
-- **Trucchi**: invincibile, un colpo e via, stamina infinita, abilità senza attesa, nemici che non ti vedono;
-  equipaggiamento leggendario completo, cura e pozioni, oro, livello.
-- **Tempo**: velocità da ×0,25 a ×8, pausa del mondo, ora del giorno, salto al giorno dopo.
-- **Mondo**: qualunque zona del gioco (con i piani dei dungeon), tutti i brani da ascoltare.
-- **Storia e missioni**: la fase della storia, le 130 missioni da accettare, completare o azzerare.
-- **Debug**: la griglia delle collisioni sopra il mondo (verde libero, rosso chiuso, blu acqua), un riquadro con
-  zona, posizione, casella, conteggi, luci, quadrilateri e fotogrammi, e **Prova questa zona** (passaggi,
-  personaggi e nemici raggiungibili dall'eroe).
 
 ## Multigiocatore
 

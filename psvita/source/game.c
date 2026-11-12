@@ -155,7 +155,6 @@ static void killEnt(Ent *e);
 void hurtEnemyRaw(Ent *e, int d, bool cr) {
 	if (e->wb) { plBossHurt(e, d, cr); return; }   // il boss del mondo: la vita la tiene il server
 	{ extern void netEnemyHitE(Ent *, float); netEnemyHitE(e, d / fmaxf(1, e->mx)); }
-	if (DEV.oneHit && !e->pup) d = (int)fmaxf(d, ceilf(e->hp) + 1);   // pannello sviluppatore
 	e->hp -= d; e->fl = .12f; e->al = 1;
 	if (e->pup) { e->hme = gtime; if (e->hp < 1) e->hp = 1; }   // copia di un nemico di un altro: cade quando cade per il padrone
 	char b[16]; snprintf(b, sizeof b, cr ? "%d!" : "%d", d);
@@ -172,7 +171,6 @@ static void die(void);
 static void hurtP(float at);
 void hurtPfrom(float at) { hurtP(at); }
 static void hurtP(float at) {
-	if (DEV.god) return;   // pannello sviluppatore
 	at *= torHurtMul();
 	if (P.hp <= 0) return;
 	if (P.iv > 0) { flt(P.px, P.py, "Schivata!", 0x8ce7ff); P.pf = 3; tone(900, .05f, W_TRIANGLE, .05f); return; }
@@ -1010,8 +1008,6 @@ void gameUpdate(float dt) {
 
 	P.at -= dt; P.sk -= dt; P.pc -= dt; P.fl -= dt; P.sw -= dt; P.bA -= dt; P.bD -= dt;
 	if (!(P.moving && RUNNING) && !P.dmk && gtime - stT > .65f) { STA = fminf(stMax(), STA + dt * (P.moving ? 30 : 42)); if (STEX && STA >= stMax() * .3f) STEX = false; }
-	if (DEV.sta) { STA = stMax(); STEX = false; }
-	if (DEV.nocd) { P.pc = 0; hvCd = 0; }
 	if (P.moving == 0) RUNNING = false;
 	P.iv = fmaxf(0, P.iv - dt); P.dgc = fmaxf(0, P.dgc - dt); P.lgc = fmaxf(0, P.lgc - dt); P.pf = fmaxf(0, P.pf - dt);
 	if (P.hp <= 0) return;
@@ -1094,7 +1090,6 @@ void gameUpdate(float dt) {
 		if (e->ptg) { if (xPetAlive(e->ptg)) continue; e->ptg = 0; }   // insegue il compagno
 		float spK = e->eSl > gtime ? e->eSlK : 1;
 		float d = dist(e, P.px, P.py);
-		if (DEV.ghost) d = 1e4f;   // pannello sviluppatore: i nemici non ti vedono
 		// 7.41: un altro eroe più vicino: il nemico va da lui, e il colpo glielo manda il gioco
 		{ extern Peer *syncNearestPeer(Ent *, float); extern void syncEH(const char *, float); Peer *tp = (e->al || d < e->ag) ? syncNearestPeer(e, d) : NULL;
 		  if (tp) { float pd = hyp(tp->x - e->px, tp->y - e->py);

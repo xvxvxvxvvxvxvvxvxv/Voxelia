@@ -12,16 +12,20 @@ Il gioco per browser, il server e i plugin aggiornati stanno nel branch `main`.
 
 ## I port
 
-| Console | Versione | Contenuti | Cartella | Scarica | Branch a parte |
-|---|---|---|---|---|---|
-| **Nintendo 3DS** / New 3DS / 2DS | 1.7 | Voxelia 8.5 | [`3ds/`](3ds) | [`voxelia_3ds_v1.7.zip`](releases/voxelia_3ds_v1.7.zip) | [`3ds`](../../tree/3ds) |
-| **Nintendo DS** / DS Lite / DSi | 1.3 | Voxelia 8.5 | [`nds/`](nds) | [`voxelia_nds_v1.3.zip`](releases/voxelia_nds_v1.3.zip) | [`nds`](../../tree/nds) |
-| **PlayStation Vita** / PS TV | 1.0.2 | Voxelia 8.5 | [`psvita/`](psvita) | [`voxelia_psvita_v1.0.2.zip`](releases/voxelia_psvita_v1.0.2.zip) | — |
-| **PlayStation 4** | 1.0 | Voxelia 8.5 | [`ps4/`](ps4) | [`voxelia_ps4_v1.0.zip`](releases/voxelia_ps4_v1.0.zip) | — |
-| **PlayStation Portable** | — | Voxelia 7.50 | [`psp/`](psp) | [`voxelia_v7.50_psp.zip`](releases/voxelia_v7.50_psp.zip) | — |
+Ogni port sta tutto nella sua cartella: codice, dati, strumenti, README, CHANGELOG e, in `releases/`, gli zip di
+ogni versione. Non ci sono più branch separati per i singoli port: questo è l'unico.
 
-Le versioni precedenti di ogni port sono in [`releases/`](releases), accanto alle build complete del gioco per browser
-(`voxelia_v<versione>.html`, descritte in [`releases/LEGGIMI.md`](releases/LEGGIMI.md)).
+| Console | Versione | Contenuti | Cartella | Scarica |
+|---|---|---|---|---|
+| **Nintendo 3DS** / New 3DS / 2DS | 1.7 | Voxelia 8.5 | [`3ds/`](3ds) | [`voxelia_3ds_v1.7.zip`](3ds/releases/voxelia_3ds_v1.7.zip) |
+| **Nintendo DS** / DS Lite / DSi | 1.3 | Voxelia 8.5 | [`nds/`](nds) | [`voxelia_nds_v1.3.zip`](nds/releases/voxelia_nds_v1.3.zip) |
+| **PlayStation Vita** / PS TV | 1.0.6 | Voxelia 8.5 | [`psvita/`](psvita) | [`voxelia_psvita_v1.0.6.zip`](psvita/releases/voxelia_psvita_v1.0.6.zip) |
+| **PlayStation 4** | 1.0 | Voxelia 8.5 | [`ps4/`](ps4) | [`voxelia_ps4_v1.0.zip`](ps4/releases/voxelia_ps4_v1.0.zip) |
+| **PlayStation Portable** | — | Voxelia 7.50 | [`psp/`](psp) | [`voxelia_v7.50_psp.zip`](psp/releases/voxelia_v7.50_psp.zip) |
+
+Le versioni precedenti di ogni port sono nella `releases/` della sua cartella. La [`releases/`](releases) nella
+radice ha solo le build complete del gioco per browser (`voxelia_v<versione>.html`, descritte in
+[`releases/LEGGIMI.md`](releases/LEGGIMI.md)).
 
 ## Come sono fatti
 

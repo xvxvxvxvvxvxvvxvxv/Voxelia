@@ -49,7 +49,8 @@ $(B)/voxelia.elf: $(OBJ) $(B)/libmbed.a
 
 # eboot.bin (fself) e il pacchetto con la toolchain di OpenOrbis
 $(B)/eboot.bin: $(B)/voxelia.elf
-	$(TOOLCHAIN)/bin/linux/create-eboot -in=$< -out=$(B)/voxelia.oelf --eboot "$@" --paid 0x3800000000000011
+	cd $(B) && $(TOOLCHAIN)/bin/linux/create-eboot -in=voxelia.elf -out=voxelia.oelf --paid 0x3800000000000011
+	test -f $@   # create-eboot scrive eboot.bin accanto all'ELF (nella cartella in cui gira)
 
 $(B)/pkg/sce_sys/param.sfo: Makefile
 	@mkdir -p $(B)/pkg/sce_sys
@@ -66,12 +67,12 @@ $(B)/pkg/sce_sys/param.sfo: Makefile
 	$(TOOLCHAIN)/bin/linux/PkgTool.Core sfo_setentry $@ TITLE_ID --type Utf8 --maxsize 12 --value '$(TITLE_ID)'
 	$(TOOLCHAIN)/bin/linux/PkgTool.Core sfo_setentry $@ VERSION --type Utf8 --maxsize 8 --value '$(VERSION)'
 
-voxelia.pkg: $(B)/eboot.bin $(B)/pkg/sce_sys/param.sfo tools/mkgp4.py $(wildcard data/*) $(wildcard sce_sys/*)
+voxelia.pkg: $(B)/eboot.bin $(B)/pkg/sce_sys/param.sfo tools/mkgp4.sh $(wildcard data/*) $(wildcard sce_sys/*)
 	rm -rf $(B)/pkg/data && mkdir -p $(B)/pkg/data $(B)/pkg/sce_sys
 	cp $(B)/eboot.bin $(B)/pkg/eboot.bin
 	cp data/* $(B)/pkg/data/
 	cp sce_sys/icon0.png sce_sys/pic0.png sce_sys/pic1.png $(B)/pkg/sce_sys/
-	python3 tools/mkgp4.py $(B)/pkg $(CONTENT_ID) > $(B)/pkg/voxelia.gp4
+	sh tools/mkgp4.sh $(B)/pkg $(CONTENT_ID) > $(B)/voxelia.gp4 && mv $(B)/voxelia.gp4 $(B)/pkg/
 	cd $(B)/pkg && $(TOOLCHAIN)/bin/linux/PkgTool.Core pkg_build voxelia.gp4 .
 	mv $(B)/pkg/$(CONTENT_ID).pkg $@
 	ls -la $@

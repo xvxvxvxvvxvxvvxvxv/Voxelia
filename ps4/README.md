@@ -142,7 +142,7 @@ make elf            # solo build/voxelia.elf
 
 `make` compila anche mbedtls 2.28.8 dalle sorgenti in `third_party/` (licenza Apache 2.0) con la configurazione di
 `third_party/mbedtls_ps4.h`, poi usa `create-eboot` e `PkgTool.Core` della toolchain per l'eboot e il pacchetto
-(`tools/mkgp4.py` scrive il progetto del pacchetto). Content ID `IV0000-VXLA00001_00-VOXELIAPS4000001`.
+(`tools/mkgp4.sh` scrive il progetto del pacchetto). Content ID `IV0000-VXLA00001_00-VOXELIAPS4000001`.
 
 ### La build di prova per PC
 

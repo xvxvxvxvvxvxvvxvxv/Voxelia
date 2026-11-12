@@ -15,7 +15,7 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.0.4"            // versione del port per PS Vita
+#define PORT_VER "1.0.5"            // versione del port per PS Vita
 #define DATA_VER "8.5"            // versione di Voxelia da cui arrivano mappe, modelli, testi e musiche
 #define GAME_VER "Vita " PORT_VER
 #define MAXN 96

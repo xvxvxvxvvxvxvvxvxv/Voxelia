@@ -22,7 +22,7 @@ message(STATUS "Voxelia PS Vita ${PORT_VER} -> ${VPK_NAME}")
 
 set(VITA_APP_NAME "Voxelia")
 set(VITA_TITLEID  "VXLA00001")
-set(VITA_VERSION  "01.04")
+set(VITA_VERSION  "01.05")
 set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d ATTRIBUTE2=12")   # memoria estesa (+ 109 MB) per le zone e la GPU
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2 -g -Wall -Wno-unused-function -Wno-misleading-indentation -Wno-format-truncation -Wno-stringop-truncation -Wno-unused-result -ffast-math -mcpu=cortex-a9 -mfpu=neon")

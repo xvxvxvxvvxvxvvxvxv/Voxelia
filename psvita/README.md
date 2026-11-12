@@ -1,6 +1,6 @@
-# Voxelia PS Vita 1.0.4 — Il Regno Perduto
+# Voxelia PS Vita 1.0.5 — Il Regno Perduto
 
-Versione del port: **1.0.4** (contenuti di Voxelia **8.5**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.0.5** (contenuti di Voxelia **8.5**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
 Port per **PlayStation Vita** (e PS TV) di *Voxelia 8.5 – Il Regno Perduto*, il gioco di ruolo voxel isometrico per
 browser. È un programma nativo in C (VitaSDK + vitaGL), costruito sul motore del port 3DS ma pensato per la Vita:
@@ -21,7 +21,7 @@ memoria per tenere in gioco tutto il mondo.
 2. Serve anche **`ur0:data/libshacccg.suprx`**, il compilatore di shader della console: vitaGL lo usa per gli
    shader del gioco. Quasi tutti gli homebrew in 3D lo richiedono; se manca, si estrae in un minuto con
    *ShaRKBR33D* (vedi la guida «Extract libshacccg.suprx» della Vita Troubleshooting Guide).
-3. Copia `voxelia_psvita_v1.0.4.vpk` (il numero è la versione) sulla console e installalo con VitaShell. Compare la bolla **Voxelia** (ID `VXLA00001`).
+3. Copia `voxelia_psvita_v1.0.5.vpk` (il numero è la versione) sulla console e installalo con VitaShell. Compare la bolla **Voxelia** (ID `VXLA00001`).
 
 I salvataggi vanno in `ux0:data/voxelia/save.dat`, le impostazioni in `ux0:data/voxelia/settings.dat`.
 Ogni avvio scrive anche `ux0:data/voxelia/log.txt`: se il gioco si chiude, l'ultima riga dice dove si è fermato.

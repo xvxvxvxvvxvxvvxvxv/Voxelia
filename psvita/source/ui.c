@@ -53,7 +53,7 @@ static float banT0 = -1;   // quando è comparso il titolo in cima alla coda
 static Ban BAN[4]; static int NBAN = 0;
 void banner(const char *a, const char *b) {
 	if (NBAN >= 4) { memmove(BAN, BAN + 1, sizeof(Ban) * 3); NBAN = 3; }
-	Ban *x = &BAN[NBAN++]; snprintf(x->a, sizeof x->a, "%s", a); snprintf(x->b, sizeof x->b, "%s", b ? b : ""); noEmoji(x->a); noEmoji(x->b); x->t = 2.6f + marqueeTime(x->b, .42f, 308);
+	Ban *x = &BAN[NBAN++]; snprintf(x->a, sizeof x->a, "%s", a); snprintf(x->b, sizeof x->b, "%s", b ? b : ""); noEmoji(x->a); noEmoji(x->b); x->t = 2.6f + fmaxf(marqueeTime(x->b, .42f, topW() - 14), marqueeTime(x->a, .42f, topW() - 14));
 }
 static char ZBAN[96]; static float zbanT = 0;
 typedef struct { char s[140]; float t, tt; u8 sys; } ChatL;
@@ -888,6 +888,13 @@ static void drawHud(void) {
 // la striscia libera in alto, tra il riquadro dell'eroe e la minimappa
 float topCX(void) { return started ? (190 + VW - 106) / 2 : VW / 2; }
 float topW(void) { return started ? VW - 106 - 190 - 8 : VW - 40; }
+// la scala più grande (da big a small) a cui il testo entra in maxW
+static float fitScale(const char *s, float big, float small, float maxW) {
+	float w = txtW(s, big);
+	if (w <= maxW) return big;
+	float k = big * maxW / w;
+	return k < small ? small : k;
+}
 static void label(float x, float y, float sc, u32 c, const char *s) {
 	txtC(x + .8f, y + .8f, sc, C2D_Color32(0, 0, 0, 200), s);
 	txtC(x, y, sc, c, s);
@@ -987,9 +994,10 @@ static void drawOverlay(void) {
 		}
 		if (zbanT > 0) {
 			u8 a = (u8)(clampf(zbanT, 0, 1) * 255);
-			char zb[96]; marqueeStr(ZBAN, .62f, topW(), 0, zb, sizeof zb);
-			txtC(topCX() + 1, 41, .62f, C2D_Color32(0, 0, 0, a), zb);
-			txtC(topCX(), 40, .62f, C2D_Color32(255, 240, 200, a), zb);
+			char zb[96]; float zs = fitScale(ZBAN, .62f, .42f, topW());
+			marqueeStr(ZBAN, zs, topW(), 2.6f - zbanT, zb, sizeof zb);
+			txtC(topCX() + 1, 41, zs, C2D_Color32(0, 0, 0, a), zb);
+			txtC(topCX(), 40, zs, C2D_Color32(255, 240, 200, a), zb);
 		}
 		if (NBAN) {
 			Ban *b = &BAN[0];
@@ -997,8 +1005,10 @@ static void drawOverlay(void) {
 			float bw = topW(), bx = topCX() - bw / 2;
 			rectR(bx, 66, bw, 48, 6, C2D_Color32(10, 12, 20, (u8)(a * .78f)));
 			rect(bx + 4, 66, bw - 8, 2, C2D_Color32(245, 185, 66, a));
-			txtC(topCX(), 70, .6f, C2D_Color32(245, 185, 66, a), b->a);
 			if (banT0 < 0) banT0 = gtime;
+			// il titolo giallo resta dentro la finestra: si rimpicciolisce, e se non basta scorre come il testo sotto
+			{ float ts = fitScale(b->a, .6f, .42f, bw - 14); char ta[96]; marqueeStr(b->a, ts, bw - 14, gtime - banT0, ta, sizeof ta);
+			  txtC(topCX(), 70 + (.6f - ts) * 12, ts, C2D_Color32(245, 185, 66, a), ta); }
 			char bb[160]; marqueeStr(b->b, .42f, bw - 14, gtime - banT0, bb, sizeof bb);
 			txtC(topCX(), 93, .42f, C2D_Color32(240, 240, 240, a), bb);
 		}

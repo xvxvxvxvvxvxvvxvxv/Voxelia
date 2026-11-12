@@ -163,6 +163,7 @@ static bool autoStep(PlInput *in, float dt) {
 		if (best) { int ox, oy; if (nearFree((int)best->px, (int)best->py + 1, &ox, &oy)) { P.px = ox + .5f; P.py = oy + .5f; } act(best); }
 	}
 	else if (!strcmp(a, "dev")) devOpen();
+	else if (!strcmp(a, "ban")) banner(cmd + 4, "Un testo di prova sotto il titolo, abbastanza lungo da dover scorrere nella finestra");
 	else if (!strcmp(a, "allzones")) autoZ = 0;
 	else if (!strcmp(a, "hud")) { extern bool uiHidden; uiHidden = !atoi(b); }
 	else if (!strcmp(a, "net")) { snprintf(NETC.url, sizeof NETC.url, "%s", b); snprintf(NETC.code, sizeof NETC.code, "%s", c); netStart(); }

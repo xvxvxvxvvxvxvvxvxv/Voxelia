@@ -177,6 +177,20 @@ bool plGfxInit(void) {
 	sceSystemServiceHideSplashScreen();
 	return true;
 }
+// un errore che non permette di giocare: il messaggio resta sullo schermo (il tasto PS chiude il gioco)
+void plFatal(const char *msg) {
+	plLog("ERRORE: %s", msg);
+	if (video < 0) for (;;) plSleepMs(1000);
+	for (;;) {
+		swClear(0x100c14);
+		g2Begin();
+		txtC(VW / 2, VH / 2 - 70, 1.2f, C2D_Color32(255, 216, 74, 255), "VOXELIA");
+		txtWrap(VW / 2 - 220, VH / 2 - 10, 440, .45f, C2D_Color32(240, 236, 224, 255), msg);
+		txtC(VW / 2, VH / 2 + 90, .36f, C2D_Color32(154, 164, 184, 255), "Il registro è in /data/voxelia/log.txt · tasto PS per uscire");
+		g2Flush();
+		plSwap();
+	}
+}
 void plGfxExit(void) { swExit(); if (logF) fclose(logF); logF = NULL; }
 
 static bool curOn = false; static float curX = SCR_W / 2, curY = SCR_H / 2; static u64 curT = 0;

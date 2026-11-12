@@ -9,6 +9,7 @@
 //   touchpad: muove il puntatore (come il mouse del browser); un tocco leggero o R3 "clicca": sul terreno per
 //   andarci, su un nemico per attaccarlo, su una persona o un forziere per usarli; menu, abilità e finestre.
 #include "voxelia.h"
+#include "sw.h"
 
 bool TITLE_MODE = true;
 float FPS = 60;
@@ -174,22 +175,50 @@ static bool autoStep(PlInput *in, float dt) {
 }
 #endif
 
+// schermata di caricamento (come nel port Vita 1.0.2): ogni passo dell'avvio finisce nel registro e sullo
+// schermo, così se qualcosa si ferma su una console si vede dove
+static bool bootG2 = false;
+static void boot(const char *step) {
+	plLog("avvio: %s…", step);
+	swClear(0x0f0b07);
+	if (bootG2) {
+		g2Begin();
+		txtC(VW / 2, VH / 2 - 60, 1.4f, C2D_Color32(255, 216, 74, 255), "VOXELIA");
+		txtC(VW / 2, VH / 2 - 14, .5f, C2D_Color32(240, 236, 224, 255), "Il Regno Perduto · " GAME_VER);
+		char b[96]; snprintf(b, sizeof b, "%s…", step);
+		txtC(VW / 2, VH / 2 + 30, .45f, C2D_Color32(154, 164, 184, 255), b);
+		g2Flush();
+	}
+	plSwap();
+}
 int main(int argc, char **argv) {
 	(void)argc; (void)argv;
-	if (!plGfxInit()) return 1;
+	if (!plGfxInit()) { plLog("ERRORE: lo schermo non si avvia"); return 1; }
+	boot("impostazioni");
 	setLoad();
 	uiApplyScale();
+	boot("carattere e interfaccia");
 	g2Init();
+	bootG2 = true;
+	boot("mondo");
 	rInit();
+	boot("tabelle, modelli ed eroe");
 	dataInit();
+	plLog("dati: %d nemici, %d personaggi, %d missioni", NE, NNPC, NQT);
+	if (!NE || !NNPC) plFatal("Mancano i dati del gioco (/app0/data/data.json). Reinstalla voxelia.pkg.");
+	boot("gioco");
 	gameInit();
 	uiInit();
+	boot("audio e musiche");
 	auInit();
+	boot("rete");
 	netInit();
 	snprintf(P.name, sizeof P.name, "Eroe");
 	// il nome dell'eroe parte da quello dell'utente della console
 	{ char nm[16] = ""; plUserName(nm, sizeof nm); if (nm[0]) snprintf(P.name, sizeof P.name, "%s", nm); }
+	boot("Aldoria");
 	titleStart();
+	plLog("titolo pronto");
 	camS = SET.zoom;
 #ifndef __PS4__
 	AUTO = getenv("VOX_AUTO");
@@ -280,7 +309,7 @@ int main(int argc, char **argv) {
 		camS += (SET.zoom - camS) * k;
 		float sx = camX, sy = camY;
 		if (shake > 0) { camX += (frnd() - .5f) * shake * 30; camY += (frnd() - .5f) * shake * 30; }
-		rFrame();
+		{ static int fr = 0; if (fr < 2) plLog("fotogramma %d: inizio", fr + 1); rFrame(); if (fr < 2) plLog("fotogramma %d: disegnato", fr + 1); if (fr == 600) plLog("10 secondi di gioco: tutto bene (%.0f fps, disegno %.1f ms)", FPS, ({ extern float swStatMs; swStatMs; })); fr++; }
 		camX = sx; camY = sy;
 	}
 	saveGame();

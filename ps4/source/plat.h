@@ -83,6 +83,8 @@ void plPoll(PlInput *in);
 
 /* ---------------- grafica ---------------- */
 bool plGfxInit(void);                // schermo e rasterizzatore (swInit)
+void plLog(const char *fmt, ...);    // registro di avvio: SAVE_ROOT/log.txt sulla console, VOX_LOG=1 sul PC
+void plFatal(const char *msg);       // messaggio di errore sullo schermo invece di un crash
 void plGfxExit(void);
 void plSwap(void);                   // swFinish e immagine sullo schermo
 // tastiera (bloccante): true se confermato. Sulla PS4 è la tastiera a schermo del gioco (osk.c)

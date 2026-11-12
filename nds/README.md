@@ -1,8 +1,8 @@
-# Voxelia DS 1.2.1 — Il Regno Perduto
+# Voxelia DS 1.3 — Il Regno Perduto
 
-Versione del port: **1.2.1** (contenuti di Voxelia **7.50**).
+Versione del port: **1.3** (contenuti di Voxelia **8.5**).
 
-Port per **Nintendo DS / DS Lite / DSi** di *Voxelia 7.50 – Il Regno Perduto*. Usa la stessa base del port
+Port per **Nintendo DS / DS Lite / DSi** di *Voxelia 8.5 – Il Regno Perduto*. Usa la stessa base del port
 per 3DS (branch `3ds`):
 - **in comune con il 3DS:** logica del gioco, mondo, missioni e storia, interfaccia, rete e plugin del server;
 - **riscritti per il DS:** grafica, testo, audio e comandi.
@@ -73,7 +73,7 @@ Il gioco cifra comunque i dati verso il server con TLS, anche su una rete aperta
 Il DS ha 4 MB di RAM, un processore a 67 MHz senza virgola mobile e disegna al massimo 1.536 quadrilateri per
 fotogramma. Il 3DS disegna decine di migliaia di voxel. Quindi:
 - **Mondo a blocchi.** Ogni casella è un pavimento più al massimo un blocco (tetto e lati colorati), ricavato dai
-  voxel della 7.50 da `tools/dsassets.py`. Gli edifici si riconoscono, i dettagli piccoli no.
+  voxel della 8.5 da `tools/dsassets.py`. Gli edifici si riconoscono, i dettagli piccoli no.
 - **Personaggi come sprite.** Nemici, personaggi ed eroe sono sprite a 16 colori ricavati dai modelli animati,
   in 5 direzioni (le altre 3 sono specchiate).
   - L'eroe mostra il tipo di arma, la corazza, l'elmo e lo scudo, con i colori della rarità.
@@ -86,8 +86,14 @@ fotogramma. Il 3DS disegna decine di migliaia di voxel. Quindi:
   inviluppi e batteria. Rispetto al 3DS il filtro è fisso (non si apre durante la nota) e manca il riverbero.
 - **Prestazioni:** circa 25–40 fotogrammi al secondo, secondo la zona.
 
-Contenuti, missioni, storia, combattimento (catene, colpo caricato, stamina), dungeon con le leve, negozi e plugin
-sono gli stessi del port 3DS 1.3. Restano fuori le stesse cose del 3DS (pesca, mestieri, Tomorrow…).
+- **Varianti dei compagni:** sul DS i compagni sono sprite già colorati, quindi la variante si vede nel nome ma
+  non cambia i colori.
+
+Contenuti, missioni, storia e meccaniche sono quelli del port **3DS 1.7** (Voxelia 8.5): nemici condivisi in rete,
+cavalli, animali, compagni con Serraglio e incroci, elementi, scelte e titoli, il regno oltre il mare, boss a fasi,
+armi che crescono, maledizioni, scavi, eventi a orario, scoperte, Bottega dei mestieri, Torre della Corona (le sale
+si costruiscono sul DS), carte, e la difficoltà della 8.3. Sul touch ci sono **Comp.**, **Doma** e **Sella**.
+Restano fuori le stesse cose del 3DS (pesca, miniere, Tomorrow…).
 
 ## Compilare
 

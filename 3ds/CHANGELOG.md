@@ -3,6 +3,15 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.7 · contenuti di Voxelia 8.5
+
+**Aggiornato alla 8.5.** Le novità di queste versioni riguardano soprattutto altre modalità; per la Storia:
+- **Dati riesportati dalla 8.5** (11 zone cambiate), con i falò dei dungeon della 8.3.2: non chiudono più un pezzo
+  di piano (prima al primo piano della Piramide restavano murate decine di caselle con dei nemici dentro).
+- **La riga dei prezzi nel negozio (8.3.1)** fa il conto giusto: il confronto è con un eroe di livello 1, e compare
+  solo quando i prezzi sono saliti davvero.
+- La 8.4 toglie Aldoria 3026 dal browser e la 8.5 aggiunge il pannello sviluppatore: sulla console non c'erano.
+
 ## 1.6.1 · contenuti di Voxelia 8.3
 
 **Il nome dell'eroe in rete.** All'accensione il gioco prende il nome della console. Se ti collegavi al server

@@ -74,7 +74,9 @@ static float pf(const char *k, int d) {
 	if (offerQ(k, d)) f *= .65f;
 	return f;
 }
+float priceMulAll(void);
 static float priceMul(void) { return (1 + .08f * P.st) * (1 + P.lv * .012f) * xPriceMul() * mer83(); }
+float priceMulAll(void) { return priceMul(); }
 int px(const char *k, int b) { int v = (int)roundf(b * pf(k, gDay()) * priceMul()); return v < 1 ? 1 : v; }
 int dayEvent(void) { return dayEv(gDay()); }
 bool isOffer(const char *k) { return offerQ(k, gDay()); }

@@ -87,6 +87,16 @@ static void drawModel(int m, int face, int fr, float x, float y, float zo, float
 	spriteQuad(s->tex[idx], 8 << s->lw, 8 << s->lh, s->ax, s->ay, k * 100.f / s->sc, x, y, zo, FM[face & 7], tint, alpha);
 }
 
+// i modelli della Storia (cavalli, animali, compagni, botteghe): stesso indice di fotogramma del 3DS
+// (direzione * fotogrammi per direzione + fotogramma), con la grandezza in gMS
+float gMS = 1;
+static u16 tintAt(float x, float y, bool flash);
+void drawModelFrame(int mdl, int frame, float px, float py, float zo, int white, u8 alpha) {
+	if (mdl < 0 || mdl >= NMDL || !SP[mdl].off) return;
+	int fpd = SP[mdl].fpd ? SP[mdl].fpd : 1;
+	drawModel(mdl, frame / fpd, frame % fpd, px, py, zo, gMS, tintAt(px, py, white == 1), alpha >= 250 ? 31 : alpha * 31 / 255);
+}
+
 /* ---------------- eroi: varianti di equipaggiamento in una piccola cache ---------------- */
 typedef struct { u32 key; int tex[15]; int n; u32 used; } HCache;
 static HCache HC[8]; static u32 hcClock = 0;
@@ -148,6 +158,7 @@ void drawHero(void) {
 	int c, h, w, s, tw, th, tc, ts; heroEqPack(&c, &h, &w, &s, &tw, &th, &tc, &ts);
 	float z = P.moving ? fabsf(sinf(gtime * 17)) * 2 : 0;
 	if (P.dmk == 1) z += 3;
+	if (cavOn()) { xDrawHeroHorse(); z = xHeroZ(); }   // in sella (7.46)
 	drawHeroSprite(P.px, P.py, z, P.face, c, h, w, s, tw, tc, P.moving, gtime * 9, P.sw > 0, tintAt(P.px, P.py, P.fl > 0), P.iv > 0 ? 18 : 31);
 }
 void drawPeers(void) {
@@ -159,13 +170,16 @@ void drawPeers(void) {
 		if (fabsf((p->x - p->y) - (P.px - P.py)) > 12 || fabsf((p->x + p->y) - (P.px + P.py)) > 22) continue;
 		shadowAt(p->x, p->y, .3f);
 		bool mv = p->mv > 0;
-		drawHeroSprite(p->x, p->y, mv ? fabsf(sinf(gtime * 17 + i)) * 2 : 0, p->fa & 7, p->c, p->h, p->w, p->s, p->tw, p->tc, mv, gtime * 9 + i, p->sw > 0, tintAt(p->x, p->y, p->fl > 0), 31);
+		xDrawPeerExtras(p, i);
+		if (xPeerMounted(p)) xDrawPeerHorse(p, mv, gtime * 13 + i);
+		drawHeroSprite(p->x, p->y, xPeerMounted(p) ? 16 : mv ? fabsf(sinf(gtime * 17 + i)) * 2 : 0, p->fa & 7, p->c, p->h, p->w, p->s, p->tw, p->tc, mv, gtime * 9 + i, p->sw > 0, tintAt(p->x, p->y, p->fl > 0), 31);
 	}
 }
 
 void drawEntity(Ent *e) {
 	float u;
 	switch (e->k) {
+	case K_X: xDraw(e); return;
 	case K_TC: {
 		box(e->px - .05f, e->py - .05f, 10, .1f, .1f, 14, 0x4a3a2a, 1);
 		float fl = 1 + sinf(gtime * 12 + e->px * 5) * .15f;
@@ -282,4 +296,5 @@ void drawWorldEntities(void) {
 	drawPeers();
 	drawHero();
 	drawFx();
+	xDrawWorld();
 }

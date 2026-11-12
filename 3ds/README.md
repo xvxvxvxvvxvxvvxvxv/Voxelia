@@ -1,8 +1,8 @@
-# Voxelia 3DS 1.6.1 — Il Regno Perduto
+# Voxelia 3DS 1.7 — Il Regno Perduto
 
-Versione del port: **1.6.1** (contenuti di Voxelia **8.3**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.7** (contenuti di Voxelia **8.5**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
-Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 8.3 – Il Regno Perduto*,
+Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 8.5 – Il Regno Perduto*,
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,
 libctru, citro3d e citro2d, e pensato per l'hardware della console.
 
@@ -64,10 +64,10 @@ più velocemente, sinistra/destra per cambiare volumi, zoom e puntate. Le righe 
   - il cambio di brano come nell'originale: musica notturna in città, musica del boss quando è vicino, dissolvenze.
   Le note sono estratte da `voxelia.html` con `tools/songs.js` in `romfs/music.json`.
 
-## Contenuti: sincronizzati con la 8.3
+## Contenuti: sincronizzati con la 8.5
 
 Mappe, modelli, nemici, personaggi e missioni non sono più riscritti a mano: arrivano direttamente dalla versione
-browser più recente. `tools/export.js` esegue `voxelia.html` 8.3 in Node (jsdom, senza grafica), carica ogni
+browser più recente. `tools/export.js` esegue `voxelia.html` 8.5 in Node (jsdom, senza grafica), carica ogni
 zona con il codice originale e registra ogni voxel che il renderer disegna (`box`/`rbox`), oltre a collisioni,
 luci ed entità. Poi cattura in 8 direzioni i fotogrammi di camminata e di attacco dei modelli animati della 7.18
 e compone l'eroe per ogni tipo d'arma, elmo, corazza e scudo. Il risultato (circa 12 MB) sta nella romfs.
@@ -163,7 +163,7 @@ Limiti:
   - le finestre di Casa, Discoteca e Mercatino;
   - il sensore del Guardiano nel gioco: il Guardiano controlla comunque i progressi dal server.
 
-## La Modalità Storia della 8.3
+## La Modalità Storia della 8.5
 
 Dalla 1.5 la console ha le meccaniche della Storia arrivate nel browser dopo la 7.50, con le stesse regole e gli
 stessi messaggi di rete (`story*.c`, `sync.c`):
@@ -187,8 +187,8 @@ Comandi: sul touch ci sono **Comp.** (i compagni), **Doma** (quando un mostro in
 
 ## Cosa non c'è ancora
 
-- **Modalità a sé:** Tomorrow, Aldoria 2026/3026 (anche lo spazio della 8.2) e la Cronoporta, il Cuore della
-  Corona della 8.0 (servono i frammenti di tutte le modalità), Voxelia Studio, realtà virtuale.
+- **Modalità a sé:** Tomorrow, il Cuore della Corona (servono le schegge di più modalità), il pannello
+  sviluppatore della 8.5 (Aldoria 3026 nel browser non c'è più dalla 8.4), Voxelia Studio, realtà virtuale.
 - **Storia:** pesca, miniere, battaglia navale, la casa (lavagna e trofei), le classifiche della settimana,
   i filmati, il vero finale (Aldoria Vecchia, l'Abominio), l'editor dell'aspetto e il file dell'eroe.
 - **Semplificazioni:** le chimere hanno il corpo di una specie (la testa dell'altra resta nel nome); il passaggio

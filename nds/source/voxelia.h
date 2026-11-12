@@ -14,7 +14,7 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.2.1"            // versione del port per DS
+#define PORT_VER "1.3"            // versione del port per DS
 #define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
 #define GAME_VER "DS " PORT_VER
 #define DATADIR "nitro:/"
@@ -53,6 +53,7 @@ typedef struct {
 	u32 p;
 	char n[30];
 	u8 used;
+	u8 el;            // 3DS 1.5: elemento dell'arma, (elemento << 3) | livello (7.55); stava nel byte di riempimento
 } Item;
 extern u32 RC[5];
 extern const char *RN[5];
@@ -70,6 +71,8 @@ typedef struct {
 	u8 boss, slam, np;
 	u32 rng;
 	int sum, mdl;
+	const char *kind;   // forma del modello (q, h, a, slime...): la famiglia dei compagni
+	u8 el, elh;         // elemento della specie (0 = dal tema della zona) e quello di riserva
 } EnemyDef;
 extern EnemyDef E[];
 extern int NE;
@@ -140,7 +143,7 @@ void modelsLoad(void);
 
 
 /* ---------------- entità ---------------- */
-enum { K_NONE, K_EN, K_NPC, K_PO, K_CH, K_DR, K_SHARD, K_LORE, K_TC, K_DEAD, K_CHO, K_RES, K_PEER, K_LEV };
+enum { K_NONE, K_EN, K_NPC, K_PO, K_CH, K_DR, K_SHARD, K_LORE, K_TC, K_DEAD, K_CHO, K_RES, K_PEER, K_LEV, K_X };
 enum { PO_DOOR, PO_EXIT, PO_GATE, PO_DUN, PO_DOWN, PO_UP, PO_VOID, PO_OTHER };
 
 typedef struct {
@@ -180,6 +183,14 @@ typedef struct {
 	int sid;
 	// boss del mondo (plugin boss): vb = una «vita», scl = grandezza del modello
 	u8 wb; float vb, scl;
+	// 3DS 1.5 (story.c): entità della storia, compagni, elementi, scelte, nemici condivisi in rete
+	u8 xk, xs, xo, ast, el, cho, pup, zn, eZp;
+	u32 uid, ptg;
+	float ait, stT, adg, hrt, ph, pcd, cbs, sBl, sBd, sSl;
+	float eBu, ePo, eSl, eSlK, eFz, eWe, hme, ntx, nty;
+	char sg[24]; s8 own;
+	u8 bph, bstg; float bshd, bwkO, bwkN, bstn;   // boss a fasi (7.44)
+	u8 pk, fury, champ;                           // branco, ultima furia, Campione (7.11)
 } Ent;
 extern Ent ents[MAXE];
 extern int NENT;
@@ -309,7 +320,7 @@ void chatLog(const char *who, const char *s, int sys);
 void uiMinimapDirty(void);
 void uiTitleInit(void);
 extern int PM;
-enum { PM_NONE, PM_NPC, PM_TXT, PM_SHOP, PM_SMITH, PM_ALCH, PM_INV, PM_QUEST, PM_DIARY, PM_PAUSE, PM_TITLE, PM_DIFF, PM_DEAD, PM_EXITASK, PM_CASINO, PM_MAP, PM_HELP, PM_CONFIRM, PM_NET, PM_CHAT, PM_PLAYERS, PM_SELLRES, PM_ARENA, PM_PLUG, PM_WIFI };
+enum { PM_NONE, PM_NPC, PM_TXT, PM_SHOP, PM_SMITH, PM_ALCH, PM_INV, PM_QUEST, PM_DIARY, PM_PAUSE, PM_TITLE, PM_DIFF, PM_DEAD, PM_EXITASK, PM_CASINO, PM_MAP, PM_HELP, PM_CONFIRM, PM_NET, PM_CHAT, PM_PLAYERS, PM_SELLRES, PM_ARENA, PM_PLUG, PM_WIFI, PM_X };
 
 /* ---------------- gioco ---------------- */
 void gameInit(void);
@@ -392,6 +403,13 @@ typedef struct {
 	int tw, th, tc, ts;
 	float sw, fl, bt;
 	char bub[64]; int sayN;
+	// 3DS 1.5: cavallo, animale, compagno, titolo e record della corsa degli altri (come li manda il browser)
+	s8 cavB, cavC, aniT; char aniN[16]; float ax, ay, ait; int afc;
+	int cpT; char cpN[24]; float cx, cy, ctx, cty, chp, catkT, cmvT, cfd[2]; u8 clv, catk; int cfc;
+	char tt[32]; float crb;
+	// nemici condivisi (7.41)
+	bool sy; float za; int ehSeq;
+	u8 cvr; s16 cvh;
 } Peer;
 #define MAXPEER 24
 extern Peer PEERS[MAXPEER];
@@ -470,5 +488,8 @@ extern Settings SET;
 void setSave(void);
 void setLoad(void);
 
+int enemyIdx(const char *id);
+extern int NDG;
+#include "story.h"
 extern float FPS;
 #endif

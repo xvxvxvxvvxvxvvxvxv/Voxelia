@@ -3,6 +3,21 @@
 Il port ha una versione sua. In ogni versione c'è anche la versione di Voxelia (il gioco per browser) da cui
 arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.3 · contenuti di Voxelia 8.5
+
+**La Modalità Storia della 8.5, come sul 3DS 1.7.** Il DS era ancora ai contenuti della 7.50.
+- **Dati rigenerati dalla 8.5:** mappe, personaggi, missioni e nemici (Thalassa e la giungla rifatte, il Serraglio, i
+  dungeon nuovi, i falò che non chiudono più i passaggi, il bilanciamento della 8.1 e della 8.3).
+- **Tutte le meccaniche della Storia del port 3DS**, con lo stesso codice:
+  - nemici condivisi in rete (7.41); in rete si vedono cavallo, animale, compagno e titolo degli altri;
+  - cavalli e corsa, animali da compagnia, compagni domati con Serraglio, incroci e varianti;
+  - elementi ed Essenze; scelte, alleati, vie e titoli; il regno oltre il mare;
+  - boss a fasi, armi che crescono, maledizioni, scavi, eventi a orario, diario delle scoperte;
+  - Bottega dei mestieri, Torre della Corona (le sale si costruiscono sul DS), duello delle carte;
+  - la difficoltà della 7.11 e della 8.3 (Campioni, branchi, nemici che seguono il tuo livello, prezzi).
+- Cavalli, animali e botteghe sono sprite ricavati dai modelli del gioco, come nemici e personaggi.
+- I salvataggi della 1.2 si caricano: le novità si salvano in coda al file.
+
 ## 1.2.1 · contenuti di Voxelia 7.50
 
 **Il nome dell'eroe in rete.** All'accensione il gioco prende il nome della console. Se ti collegavi al server

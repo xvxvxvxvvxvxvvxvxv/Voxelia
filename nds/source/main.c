@@ -71,8 +71,8 @@ static void kbDraw(const char *hint, const char *buf, int shift) {
 }
 static void runKeyboard(void) {
 	wantKeyboard = false;
-	int max = kbMode == 0 ? 14 : kbMode == 1 ? 120 : kbMode == 2 ? 16 : kbMode == 4 ? 63 : 60;
-	const char *hint = kbMode == 0 ? "Il tuo nome da eroe" : kbMode == 1 ? "Indirizzo del server" : kbMode == 2 ? "Codice stanza (lettere e numeri)" : kbMode == 4 ? "Password della rete Wi-Fi" : "Messaggio o comando (START per inviare)";
+	int max = kbMode == 0 ? 14 : kbMode == 1 ? 120 : kbMode == 2 ? 16 : kbMode == 4 ? 63 : kbMode == 5 ? 22 : 60;
+	const char *hint = kbMode == 0 ? "Il tuo nome da eroe" : kbMode == 1 ? "Indirizzo del server" : kbMode == 2 ? "Codice stanza (lettere e numeri)" : kbMode == 4 ? "Password della rete Wi-Fi" : kbMode == 5 ? "Nuovo nome" : "Messaggio o comando (START per inviare)";
 	char buf[130] = "";
 	snprintf(buf, sizeof buf, "%s", kbMode == 0 ? P.name : kbMode == 1 ? NETC.url : kbMode == 2 ? NETC.code : kbMode == 4 ? "" : kbInit);
 	kbInit[0] = 0;

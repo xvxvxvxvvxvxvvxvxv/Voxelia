@@ -9,6 +9,7 @@ u8 OCCT[MAXN][MAXN];
 u32 TCOL[MAXN][MAXN];
 char Zk[32] = "town";
 char ZNAME[96];
+int ZELZ, ZLV0;
 int ZLV, ZRUN, ZMUS, ZINT, ZOUT, ZDG = -1, ZDN = 0;
 u32 ZBG = 0x7fb6e6, ZTC = 0xffb04a;
 Ent ents[MAXE];
@@ -112,7 +113,11 @@ Ent *mkEn(int t, int x, int y) {
 	e->xp = b->xp * (1 + ZLV * .3f);
 	e->sp = b->sp; e->r = b->r; e->cd = b->cd; e->ag = b->ag; e->cdt = b->cd; e->slt = 4;
 	e->boss = b->boss; e->model = b->mdl; e->face = fri(0, 7);
+	e->uid = 0x80000000u | (u32)e->id; elSetEnemy(e);
+	if (malOn(0)) { e->sp *= 1.3f; e->cd *= .85f; e->cdt = e->cd; }   // maledizioni: nemici veloci
+	if (malOn(1)) e->at *= 1.3f;                                          // furia
 	snprintf(e->name, sizeof e->name, "%s", b->n);
+	if (!b->np) hardMk(e);   // 7.11/8.3: il regno più difficile, i Campioni
 	return e;
 }
 static int poSt(const char *s) {
@@ -140,6 +145,8 @@ static void fileName(const char *k, int run, char *out, int n) {
 	b[j] = 0;
 	if (strchr(k, '@')) snprintf(out, n, DATADIR "z_%s_%d", b, run & 1); else snprintf(out, n, DATADIR "z_%s", b);
 }
+// la Torre della Corona: la sala la costruisce story6.c
+void worldAdoptDS(int n, const u8 *recs, float sx, float sy) { N = n; spX = sx; spY = sy; rBuildZone(recs, n); }
 static bool loadFiles(const char *k, int run) {
 	char base[80], fn[96];
 	fileName(k, run, base, sizeof base);
@@ -176,7 +183,9 @@ static bool loadFiles(const char *k, int run) {
 	free(txt);
 	if (!z) return false;
 	snprintf(ZNAME, sizeof ZNAME, "%s", jgs(z, "n", k));
+	{ extern int ZELZ; ZELZ = elKey(jgs(z, "elz", "")); }
 	ZLV = (int)jgn(z, "lv", 0); ZINT = jgn(z, "int", 0) != 0; ZOUT = jgn(z, "out", 0) != 0;
+	ZLV0 = ZLV; ZLV = lv83(k, ZLV);   // 8.3: i nemici seguono il livello del dungeon e il tuo
 	ZBG = jcolor(jgs(z, "bg", NULL), 0x141820);
 	ZTC = jcolor(jgs(z, "tc", NULL), 0xffb04a);
 	ZMUS = musicFor(jgs(z, "mus", ""));
@@ -210,6 +219,12 @@ static bool loadFiles(const char *k, int run) {
 			int li = -1; for (int i = 0; i < NLORE; i++) if (!strcmp(LOREID[i], id)) li = i;
 			if (li < 0 || (P.lore & (1u << li))) continue;
 			q = entNew(K_LORE, x, y); if (q) { q->sid = li; snprintf(q->name, sizeof q->name, "Pagina di diario"); }
+		} else if (xPropKind(k2) > 0) {
+			// 3DS 1.5: botteghe, stallo, Viandante, Casa degli alleati, Torre... dove li mette il browser
+			q = xEntNew((u8)xPropKind(k2), x, y); if (q) { q->model = xPropModel(k2); snprintf(q->name, sizeof q->name, "%s", jgs(e, "n", "")); }
+		} else if (!strcmp(k2, "sig48")) {
+			static int sigN; extern int MD_SIG48; if (!strcmp(Zk, "giungla48")) { int i = 0; for (int k = 0; k < NENT; k++) if (ents[k].k == K_X && ents[k].xk == XK_SIG) i++; sigN = i; }
+			q = xEntNew(XK_SIG, x, y); if (q) { q->xs = sigN; q->model = MD_SIG48; snprintf(q->name, sizeof q->name, "Santuario del Sigillo di Giada"); }
 		} else if (!strcmp(k2, "trag48b")) {
 			q = mkPo(x, y, "porto", PO_OTHER, "La Stella del Sud · per Aldoria");
 		} else if (!strcmp(k2, "lev")) {
@@ -226,7 +241,8 @@ static bool loadFiles(const char *k, int run) {
 void loadZone(const char *k, const char *from) {
 	float relx = P.px / (N ? N : 1), rely = P.py / (N ? N : 1);
 	char key[32]; snprintf(key, sizeof key, "%s", k);
-	if (!zoneExists(key)) { msg("Questo luogo non è disponibile su DS"); return; }
+	extern bool torIsZone(const char *k); bool gen = torIsZone(key);
+	if (!gen && !zoneExists(key)) { msg("Questo luogo non è disponibile su DS"); return; }
 	ZDG = -1; ZDN = 0; ZRUN = 0;
 	char *at = strchr(key, '@');
 	if (at) {
@@ -239,7 +255,8 @@ void loadZone(const char *k, const char *from) {
 	NFX = NPOP = NPJ = NPARTS = 0;
 	IT = NULL; TGT = NULL;
 	snprintf(Zk, sizeof Zk, "%s", key);
-	if (!loadFiles(key, ZRUN)) { msg("Errore nel caricare %s", key); return; }
+	if (gen) { extern void torGen(const char *k); NSLIGHT = 0; torGen(key); }
+	else if (!loadFiles(key, ZRUN)) { msg("Errore nel caricare %s", key); return; }
 	float sx = spX, sy = spY;
 	if (from && *from) {
 		Ent *best = NULL; float bd = 1e9f;
@@ -257,6 +274,8 @@ void loadZone(const char *k, const char *from) {
 	P.ndmh = 0; P.dmk = 0;
 	{ extern float STA; extern bool STEX; extern int stMax(void); STA = stMax(); STEX = false; }
 	camX = 32 * (P.px - P.py); camY = 16 * (P.px + P.py) - 10;
+	hardZone();
+	xZoneLoad();
 	npcMarks();
 	{ extern void sprZone(void); sprZone(); }   // sprite dei personaggi e dei nemici di questa zona
 	uiMinimapDirty();

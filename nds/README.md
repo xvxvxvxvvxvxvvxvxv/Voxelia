@@ -7,6 +7,13 @@ per 3DS (branch `3ds`):
 - **in comune con il 3DS:** logica del gioco, mondo, missioni e storia, interfaccia, rete e plugin del server;
 - **riscritti per il DS:** grafica, testo, audio e comandi.
 
+| | |
+|---|---|
+| **Scarica** | [`releases/voxelia_nds_v1.3.zip`](releases/voxelia_nds_v1.3.zip): `voxelia.nds`, README, CHANGELOG e PLUGIN |
+| **Novità** | [CHANGELOG.md](CHANGELOG.md) · **Plugin del server:** [PLUGIN.md](PLUGIN.md) |
+| **Su questo branch** | solo il port DS: il codice (`source/`), i dati per la ROM (`nitro/`, ricavati da quelli del 3DS), mbedtls per l'ARM9 (`libs/`), gli strumenti (`tools/`) e gli zip di ogni versione (`releases/`) |
+| **Gli altri port** | 3DS sul branch [`3ds`](../../tree/3ds); tutti i port insieme (3DS, DS, PS Vita, PS4, PSP) sul branch [`ports`](../../tree/ports); il gioco per browser e il server sul branch `main` |
+
 ![Voxelia DS](screenshots/ds.png)
 
 ## Installazione
@@ -85,7 +92,6 @@ fotogramma. Il 3DS disegna decine di migliaia di voxel. Quindi:
   gli strumenti sono onde campionate (sinusoide, triangolo, dente di sega, quadra) sui 16 canali del DS, con
   inviluppi e batteria. Rispetto al 3DS il filtro è fisso (non si apre durante la nota) e manca il riverbero.
 - **Prestazioni:** circa 25–40 fotogrammi al secondo, secondo la zona.
-
 - **Varianti dei compagni:** sul DS i compagni sono sprite già colorati, quindi la variante si vede nel nome ma
   non cambia i colori.
 
@@ -122,3 +128,5 @@ Codice (`source/`):
 | `music.c` | sequencer dei brani del browser (`nitro/music.json`), lo stesso del port 3DS |
 | `net.c` | Wi-Fi, TLS (mbedtls), WebSocket e protocollo di `server.js`, in un thread calico |
 | `game.c`, `world.c`, `data.c`, `ui.c`, `plugins.c`, `json.c` | dal port 3DS, con poche modifiche |
+| `story.c` … `story9.c`, `sync.c` | le meccaniche della Storia e i nemici condivisi, uguali al port 3DS (la Torre costruisce le sale nel formato a caselle del DS) |
+| `tools/dsassets.py` | dai dati del 3DS: zone a caselle (`.dsz`), sprite dei modelli (`spr.pak`) e dell'eroe (`hero.pak`) |

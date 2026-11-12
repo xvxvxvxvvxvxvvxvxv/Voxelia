@@ -6,6 +6,13 @@ Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 8.5 – Il Regn
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,
 libctru, citro3d e citro2d, e pensato per l'hardware della console.
 
+| | |
+|---|---|
+| **Scarica** | [`releases/voxelia_3ds_v1.7.zip`](releases/voxelia_3ds_v1.7.zip): `voxelia.3dsx`, README, CHANGELOG e PLUGIN |
+| **Novità** | [CHANGELOG.md](CHANGELOG.md) · **Plugin del server:** [PLUGIN.md](PLUGIN.md) |
+| **Su questo branch** | solo il port 3DS: il codice (`source/`), i dati esportati dal gioco (`romfs/`), gli strumenti per rigenerarli (`tools/`) e gli zip di ogni versione (`releases/`) |
+| **Gli altri port** | DS sul branch [`nds`](../../tree/nds); tutti i port insieme (3DS, DS, PS Vita, PS4, PSP) sul branch [`ports`](../../tree/ports); il gioco per browser e il server sul branch `main` |
+
 ## Installazione
 
 1. Serve una console con l'Homebrew Launcher (custom firmware, per esempio Luma3DS).
@@ -72,18 +79,18 @@ zona con il codice originale e registra ogni voxel che il renderer disegna (`box
 luci ed entità. Poi cattura in 8 direzioni i fotogrammi di camminata e di attacco dei modelli animati della 7.18
 e compone l'eroe per ogni tipo d'arma, elmo, corazza e scudo. Il risultato (circa 12 MB) sta nella romfs.
 
-- **129 zone esportate**:
-  - Aldoria 7.50 con i quartieri Nord, Campi, Borgo delle Ceneri e Porto;
-  - Foresta, Deserto e Picchi rifatti nella 7.12;
-  - il Colosseo;
-  - 81 interni, tra cui le stanze del castello, ville, teatro, mulino, faro e galeone;
+- **134 file di zona**:
+  - Aldoria con i quartieri Nord, Campi, Borgo delle Ceneri e Porto, la Foresta, il Deserto, i Picchi e il Colosseo;
+  - 75 interni, tra cui le stanze del castello, il Serraglio, il palazzo e le case di Thalassa;
   - Thalassa e la Giungla di Smeraldo;
-  - gli 8 dungeon, compreso il Tempio di Thalassa, con due varianti per ogni piano.
-- **78 nemici e 14 boss**, con i modelli animati e le statistiche della 7.50.
-- **190 personaggi**, ognuno con il proprio modello unico.
+  - gli 8 dungeon, compreso il Tempio di Giada, con due varianti per ogni piano (48 file).
+- **64 nemici e 15 boss**, con i modelli animati e le statistiche della 8.5 (il bilanciamento della 8.1 e della 8.3).
+- **197 personaggi**, ognuno con il proprio modello.
 - **130 missioni**: caccia, raccolta dai nemici, boss, consegne e raccolta di risorse nei quartieri.
   Le missioni di pesca, tappe e battaglie non vengono proposte.
-- **Le tabelle della 7.50**: storia, pagine del diario, sblocchi (per esempio il Borgo delle Ceneri) e oggetti unici dei boss.
+- **Le tabelle della 8.5**: storia, pagine del diario, sblocchi, oggetti unici dei boss, elementi, risorse.
+- **I modelli della Storia**: cavalli, animali, botteghe, stallo, Torre, Viandante, Regina Nerea, nelle posizioni
+  in cui li mette il browser.
 
 Quando esce una nuova versione basta rigenerare i dati:
 
@@ -225,4 +232,12 @@ Struttura del codice (`source/`):
 | `net.c` | multigiocatore: WebSocket/TLS (mbedtls), protocollo di `server.js` |
 | `plugins.c` | plugin del server (modalità storia): boss del mondo, tesoro, teletrasporto, gruppi, emote… |
 | `json.c` | lettore e scrittore JSON (dati e rete) |
+| `story.c` | cavalli, animali, compagni domati, il compagno, l'animale e il cavallo degli altri in rete |
+| `story2.c` | elementi ed Essenze, scelte, alleati, vie e titoli, il regno oltre il mare |
+| `story3.c` | armi che crescono, boss a fasi, diario delle scoperte, scavi, maledizioni, eventi a orario |
+| `story4.c`, `story7.c` | il Serraglio; incroci e varianti dei compagni |
+| `story5.c`, `story6.c`, `story8.c` | Bottega dei mestieri; Torre della Corona (sale generate sulla console); carte |
+| `story9.c` | la difficoltà della Storia (7.11, 8.1, 8.3) |
+| `sync.c` | nemici condivisi in rete (7.41) |
 | `tools/export.js` | esportatore dei dati dalla versione browser |
+| `tools/songs.js` | le note dei brani del browser (`romfs/music.json`) |

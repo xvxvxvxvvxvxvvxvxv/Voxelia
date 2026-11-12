@@ -4,7 +4,7 @@
 Si gioca da soli o con gli amici. Si esplora la città di Aldoria e il regno intorno e si combatte nei dungeon. In
 Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costruiscono mondi da far giocare agli altri.
 
-**Versione attuale: 8.5** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.6** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.md)
 
@@ -47,8 +47,8 @@ Le novità di ogni versione, dalla più recente, sono in [CHANGELOG.md](CHANGELO
 
 - **Un solo file.** Il gioco intero è `voxelia.html`: grafica, musica, testi e logica. Per giocare da soli non servono
   installazioni, librerie o connessione a internet.
-- **Un regno grande**: 120 zone (84 interni da esplorare), 8 dungeon a più piani, 196 personaggi, 130 missioni, 78 tipi di
-  nemici di cui 14 boss. Oltre il mare c'è un secondo regno, **Thalassa**.
+- **Un regno grande**: 121 zone (84 interni da esplorare), 12 dungeon a più piani, 196 personaggi, 130 missioni, 93 tipi di
+  nemici di cui 18 boss. Oltre il mare c'è un secondo regno, **Thalassa**; dopo il vero finale, l'**Atto II**.
 - **Una storia raccontata da filmati** girati nei luoghi veri del gioco, con scelte che cambiano il finale.
 - **Tomorrow**: un mondo senza confini, generato mentre cammini, dove conquisti terre, fondi città e fai la guerra
   con le fazioni, anche insieme agli altri giocatori.
@@ -218,6 +218,10 @@ in una battaglia in cinque fasi.
   città bianca sulla baia, con il Palazzo della Regina, la Piazza del Serpente, la Taverna della Sirena, il Mercato
   delle spezie, i moli e il faro; la Giungla di Smeraldo ha la cascata, il fiume con i ponti di corda e il tempio fra le
   rovine.
+- **Atto II · La costellazione perduta** (8.6), dopo il vero finale: le notti si allungano e in cielo si spengono le
+  stelle della Lanterna, dove Aldric il Primo chiuse Morvath, l'Ultimo Custode. Dalla cupola dell'Osservatorio il
+  Portale delle Stelle porta nella Valle del Crepuscolo: tre dungeon riaccendono le tre stelle (il Pozzo delle Stelle
+  Spente, la Forgia dell'Eclissi, il Giardino della Luna Capovolta) e aprono la Rocca di Morvath.
 
 ### Difficoltà
 
@@ -231,6 +235,13 @@ in una battaglia in cinque fasi.
 In ogni difficoltà i nemici attaccano **in branco** e compaiono i **Campioni**, nemici più grossi con un alone dorato e
 un bottino sicuro. I boss combattono in **tre fasi**, hanno un **punto debole** che li stordisce e sotto un quarto della
 vita entrano nell'**ultima furia**. I mondi di Voxelia Studio tengono l'equilibrio scelto dal loro autore.
+
+**La Minaccia del Regno** (8.6): nella Storia il regno diventa più pericoloso andando avanti, con la storia e con i
+giorni di gioco passati. Va da 0 a 10 e si vede sotto l'orologio. A ogni livello i nemici imparano qualcosa: la guardia
+dei guerrieri, le schivate delle bestie, le cariche e i colpi pesanti annunciati da cerchi rossi, i tiri a ventaglio,
+la furia del branco; i Campioni hanno poteri (Scudo, Veloce, Vampiro, Esplosivo, Evocatore) e i boss nuove mosse
+(Croce, Anello, Ultimo Respiro). Dal livello 2 le notti nelle zone aperte sono più pericolose, dal 3 i predoni
+invadono i quartieri di Aldoria.
 
 ---
 
@@ -823,6 +834,10 @@ nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della
 | `combattimento/8zzzze_dungeon.js` | Ogni dungeon un'altra dimensione: stanze di forme diverse, stile e arredi propri |
 | `corona/8zzzzf_zaffiro.js` | Lo Zaffiro infranto: Voxelia Dimension (7.55) e Aldoria 3026 (8.4) tolte dal gioco; lo sblocco di Tomorrow |
 | `sistemi/8zzzzn_dev3.js` | Il pannello sviluppatore per provare tutto (8.5): missioni e variabili della storia, trucchi, mondo, debug sopra il gioco, console, stati e prova di tutte le zone |
+| `combattimento/8zzzzq_minaccia.js` | La Minaccia del Regno (8.6): il livello dalla storia e dai giorni, le mosse nuove dei nemici, i poteri dei Campioni, le mosse in più dei boss |
+| `combattimento/8zzzzr_notti.js` | Le notti pericolose e le invasioni dei quartieri di Aldoria (8.6) |
+| `storia/8zzzzs_atto2.js` | Atto II · La costellazione perduta (8.6): la Valle del Crepuscolo, quattro dungeon, creature, boss e filmati |
+| `sistemi/8zzzzt_dev86.js` | La scheda «☠ Minaccia e Atto II» del pannello sviluppatore (8.6) |
 | `combattimento/8zzzzk_bilancio.js` | Il bilanciamento: Campioni per piano, Cripta, Fucina, Tempio di Giada, Tomorrow ai livelli alti (8.1); nemici, Campioni e prezzi che seguono il tuo livello (8.3) |
 | `corona/8zzzzh_corona80.js` | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album |
 | `sistemi/8zzzzh_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |

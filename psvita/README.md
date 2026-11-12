@@ -1,6 +1,6 @@
-# Voxelia PS Vita 1.0.1 — Il Regno Perduto
+# Voxelia PS Vita 1.0.2 — Il Regno Perduto
 
-Versione del port: **1.0.1** (contenuti di Voxelia **8.5**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.0.2** (contenuti di Voxelia **8.5**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
 Port per **PlayStation Vita** (e PS TV) di *Voxelia 8.5 – Il Regno Perduto*, il gioco di ruolo voxel isometrico per
 browser. È un programma nativo in C (VitaSDK + vitaGL), costruito sul motore del port 3DS ma pensato per la Vita:

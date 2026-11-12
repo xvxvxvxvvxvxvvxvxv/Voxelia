@@ -174,29 +174,51 @@ static bool autoStep(PlInput *in, float dt) {
 }
 #endif
 
+// schermata di caricamento: ogni passo dell'avvio finisce nel registro e sullo schermo, così se qualcosa si
+// ferma si vede dove (e l'animazione di vitaGL sparisce subito)
+#include "glinc.h"
+static bool bootG2 = false;
+static void boot(const char *step) {
+	plLog("avvio: %s…", step);
+	glViewport(0, 0, SCR_W, SCR_H);
+	glClearColor(.06f, .07f, .11f, 1); glClear(GL_COLOR_BUFFER_BIT);
+	if (bootG2) {
+		g2Begin();
+		txtC(VW / 2, VH / 2 - 60, 1.4f, C2D_Color32(255, 216, 74, 255), "VOXELIA");
+		txtC(VW / 2, VH / 2 - 14, .5f, C2D_Color32(240, 236, 224, 255), "Il Regno Perduto · PS Vita " PORT_VER);
+		char b[96]; snprintf(b, sizeof b, "%s…", step);
+		txtC(VW / 2, VH / 2 + 30, .45f, C2D_Color32(154, 164, 184, 255), b);
+		g2Flush();
+	}
+	plSwap();
+}
 int main(int argc, char **argv) {
 	(void)argc; (void)argv;
 	if (!plGfxInit()) { plFatal("La grafica della console non si avvia (vitaGL)."); return 1; }
+	boot("impostazioni");
 	setLoad();
 	uiApplyScale();
-	plLog("impostazioni lette");
+	boot("carattere e interfaccia");
 	g2Init();
-	plLog("interfaccia e carattere pronti");
+	bootG2 = true;
+	boot("shader del mondo (la prima volta la console li compila)");
 	rInit();
 	{ extern int glFails; if (glFails) plFatal("Gli shader del gioco non si compilano su questa console. Controlla ur0:data/libshacccg.suprx e manda ux0:data/voxelia/log.txt a chi sviluppa il port."); }
-	plLog("renderer pronto");
+	boot("tabelle, modelli ed eroe");
 	dataInit();
-	plLog("dati pronti: %d nemici, %d personaggi, %d missioni", NE, NNPC, NQT);
+	plLog("dati: %d nemici, %d personaggi, %d missioni", NE, NNPC, NQT);
 	if (!NE || !NNPC) plFatal("Mancano i dati del gioco (app0:data/data.json). Reinstalla voxelia.vpk.");
+	boot("gioco");
 	gameInit();
 	uiInit();
+	boot("audio e musiche");
 	auInit();
-	plLog("audio pronto");
+	boot("rete");
 	netInit();
-	plLog("rete pronta");
 	snprintf(P.name, sizeof P.name, "Eroe");
 	// il nome dell'eroe parte da quello dell'utente della console
 	{ char nm[16] = ""; plUserName(nm, sizeof nm); if (nm[0]) snprintf(P.name, sizeof P.name, "%s", nm); }
+	boot("Aldoria");
 	titleStart();
 	plLog("titolo pronto");
 	camS = SET.zoom;

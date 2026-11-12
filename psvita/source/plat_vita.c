@@ -104,6 +104,8 @@ bool plGfxInit(void) {
 		if (!vglInitExtended(0, SCR_W, SCR_H, 24 * 1024 * 1024, SCE_GXM_MULTISAMPLE_NONE)) { plLog("ERRORE: vitaGL non parte"); return false; }
 	}
 	vglOk = true;
+	// il primo scambio dei buffer chiude l'animazione di vitaGL: da qui in poi lo schermo è del gioco
+	glClearColor(.06f, .07f, .11f, 1); glClear(GL_COLOR_BUFFER_BIT); vglSwapBuffers(GL_FALSE);
 	plLog("vitaGL pronto");
 	// vitaGL compila gli shader sulla console con il compilatore di sistema: senza, il gioco non può disegnare
 	bool sh1 = fileExists("ur0:data/libshacccg.suprx"), sh2 = fileExists("ur0:data/external/libshacccg.suprx");

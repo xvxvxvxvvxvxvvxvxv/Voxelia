@@ -3,6 +3,13 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi, missioni e musiche.
 
+## 1.0.2 · contenuti di Voxelia 8.5
+
+**Schermata di caricamento.** Con la 1.0.1 su alcune console restava l'animazione di vitaGL (il logo che gira)
+senza che il gioco partisse. Ora l'animazione si chiude subito e il gioco mostra il passo dell'avvio in corso
+(carattere, shader, tabelle e modelli, audio, rete, Aldoria): se qualcosa si ferma si vede dove, e il registro
+`ux0:data/voxelia/log.txt` scrive ogni passo prima di cominciarlo.
+
 ## 1.0.1 · contenuti di Voxelia 8.5
 
 **Avvio più sicuro sulla console.** La 1.0 si chiudeva all'avvio con l'errore C2-12828-1 su alcune console.

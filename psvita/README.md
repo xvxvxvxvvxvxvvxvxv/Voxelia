@@ -17,6 +17,8 @@ memoria per tenere in gioco tutto il mondo.
 
 ## Installazione
 
+**Scarica:** [`voxelia_psvita_v1.0.6.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/psvita/releases/voxelia_psvita_v1.0.6.zip), con dentro il `.vpk`.
+
 1. Serve una Vita (o PS TV) con HENkaku/Ensō e **VitaShell**.
 2. Serve anche **`ur0:data/libshacccg.suprx`**, il compilatore di shader della console: vitaGL lo usa per gli
    shader del gioco. Quasi tutti gli homebrew in 3D lo richiedono; se manca, si estrae in un minuto con

@@ -8,7 +8,7 @@ libctru, citro3d e citro2d, e pensato per l'hardware della console.
 
 | | |
 |---|---|
-| **Scarica** | [`releases/voxelia_3ds_v1.7.zip`](releases/voxelia_3ds_v1.7.zip): `voxelia.3dsx`, README, CHANGELOG e PLUGIN |
+| **Scarica** | [`releases/voxelia_3ds_v1.7.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/3ds/releases/voxelia_3ds_v1.7.zip): `voxelia.3dsx`, README, CHANGELOG e PLUGIN |
 | **Novità** | [CHANGELOG.md](CHANGELOG.md) · **Plugin del server:** [PLUGIN.md](PLUGIN.md) |
 | **In questa cartella** | il port 3DS: il codice (`source/`), i dati esportati dal gioco (`romfs/`), gli strumenti per rigenerarli (`tools/`) e gli zip di ogni versione (`releases/`) |
 | **Gli altri port** | nelle cartelle accanto di questo branch: DS in [`nds/`](../nds), PS Vita in [`psvita/`](../psvita), PS4 in [`ps4/`](../ps4), PSP in [`psp/`](../psp); il gioco per browser e il server sul branch `main` |

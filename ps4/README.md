@@ -17,6 +17,8 @@ DualShock 4 con il **touchpad come mouse**, audio a 48 kHz, multigiocatore con i
 
 ## Installazione
 
+**Scarica:** [`voxelia_ps4_v1.0.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/ps4/releases/voxelia_ps4_v1.0.zip), con dentro `voxelia.pkg`.
+
 1. Serve una PS4 con un firmware che permette gli homebrew (per esempio con **GoldHEN**) e il *Debug Settings*
    attivo, come per tutti i PKG homebrew.
 2. Copia `voxelia.pkg` su una chiavetta USB (FAT32 o exFAT) e installalo con **Debug Settings → Game → Package

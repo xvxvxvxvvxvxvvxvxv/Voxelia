@@ -1,6 +1,6 @@
 // Voxelia PS Vita (motore del port 3DS) - multigiocatore: client WebSocket (ws:// o wss:// con mbedtls) verso il server.js di Voxelia,
 // con lo stesso protocollo del gioco per browser: hello, posizione 10 volte al secondo ('p'), stato degli altri
-// ('s'), chat, ping, ora del mondo condivisa, arena PvP, cicli dei dungeon, comandi dell'admin.
+// ('s'), chat, ping, ora del mondo condivisa, arena PvP, cicli dei dungeon.
 #include "voxelia.h"
 #include <mbedtls/net_sockets.h>
 #include <mbedtls/ssl.h>
@@ -270,7 +270,7 @@ void netEnemyHitE(Ent *e, float frac) {
 	snprintf(HITS[NHITS++], 48, "[\"%s\",%.4f,%d]", e->sg, frac, ++hitSeq);
 }
 // il nome che ha il server: se cambia (partita caricata dopo il collegamento, nuovo eroe, nome cambiato) si
-// rimanda il saluto, così chat, pannello admin e giocatori mostrano il nome dell'eroe e non quello della console
+// rimanda il saluto, così chat ed elenco dei giocatori mostrano il nome dell'eroe e non quello della console
 
 static void nameCheck(void) {
 	if (!netOk || !strcmp(helloName, P.name)) return;
@@ -389,17 +389,6 @@ static void onMsg(J *m) {
 		JFOR(q, jget(m, "list")) { if (NWHO >= 24) break; snprintf(WHO[NWHO++], 96, "%s · Lv %d · %s%s", jgs(q, "n", "?"), (int)jgn(q, "lv", 1), zoneTitle(jgs(q, "z", "town")), jgn(q, "me", 0) ? " (tu)" : ""); }
 	} else if (!strcmp(t, "profq")) {
 		char b[200]; snprintf(b, sizeof b, "{\"t\":\"profr\",\"to\":\"%s\",\"d\":{\"lv\":%d,\"df\":%d,\"hp\":%d,\"mx\":%d,\"g\":%d,\"k\":%d,\"z\":\"Vita\"}}", jgs(m, "from", ""), P.lv, P.df, (int)P.hp, P.mx, P.g, P.kills); netSendRaw(b);
-	} else if (!strcmp(t, "adm")) {
-		const char *a = jgs(m, "a", ""); int n = (int)jgn(m, "n", 1); if (n < 1) n = 1;
-		char b[80] = "";
-		if (!strcmp(a, "gold")) { P.g += n; snprintf(b, sizeof b, "+%d oro", n); }
-		else if (!strcmp(a, "xp")) { gainXP(n); snprintf(b, sizeof b, "+%d XP", n); }
-		else if (!strcmp(a, "pot")) { P.pot += n; snprintf(b, sizeof b, "+%d pozioni", n); }
-		else if (!strcmp(a, "lv")) { for (int i = 0; i < n; i++) gainXP(needXP() - P.xp > 0 ? needXP() - P.xp : 1); snprintf(b, sizeof b, "+%d livelli", n); }
-		else if (!strcmp(a, "item")) { Item it = mkItem(P.lv + 1, clampi((int)jgn(m, "r", 0), 0, 3), -1); gain(it); snprintf(b, sizeof b, "un oggetto: %s", it.n); }
-		else if (!strcmp(a, "heal")) { P.hp = P.mx; snprintf(b, sizeof b, "cura completa"); }
-		else if (!strcmp(a, "tp")) { goZone("town"); snprintf(b, sizeof b, "teletrasporto ad Aldoria"); }
-		if (b[0]) { msg("Dall'admin: %s", b); chatLog("", b, 1); JINGLE(.09f, W_TRIANGLE, 72, 79, 84); saveGame(); }
 	}
 }
 

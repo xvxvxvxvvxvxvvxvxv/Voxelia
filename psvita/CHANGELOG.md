@@ -3,11 +3,17 @@
 Il port ha una versione sua. In ogni versione è indicata anche la versione di Voxelia (il gioco per browser)
 da cui arrivano mappe, modelli, nemici, personaggi, missioni e musiche.
 
-## 1.0.5 · contenuti di Voxelia 8.5
+## 1.0.6 · contenuti di Voxelia 8.5
 
 **Gli annunci restano nella loro finestra.** Il titolo giallo degli annunci (boss, eventi, storia), quando era
 lungo, usciva dai bordi del riquadro. Ora si rimpicciolisce per starci e, se non basta, scorre come il testo sotto;
 l'annuncio resta sullo schermo il tempo di leggerlo tutto. Lo stesso vale per il nome della zona quando ci entri.
+
+## 1.0.5 · contenuti di Voxelia 8.5
+
+**Niente più pannello sviluppatore.** Tolto dal menu di pausa il pannello con trucchi, tempo, zone, missioni e
+debug, insieme ai comandi dell'admin che arrivavano dal server (oro, XP, pozioni, livelli, oggetti, cura,
+teletrasporto). Resta solo la disconnessione decisa dal server.
 
 ## 1.0.4 · contenuti di Voxelia 8.5
 

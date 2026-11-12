@@ -6,7 +6,7 @@ Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costrui
 
 🇬🇧 **[English](README.md)** · 🇮🇹 Italiano
 
-**Versione attuale: 8.7** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.7.1** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.it.md)
 

@@ -67,7 +67,7 @@ const LINKRX=/\b(?:https?:\/\/|www\.)(?:[^\s<>"'&]|&amp;)+/gi,hasLink=s=>/\b(?:h
 function linkify(h){return h.replace(LINKRX,m=>{let u=m,tail='';while(/[.,;:!?)\]»]$/.test(u)&&u.length>4){tail=u.slice(-1)+tail;u=u.slice(0,-1)}
   const href=u.replace(/&amp;/g,'&'),full=/^https?:\/\//i.test(href)?href:'https://'+href;let ok=false;try{ok=/^https?:$/.test(new URL(full).protocol)}catch(_){}
   if(!ok)return m;const show=u.length>48?u.slice(0,45)+'…':u;return`<a class="clink" href="${esc(full)}" target="_blank" rel="noopener noreferrer nofollow" title="${esc(full)}">${show}</a>${tail}`})}
-function clog(n,s,o={}){const box=$('cl'),d=document.createElement('div'),tm=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+function clog(n,s,o={}){const box=$('cl'),d=document.createElement('div'),tm=new Date().toLocaleTimeString(i18Loc(),{hour:'2-digit',minute:'2-digit'});
   if(o.sys)d.className=o.adm?'sys adm':'sys',d.innerHTML=`<span class="zn">${tm}</span> ${linkify(esc(s))}`;
   else{d.className=o.me?'me':o.adm?'adm':'';d.innerHTML=`<span class="zn">${tm}</span> <b>${esc(n)}</b>${o.z?` <span class="zn">(${esc(o.z)})</span>`:''}: ${linkify(esc(s))}`}
   const atEnd=box.scrollTop+box.clientHeight>=box.scrollHeight-8;box.appendChild(d);while(box.children.length>80)box.firstChild.remove();if(atEnd||o.me)box.scrollTop=box.scrollHeight;

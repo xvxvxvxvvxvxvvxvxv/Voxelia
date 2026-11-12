@@ -55,6 +55,9 @@ function i18Find(s,depth){const ex=I18.ex.get(s);if(ex!=null)return ex;if(depth>
 function i18En(o){if(!I18.ok)i18Build();const s=i18Norm(o);if(!s||!/[A-Za-zÀ-ÿ]/.test(s))return o;
   let r=I18.cache.get(s);if(r===undefined){r=i18Find(s,0);if(I18.cache.size>30000)I18.cache.clear();I18.cache.set(s,r)}
   if(r==null)return o;const lead=o.match(/^\s*/)[0],tail=o.match(/\s*$/)[0];return lead+r+(o.length>lead.length?tail:'')}
+// 8.7.1: date, ore e numeri (oro) nel formato della lingua: in inglese quello del browser, altrimenti l'italiano
+// (prima erano sempre all'italiana: «12/11/2026» si leggeva 11 dicembre e «43.210 oro» 43 monete e spiccioli)
+function i18Loc(){return SET.lang==='en'?undefined:'it-IT'}
 // il motore di prima (4_render.js) passa di qui
 trText=function(o){const lang=SET.lang;if(lang==='it')return o;if(!o||!o.trim())return o;if(lang==='en')return i18En(o);return elText(o)};
 // anche i suggerimenti, i segnaposto e le descrizioni
@@ -77,5 +80,6 @@ for(const f of['alert','confirm','prompt']){const f0=window[f];if(typeof f0!=='f
 // l'inglese è la lingua di partenza (una volta sola anche per chi aveva l'italiano)
 SETD.lang='en';
 if(!SET.l87){SET.l87=1;if(SET.lang==null||SET.lang==='it')SET.lang='en';try{LS.set('voxelia_set',SET)}catch(e){}}
-// anche il titolo della scheda del browser
-{const t0=document.title;const st=()=>{try{document.title=SET.lang==='it'?t0:trText(t0)}catch(e){}};setTimeout(st,0);const s0=setLang;setLang=function(l){s0(l);st()}}
+// anche il titolo della scheda del browser e la lingua della pagina (8.7.1: <html lang> segue la lingua scelta, così
+// i lettori di schermo leggono l'inglese con la voce inglese e il browser non propone di «tradurre dall'italiano»)
+{const t0=document.title;const st=()=>{try{document.documentElement.lang=SET.lang==='en'?'en':'it';document.title=SET.lang==='it'?t0:trText(t0)}catch(e){}};setTimeout(st,0);const s0=setLang;setLang=function(l){s0(l);st()}}

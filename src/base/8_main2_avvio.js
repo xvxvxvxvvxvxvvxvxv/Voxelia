@@ -1,6 +1,6 @@
 /* 7.53: tolto da 8_main.js, stesso ordine di prima: avvio, salvataggi e menu, input, ciclo principale, cursore */
 /* ================= avvio, salvataggi, menu ================= */
-function contHTML(){const s=LS.get(SAVEK,null);$('cont').innerHTML=s&&s.p?`<button class="mbtn cont" onclick="contGame()">${ico('gioca',24)}<span><b>Continua: ${esc(s.name)}</b><small>Livello ${s.p.lv|0} · ${DFS[s.df]?DFS[s.df].n:''} · frammenti ${(s.p.sh||[]).length}/6 · salvato ${esc(new Date(s.t).toLocaleString('it-IT'))}</small></span></button>`:'';menuPort();
+function contHTML(){const s=LS.get(SAVEK,null);$('cont').innerHTML=s&&s.p?`<button class="mbtn cont" onclick="contGame()">${ico('gioca',24)}<span><b>Continua: ${esc(s.name)}</b><small>Livello ${s.p.lv|0} · ${DFS[s.df]?DFS[s.df].n:''} · frammenti ${(s.p.sh||[]).length}/6 · salvato ${esc(new Date(s.t).toLocaleString(i18Loc()))}</small></span></button>`:'';menuPort();
   if(s){if(!$('nm').value)$('nm').value=s.name||'';if(!$('rc').value)$('rc').value=s.code||''}}
 function newGame(d){if(!LS.get('voxelia_intro',0)){const s0=LS.get(SAVEK,null);if(!(s0&&s0.p)){LS.set('voxelia_intro',1);playIntro(()=>begin(d,null));return}}const s=LS.get(SAVEK,null);if(s&&s.p){ovrStory(s,()=>begin(d,null));return}begin(d,null)}
 function contGame(){const s=LS.get(SAVEK,null);if(s&&s.p)begin(s.df|0,s)}

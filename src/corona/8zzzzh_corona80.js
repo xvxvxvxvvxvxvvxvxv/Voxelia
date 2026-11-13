@@ -5,9 +5,13 @@
    - 💎 SMERALDO, Tomorrow: vinci il boss di un dungeon di livello 20 o più;
    - 💎 AMETISTA, il Parco giochi: finisci un mondo di Voxelia Studio;
    - 💎 TOPAZIO, i Mondi della community: finisci un mondo scaricato.
-   Lo Zaffiro è spezzato (8.4: Aldoria 3026 è stata tolta) e non ha scheggia. Chi aveva già la scheggia di Zaffiro
-   la conserva nel salvataggio, ma non conta più.
-   Le schegge valgono per tutto il gioco (non per un solo eroe). Riunite tutte e cinque, si apre IL CUORE DELLA CORONA:
+   - 💎 ZAFFIRO, la Storia · l'Atto II (dalla 8.8): finisci l'Atto II, la città sepolta. Lo Zaffiro era spezzato dalla 8.4
+     (quando è stata tolta Aldoria 3026): si spezzò quando una città fu dimenticata, e torna intero quando Eldora viene
+     ricordata. La vecchia scheggia di Zaffiro del 3026 (chiave 'zaffiro') resta nei salvataggi ma non conta: quella nuova
+     è 'zaffiro88'.
+   Le schegge sono sei. Di una settima, senza colore, si parla solo nelle leggende (le Pietre della Memoria, il Canto dei
+   Re, lo scriba Vael): non compare da nessuna parte, né qui né nell'Album.
+   Le schegge valgono per tutto il gioco (non per un solo eroe). Riunite tutte e sei, si apre IL CUORE DELLA CORONA:
    l'eroe della Storia entra nella gemma e combatte in un'arena sospesa nel vuoto dove le epoche si mescolano —
    cavalieri del regno, banditi e soldati, i guerrieri d'Oltremare, le chimere di Tomorrow — fino all'Eco della Corona.
    È il finale vero di Voxelia.
@@ -18,18 +22,26 @@ const GEM80=[
   {k:'diamante',n:'Diamante',c:'#c8f0ff',m:'film',mn:'Storia · il vero finale',how:'Dopo il Re Lich, arriva al vero finale della Storia: chiudi l\'Occhio.'},
   {k:'smeraldo',n:'Smeraldo',c:'#28d66e',m:'ow',mn:'Tomorrow',how:'Vinci il boss di un dungeon di Tomorrow di livello 20 o più: i più profondi, lontano dal villaggio.'},
   {k:'ametista',n:'Ametista',c:'#aa46eb',m:'parco',mn:'Parco giochi',how:'Arriva alla fine di un mondo giocato in Voxelia Studio.'},
-  {k:'topazio',n:'Topazio',c:'#ffaa1e',m:'mondi',mn:'Mondi della community',how:'Arriva alla fine di un mondo scaricato dai Mondi della community.'}];
+  {k:'topazio',n:'Topazio',c:'#ffaa1e',m:'mondi',mn:'Mondi della community',how:'Arriva alla fine di un mondo scaricato dai Mondi della community.'},
+  {k:'zaffiro88',n:'Zaffiro',c:'#2a5ac8',m:'rotta',mn:'Storia · l\'Atto II',how:'Finisci l\'Atto II della Storia: la città sepolta, sotto il pozzo di Aldoria Vecchia.'}];
 const NG80=GEM80.length;
+// 8.8: sulla Corona del menu lo Zaffiro resta spezzato finché non lo riporti intero con l'Atto II; poi è una gemma come le altre
+const zaf88=()=>!!cr80().g.zaffiro88;
+function zaf88Sync(){if(typeof CRGEM==='undefined')return;const G=CRGEM.find(q=>q.k==='rotta');if(!G)return;const ok=zaf88();
+  if(!ok){G.lk='Lo Zaffiro si è spezzato quando una città è stata dimenticata. Si dice che tornerà intero il giorno in cui qualcuno la ricorderà.';return}
+  if(G.whole88)return;Object.assign(G,{whole88:1,g:'Zaffiro',c:[42,90,200],broken:0,m:'Atto II · La città sepolta',s:'La gemma tornata intera',d:'Lo Zaffiro è tornato intero quando Eldora è stata ricordata. Continua la Storia del tuo eroe nella città sotto la città.',go:()=>mode('story'),lock:null,lk:''});
+  const i=CRGEM.indexOf(G),b=document.querySelector('#crchips button[data-i="'+i+'"]');if(b){b.style.setProperty('--gc','rgb(42,90,200)');b.title='Zaffiro: '+G.m;const sp=b.querySelector('span');if(sp)sp.textContent=G.m}
+  try{if(CRW.gl&&typeof crMeshUp==='function')CRW.mesh=crMeshUp(CRW.gl)}catch(e){console.warn('Corona',e)}}
 const cr80=()=>{const o=LS.get(CRK80,{})||{};o.g=o.g||{};o.c=o.c||{};return o};
 const cr80n=()=>GEM80.filter(G=>cr80().g[G.k]).length;
-function cr80Got(k,quiet){const o=cr80();if(o.g[k])return false;o.g[k]=Date.now();LS.set(CRK80,o);const G=GEM80.find(q=>q.k===k),n=cr80n();if(quiet||!G)return true;
-  const go=()=>{banner('💎 '+G.n+' della Corona',(n<NG80?'Schegge riunite: '+n+'/'+NG80+' · le vedi nell\'Album della Corona':'Le cinque schegge sono riunite: il Cuore della Corona si è aperto'),'corona');jingle([64,68,71,76,80,83,88],.09,'triangle');if(typeof flash==='function')flash(G.c,.45,700);if(cineOK()&&P)sparks(P.px,P.py,50,[G.c,'#ffffff','#ffd84a'],160)};
+function cr80Got(k,quiet){const o=cr80();if(o.g[k])return false;o.g[k]=Date.now();LS.set(CRK80,o);if(k==='zaffiro88')zaf88Sync();const G=GEM80.find(q=>q.k===k),n=cr80n();if(quiet||!G)return true;
+  const go=()=>{banner('💎 '+G.n+' della Corona',(n<NG80?'Schegge riunite: '+n+'/'+NG80+' · le vedi nell\'Album della Corona':'Le sei schegge sono riunite: il Cuore della Corona si è aperto'),'corona');jingle([64,68,71,76,80,83,88],.09,'triangle');if(typeof flash==='function')flash(G.c,.45,700);if(cineOK()&&P)sparks(P.px,P.py,50,[G.c,'#ffffff','#ffd84a'],160)};
   if(started)setTimeout(go,2200);return true}
 function cr80Count(k,n){const o=cr80();o.c[k]=(o.c[k]|0)+(n||1);LS.set(CRK80,o)}
 // le schegge già meritate prima della 8.0 (dai salvataggi delle modalità)
-function cr80Old(){try{const s=LS.get(SAVEK,null);if(s&&s.p&&(s.p.st|0)>=4)cr80Got('rubino',1);if(s&&s.p&&(s.p.te|0)>=2)cr80Got('diamante',1)}catch(e){}}
+function cr80Old(){try{const s=LS.get(SAVEK,null);if(s&&s.p&&(s.p.st|0)>=4)cr80Got('rubino',1);if(s&&s.p&&(s.p.te|0)>=2)cr80Got('diamante',1);if(s&&s.p&&s.p.a88&&(s.p.a88.s|0)>=8)cr80Got('zaffiro88',1)}catch(e){}zaf88Sync()}
 /* ---- dove si trovano ---- */
-{const s0=save;save=function(){s0();try{if(!P||!started)return;if(MODE==='story'&&!(typeof OW!=='undefined'&&OW.on)&&(P.st|0)>=4)cr80Got('rubino');if(MODE==='story'&&!(typeof OW!=='undefined'&&OW.on)&&(P.te|0)>=2)cr80Got('diamante')}catch(e){}}}
+{const s0=save;save=function(){s0();try{if(!P||!started)return;if(MODE==='story'&&!(typeof OW!=='undefined'&&OW.on)&&(P.st|0)>=4)cr80Got('rubino');if(MODE==='story'&&!(typeof OW!=='undefined'&&OW.on)&&(P.te|0)>=2)cr80Got('diamante');if(MODE==='story'&&!(typeof OW!=='undefined'&&OW.on)&&P.a88&&(P.a88.s|0)>=8)cr80Got('zaffiro88')}catch(e){}}}
 {const d0=dungeonClear;dungeonClear=function(e){const id=ZZ&&ZZ.dg,D=id&&DG[id];d0(e);try{if(String(id).startsWith('twd_')&&D&&(D.lv|0)>=20&&(!D.fls||ZZ.dn>=D.fls))cr80Got('smeraldo')}catch(err){}}}
 let MBP80=0,MB80=0;
 if(typeof mbPlay==='function'){const m0=mbPlay;mbPlay=function(){MBP80=1;try{return m0.apply(this,arguments)}finally{setTimeout(()=>{MBP80=0},4000)}}}
@@ -55,8 +67,8 @@ function cuoreGen({D,n}){const c=(n-1)/2;for(let y=1;y<n-1;y++)for(let x=1;x<n-1
 {const f0=floor;floor=function(x,y,c,h){const z=ZZ;if(!z||!z.cuore||c!==0){f0(x,y,c,h);return}const n=N,cc=(n-1)/2,d=Math.hypot(x-cc,y-cc);box(x,y,-6,1,1,6,(x+y)&1?z.a:z.b,.92+h*.12);
   if(Math.abs(d-5)<.5||Math.abs(d-10)<.5||Math.abs(d-14.3)<.5)box(x+.3,y+.3,0,.4,.4,.3,'#d4af37',1.15+Math.sin(t*2+d)*.1);else if(hh(x*3,y*5)>.93)box(x+.45,y+.45,0,.1,.1,.3,'#ffffff',1.2+Math.sin(t*4+x)*.3)}}
 const CU80={w:-1,on:0,t:0};
-function cuoreEnter(){const s=LS.get(SAVEK,null);if(cr80n()<NG80){menuNote&&menuNote('Servono tutte e cinque le schegge della Corona.');return}if(!s||!s.p){menuNote&&menuNote('Serve un eroe della Storia: è lui che entra nel Cuore della Corona.');return}
-  albumClose();begin(s.df|0,s);setTimeout(()=>{if(!started)return;CU80.w=-1;CU80.on=1;CU80.t=2;load('cuore80','town');P.hp=P.mx;PA={ti:'Il Cuore della Corona',tx:'Le cinque schegge si accendono tutte insieme e la Corona ti risucchia dentro. Sotto i tuoi piedi c\'è un pavimento d\'oro sospeso nel vuoto; intorno, cinque pilastri con le cinque schegge.\n\nLe epoche si stanno mescolando: dal passato, dalle terre d\'Oltremare e dai mondi senza confini arriva tutto quello che la Corona ha visto. Resisti alle cinque ondate e affronta l\'Eco della Corona.'};pn('txt')},600)}
+function cuoreEnter(){const s=LS.get(SAVEK,null);if(cr80n()<NG80){menuNote&&menuNote('Servono tutte e sei le schegge della Corona.');return}if(!s||!s.p){menuNote&&menuNote('Serve un eroe della Storia: è lui che entra nel Cuore della Corona.');return}
+  albumClose();begin(s.df|0,s);setTimeout(()=>{if(!started)return;CU80.w=-1;CU80.on=1;CU80.t=2;load('cuore80','town');P.hp=P.mx;PA={ti:'Il Cuore della Corona',tx:'Le sei schegge si accendono tutte insieme e la Corona ti risucchia dentro. Sotto i tuoi piedi c\'è un pavimento d\'oro sospeso nel vuoto; intorno, sei pilastri con le sei schegge.\n\nLe epoche si stanno mescolando: dal passato, dalle terre d\'Oltremare e dai mondi senza confini arriva tutto quello che la Corona ha visto. Resisti alle cinque ondate e affronta l\'Eco della Corona.'};pn('txt')},600)}
 function cuoreTick(dt){if(Zk!=='cuore80'||!CU80.on||!started||PM==='txt')return;const L=ents.filter(e=>e.k==='en');if(L.length)return;CU80.t-=dt;if(CU80.t>0)return;CU80.t=3.5;CU80.w++;
   const z=ZZ,cc=(N-1)/2;z.lv=Math.max(8,P.lv-8);
   if(CU80.w>0){P.hp=Math.min(P.mx,P.hp+Math.round(P.mx*.5));P.pot++;flt(P,'+50% ❤ +🧪','#88ff88');hud()}
@@ -67,7 +79,7 @@ function cuoreTick(dt){if(Zk!=='cuore80'||!CU80.on||!started||PM==='txt')return;
   else if(CU80.w>W80.length){CU80.on=0;cuoreWin()}}
 function cuoreWin(){const o=cr80();const first=!o.fin;o.fin=o.fin||Date.now();LS.set(CRK80,o);P.g+=first?20000:3000;gainXP(first?8000:1500);if(first){const it=item(Math.max(18,P.lv),3,'h');it.n='Corona Riunita';it.hp=(it.hp||0)+200;if(P.inv.length<INV)P.inv.push(it);else ents.push({k:'dr',px:P.px,py:P.py,it})}save();
   jingle([60,64,67,72,76,79,84,88,91],.1,'triangle');if(typeof flash==='function')flash('#ffd84a',.6,900);
-  PA={ti:'La Corona Riunita',tx:'L\'Eco della Corona si spezza in mille cubetti di luce, e ognuno torna nella sua epoca: i cavalieri nel regno, i banditi nel West, i guerrieri oltre il mare, le chimere nei mondi senza confini.\n\nLe schegge brillano insieme per la prima volta da mille anni, e perfino lo Zaffiro infranto manda un riflesso. La Corona non è più un\'arma, né un ricordo: è un ponte. Tiene uniti i tempi, come un tempo teneva unite le terre.\n\nTorni ad Aldoria con la Corona Riunita sul capo. Nell\'Album della Corona il finale vero di Voxelia è segnato per sempre.'+(first?'\n\nRicompensa: 20.000 monete, la Corona Riunita (leggendaria) e tanta esperienza.':'')};
+  PA={ti:'La Corona Riunita',tx:'L\'Eco della Corona si spezza in mille cubetti di luce, e ognuno torna nella sua epoca: i cavalieri nel regno, i banditi nel West, i guerrieri oltre il mare, le chimere nei mondi senza confini.\n\nLe schegge brillano insieme per la prima volta da mille anni, e lo Zaffiro, tornato intero, più di tutte. Per un attimo, in mezzo alle sei luci, ti sembra di vederne una settima, senza colore. Poi non c\'è più. La Corona non è più un\'arma, né un ricordo: è un ponte. Tiene uniti i tempi, come un tempo teneva unite le terre.\n\nTorni ad Aldoria con la Corona Riunita sul capo. Nell\'Album della Corona il finale vero di Voxelia è segnato per sempre.'+(first?'\n\nRicompensa: 20.000 monete, la Corona Riunita (leggendaria) e tanta esperienza.':'')};
   pn('txt');setTimeout(()=>{if(started&&Zk==='cuore80')load('in_castle','town')},400)}
 {const l0=loadPost;loadPost=function(k){if(k!=='cuore80')CU80.on=0;l0(k)}}
 {const u0=upd;upd=function(dt){u0(dt);try{if(started&&P&&Zk==='cuore80')cuoreTick(dt)}catch(e){console.warn('Cuore della Corona',e)}}}
@@ -76,11 +88,11 @@ function album80(){cr80Old();const o=cr80(),s=LS.get(SAVEK,null),tw=LS.get(OWK,n
   const sp=s&&s.p||{},tp=tw&&tw.p||{};const T=(ok,tx)=>`<li class="${ok?'ok':''}">${ok?'✔':'○'} ${tx}</li>`;
   const runs=p=>Object.entries(p.runs||{}).reduce((a,[k,v])=>a+(String(k).startsWith('twd_')?0:(v|0)),0),twr=p=>Object.entries(p.runs||{}).filter(([k,v])=>String(k).startsWith('twd_')&&v).length;
   let h=`<div class="al80b"><div class="al80h"><h2>📖 Album della Corona</h2><button onclick="albumClose()" aria-label="Chiudi">✕</button></div>
-  <p class="mu">Le cinque schegge della Corona sono sparse nelle modalità. Lo Zaffiro è infranto e non ne ha. Riuniscile tutte per aprire il Cuore della Corona, il finale vero di Voxelia.</p>
+  <p class="mu">Le sei schegge della Corona sono sparse nelle modalità. Riuniscile tutte per aprire il Cuore della Corona, il finale vero di Voxelia.</p>
   <div class="al80g">${GEM80.map(G=>{const got=o.g[G.k];return`<div class="${got?'got':''}" style="--c:${G.c}"><i></i><b>${G.n}</b><small>${esc(G.mn)}</small><span>${got?'Raccolta il '+new Date(got).toLocaleDateString(i18Loc()):esc(G.how)}</span></div>`}).join('')}</div>
-  <div class="al80c ${n>=NG80?'on':''}"><b>👑 Il Cuore della Corona</b> · ${n}/${NG80} schegge${o.fin?' · <span class="ok">finale vero visto il '+new Date(o.fin).toLocaleDateString(i18Loc())+'</span>':''}<br>${n>=NG80?`<button onclick="cuoreEnter()">${o.fin?'⚔ Rientra nel Cuore':'⚔ Entra nel Cuore della Corona'}</button> <span class="mu">con l'eroe della Storia${s&&s.name?' ('+esc(s.name)+')':''}</span>`:'<span class="mu">Si apre quando hai tutte e cinque le schegge.</span>'}</div>
+  <div class="al80c ${n>=NG80?'on':''}"><b>👑 Il Cuore della Corona</b> · ${n}/${NG80} schegge${o.fin?' · <span class="ok">finale vero visto il '+new Date(o.fin).toLocaleDateString(i18Loc())+'</span>':''}<br>${n>=NG80?`<button onclick="cuoreEnter()">${o.fin?'⚔ Rientra nel Cuore':'⚔ Entra nel Cuore della Corona'}</button> <span class="mu">con l'eroe della Storia${s&&s.name?' ('+esc(s.name)+')':''}</span>`:'<span class="mu">Si apre quando hai tutte e sei le schegge.</span>'}</div>
   <div class="al80m">
-  <section><h3>📜 Storia</h3>${s?`<p class="mu">${esc(s.name||'Eroe')} · livello ${sp.lv|0}</p>`:'<p class="mu">Nessuna partita.</p>'}<ul>${T((sp.st|0)>=1,'Accetta la missione del Re')}${T((sp.st|0)>=3,'Riunisci i sei frammenti')}${T((sp.st|0)>=4,'Sconfiggi il Re Lich')}${T((sp.te|0)>=2,'Il vero finale: chiudi l\'Occhio')}${T(runs(sp)>=5,'Vinci 5 dungeon ('+runs(sp)+')')}${T(Object.keys(sp.bst||{}).length>=10,'Doma 10 specie ('+Object.keys(sp.bst||{}).length+')')}${T((sp.lv|0)>=30,'Arriva al livello 30')}</ul></section>
+  <section><h3>📜 Storia</h3>${s?`<p class="mu">${esc(s.name||'Eroe')} · livello ${sp.lv|0}</p>`:'<p class="mu">Nessuna partita.</p>'}<ul>${T((sp.st|0)>=1,'Accetta la missione del Re')}${T((sp.st|0)>=3,'Riunisci i sei frammenti')}${T((sp.st|0)>=4,'Sconfiggi il Re Lich')}${T((sp.te|0)>=2,'Il vero finale: chiudi l\'Occhio')}${T(((sp.a88&&sp.a88.s)|0)>=8,'L\'Atto II: Eldora, la città sepolta')}${T(runs(sp)>=5,'Vinci 5 dungeon ('+runs(sp)+')')}${T(Object.keys(sp.bst||{}).length>=10,'Doma 10 specie ('+Object.keys(sp.bst||{}).length+')')}${T((sp.lv|0)>=30,'Arriva al livello 30')}</ul></section>
   <section><h3>🌅 Tomorrow ${U('ow')?'':'🔒'}</h3>${tw?`<p class="mu">${esc(tw.name||'Eroe')} · livello ${tp.lv|0}</p>`:'<p class="mu">'+(U('ow')?'Nessuna partita.':'Si apre sconfiggendo il Re Lich.')+'</p>'}<ul>${T(!!(tp.tw&&tp.tw.set),'Fonda il tuo borgo')}${T((tp.lv|0)>=15,'Arriva al livello 15')}${T(twr(tp)>=3,'Vinci 3 dungeon di Tomorrow ('+twr(tp)+')')}${T(!!o.g.smeraldo,'Un dungeon di livello 20 o più')}${T((tp.lv|0)>=40,'Arriva al livello 40')}</ul></section>
   <section><h3>🎡 Studio e mondi</h3><ul>${T(!!o.g.ametista,'Finisci un mondo di Voxelia Studio ('+(o.c.mondiS|0)+')')}${T(!!o.g.topazio,'Finisci un mondo della community ('+(o.c.mondiC|0)+')')}</ul></section>
   </div></div>`;return h}

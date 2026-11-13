@@ -535,7 +535,7 @@ const QA={
     ['Un consiglio?','Il Maestro Dino insegna tecniche che anche io invidio. E se cerchi oro, ricorda che il Casinò vince sempre... tranne quando vinci tu.']]};
 function qaHTML(id){const L=id==='re'?QA.re.concat(P.st>=5?QA.re5:[]):id==='malakar_g'?QA.malakar.concat(QA.malakar_g):id==='malakar_re'?QA.malakar.concat(QA.malakar_re):QA[id]||[];if(!L.length)return'';
   let h=`<h4>❓ Domande</h4><div class="qa">`+L.map((q,i)=>`<button onclick="QAS={id:'${id}',i:${i}};pn('npc')"${QAS.id===id&&QAS.i===i?' class="on"':''}>${q[0]}</button>`).join('')+'</div>';
-  if(QAS.id===id&&L[QAS.i])h+=`<div class="qb dlga" data-q="${esc(L[QAS.i][0])}"><i>«${esc(L[QAS.i][1])}»</i></div>`;return h}
+  if(QAS.id===id&&L[QAS.i])h+=`<div class="qb dlga" data-q="${esc(L[QAS.i][0])}"><i>«<span>${esc(L[QAS.i][1])}</span>»</i></div>`;return h}
 function reExtraHTML(){let h='';if(P.s7===1&&!P.te)h+=P.st>=5?`<div class="qb"><b>Il settimo frammento</b><br><button onclick="arrestHero()">Mostra al Re il settimo cuore della Corona</button></div>`:'<div class="qb"><i>«Un settimo frammento? La Corona ne ha sei. Portameli prima, poi parleremo di favole.»</i></div>';return h+qaHTML('re')}
 function ghostHTML(){let h='';if(!P.key)h+=`<div class="qb"><i>«Non avere paura. Sono Malakar. Mio fratello ti ha mentito, come ha mentito a tutti. Il settimo cuore non è un falso: è la serratura di ciò che dorme sotto Aldoria. E adesso che lui ha la Corona, l\'Occhio si sta svegliando di nuovo.»</i><br><button onclick="takeKey()">Prendi la chiave della porta di pietra</button></div>`;
   else h+='<div class="qb"><i>«Il varco ti porta nella stanza del culto. Apri la porta di pietra. E ricorda: braccia, ventre, testa.»</i></div>';return h+qaHTML('malakar_g')}

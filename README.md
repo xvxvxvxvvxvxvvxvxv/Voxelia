@@ -6,7 +6,7 @@ Tomorrow you found a kingdom of your own, and with the **Voxelia Studio** editor
 
 🇬🇧 English · 🇮🇹 **[Italiano](README.it.md)**
 
-**Current version: 8.7.2** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
+**Current version: 8.8** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
 [⌨️ Controls](#controls) · [🖥 Server](#the-multiplayer-server) · [🛠 Development](#development) ·
 [📝 What's new (CHANGELOG)](CHANGELOG.md)
 
@@ -201,7 +201,7 @@ The menu is the **Voxel Crown** in 3D: each gem leads to a mode.
 | Amethyst | **Playground · Voxelia Studio** | The editor to build and play your own worlds. |
 | Topaz | **Community worlds** | Worlds published on the server by other players: play them, rate them, comment on them. |
 | Diamond | **Prologue and cutscenes** | The prologue and the story scenes you've already seen. On the server also the [previous versions](#previous-versions). |
-| Shattered Sapphire | **The broken gem** | This is where Aldoria 3026 was, removed in 8.4 to focus the game on the Story and Tomorrow. The gem stays on the Crown, broken. |
+| Sapphire | **Act II · The Buried City** | Broken since 8.4, when Aldoria 3026 was removed: it becomes whole again when you finish Act II (8.8), and from then on it leads to the Story. |
 
 ---
 
@@ -221,10 +221,13 @@ a five-phase battle.
   chapter, with the Jade Seals, Quetzal's Temple, the Jade Tablets and the mystery of the Pearl. Thalassa is a white
   city on the bay, with the Queen's Palace, the Serpent Square, the Siren Tavern, the Spice Market, the piers and the
   lighthouse; the Emerald Jungle has the waterfall, the river with rope bridges and the temple among the ruins.
-- **Act II · The Lost Constellation** (8.6), after the true ending: the nights grow longer and the stars of the Lantern
-  go out in the sky, where Aldric the First imprisoned Morvath, the Last Guardian. From the Observatory dome the Star
-  Portal leads to the Twilight Valley: three dungeons relight the three stars (the Well of Dead Stars, the Eclipse
-  Forge, the Garden of the Upturned Moon) and open Morvath's Keep.
+- **Act II · The Buried City** (rewritten in 8.8), after the true ending: Aldoria shakes every night and the dry well
+  of Old Aldoria caves in on a staircase. Beneath it lies **Eldora**, the city of scribes and builders that Aldric the
+  First buried, erasing every name, to seal the Eye. With Oriana the cartographer and Vael, the last scribe (a ghost),
+  you free the three Keepers bound to the seal (Brunilde the Bell Founder, Ysolde the Queen no one remembers, Orsolo
+  the Keeper of Names), each in their own dungeon, then face Aldric the First, the Stone King, in the Buried Palace.
+  Twelve Memory Stones to read, questions for the characters that open up as the story goes on, three cutscenes.
+  Finishing it makes the **Sapphire** of the Crown whole again.
 
 ### Difficulty
 
@@ -844,11 +847,11 @@ a translation of their own. The game's logic never sees the translation.
 | `combattimento/8zzzzc_chimere.js` | Chimeras: weapons, armor and companions assembled from pieces of existing ones |
 | `combattimento/8zzzzd_serraglio.js` | The Menagerie of Aldoria, the companions' home, with Selene the Tamer and her stations |
 | `combattimento/8zzzze_dungeon.js` | Every dungeon another dimension: rooms of different shapes, their own style and furniture |
-| `corona/8zzzzf_zaffiro.js` | The Shattered Sapphire: Voxelia Dimension (7.55) and Aldoria 3026 (8.4) removed from the game; unlocking Tomorrow |
+| `corona/8zzzzf_zaffiro.js` | Voxelia Dimension (7.55) and Aldoria 3026 (8.4) removed from the game; unlocking Tomorrow |
 | `sistemi/8zzzzn_dev3.js` | The developer panel to test everything (8.5): story quests and variables, cheats, world, on-screen debug, console, states and testing every area |
 | `combattimento/8zzzzq_minaccia.js` | The Kingdom Threat (8.6): the level from story and days, the enemies' new moves, Champion powers, the bosses' extra moves |
 | `combattimento/8zzzzr_notti.js` | Dangerous nights and invasions of Aldoria's quarters (8.6) |
-| `storia/8zzzzs_atto2.js` | Act II · The Lost Constellation (8.6): the Twilight Valley, four dungeons, creatures, bosses and cutscenes |
+| `storia/8zzzzs_atto2.js` | Act II · The Buried City (8.8): Eldora, four dungeons, creatures, four bosses with phases, characters, dialogue, Memory Stones and cutscenes |
 | `sistemi/8zzzzt_dev86.js` | The developer panel's "☠ Threat and Act II" tab (8.6) |
 | `combattimento/8zzzzk_bilancio.js` | Balancing: Champions per floor, Crypt, Forge, Jade Temple, Tomorrow at high levels (8.1); enemies, Champions and prices that follow your level (8.3) |
 | `corona/8zzzzh_corona80.js` | The Reunited Crown: the six shards, the Heart of the Crown and the Album |
@@ -862,6 +865,7 @@ a translation of their own. The game's logic never sees the translation.
 |---|---|
 | `lingua/9a_lingua.js` | The language engine (8.7): English is the default; it translates page text, tooltips, text drawn on the map and browser dialogs, with the changing parts (`{0}`, `{1}`…) |
 | `lingua/9b_en_base.js` | English translations of menus, settings, interface and Story Mode (from the Italian text to English) |
+| `lingua/9c_en_atto2.js` | Registers the English of Act II (8.8), written next to the Italian in `storia/8zzzzs_atto2.js`, and of the six-splinter Crown |
 
 </details>
 

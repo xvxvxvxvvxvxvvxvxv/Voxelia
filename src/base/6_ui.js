@@ -122,7 +122,7 @@ function npcHTML(e){if(e.slp)return`<h3>${esc(e.n)}</h3><p><i>Zzz... dorme profo
   else if(id==='gatto')line='Miao! Briciola fa le fusa e si struscia contro le tue gambe.';
   else if(id[0]==='v'&&!d.n)line=VLINES[Math.floor(Math.random()*VLINES.length)];
   else line=d.ln?d.ln[Math.floor(Math.random()*d.ln.length)]:'...';
-  let h=`<h3>${esc(e.n)}</h3><p><i>«${esc(line)}»</i></p>`;
+  let h=`<h3>${esc(e.n)}</h3><p><i>«<span>${esc(line)}</span>»</i></p>`;
   if(id==='re'){if(P.st===0)h+=`<button onclick="story(1)">⚜ Accetta la missione del Re</button>`;else if(P.st===2)h+=`<button onclick="story(3)">⚜ Consegna i sei frammenti (+1000💰)</button>`;else if(P.st===4)h+=`<button onclick="story(5)">⚜ Ricevi la ricompensa del Re (+5000💰 e i suoi doni)</button>`}
   if(id==='moreau')h+=moreauHTML();if(id==='re')h+=reExtraHTML();if(id==='malakar_g')h+=ghostHTML();if(id==='aldric_p'||id==='malakar_re')h+=qaHTML(id);
   const aq=P.q.find(q=>q.npc===id);

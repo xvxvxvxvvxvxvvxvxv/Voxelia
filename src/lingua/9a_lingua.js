@@ -66,7 +66,7 @@ function i18Attr(el){if(!el.getAttribute)return;for(const a of I18A){if(!el.hasA
   if(el[k+'t']!==v)el[k]=v;const o=el[k];const t=SET.lang==='it'?o:trText(o);el[k+'t']=t;if(v!==t)el.setAttribute(a,t)}}
 trNode=function(root){if(!root)return;const st=[root];while(st.length){const nd=st.pop();if(nd.nodeType===3){const p=nd.parentNode;if(!p||p.closest&&p.closest('script,style,kbd,#cl,.nol'))continue;if(nd.__o==null){if(SET.lang==='it')continue;nd.__o=nd.nodeValue}
       if(nd.__t===nd.nodeValue&&nd.__l===SET.lang)continue;if(nd.__t!==undefined&&nd.nodeValue!==nd.__t)nd.__o=nd.nodeValue;const v=trText(nd.__o);nd.__t=v;nd.__l=SET.lang;if(nd.nodeValue!==v)nd.nodeValue=v}
-    else if(nd.nodeType===1&&!/^(SCRIPT|STYLE|CANVAS|TEXTAREA)$/.test(nd.tagName)){if(nd.closest&&nd.closest('.nol'))continue;if(nd.attributes&&nd.attributes.length)i18Attr(nd);if(nd.tagName==='INPUT')continue;for(const c of nd.childNodes)st.push(c)}}};
+    else if(nd.nodeType===1&&!/^(SCRIPT|STYLE)$/.test(nd.tagName)){if(nd.closest&&nd.closest('.nol'))continue;if(nd.attributes&&nd.attributes.length)i18Attr(nd);/* 8.12: anche il title delle tele e il placeholder delle caselle di testo; il loro contenuto no */if(/^(INPUT|CANVAS|TEXTAREA)$/.test(nd.tagName))continue;for(const c of nd.childNodes)st.push(c)}}};
 // i suggerimenti che cambiano dopo (per esempio il nome di un pulsante che cambia stato)
 (function(){try{const mo=new MutationObserver(R2=>{if(I18B||SET.lang==='it')return;I18B=1;for(const r of R2)if(r.target&&r.target.nodeType===1&&!(r.target.closest&&r.target.closest('.nol')))i18Attr(r.target);I18B=0});
   mo.observe(document.body,{subtree:true,attributes:true,attributeFilter:I18A})}catch(_){}})();
@@ -76,10 +76,13 @@ trNode=function(root){if(!root)return;const st=[root];while(st.length){const nd=
 // le finestre del browser
 for(const f of['alert','confirm','prompt']){const f0=window[f];if(typeof f0!=='function')continue;window[f]=function(m,...a){if(typeof m==='string'&&SET.lang!=='it')m=trText(m);return f0.call(window,m,...a)}}
 // il registro delle novità nella lingua scelta (in inglese CHANGELOG.md, in italiano CHANGELOG.it.md)
-{const c0=chgHTML;chgHTML=function(){const it=SET.lang==='it'&&typeof CHANGELOG_IT==='string';let r;if(it){const keep=CHANGELOG_MD;CHANGELOG_MD=CHANGELOG_IT;try{r=c0.apply(this,arguments)}finally{CHANGELOG_MD=keep}}else r=c0.apply(this,arguments);return'<div class="nol">'+r+'</div>'}}
+{const c0=chgHTML;chgHTML=function(){const it=SET.lang==='it'&&typeof CHANGELOG_IT==='string';let r;if(it){const keep=CHANGELOG_MD;CHANGELOG_MD=CHANGELOG_IT;try{r=c0.apply(this,arguments)}finally{CHANGELOG_MD=keep}}else r=c0.apply(this,arguments);/* 8.12: in inglese il changelog è già inglese: niente «nol», così si traducono anche il titolo e il pulsante Chiudi */return SET.lang==='en'?r:'<div class="nol">'+r+'</div>'}}
 // l'inglese è la lingua di partenza (una volta sola anche per chi aveva l'italiano)
 SETD.lang='en';
 if(!SET.l87){SET.l87=1;if(SET.lang==null||SET.lang==='it')SET.lang='en';try{LS.set('voxelia_set',SET)}catch(e){}}
 // anche il titolo della scheda del browser e la lingua della pagina (8.7.1: <html lang> segue la lingua scelta, così
 // i lettori di schermo leggono l'inglese con la voce inglese e il browser non propone di «tradurre dall'italiano»)
 {const t0=document.title;const st=()=>{try{document.documentElement.lang=SET.lang==='en'?'en':'it';document.title=SET.lang==='it'?t0:trText(t0)}catch(e){}};setTimeout(st,0);const s0=setLang;setLang=function(l){s0(l);st()}}
+// 8.12: il registro della chat (#cl) non passa dal traduttore della pagina, perché quello che scrivono i giocatori resta
+// com'è; i messaggi di sistema (server, plugin, avvisi del gioco) invece si traducono qui, prima di finire nel registro
+{const c0=clog;clog=function(n,s,o){try{if(o&&o.sys&&SET.lang!=='it'&&typeof s==='string')s=trText(s)}catch(e){}return c0.call(this,n,s,o)}}

@@ -5,6 +5,20 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.12 — Voxelia in inglese, l'ultima tappa: Voxelia Studio, il server e il pannello admin (13 novembre 2026)
+
+La traduzione in inglese è completa: ogni parte del gioco ora parla inglese come lingua di partenza, e l'italiano resta a un clic nelle Impostazioni.
+
+- **Voxelia Studio** (circa 1.500 testi, in `src/lingua/9f_en_studio.js`): l'editor e tutti i suoi strumenti, terreni, muri, decorazioni ed edifici, i personaggi con aspetto, movimenti e dialoghi, nemici, oggetti, porte, zone evento e le loro azioni, missioni, variabili, il compositore di musica, le cinematiche, il controllo del mondo, la guida, il mondo di esempio «La Valle di Pratofiorito», e i mondi della community: browser, schede dei mondi, recensioni, commenti, preferiti, segnalazioni, pubblicazione con anteprime e video.
+- **I messaggi del server** (circa 1.000 testi, in `src/lingua/9g_en_server.js`): quello che il server e i plugin scrivono ai giocatori (entrate e uscite, scambi, ban, pubblicazioni, gruppi, fazioni, case, mercatino, sindaco, tornei, caccia al tesoro, taglie, gare di pesca, richieste di teletrasporto, posta e amici…) si traduce quando arriva nel gioco, così il server funziona come prima. Si traducono anche i messaggi di sistema nel registro della chat; quello che scrivono i giocatori resta com'è.
+- **Il pannello admin** è in inglese, con un pulsante 🌐 in basso a destra per passare all'italiano (la scelta resta in quel browser). Sono tradotte anche le descrizioni dei plugin e i loro comandi.
+- **Il changelog in inglese** ora finisce con l'elenco di tutte le versioni precedenti, dalla 1.0 alla 8.5, con il titolo in inglese; le note complete di quelle versioni restano in italiano in `CHANGELOG.it.md`.
+- **Suggerimenti e testi d'aiuto** sulle tele di disegno e nelle caselle di testo si traducono anche loro, e la finestra «Novità» ha titolo e pulsante Chiudi in inglese.
+
+Restano in italiano: le pagine web separate di alcuni plugin (l'Albo degli avventurieri, le pagine del boss, del torneo, dello speedrun e della caccia al tesoro…) e il registro della console del server, che vede solo chi lo gestisce.
+
+---
+
 ## 8.11 — Voxelia in inglese, tappa 2: Tomorrow, la vista 3D e il Voxeliaverse (13 novembre 2026)
 
 La terza tappa della traduzione in inglese. Circa 1.600 testi nuovi, in `src/lingua/9e_en_tomorrow.js`:

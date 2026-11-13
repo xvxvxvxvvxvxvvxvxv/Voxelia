@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-126 versions, newest first.
+127 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.12](voxelia_v8.12.html) | November 13, 2026 | Voxelia in English, the last stage: Voxelia Studio and the community worlds, the server's messages and the admin panel (English or Italian) | 4,111 KB |
 | [8.11](voxelia_v8.11.html) | November 13, 2026 | Voxelia in English, stage 2: Tomorrow (contracts, factions, towns, houses, mines, caravans, wars), unique items, the 3D and VR views and the Voxeliaverse | 3,928 KB |
 | [8.10](voxelia_v8.10.html) | November 13, 2026 | Voxelia in English, stage 1: the game's systems and combat (crafts, companions, Menagerie, pets, horses, cards, Tower, curses, photos and more) | 3,810 KB |
 | [8.9.2](voxelia_v8.9.2.html) | November 13, 2026 | Dialogue lines in the right language from the first letter, and the cursor right after the letters | 3,727 KB |

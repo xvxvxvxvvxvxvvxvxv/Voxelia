@@ -1,8 +1,22 @@
 # Voxelia changelog – The Lost Kingdom
 
 Every change to the game, newest first.
-This English changelog starts with version 8.6. The full history of every earlier version, from the very first one, is
+This English changelog has the full notes from version 8.6 on, and a short list of every earlier version at the end. The full history of every earlier version, from the very first one, is
 in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the language to Italiano and open "What's new").
+
+---
+
+## 8.12 — Voxelia in English, the last stage: Voxelia Studio, the server and the admin panel (November 13, 2026)
+
+The English translation is complete: every part of the game now speaks English by default, and Italian stays one click away in Settings.
+
+- **Voxelia Studio** (about 1,500 texts, in `src/lingua/9f_en_studio.js`): the editor and all its tools, terrains, walls, decorations and buildings, characters with their looks, moves and dialogue, enemies, items, doors, event zones and their actions, quests, variables, the music composer, cutscenes, the world check, the guide, the example world «The Valley of Flowermead», and the community worlds: browser, world pages, reviews, comments, favorites, reports, publishing with previews and video.
+- **The server's messages** (about 1,000 texts, in `src/lingua/9g_en_server.js`): what the server and its plugins write to players (joins and leaves, trades, bans, publishing, parties, factions, houses, the flea market, the mayor, tournaments, the treasure hunt, bounties, fishing contests, teleport requests, mail and friends…) is translated when it reaches the game, so the server keeps working the same. System messages in the chat log are translated too; what players write stays as it is.
+- **The admin panel** is in English, with a 🌐 button at the bottom right to switch to Italian (the choice stays in that browser). The plugin descriptions and their commands are translated too.
+- **The English changelog** now ends with a list of every earlier version, from 1.0 to 8.5, with its title in English; the full notes of those versions stay in Italian in `CHANGELOG.it.md`.
+- **Tooltips and hints** on drawing canvases and in text boxes are translated as well, and the "What's new" window has its title and Close button in English.
+
+Still in Italian: the separate web pages of some plugins (the Roll of adventurers, the boss, tournament, speedrun and treasure pages…) and the server's console log, which only the server owner sees.
 
 ---
 
@@ -132,4 +146,135 @@ Story Mode gets more demanding as you go on, and after the true ending there's a
 
 ---
 
-Older versions (8.5 and earlier) are described in Italian in [CHANGELOG.it.md](CHANGELOG.it.md).
+## Earlier versions, in brief
+
+Every version from 1.0 to 8.5, newest first, with its title in English. The full notes for each one are in Italian in [CHANGELOG.it.md](CHANGELOG.it.md); [releases/LEGGIMI.md](releases/LEGGIMI.md) has a one-line English summary of every published build.
+
+- **8.5** — The developer panel tests everything (November 10, 2026)
+- **8.4** — Story and Tomorrow at the center (November 10, 2026)
+- **8.3.2** — Maintenance: campfires no longer block passages (November 10, 2026)
+- **8.3.1** — Maintenance: Tomorrow's Champions and the price line (November 6, 2026)
+- **8.3** — Difficulty that grows with you (November 5, 2026)
+- **8.2** — Aldoria 3026: beyond the sky (November 5, 2026)
+- **8.1** — Order, tests and balance (November 5, 2026)
+- **8.0** — The Crown Reunited (November 5, 2026)
+- **7.57.1** — Maintenance: Aldoria 3026 quests no longer close by themselves (November 5, 2026)
+- **7.57** — Aldoria 3026, the Chronogate and modes that unlock (November 5, 2026)
+- **7.56** — Aldoria 2026: the modern city in the Sapphire (November 5, 2026)
+- **7.55** — The Menagerie, elements, chimeras and dungeons as another dimension; the Sapphire has shattered (November 5, 2026)
+- **7.54.2** — Animals and companions no longer get in the way (November 5, 2026)
+- **7.54.1** — The menu fits the window, labels no longer cover windows, the horse faces where you face (November 5, 2026)
+- **7.54** — Companions online, in trades and with variants; the Tower out of the way; the hero no longer walks by itself (November 4, 2026)
+- **7.53** — General optimization: the game arrives compressed, less dead code, tidier sources, a check before publishing (November 4, 2026)
+- **7.52.2** — The left arrow works like the right one (November 4, 2026)
+- **7.52.1** — Nightmare heroes keep permanent death (November 4, 2026)
+- **7.52** — Exporting and importing the hero (November 4, 2026)
+- **7.51** — Thalassa and the jungle remade, glowing signs, running dust, diving and the ship removed, many bugs fixed (November 4, 2026)
+- **7.50.1** — Maintenance: the lighthouse tablet, the shipyard counter, loose earth within reach (November 3, 2026)
+- **7.50** — Two confirmations before deleting a game (October 30, 2026)
+- **7.49.2** — Maintenance: really one meal at a time, the jester explained properly (October 30, 2026)
+- **7.49.1** — Maintenance: the Tower without dead ends, the complete list of versions (October 29, 2026)
+- **7.49** — The finishing touches: character cards, new models, the real Tower, the Crafts Workshop, a richer Thalassa, livelier animals (October 29, 2026)
+- **7.48** — Story and study: choices that change the story, the quest board, the kingdom beyond the sea, the weekly rankings (October 29, 2026)
+- **7.47** — Life: crafts, the house, photo mode, animals, cards, crossbreeding (October 29, 2026)
+- **7.46** — The world: horses, your ship and the islands, timed events, the discovery journal, diving (October 29, 2026)
+- **7.45** — Tomorrow: faction wars, caravans, citizens, weather and seasons, blocks (October 28, 2026)
+- **7.44.1** — Maintenance: you leave the Tower in front of the door (October 28, 2026)
+- **7.44** — Combat and dungeons: bosses in phases, levers, curses, named weapons, the Tower and the shovel (October 28, 2026)
+- **7.43** — Previous versions, to replay (October 28, 2026)
+- **7.42.3** — The developer panel, on servers, only for admins (October 28, 2026)
+- **7.42.2** — Zero stamina really leaves you out of breath (October 28, 2026)
+- **7.42.1** — Clicking a distant enemy makes the hero walk (October 28, 2026)
+- **7.42** — The Voxel Crown, drawn scenes and the 3D view fixed (October 27, 2026)
+- **7.41.1** — Maintenance: you leave the dungeon next to the entrance (October 27, 2026)
+- **7.41** — Everyone sees the same enemies, the city in order and the walls on the border (October 26, 2026)
+- **7.40** — The developer panel does everything (October 25, 2026)
+- **7.39** — Player factions: building together (October 25, 2026)
+- **7.38** — The portal after the boss, music of your choice, detailed maps and the Breeding Pens (October 25, 2026)
+- **7.37.1** — Maintenance of the town, the army and your house (October 24, 2026)
+- **7.37** — Smoother, and the graphics the way you want (October 23, 2026)
+- **7.36** — The Travel Stone (October 23, 2026)
+- **7.35** — Wood and the growing city (October 23, 2026)
+- **7.34** — Your cities (October 23, 2026)
+- **7.33** — Your house and the town walls (October 23, 2026)
+- **7.32** — Action combat (October 23, 2026)
+- **7.31** — The mines (October 23, 2026)
+- **7.30** — The barracks and the army (October 23, 2026)
+- **7.29** — The editor with every material (October 23, 2026)
+- **7.28** — Running the town (October 23, 2026)
+- **7.27.1** — Virtual reality keeps up with the new combat (October 23, 2026)
+- **7.27** — The voxel-style 3D view (October 23, 2026)
+- **7.26** — The town editor (October 23, 2026)
+- **7.25** — The new prologue (October 23, 2026)
+- **7.24** — Villages and cities built with sense (October 23, 2026)
+- **7.23** — The reset of the universe (October 23, 2026)
+- **7.22** — Wars (October 22, 2026)
+- **7.21** — Your kingdom (October 22, 2026)
+- **7.20** — Taming monsters (October 22, 2026)
+- **7.19.1** — The passage between regions (October 22, 2026)
+- **7.19** — Weapon moves (October 22, 2026)
+- **7.18** — A single world (October 22, 2026)
+- **7.17.1** — Tomorrow maintenance (October 22, 2026)
+- **7.17** — Tomorrow comes alive (October 22, 2026)
+- **7.16** — Tomorrow (October 22, 2026)
+- **7.15** — The 3D view (October 22, 2026)
+- **7.14** — The Open World and Aldoria's new music (October 22, 2026)
+- **7.13.3** — Maintenance: the example plugin's command (October 21, 2026)
+- **7.13.2** — Outlines in place and straight axes in VR (October 21, 2026)
+- **7.13.1** — Doors can also be crossed in the headset (October 21, 2026)
+- **7.13** — Voxelia in virtual reality: Meta Quest 3 (October 20, 2026)
+- **7.12.1** — Gatherables in view again (October 20, 2026)
+- **7.12** — Bigger biomes, the real Colosseum, the area map and the memory of Old Aldoria (October 15, 2026)
+- **7.11.1** — Clickable links in chat (October 14, 2026)
+- **7.11** — A harder kingdom, the five-phase Abomination and every cutscene remade (October 14, 2026)
+- **7.10** — Real weapons in hand, a tune for every building and a bug hunt (October 13, 2026)
+- **7.9.4** — Ryan's battles: you can leave again (October 12, 2026)
+- **7.9.3** — Touch controls adapted to every device (October 11, 2026)
+- **7.9.2** — Joystick aligned to the finger (October 11, 2026)
+- **7.9.1** — Customizable touch controls (October 11, 2026)
+- **7.9** — Controls for phones and tablets (October 11, 2026)
+- **7.8.2** — Longer server messages (October 10, 2026)
+- **7.8.1** — Portal after the boss, answers in dialogue and a single icon for everything (October 10, 2026)
+- **7.8** — Voxel icons everywhere and Voxelia-style Community worlds (October 10, 2026)
+- **7.7** — Community worlds, story scenes and developer mode (October 9, 2026)
+- **7.6** — A more professional Voxelia Studio (October 9, 2026)
+- **7.5** — Voxelia Studio (October 9, 2026)
+- **7.4.1** — Guidelines in the HUD (October 9, 2026)
+- **7.4** — Lighter graphics (October 9, 2026)
+- **7.3.2** — Whole characters and the crypt unlocked (October 9, 2026)
+- **7.3.1** — Big bug check (October 9, 2026)
+- **7.3** — Unique characters, the Filly and the battlefields (October 9, 2026)
+- **7.2** — Animations, new enemies and a tougher kingdom (October 8, 2026)
+- **7.1** — The true ending (October 8, 2026)
+- **7.0** — The living city, the castle's secrets and new music (October 8, 2026)
+- **6.10** — New map, zoom and dark theme (October 8, 2026)
+- **6.9** — Settings split by category (October 8, 2026)
+- **6.8.1** — The cog stops (October 8, 2026)
+- **6.8** — Touch-ups to the action wheel (October 8, 2026)
+- **6.7** — Server plugins (October 8, 2026)
+- **6.6** — Old Aldoria (October 8, 2026)
+- **6.5** — The map of Aldoria, dreams and languages (October 8, 2026)
+- **6.4** — Storm, hold and martial arts (October 8, 2026)
+- **6.3** — Voxelia Dimension (October 7, 2026)
+- **6.2** — Weapons that grow, bosses with powers, dungeons with campfires (October 7, 2026)
+- **6.1** — Gates that open and the seaweed well (October 7, 2026)
+- **6.0** — Unique dungeons, naval battles and the prologue (October 7, 2026)
+- **5.3** — Server plugins (October 8, 2026)
+- **5.2** — A bigger Aldoria, a hero who turns, unique furniture (October 7, 2026)
+- **5.1** — Every building can be explored, the Harbor remade (October 7, 2026)
+- **5.0** — The quarters of Aldoria (October 7, 2026)
+- **4.7.2** — New start menu (October 7, 2026)
+- **4.7.1** — FPS limit and V-Sync (October 7, 2026)
+- **4.7** — Day and night, clock, compass, new icons, scenes, hero appearance and custom HUD (October 7, 2026)
+- **4.6** — New backpack, WASD, cursor, sky and Ultra graphics (October 7, 2026)
+- **4.5** — Dodge, lunge, casino and daily prices (October 7, 2026)
+- **4.4** — Admin panel (October 7, 2026)
+- **4.3** — Player list and ping (October 7, 2026)
+- **4.2** — Player profiles (October 7, 2026)
+- **4.1** — Chat log (October 7, 2026)
+- **4.0** — Arena, dungeons, city and story (October 7, 2026)
+- **3.0** — A server to play from different Wi-Fi networks
+- **2.1** — Multiplayer fix
+- **2.0** — Multiplayer and animated menu
+- **1.0** — First version
+

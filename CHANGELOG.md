@@ -6,6 +6,19 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.10 — Voxelia in English, stage 1: the game's systems and combat (November 13, 2026)
+
+The second stage of the English translation (the first, in 8.7, covered menus, interface and Story Mode). About 1,400 new texts, in `src/lingua/9d_en_sistemi.js`:
+
+- **Combat**: the moves of every weapon and their descriptions, charged hits, stamina, target lock, boss phases and weak points, the levers of the dungeons, curses, named legendary weapons and their special moves, elemental infusion, chimera items.
+- **Companions and creatures**: taming and the stable, the Breeding Pens, crossbreeding and variants, the Menagerie (upgrade, customize, change shape, retirement, chimera eggs), pets, horses and horse races.
+- **Crafts and pastimes**: the Crafts Workshop (cooking, alchemy, forging, tempering, smelting, the recipe book and experiments), the card table with its players, the Discovery Journal, world events (dragons, meteors, the rare merchant), digging and secret caves, the Crown Tower and its blessings, the weekly rankings, photo mode and the gallery, the house with its board and trophy shelf.
+- **Everything else in the systems**: the music and the radio, previous versions, exporting and importing a hero, the overwrite warnings, the splash phrases under the title, and the developer panel.
+
+Italian and Eldorian don't change. What's still in Italian (Tomorrow, Voxelia Studio, the drawn graphics, the server) comes with the next stages.
+
+---
+
 ## 8.9.2 — Dialogue lines in the right language from the first letter (November 13, 2026)
 
 - **The line is written straight in your language.** In English the dialogue window wrote the line letter by letter in Italian and turned it into English only at the end; in Eldorian every piece already written was translated on its own, so the words changed while the line was being written. Now the whole line is translated before the first letter, and the page's translator no longer touches it.

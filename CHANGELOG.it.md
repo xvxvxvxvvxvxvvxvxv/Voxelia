@@ -5,6 +5,19 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.10 — Voxelia in inglese, tappa 1: i sistemi del gioco e il combattimento (13 novembre 2026)
+
+La seconda tappa della traduzione in inglese (la prima, nella 8.7, copriva menu, interfaccia e Modalità Storia). Circa 1.400 testi nuovi, in `src/lingua/9d_en_sistemi.js`:
+
+- **Combattimento**: le mosse di ogni arma e le loro descrizioni, i colpi caricati, la stamina, il blocco del bersaglio, le fasi e i punti deboli dei boss, le leve dei dungeon, le maledizioni, le armi leggendarie con il nome e la loro mossa speciale, l'infusione elementale, gli oggetti chimera.
+- **Compagni e creature**: la doma e la stalla, l'Allevamento, gli incroci e le varianti, il Serraglio (potenzia, modifica, muta forma, pensione, uova chimera), gli animali da compagnia, i cavalli e le corse a cavallo.
+- **Mestieri e passatempi**: la Bottega dei mestieri (cucina, alchimia, forgia, tempra, fusione, il ricettario e gli esperimenti), il tavolo delle carte con i suoi giocatori, il Diario delle scoperte, gli eventi del mondo (draghi, meteore, il mercante raro), lo scavo e le grotte segrete, la Torre della Corona e le sue benedizioni, le classifiche della settimana, la modalità foto e la galleria, la casa con la lavagna e la mensola dei trofei.
+- **Tutto il resto dei sistemi**: la musica e la radio, le versioni precedenti, l'esportazione e l'importazione dell'eroe, gli avvisi prima di sovrascrivere, le frasi sotto il titolo e il pannello sviluppatore.
+
+Italiano ed eldoriano non cambiano. Quello che è ancora in italiano (Tomorrow, Voxelia Studio, la grafica disegnata, il server) arriva con le prossime tappe.
+
+---
+
 ## 8.9.2 — Le battute nella lingua giusta dalla prima lettera (13 novembre 2026)
 
 - **La battuta si scrive subito nella tua lingua.** In inglese la finestra del dialogo scriveva la battuta lettera per lettera in italiano e la faceva diventare inglese solo alla fine; in eldoriano ogni pezzo già scritto si traduceva da solo, così le parole cambiavano mentre la battuta si scriveva. Ora la battuta intera si traduce prima della prima lettera, e il traduttore della pagina non la tocca più.

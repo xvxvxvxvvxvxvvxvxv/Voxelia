@@ -6,7 +6,7 @@ Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costrui
 
 🇬🇧 **[English](README.md)** · 🇮🇹 Italiano
 
-**Versione attuale: 8.8** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.9** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.it.md)
 
@@ -201,6 +201,51 @@ Il menu è la **Corona di Voxel** in 3D: ogni gemma porta a una modalità.
 | Topazio | **Mondi della community** | I mondi pubblicati dagli altri giocatori sul server: si giocano, si votano, si commentano. |
 | Diamante | **Prologo e filmati** | Il prologo e le scene della storia già viste. Sul server anche le [versioni precedenti](#versioni-precedenti). |
 | Zaffiro | **Atto II · La città sepolta** | Spezzato dalla 8.4, quando è stata tolta Aldoria 3026: torna intero quando finisci l'Atto II (8.8), e da lì porta alla Storia. |
+| Senza colore (la settima) | **Dietro la Corona · Il Voxeliaverse** | Compare quando prendi il settimo frammento nel Cuore della Corona (8.9): si gira la Corona fino alla punta piccola fra il Diamante e il Rubino. |
+
+### Il Cuore della Corona e il settimo frammento
+
+Con tutte e sei le schegge si entra nel **Cuore della Corona**: un piazzale d'oro sospeso nel vuoto, con sei passerelle
+verso sei stanze, una per scheggia. L'Eco della Corona non combatte più: ti fa da guida. In ogni stanza la scheggia ha
+un potere, e serve per risolvere un enigma:
+
+| Stanza | Enigma |
+|---|---|
+| 🔴 Rubino · il fuoco | Sette bracieri in cerchio: accenderne uno accende o spegne anche i due vicini. Vanno accesi tutti. |
+| ⚪ Diamante · la verità | Tre file di tre ponti uguali sul vuoto, uno solo per fila regge: il Diamante li mostra per qualche secondo, poi bisogna ricordarseli. |
+| 🟢 Smeraldo · il tempo | Un ponte crollato: lo Smeraldo lo riporta indietro nel tempo, ma si sbriciola dietro di te. |
+| 🟣 Ametista · costruire | Tre blocchi da mettere sul vuoto per arrivare dall'altra parte: una sola strada riesce con tre. |
+| 🟡 Topazio · il viaggio | Sei isole con due portali ciascuna: quelli sbagliati riportano all'inizio. |
+| 🔵 Zaffiro · la memoria | Sei colonne si accendono in sequenza: va ripetuta, in giri da 4, 6 e 8. |
+
+Gli enigmi sono difficili: dopo tre errori nella stessa stanza l'Eco dà un indizio. Si fanno una volta sola, e quello che
+è risolto resta risolto. Risolte tutte e sei, al centro si apre il **settimo frammento**, il frammento dei Fondatori: un
+filmato («Il mondo si scompone»), 20.000 monete, la Corona Riunita e la porta del Voxeliaverse.
+
+### Il Voxeliaverse
+
+Dietro la Corona c'è una stanza, fatta con un **motore 3D nuovo**: voxel veri in tre dimensioni, la telecamera in terza
+persona dietro l'eroe, le ombre morbide della luna o del sole, la luce del fuoco. Si cammina con WASD (o il joystick sul
+telefono), si salta con Spazio, si guarda trascinando il mouse, si usano le cose con E. Nella stanza ci sono:
+
+- **il camino**: ti siedi, mediti e il fuoco ti porta in una **realtà ignota**, nuova a ogni viaggio;
+- **la libreria**: i libri che brillano sono realtà già scritte (si vedono il nome e quanto sono pericolose), e «Cerca un
+  altro libro» ne trova sempre di nuovi. *Nessuno le ha mai contate davvero.*
+
+Ogni realtà nasce da un numero, e da quel numero viene tutto: nomi del tutto a caso (la realtà, il popolo, chi l'ha
+fondata, le creature, il guardiano), un'isola di voxel sospesa nel nulla (colli, terrazze, crateri, guglie o canyon, con
+il mare fermo o senza), alberi, cristalli, funghi giganti, coralli o massi, il cielo (giorno, tramonto, notte o un sole di
+un altro colore), fino a tre lune, la gravità (in alcune si cade piano).
+
+- **Il mistero.** Tre raggi di luce sono i tre segni, ognuno protetto dalle sue creature. Letti tutti e tre, in mezzo
+  all'isola si sveglia il guardiano: sconfitto lui, si prende il Cuore della realtà (e monete per il tuo eroe).
+- **Il combattimento.** Clic (o J) per colpire con la spada, tre colpi di fila fanno il colpo forte; Maiusc, Q o il tasto
+  destro per la capriola (mentre rotoli non vieni colpito; tenendo Maiusc poi si corre). I nemici si illuminano o
+  disegnano un cerchio rosso per terra prima di colpire. Quattro tipi di creature (la palla che salta, la bestia che
+  carica, il gigante che schiaccia, l'occhio che vola e spara) e il guardiano, con tre attacchi e una seconda fase.
+- **Salvare una realtà.** Quando il guardiano cade si può salvare la realtà: resta in cima alla libreria e tornandoci la
+  ritrovi com'era (i segni letti, il guardiano sconfitto). La porta chiede prima di andare via senza salvare.
+
 
 ---
 
@@ -681,6 +726,7 @@ I sorgenti stanno in cartelle, una per parte del gioco:
 | `src/combattimento/` | Combattimento, boss, dungeon, compagni, elementi e chimere |
 | `src/tomorrow/` | Tomorrow: il mondo senza fine, i borghi, le fazioni e le guerre |
 | `src/corona/` | Il menu della Corona, i frammenti, il Cuore della Corona e l'Album |
+| `src/voxeliaverse/` | Il Voxeliaverse (8.9): il motore 3D nuovo, la stanza dietro la Corona, le realtà |
 | `src/studio/` | Voxelia Studio (l'editor) e i Mondi della community |
 | `src/grafica/` | La vista 3D, la realtà virtuale e le opzioni grafiche |
 | `src/sistemi/` | Le parti comuni a tutto il gioco: eventi, mestieri, animali, foto, menu, correzioni |
@@ -852,6 +898,10 @@ nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della
 | `sistemi/8zzzzt_dev86.js` | La scheda «☠ Minaccia e Atto II» del pannello sviluppatore (8.6) |
 | `combattimento/8zzzzk_bilancio.js` | Il bilanciamento: Campioni per piano, Cripta, Fucina, Tempio di Giada, Tomorrow ai livelli alti (8.1); nemici, Campioni e prezzi che seguono il tuo livello (8.3) |
 | `corona/8zzzzh_corona80.js` | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album |
+| `corona/8zzzzu_cuore89.js` | Il Cuore della Corona rifatto (8.9): le sei stanze degli enigmi, l'Eco come guida, il settimo frammento e il suo filmato |
+| `voxeliaverse/8zzzzv_motore.js` | Il motore del Voxeliaverse (8.9): voxel in WebGL2 con le ombre d'angolo, ombre morbide, luci, nebbia, telecamera in terza persona, fisica e comandi |
+| `voxeliaverse/8zzzzw_stanza.js` | La stanza dietro la Corona (8.9) e la settima gemma, senza colore, sulla Corona del menu |
+| `voxeliaverse/8zzzzx_realta.js` | Le realtà del Voxeliaverse (8.9): nomi, isole, cieli, creature, segni, guardiano, combattimento, salvataggio, il camino e la libreria |
 | `sistemi/8zzzzh_menu.js` | Il menu si adatta alla finestra: la Corona riempie lo schermo, le altre schermate si rimpiccioliscono invece di scorrere |
 | `sistemi/8zzzzi_avvisi.js` | Le scritte del gioco (eventi, cibo attivo, guerre…) non coprono il riquadro dell'eroe, le finestre e la fine della battaglia |
 | `sistemi/8zzzzj_intralcio.js` | Gli animali da compagnia camminano dietro all'eroe; R, il pulsante verde e il clic scelgono prima porte, oggetti e personaggi |

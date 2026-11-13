@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* Prova automatica di Voxelia (8.0, allargata nella 8.1). Apre voxelia.html in un browser senza finestra e:
-   1. gioca qualche secondo di ogni modalità: la Storia (città, un dungeon, il Serraglio), Tomorrow e il
-      Cuore della Corona;
+   1. gioca qualche secondo di ogni modalità: la Storia (città, un dungeon, il Serraglio), Tomorrow, il
+      Cuore della Corona (le stanze degli enigmi) e il Voxeliaverse (la stanza, una realtà, il guardiano, il salvataggio);
    2. salva in Storia e Tomorrow, ricarica la pagina e controlla che la partita torni com'era;
    3. apre tutte le schede del pannello sviluppatore e gli fa provare tutte le zone del gioco (8.5);
    4. avvia server.js e fa entrare due giocatori nella stessa città, controllando che si vedano.
@@ -50,7 +50,21 @@ const PASSI=[
     if(ng<15)bad.push('trovati solo '+ng+' cancelli');if(bad.length)throw new Error([...new Set(bad)].slice(0,6).join(' · '));load('town','forest');try{cl()}catch(e){}`],
   ['Il pannello sviluppatore: tutte le schede',`toMenu();DEV.on=true;devMark();devStart();for(const k of['film','zone','eroe','altro','give','twdv','st3','ch3','wd3','dbg3','con3','sv3']){DEV.tab=k;devOpen();if($('dvc').innerHTML.length<50)throw new Error('scheda vuota: '+k)}dv3Run('P.lv');DV3.grid=DV3.ents=DV3.hud=1;devClose();`],
   ['Il pannello sviluppatore: la prova di tutte le zone',`DV3.grid=DV3.ents=0;window.__zone=dv3TestAll().then(()=>{const T=DV3.test,E=T.res.filter(r=>r.err.length);if(T.i<T.n)throw new Error('la prova si è fermata a '+T.i+'/'+T.n);if(E.length)throw new Error(E.map(r=>r.z+': '+r.err[0]).join(' · '))});`,`await window.__zone;DV3.hud=0;dv3Hud();devClose();toMenu();`],
-  ['Il Cuore della Corona',`try{cineSkip()}catch(e){}toMenu();for(const k of GEM80.map(g=>g.k))cr80Got(k,1);if(LS.get(SAVEK,null))cuoreEnter()`]];
+  ['Il Cuore della Corona: le sei stanze degli enigmi (8.9)',`try{cineSkip()}catch(e){}toMenu();for(const k of GEM80.map(g=>g.k))cr80Got(k,1);{const o=cr80();delete o.cu9;LS.set(CRK80,o);CU9O=null}if(LS.get(SAVEK,null))cuoreEnter()`,
+    `if(Zk!=='cuore80')throw new Error('non si entra nel Cuore: '+Zk);try{cl()}catch(e){}const d=bfs(P.px|0,P.py|0);for(let i=0;i<6;i++){const[x,y]=C9W(i,0,0);if(d[y*N+x]<0)throw new Error('la stanza '+i+' del Cuore non si raggiunge')}
+    if(ents.filter(e=>e.k==='cu9').length<20)throw new Error('mancano le cose degli enigmi');const sol=rub9Sol(RUB9S);if(!sol||!sol.length)throw new Error('il fuoco del Rubino non ha soluzione');if(cuoreTick.toString().length>20)throw new Error('nel Cuore tornano le ondate')`],
+  ['Il Voxeliaverse: la stanza dietro la Corona, le realtà, il guardiano, salvare e tornare (8.9)',`toMenu();{const o=cr80();o.cu9={r:[1,1,1,1,1,1],f7:Date.now(),seen:{ent:1}};delete o.vxv;LS.set(CRK80,o);CU9O=null;VXV.o=null}cr7Sync();if(!CRGEM.some(g=>g.k==='settima'))throw new Error('sulla Corona manca la settima gemma');vxRoom()`,
+    `const wait=ms=>new Promise(r=>setTimeout(r,ms)),SIM=n=>{for(let i=0;i<n;i++){VX.t+=.033;if(!VX.sc.paused)vxPhys(.033);VX.sc.tick(.033,VX.t)}};
+    if(!VX.on||!VX.sc||VX.sc.combat)throw new Error('la stanza dietro la Corona non si apre');if(!VX.sc.items.some(i=>/camino|fuoco/i.test(i.label))||!VX.sc.items.some(i=>/libreria/i.test(i.label)))throw new Error('nella stanza mancano il camino o la libreria');
+    const a=vxRealDesc(777,0),a2=vxRealDesc(777,0),c=vxRealDesc(778,0);if(a.name!==a2.name||a.signs.join()!==a2.signs.join())throw new Error('lo stesso seme non dà la stessa realtà');if(a.name===c.name&&a.ep===c.ep)throw new Error('semi diversi danno la stessa realtà');
+    for(let s=1;s<300;s++){const d=vxRealDesc(s*7919>>>0,s&1);if(!/^[A-Z][a-z']{1,9}$/.test(d.name))throw new Error('un nome strano: '+d.name);if(d.sp.length<2||d.sp.some(x=>!x.n)||!d.gn||d.signs.length!==3)throw new Error('una realtà incompleta: '+d.name);if(i18En(d.signs[0])===d.signs[0]||i18En(d.ep)===d.ep)throw new Error('una realtà senza inglese: '+d.ep)}
+    vxStop();if(!vxStart(vxRealScene(vxRealDesc(4242,1),'fire')))throw new Error('la realtà non si apre');if(!VX.sc.combat||VXR.E.length<8)throw new Error('nella realtà mancano le creature');SIM(60);if(VXR.dead||!VX.pl.on||VX.pl.y<1.5)throw new Error('l\u2019eroe non sta in piedi nella realtà');
+    const e=VXR.E.find(q=>q.sign==null),ca=Math.atan2(VXR.C[2]-e.z,VXR.C[0]-e.x);VX.pl.x=e.x+Math.cos(ca)*1.4;VX.pl.z=e.z+Math.sin(ca)*1.4;VX.pl.y=Math.max(e.y,VXR.gh(VX.pl.x,VX.pl.z))+.05;VX.pl.vy=0;VX.pl.yaw=Math.atan2(e.x-VX.pl.x,e.z-VX.pl.z);e.st='rec';e.t=9;vxAtk();SIM(12);if(e.hp>=e.mx)throw new Error('la spada non colpisce');vxDodge();if(VXR.iT<=0||!VX.pl.dash)throw new Error('la schivata non funziona');SIM(30);
+    if(VX.sc.items[1].ok()&&!/protetto/.test(VX.sc.items[1].label()))throw new Error('il segno non dice che è protetto');for(const q of VXR.E)if(q.sign!=null)q.die=.5;SIM(20);for(let k=0;k<3;k++){vxSign(k);vxPanel(null);vxSignAfter()}
+    for(let i=0;i<40&&!VXR.boss;i++)await wait(100);if(!VXR.boss)throw new Error('dopo i tre segni non si sveglia il guardiano');SIM(90);VXR.hp=VXR.mx=1e5;VXR.boss.hp=1;vxHitE(VXR.boss,9);SIM(20);if(!VXR.bossDead)throw new Error('il guardiano non cade');
+    vxSaveReal(1);const b=vxv().b[0];if(!b.sv||!b.st||!b.st.boss||(cr80().vxv.b[0]||{}).s!==4242)throw new Error('la realtà non si salva');vxStop();vxStart(vxRealScene(vxRealDesc(4242,1),'lib'));
+    if(VXR.lit.join()!=='1,1,1'||!VXR.bossDead||VXR.boss||VXR.E.some(q=>q.sign!=null))throw new Error('tornando, la realtà salvata non è com\u2019era');vxHeart();vxPanel(null);if(!VXR.won||!vxv().b[0].st.heart)throw new Error('il Cuore non si prende');
+    vxForget(4242,1);if(vxv().b.find(q=>q.s===4242).sv)throw new Error('la realtà non si dimentica');vxLib();if(VX.ui.querySelectorAll('.vbk').length<6)throw new Error('la libreria è vuota');vxPanel(null);vxStop();toMenu()`]];
 // salvataggi: [nome, come si comincia e si salva, come si ricarica, che cosa deve tornare]
 const SALVA=[
   ['Storia',`toMenu();localStorage.setItem('voxelia_intro','1');begin(1,null);P.g=43210;P.lv=13;P.pot=7;save();`,`const s=LS.get(SAVEK,null);begin(s.df|0,s);`],

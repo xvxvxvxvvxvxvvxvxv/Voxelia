@@ -325,10 +325,11 @@ function ys88Mirror(e){if(cineOK())ringFx(e.px,e.py,'150,255,220',1,3);for(let i
 // i colpi: gli specchi spariscono al primo colpo; il Re di Pietra trattenuto dai Sepolti ne prende di più
 {const h0=hurtE;hurtE=function(e,d,rem,cr){if(e&&e.vul88&&!(e.shd&&e.shd>t))d=Math.round(d*1.4);const r=h0(e,d,rem,cr);try{if(e&&e.mir88&&e.hp>0&&ents.includes(e)){e.hp=0;kill(e);if(cineOK())sparks(e.px,e.py,14,['#9affd8','#e8fff4'],60)}}catch(_){}return r}}
 {const u0=upd;upd=function(dt){u0(dt);try{boss88Tick(dt)}catch(x){console.warn('boss atto II',x)}}}
-// i Sepolti che trattengono il Re di Pietra: figure azzurre in cerchio, con le catene di luce
-{const d0=nightDraw;nightDraw=function(){d0();try{if(!started||!Zk||Zk.split('@')[0]!=='trono88')return;const e=ents.find(q=>q.k==='en'&&q.t==='aldric88'&&q.vul88);if(!e)return;g.setTransform(DPR,0,0,DPR,0,0);
-  const cx=PX(e.px,e.py),cy=PY(e.px,e.py,30);g.strokeStyle='rgba(190,225,255,.55)';g.lineWidth=2;for(let i=0;i<6;i++){const a=i/6*6.283+t*.3,x=e.px+Math.cos(a)*2.4,y=e.py+Math.sin(a)*2.4,sx=PX(x,y),sy=PY(x,y,24);
-    g.beginPath();g.moveTo(sx,sy);g.lineTo(cx,cy);g.stroke();g.fillStyle='rgba(200,230,255,.35)';g.beginPath();g.ellipse(sx,sy,8,16,0,0,6.3);g.fill()}}catch(_){}}}
+// i Sepolti che trattengono il Re di Pietra: figure azzurre in cerchio, con le catene di luce (8.9: si disegnano sullo
+// schermo dopo lights(), che si chiama anche nei dungeon; prima stavano in nightDraw(), che nei dungeon non si chiama)
+{const l0=lights;lights=function(){l0();try{if(!started||!Zk||Zk.split('@')[0]!=='trono88'||(typeof D3!=='undefined'&&D3.act))return;const e=ents.find(q=>q.k==='en'&&q.t==='aldric88'&&q.vul88);if(!e)return;g.setTransform(DPR,0,0,DPR,0,0);
+  const[cx,cy]=scr(e.px,e.py,30);g.strokeStyle='rgba(190,225,255,.55)';g.lineWidth=2*S;for(let i=0;i<6;i++){const a=i/6*6.283+t*.3,[sx,sy]=scr(e.px+Math.cos(a)*2.4,e.py+Math.sin(a)*2.4,24);
+    g.beginPath();g.moveTo(sx,sy);g.lineTo(cx,cy);g.stroke();g.fillStyle='rgba(200,230,255,.35)';g.beginPath();g.ellipse(sx,sy,8*S,16*S,0,0,6.3);g.fill()}}catch(_){}}}
 /* ---- quando cade un Custode, e quando cade il Re di Pietra ---- */
 {const b0=bossDown;bossDown=function(e){b0(e);try{if(!a2On()||!e)return;const o=a2Fix(),i=A88C.indexOf(e.t);
     if(i>=0&&!o.b[i]){o.b[i]=1;const n=a2N(),B=B88[e.t];setTimeout(()=>{PA={ti:B.end[0],sub:E[e.t].n,tx:B.end[1]};pn('txt')},2400);

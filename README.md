@@ -6,7 +6,7 @@ Tomorrow you found a kingdom of your own, and with the **Voxelia Studio** editor
 
 🇬🇧 English · 🇮🇹 **[Italiano](README.it.md)**
 
-**Current version: 8.10** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
+**Current version: 8.11** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
 [⌨️ Controls](#controls) · [🖥 Server](#the-multiplayer-server) · [🛠 Development](#development) ·
 [📝 What's new (CHANGELOG)](CHANGELOG.md)
 
@@ -514,7 +514,7 @@ Admins can hide worlds, respond to reports and block authors.
 - **Settings** in 8 categories: General, Audio, Graphics, Performance, Animations, Interface, Controls and Cursor, plus
   the 3D View.
 - **Languages**: **English**, the default language (since 8.7; the game is being translated in stages, and the first
-  stage covers menus, settings, interface and Story Mode, the second (8.10) the game's systems and combat); **Italiano**, the language the game is written in;
+  stage covers menus, settings, interface and Story Mode, the second (8.10) the game's systems and combat, the third (8.11) Tomorrow, the 3D and VR views and the Voxeliaverse); **Italiano**, the language the game is written in;
   **Eldorian**, the kingdom's ancient tongue. Change it in Settings → General → Language.
 - **Saves**: everything stays in the browser (`localStorage`): the game, Tomorrow separately, settings, the hero's look,
   Voxelia Studio worlds and the cutscenes already seen. The save updates by itself, even when you close the page, and
@@ -917,6 +917,7 @@ a translation of their own. The game's logic never sees the translation.
 | `lingua/9b_en_base.js` | English translations of menus, settings, interface and Story Mode (from the Italian text to English) |
 | `lingua/9c_en_atto2.js` | Registers the English of Act II (8.8), written next to the Italian in `storia/8zzzzs_atto2.js`, and of the six-splinter Crown |
 | `lingua/9d_en_sistemi.js` | English translations of the game's systems and combat (8.10): crafts, companions, Menagerie, pets, horses, cards, photos, Tower, curses, the developer panel |
+| `lingua/9e_en_tomorrow.js` | English translations of Tomorrow, the 3D and VR views, unique items and the Voxeliaverse (8.11): contracts, factions, towns, houses, mines, caravans, wars and sieges, seasons |
 
 </details>
 

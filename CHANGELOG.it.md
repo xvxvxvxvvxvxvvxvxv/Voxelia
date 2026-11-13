@@ -5,6 +5,20 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.11 — Voxelia in inglese, tappa 2: Tomorrow, la vista 3D e il Voxeliaverse (13 novembre 2026)
+
+La terza tappa della traduzione in inglese. Circa 1.600 testi nuovi, in `src/lingua/9e_en_tomorrow.js`:
+
+- **Tomorrow**: il filmato d'apertura (il reset dell'universo), i contratti con committenti, testimoni e bersagli, le fazioni e la reputazione, la mappa del mondo, i campi, i santuari, le gemme del teletrasporto e le Pietre del viaggio, le battaglie per le città.
+- **Il tuo regno**: conquista e stendardi, insediamenti e registro, edifici, l'editor del borgo (edifici, strade, mura, arredi, isolati), le case da arredare con il deposito, la miniera e i reperti storici, la caserma e l'esercito, felicità, lavoro, tasse e proteste, stagioni e meteo, carovane, fazioni dei giocatori con ruoli e permessi, guerre e assedi, la bacheca delle missioni.
+- **Oggetti unici**: nomi, affissi e poteri, le storie di dove sono stati forgiati, i cimeli di Aldoria.
+- **La vista 3D e la VR**: opzioni, risoluzione e nitidezza, il menu di pausa, i comandi del visore.
+- **Il Voxeliaverse** (8.9), che parlava già inglese da solo, ora segue anche il motore delle lingue.
+
+Italiano ed eldoriano non cambiano. Restano: Voxelia Studio, e poi il server e i changelog più vecchi.
+
+---
+
 ## 8.10 — Voxelia in inglese, tappa 1: i sistemi del gioco e il combattimento (13 novembre 2026)
 
 La seconda tappa della traduzione in inglese (la prima, nella 8.7, copriva menu, interfaccia e Modalità Storia). Circa 1.400 testi nuovi, in `src/lingua/9d_en_sistemi.js`:

@@ -6,7 +6,7 @@ Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costrui
 
 🇬🇧 **[English](README.md)** · 🇮🇹 Italiano
 
-**Versione attuale: 8.10** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.11** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.it.md)
 
@@ -514,7 +514,7 @@ commenti. Gli admin possono nascondere mondi, rispondere alle segnalazioni e blo
 - **Impostazioni** in 8 categorie: Generale, Audio, Grafica, Prestazioni, Animazioni, Interfaccia, Comandi e Cursore,
   più la Vista 3D.
 - **Lingue**: **English**, la lingua di partenza (dalla 8.7: si traduce il gioco man mano, a tappe; la prima tappa copre menu,
-  impostazioni, interfaccia e Storia, la seconda (8.10) i sistemi del gioco e il combattimento); **italiano**, la lingua in cui il gioco è scritto; **eldoriano**, la lingua antica del regno.
+  impostazioni, interfaccia e Storia, la seconda (8.10) i sistemi del gioco e il combattimento, la terza (8.11) Tomorrow, la vista 3D e VR e il Voxeliaverse); **italiano**, la lingua in cui il gioco è scritto; **eldoriano**, la lingua antica del regno.
   Si cambia in Impostazioni → Generale → Lingua.
 - **Salvataggi**: tutto resta nel browser (`localStorage`): la partita, Tomorrow a parte, le impostazioni, l'aspetto
   dell'eroe, i mondi di Voxelia Studio e i filmati già visti. Il salvataggio si aggiorna da solo, anche chiudendo la
@@ -771,6 +771,7 @@ nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della
 | `lingua/9b_en_base.js` | Le traduzioni in inglese di menu, impostazioni, interfaccia e Modalità Storia (dal testo italiano all'inglese) |
 | `lingua/9c_en_atto2.js` | Registra l'inglese dell'Atto II (8.8), scritto accanto all'italiano in `storia/8zzzzs_atto2.js`, e della Corona con sei schegge |
 | `lingua/9d_en_sistemi.js` | Le traduzioni in inglese dei sistemi del gioco e del combattimento (8.10): mestieri, compagni, Serraglio, animali, cavalli, carte, foto, Torre, maledizioni, pannello sviluppatore |
+| `lingua/9e_en_tomorrow.js` | Le traduzioni in inglese di Tomorrow, della vista 3D e VR, degli oggetti unici e del Voxeliaverse (8.11): contratti, fazioni, borghi, case, miniere, carovane, guerre e assedi, stagioni |
 
 **Storia, Aldoria e filmati**
 

@@ -6,6 +6,20 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.11 — Voxelia in English, stage 2: Tomorrow, the 3D view and the Voxeliaverse (November 13, 2026)
+
+The third stage of the English translation. About 1,600 new texts, in `src/lingua/9e_en_tomorrow.js`:
+
+- **Tomorrow**: the opening cutscene (the reset of the universe), the contracts with their clients, witnesses and targets, the factions and reputation, the world map, camps, shrines, teleport gems and Travel Stones, the battles for the cities.
+- **Your kingdom**: conquest and banners, settlements and the ledger, buildings, the town editor (buildings, roads, walls, decorations, blocks), houses to furnish with their storage, the mine and the historical relics, the barracks and the army, happiness, jobs, taxes and protests, seasons and weather, caravans, player factions with roles and permissions, wars and sieges, the quest board.
+- **Unique items**: names, affixes and powers, the stories of where they were forged, the heirlooms of Aldoria.
+- **The 3D view and VR**: options, resolution and sharpening, the pause menu, the headset controls.
+- **The Voxeliaverse** (8.9), which already spoke English on its own, now also follows the language engine.
+
+Italian and Eldorian don't change. Still to come: Voxelia Studio, and then the server and the older changelog entries.
+
+---
+
 ## 8.10 — Voxelia in English, stage 1: the game's systems and combat (November 13, 2026)
 
 The second stage of the English translation (the first, in 8.7, covered menus, interface and Story Mode). About 1,400 new texts, in `src/lingua/9d_en_sistemi.js`:

@@ -1,192 +1,366 @@
-/* ================= 8.6: ATTO II — LA COSTELLAZIONE PERDUTA =================
-   Dopo il vero finale (l'Occhio chiuso, Re Malakar sul trono) comincia un capitolo nuovo.
-   Le notti di Aldoria si allungano: qualcuno sta spegnendo le stelle. Sulle carte del cielo manca una costellazione,
-   la Lanterna, che Aldric il Primo fece cancellare: tre stelle e un cuore. Lì dentro, mille anni fa, chiuse Morvath,
-   l'Ultimo Custode, il cavaliere che aveva sorvegliato per lui il sigillo dell'Abominio. Ora che l'Occhio è chiuso il
-   sigillo si è allentato e Morvath è tornato: vuole che la notte non finisca più, perché al buio nulla si risveglia.
-   Ma il Crepuscolo rende i mostri più forti ogni giorno (è la Minaccia del Regno, vedi 8zzzzq_minaccia.js).
-   I passi:
-   0. Re Malakar, nel castello, racconta delle notti che si allungano (filmato);
-   1. l'Astronomo Tolomeo, nell'Osservatorio, spiega la costellazione perduta;
-   2. Stella, sulla cupola, apre il Portale delle Stelle;
-   3. nella Valle del Crepuscolo (zona nuova) si riaccendono le tre stelle: tre dungeon nuovi, ognuno con il suo boss
-      (Il Pozzo delle Stelle Spente, La Forgia dell'Eclissi, Il Giardino della Luna Capovolta);
-   4. con le tre stelle si apre la Rocca di Morvath, il quarto dungeon, e in fondo c'è Morvath;
-   5. si torna da Re Malakar: premi, il titolo «Portatore dell'Alba», e la Minaccia del Regno scende di un livello e mezzo.
-   Dodici creature nuove, quattro boss nuovi, tre filmati. Il capitolo si segue sotto l'orologio, nel Diario e nella Cronaca. */
-XSV.add('a2');
-function a2Fix(){if(!P)return{s:-1,l:[0,0,0]};P.a2=P.a2||{s:0,l:[0,0,0]};const o=P.a2;o.l=Array.isArray(o.l)?o.l:[0,0,0];o.s=o.s|0;return o}
+/* ================= 8.8: ATTO II — LA CITTÀ SEPOLTA (rifatto da capo; prima, dalla 8.6, era «La costellazione perduta») =================
+   Dopo il vero finale (l'Occhio chiuso, Re Malakar sul trono) Aldoria comincia a tremare, e il pozzo prosciugato della
+   vecchia piazza crolla su una scala. Sotto c'è ELDORA, la città degli scribi e dei costruttori, che c'era prima di
+   Aldoria: Aldric il Primo, allora Prefetto della Guardia, la seppellì con tutta la sua gente e ne cancellò i nomi, perché
+   l'Occhio (che ha fame di nomi) non trovasse il sigillo. Poi le costruì sopra Aldoria e si fece chiamare il Primo Re.
+   Ora che l'Occhio è chiuso il sigillo si slega, e i tre del Consiglio di Eldora legati al sigillo si svegliano.
+   I passi (P.a88.s):
+   0. Re Malakar, nel castello: la terra trema e il pozzo è crollato (filmato); manda l'eroe dal fratello;
+   1. Aldric, il Re deposto, nelle prigioni: il Canto dei Re, la ninna nanna dei figli dei re, che nomina Eldora;
+   2. si scende dalla scala nel pozzo di Aldoria Vecchia (filmato all'arrivo);
+   3. Oriana, la cartografa della Biblioteca, al suo accampamento: la mappa della città e lo scriba che si sente di notte;
+   4. Vael, l'ultimo scriba (un fantasma), nella piazza grande: la storia di Eldora e dei tre Custodi;
+   5. i tre Custodi, in qualsiasi ordine, ognuno in fondo al suo dungeon: Brunilde la Fonditrice (la Fonderia delle
+      Campane), Ysolde, la Regina che nessuno ricorda (i Giardini Pensili), Orsolo, il Custode dei Nomi (l'Archivio dei
+      Nomi). Ognuno ha le sue mosse e le sue fasi, parla durante lo scontro e, vinto, racconta chi era;
+   6. con i tre Custodi liberi si apre il Palazzo Sepolto: in fondo, sul trono, Aldric il Primo, il Re di Pietra (prima di
+      combattere ti parla; tre fasi; nell'ultima i Sepolti di Eldora lo trattengono e diventa vulnerabile);
+   7. il filmato dell'alba di Eldora, poi si torna da Re Malakar: premi, il titolo «Custode della Memoria» e lo ZAFFIRO
+      della Corona, che torna intero (è la sesta scheggia delle modalità: vedi 8zzzzh_corona80.js).
+   In più: le dodici Pietre della Memoria da leggere in città (due parlano della leggenda della settima gemma), le domande
+   ai personaggi che si aprono man mano che la storia va avanti, il passaggio dei re tra le prigioni del castello ed Eldora.
+   Tredici creature nuove, quattro boss nuovi, tre filmati. Il capitolo si segue sotto l'orologio, nel Diario e nella Cronaca.
+   TRADUZIONE: ogni testo nuovo passa da T88(italiano, inglese); le coppie finiscono in L88 e src/lingua/9c_en_atto2.js le
+   registra tra le traduzioni (qui ENX non esiste ancora). */
+XSV.add('a88');
+// (una volta sola per testo; quelli chiamati dentro le funzioni, dopo l'avvio, entrano subito tra le traduzioni)
+const L88=[],L88S=new Set();const T88=(it,en)=>{if(!L88S.has(it)){L88S.add(it);L88.push([it,en]);if(L88.on&&typeof ENX!=='undefined'){ENX[it]=en;if(typeof I18!=='undefined')I18.ok=0}}return it};
+// lo stato del capitolo; chi aveva giocato la «costellazione perduta» (P.a2) ricomincia da capo questa storia nuova
+function a2Fix(){if(!P)return{s:-1,b:[0,0,0],ins:{},v:{}};let o=P.a88;if(!o||typeof o!=='object'){o=P.a88={s:0,b:[0,0,0],ins:{},v:{}};if(P.a2&&(P.a2.s|0)>0)o.old=P.a2.s|0}
+  o.s=o.s|0;o.b=Array.isArray(o.b)?o.b:[0,0,0];o.ins=o.ins||{};o.v=o.v||{};return o}
 const a2On=()=>!!(th86Mode()&&(P.te|0)>=2);
-const a2N=()=>a2Fix().l.filter(Boolean).length;
-// i punti dell'Atto II nella Minaccia del Regno: ogni stella riaccesa la fa salire (Morvath si arrabbia), la Rocca ancora di più
-function a2Pts(){if(!a2On())return 0;const o=a2Fix();return a2N()*.3+(o.s>=4?.3:0)}
+const a2N=()=>a2Fix().b.filter(Boolean).length;
+// nella Minaccia del Regno ogni Custode liberato la fa salire (la città si sveglia), il Palazzo aperto ancora di più
+function a2Pts(){if(!a2On())return 0;const o=a2Fix();return a2N()*.3+(o.s>=6?.3:0)}
+const A88C=['brunilde88','ysolde88','orsolo88'];   // i tre Custodi, nell'ordine delle loro caselle in P.a88.b
+const A88D=['fonderia88','giardini88','archivio88'];
+/* ---- i nomi ---- */
+T88('Atto II · La città sepolta','Act II · The Buried City');T88('Eldora, la città sepolta','Eldora, the Buried City');
 /* ---- le creature ---- */
 Object.assign(E,{
-  lupo86:{n:'Lupo dell\'Eclissi',hp:130,at:28,xp:52,sp:3.1,r:1.1,cd:.9,ag:9},
-  cavaliere86:{n:'Cavaliere del Crepuscolo',hp:150,at:25,xp:64,sp:1.8,r:1.3,cd:1.2,ag:8},
-  ombra86:{n:'Ombra Cadente',hp:90,at:24,xp:48,sp:3,r:1.1,cd:1,ag:10},
-  arciere86:{n:'Arciere Stellato',hp:95,at:22,xp:56,sp:1.7,r:5,cd:1.8,ag:10,rng:'#bfd0ff'},
-  larva86:{n:'Larva Stellare',hp:110,at:22,xp:44,sp:1.5,r:1.1,cd:1.2,ag:7},
-  golem86:{n:'Golem d\'Eclissi',hp:190,at:28,xp:72,sp:1.3,r:1.4,cd:1.6,ag:7},
-  fabbro86:{n:'Fabbro d\'Ombra',hp:150,at:27,xp:62,sp:1.9,r:1.3,cd:1.2,ag:8},
-  salamandra86:{n:'Salamandra Nera',hp:110,at:26,xp:58,sp:2.2,r:4,cd:1.8,ag:9,rng:'#ff8a3a'},
-  falena86:{n:'Falena Lunare',hp:75,at:22,xp:46,sp:3.4,r:1,cd:.8,ag:10},
-  driade86:{n:'Driade Capovolta',hp:110,at:26,xp:60,sp:1.6,r:5,cd:1.9,ag:10,rng:'#d8e4ff'},
-  mantide86:{n:'Mantide Lunare',hp:130,at:28,xp:58,sp:2.3,r:1.2,cd:1,ag:9},
-  vespero86:{n:'Vespero, la Stella Caduta',hp:1400,at:40,xp:1100,sp:1.6,r:4.5,cd:1.5,ag:12,boss:1,rng:'#bfd0ff',sum:'larva86'},
-  colosso86:{n:'Il Colosso dell\'Eclissi',hp:1700,at:46,xp:1300,sp:1.4,r:2,cd:1.6,ag:12,boss:1,slam:1,sum:'golem86'},
-  selene86:{n:'Selene, la Strega della Luna',hp:1500,at:44,xp:1400,sp:1.9,r:4.5,cd:1.5,ag:12,boss:1,rng:'#d8e4ff',sum:'falena86'},
-  morvath86:{n:'Morvath, l\'Ultimo Custode',hp:2200,at:50,xp:2600,sp:1.9,r:1.8,cd:1.3,ag:14,boss:1,slam:1,sum:'ombra86'}});
-{const set=(k,f)=>{try{const m=f();if(m)E[k].m=m}catch(e){console.warn('modello',k,e)}};const st=(x,y,z,c)=>['hd',x,y,z,.05,.05,.05,c];
-  set('lupo86',()=>mQuad({s:1.05,c:'#3a2f5a',c2:'#2a2244',ey:'#ffd84a',ttail:'#5a4a8a',top:20}));
-  set('cavaliere86',()=>mHum({s:1.15,sk:'#b8a8c8',tp:'#3a2f5a',lg:'#2a2244',ey:'#ffd84a',x:[...HT.helmet('#4a3f6a','#bfd0ff'),['bd',-.24,.12,12,.48,.03,6,'#bfd0ff'],...WP.sword('#bfd0ff'),...WP.shield('#3a2f5a','#d4af37')]}));
-  set('ombra86',()=>mFloat({kind:'ghost',c:'#4a3a7a',hc:'#5a4a8a',s:1.05}));
-  set('arciere86',()=>mHum({s:1,sk:'#c8b8d8',tp:'#2a3a6a',lg:'#22284a',ey:'#bfd0ff',x:[...HT.hood('#2a3a6a'),...WP.bow()]}));
-  set('larva86',()=>mFloat({kind:'slime',c:'#8a9ae8',s:1}));
-  set('golem86',()=>mHum({s:1.45,sk:'#3a3448',tp:'#2a2438',lg:'#221e2e',hd:'#3a3448',ey:'#ff9a3a',hunch:1,belt:0,x:[['bd',-.2,.13,16,.4,.03,3,'#ff9a3a'],['bd',-.05,.13,10,.1,.03,8,'#ff9a3a'],['hd',-.1,.13,24,.2,.02,1.5,'#ff9a3a']]}));
-  set('fabbro86',()=>mHum({s:1.1,sk:'#9a8aa8',tp:'#2a2230',lg:'#1e1a24',ey:'#ff9a3a',x:[['bd',-.22,.13,6,.44,.03,12,'#5a3a2a'],...WP.hammer('#4a4458')]}));
-  set('salamandra86',()=>mQuad({s:1,c:'#1e1a22',c2:'#141016',ey:'#ff8a3a',low:1,ttail:'#ff6a1a',top:16}));
-  set('falena86',()=>mFloat({kind:'bat',c:'#e8e4f4',s:1.1}));
-  set('driade86',()=>mHum({s:1,sk:'#b8d8c8',tp:'#5a7a6a',robe:'#4a6a5a',ey:'#d8e4ff',x:[...HT.hood('#d8e4ff'),...WP.staff('#d8e4ff')]}));
-  set('mantide86',()=>mArth({s:1.05,c:'#9ac8a8',c2:'#6a9a7a',legs:4}));
-  set('vespero86',()=>mFloat({kind:'elem',c:'#9ab0ff',s:2.3,x:[['bd',-.3,-.04,20,.6,.08,.08,'#ffffff'],['bd',-.04,-.3,20,.08,.6,.08,'#ffffff'],st(-.4,0,34,'#ffffff'),st(.35,.1,30,'#ffe89a')]}));
-  set('colosso86',()=>mHum({s:2.05,sk:'#2e2838',tp:'#221e2c',lg:'#1a1622',hd:'#2e2838',ey:'#ff8a2a',hunch:1,belt:0,x:[['bd',-.22,.13,15,.44,.03,4,'#ff8a2a'],['bd',-.04,.13,8,.08,.03,12,'#ff8a2a'],['hd',-.12,.13,24,.24,.02,1.6,'#ff8a2a'],...HT.horns('#ff8a2a',1),...WP.hammer('#3a3448')]}));
-  set('selene86',()=>mHum({s:1.35,sk:'#e8e4f4',tp:'#3a4a7a',robe:'#2a3a6a',ey:'#bfd0ff',x:[...HT.crown('#e8e4f4'),['hd',-.04,-.1,32,.08,.08,6,'#bfd0ff'],['bd',-.24,.12,14,.48,.03,4,'#e8e4f4'],...WP.staff('#e8e4f4')]}));
-  set('morvath86',()=>mHum({s:1.6,sk:'#8a7a9a',tp:'#1e1a2e',lg:'#16121f',ey:'#bfd0ff',x:[...HT.helmet('#2a2440','#bfd0ff'),...HT.horns('#d8d0e8'),['bd',-.26,-.17,6,.52,.06,20,'#2a2050'],['bd',-.24,.13,15,.48,.03,4,'#bfd0ff'],['bd',-.06,.14,9,.12,.03,6,'#ffd84a'],...WP.big('#bfd0ff')]}));}
-Object.assign(UQ,{vespero86:['c','Mantello della Stella Caduta',0,140],colosso86:['w','Martello dell\'Eclissi',22,0],selene86:['h','Diadema della Luna',0,120],morvath86:['w','Alba Ritrovata',28,0]});
-Object.assign(BAB,{vespero86:['rain','nova','teleport','summon:larva86'],colosso86:['slam2','charge','rain','summon:golem86'],selene86:['teleport','nova','heal','summon:falena86','shield'],morvath86:['charge','nova','teleport','summon:ombra86','rain','shield']});
+  sepolto88:{n:T88('Sepolto senza nome','Nameless Buried One'),hp:110,at:24,xp:50,sp:2.3,r:1.1,cd:1,ag:9},
+  sentinella88:{n:T88('Sentinella di Pietra','Stone Sentinel'),hp:200,at:30,xp:74,sp:1.25,r:1.4,cd:1.6,ag:7},
+  radice88:{n:T88('Radice Strisciante','Creeping Root'),hp:120,at:25,xp:52,sp:2,r:1.2,cd:1.1,ag:8},
+  automa88:{n:T88('Automa di Bronzo','Bronze Automaton'),hp:170,at:28,xp:66,sp:1.5,r:1.3,cd:1.4,ag:8},
+  fonditore88:{n:T88('Fonditore Sepolto','Buried Founder'),hp:150,at:28,xp:62,sp:1.9,r:1.3,cd:1.2,ag:8},
+  scoria88:{n:T88('Scoria Viva','Living Slag'),hp:120,at:26,xp:56,sp:1.6,r:4,cd:1.9,ag:8,rng:'#ff8a3a'},
+  spora88:{n:T88('Lucciola di Spora','Spore Firefly'),hp:80,at:23,xp:46,sp:3.4,r:1,cd:.8,ag:10},
+  rovo88:{n:T88('Rovo Gemello','Twin Bramble'),hp:140,at:27,xp:58,sp:2.1,r:1.2,cd:1,ag:9},
+  ninfa88:{n:T88('Ninfa della Vasca','Pool Nymph'),hp:105,at:26,xp:60,sp:1.6,r:5,cd:1.9,ag:10,rng:'#9affd8'},
+  inchiostro88:{n:T88('Ombra d\'Inchiostro','Ink Shade'),hp:95,at:25,xp:50,sp:3,r:1.1,cd:1,ag:10},
+  scriba88:{n:T88('Scriba Cancellato','Erased Scribe'),hp:100,at:27,xp:60,sp:1.7,r:5,cd:1.8,ag:10,rng:'#3a3a5a'},
+  tomo88:{n:T88('Tomo Volante','Flying Tome'),hp:90,at:24,xp:48,sp:2.7,r:1.1,cd:1,ag:9},
+  guardia88:{n:T88('Guardia del Primo Re','Guard of the First King'),hp:180,at:30,xp:70,sp:1.8,r:1.3,cd:1.2,ag:9},
+  brunilde88:{n:T88('Brunilde, la Fonditrice delle Campane','Brunilde, the Bell Founder'),hp:1600,at:42,xp:1300,sp:1.5,r:2,cd:1.5,ag:12,boss:1,slam:1,sum:'automa88'},
+  ysolde88:{n:T88('Ysolde, la Regina che nessuno ricorda','Ysolde, the Queen No One Remembers'),hp:1500,at:44,xp:1400,sp:1.9,r:4.5,cd:1.5,ag:12,boss:1,rng:'#9affd8',sum:'spora88'},
+  orsolo88:{n:T88('Orsolo, il Custode dei Nomi','Orsolo, the Keeper of Names'),hp:1550,at:46,xp:1500,sp:1.7,r:4.5,cd:1.5,ag:12,boss:1,rng:'#6a5aaa',sum:'inchiostro88'},
+  aldric88:{n:T88('Aldric il Primo, il Re di Pietra','Aldric the First, the Stone King'),hp:2600,at:52,xp:3000,sp:1.8,r:1.9,cd:1.3,ag:14,boss:1,slam:1,sum:'guardia88'}});
+{const set=(k,f)=>{try{const m=f();if(m)E[k].m=m}catch(e){console.warn('modello',k,e)}};
+  set('sepolto88',()=>mFloat({kind:'ghost',c:'#8a8a9a',hc:'#9a9aaa',ey:'#d8e8ff',s:1}));
+  set('sentinella88',()=>mHum({s:1.5,sk:'#7a7682',tp:'#6a6672',lg:'#5a5662',hd:'#7a7682',ey:'#9adcff',hunch:1,belt:0,x:[['bd',-.22,.13,14,.44,.03,3,'#5a5662'],['hd',-.1,.13,25,.2,.02,1.2,'#9adcff'],...WP.spear('#8a8692')]}));
+  set('radice88',()=>mArth({s:1.05,c:'#5a4030',c2:'#3a2a20',legs:6}));
+  set('automa88',()=>mHum({s:1.2,sk:'#b8803a',tp:'#9a6a2a',lg:'#7a5220',hd:'#c8903a',ey:'#ffe08a',belt:0,x:[['bd',-.12,.13,10,.24,.03,8,'#5a3a1a'],['bd',-.04,.14,12,.08,.02,4,'#ffd84a'],...WP.hammer('#7a5220')]}));
+  set('fonditore88',()=>mHum({s:1.1,sk:'#9a8a8a',tp:'#3a2a24',lg:'#2a201c',ey:'#ff9a3a',x:[['bd',-.22,.13,6,.44,.03,12,'#5a3a2a'],...WP.hammer('#5a5058')]}));
+  set('scoria88',()=>mFloat({kind:'slime',c:'#5a2a1a',s:1.05}));
+  set('spora88',()=>mFloat({kind:'bat',c:'#8affc8',s:1}));
+  set('rovo88',()=>mArth({s:1.1,c:'#3a5a2a',c2:'#2a4020',legs:4}));
+  set('ninfa88',()=>mHum({s:1,sk:'#b8e8d8',tp:'#3a7a6a',robe:'#2a6a5a',ey:'#9affd8',x:[...HT.hood('#9affd8'),...WP.staff('#9affd8')]}));
+  set('inchiostro88',()=>mFloat({kind:'ghost',c:'#22202e',hc:'#2a2838',ey:'#8a7aff',s:1.05}));
+  set('scriba88',()=>mHum({s:1,sk:'#c8c0b0',tp:'#2a2a3a',robe:'#22222e',ey:'#8a7aff',x:[...HT.hood('#2a2a3a'),...WP.staff('#6a5aaa')]}));
+  set('tomo88',()=>mFloat({kind:'elem',c:'#6a4a2a',c2:'#e8dcc0',s:1.1}));
+  set('guardia88',()=>mHum({s:1.2,sk:'#8a8692',tp:'#4a4658',lg:'#3a3648',ey:'#9adcff',x:[...HT.helmet('#6a6672','#9adcff'),...WP.sword('#b8bcc8'),...WP.shield('#4a4658','#9adcff')]}));
+  set('brunilde88',()=>mHum({s:1.75,sk:'#c89070',tp:'#5a3a24',lg:'#3a2a1c',ey:'#ffb04a',x:[['bd',-.24,.13,6,.48,.03,14,'#7a4a2a'],['bd',-.2,.14,16,.4,.02,2,'#d8a040'],...HT.bandana('#b8803a'),...WP.hammer('#b8803a'),['al',-.46,-.06,10,.14,.14,10,'#c8903a'],['al',-.44,-.04,8,.1,.1,2,'#7a5220']]}));
+  set('ysolde88',()=>mHum({s:1.4,sk:'#d8e8e0',tp:'#2a4a3a',robe:'#1e3a2e',ey:'#9affd8',x:[...HT.crown('#9affd8'),['hd',-.04,-.1,32,.08,.08,6,'#e8fff4'],['bd',-.24,.12,14,.48,.03,4,'#9affd8'],['bd',-.26,-.17,6,.52,.05,16,'#3a6a4a'],...WP.staff('#c8ffe8')]}));
+  set('orsolo88',()=>mHum({s:1.45,sk:'#b8b0a0',tp:'#22222e',robe:'#1a1a24',ey:'#8a7aff',x:[...HT.hood('#2a2838'),['hd',-.13,.13,19,.26,.02,8,'#e8e0d0'],['bd',-.24,.12,10,.48,.03,6,'#e8dcc0'],['al',-.44,.04,10,.16,.12,12,'#6a4a2a'],...WP.staff('#8a7aff')]}));
+  set('aldric88',()=>mHum({s:1.75,sk:'#8a8692',tp:'#5a5662',lg:'#4a4652',hd:'#9a96a2',ey:'#bfe6ff',x:[...HT.crown('#6a6672'),['hd',-.06,-.12,31,.12,.08,3,'#2a5ac8'],['bd',-.26,-.17,6,.52,.06,22,'#3a3648'],['bd',-.24,.13,15,.48,.03,4,'#9a96a2'],['bd',-.05,.14,9,.1,.03,6,'#2a5ac8'],...WP.big('#b8bcc8')]}));}
+Object.assign(UQ,{brunilde88:['w',T88('Martello delle Campane','Hammer of the Bells'),24,0],ysolde88:['h',T88('Diadema della Luna Nera','Diadem of the Black Moon'),0,140],
+  orsolo88:['c',T88('Mantello d\'Inchiostro','Cloak of Ink'),0,150],aldric88:['s',T88('Scudo di Eldora','Shield of Eldora'),0,190]});
+Object.assign(BAB,{brunilde88:['slam2','charge','summon:automa88'],ysolde88:['teleport','nova','heal','summon:spora88'],orsolo88:['rain','teleport','summon:inchiostro88','shield'],aldric88:['slam2','charge','nova','summon:guardia88','rain']});
 /* ---- i dungeon ---- */
-Object.assign(TH,{stelle86:{a:'#2e3456',b:'#2a304e',o:'#1a1e36',bg:'#02030a',tc:'#bfd0ff',pool:'#3a4a9a',pt:'mote'},eclissi86:{a:'#3a2e36',b:'#342a32',o:'#221a20',bg:'#060304',tc:'#ff9a3a',pool:'#ff6a1a',pt:'ember'},
-  luna86:{a:'#4a5a5a',b:'#445454',o:'#2a3a3a',bg:'#04080a',tc:'#d8e4ff',pool:'#5a8aa8',pt:'mote'},rocca86:{a:'#3a3048',b:'#342b42',o:'#201a2e',bg:'#030206',tc:'#bfd0ff',pool:'#4a3a8a',pt:'mote'}});
-if(typeof DS55!=='undefined')Object.assign(DS55,{stelle86:{sh:['round','ring','octa'],ty:['stelle','ponte','rune'],c:'#bfd0ff',fl:'stars'},eclissi86:{sh:['rect','ring','cross','hall'],ty:['fucina','catene','ossidiana','altare'],c:'#ff9a3a',fl:'basalt'},
-  luna86:{sh:['round','rect','ring'],ty:['giardino','vasche','statue','specchi'],c:'#d8e4ff',fl:'moss'},rocca86:{sh:['hall','octa','cross','rect'],ty:['biblioteca','sarcofagi','catene','rune','specchi'],c:'#bfd0ff',fl:'slab'}});
+Object.assign(TH,{fonderia88:{a:'#3e2e28',b:'#382a24',o:'#241a16',bg:'#070403',tc:'#ffb04a',pool:'#ff6a1a',pt:'ember'},giardini88:{a:'#2e4438',b:'#2a3e34',o:'#1a2a22',bg:'#030806',tc:'#9affd8',pool:'#3a8a7a',pt:'mote'},
+  archivio88:{a:'#38343e',b:'#332f38',o:'#201e26',bg:'#040306',tc:'#8a7aff',pool:'#2a2848',pt:'mote'},trono88:{a:'#44404c',b:'#3e3a46',o:'#26242e',bg:'#050408',tc:'#bfe6ff',pool:'#2a4a8a',pt:'mote'}});
+if(typeof DS55!=='undefined')Object.assign(DS55,{fonderia88:{sh:['rect','ring','cross','hall'],ty:['fucina','catene','ossidiana','altare'],c:'#ffb04a',fl:'basalt'},giardini88:{sh:['round','rect','ring'],ty:['giardino','vasche','statue','alghe'],c:'#9affd8',fl:'moss'},
+  archivio88:{sh:['hall','rect','cross','octa'],ty:['biblioteca','rune','specchi','sarcofagi'],c:'#8a7aff',fl:'slab'},trono88:{sh:['hall','octa','cross','rect'],ty:['statue','sarcofagi','altare','cappella','rune'],c:'#bfe6ff',fl:'slab'}});
 Object.assign(DG,{
-  pozzo86:{n:'Il Pozzo delle Stelle Spente',lv:18,fls:3,en:['larva86','ombra86','arciere86'],boss:'vespero86',th:'stelle86',ent:'valle86',a2:0},
-  forgia86:{n:'La Forgia dell\'Eclissi',lv:21,fls:3,en:['golem86','fabbro86','salamandra86'],boss:'colosso86',th:'eclissi86',ent:'valle86',a2:1},
-  giardino86:{n:'Il Giardino della Luna Capovolta',lv:24,fls:3,en:['falena86','driade86','mantide86'],boss:'selene86',th:'luna86',ent:'valle86',a2:2},
-  rocca86:{n:'La Rocca di Morvath',lv:24,fls:3,en:['cavaliere86','arciere86','ombra86'],boss:'morvath86',th:'rocca86',ent:'valle86',a2:3}});
-if(typeof DGH!=='undefined')Object.assign(DGH,{pozzo86:'nella Valle del Crepuscolo, a ovest',forgia86:'nella Valle del Crepuscolo, a est',giardino86:'nella Valle del Crepuscolo, a nord-ovest',rocca86:'in fondo alla Valle del Crepuscolo'});
-for(const[k,b]of[['rocca86','cittadella'],['pozzo86','cristallo'],['forgia86','fucina'],['giardino86','abisso']])if(TRK[b]&&!TRK[k])TRK[k]=TRK[b];
-const A2D=['pozzo86','forgia86','giardino86'];
-const A2STAR=['Vespero','Brace','Selene'];
-/* ---- la Valle del Crepuscolo ---- */
-const A2P={ent:[28,51],ro:[28,8],sh:[[9,33],[46,33],[11,15]],hub:[28,28]};
-function genValle({R4,D,RS,EN,gate,scat,n}){const r=sd(hs('valle86'));
-  scat(1,1,n-2,n-2,'⸸',.045);scat(1,1,n-2,n-2,'◘',.03);scat(1,1,n-2,n-2,'✧',.018);scat(1,1,n-2,n-2,'◊',.008);
-  const clear=(x0,y0,x1,y1)=>R4(x0,y0,x1-x0+1,y1-y0+1,0);
-  const road=(a,b)=>{let[x,y]=a;const step=()=>{if(x>0&&y>0&&x<n-1&&y<n-1){M[y][x]=4;DEC[y][x]='';if(M[y+1]&&M[y+1][x]===6&&r()<.5){M[y+1][x]=0;DEC[y+1][x]=''}}};step();while(x!==b[0]||y!==b[1]){if(Math.abs(b[0]-x)>Math.abs(b[1]-y))x+=Math.sign(b[0]-x);else y+=Math.sign(b[1]-y);step()}};
-  const[hx,hy]=A2P.hub;clear(hx-3,hy-3,hx+3,hy+3);road(A2P.ent,[hx,hy+3]);road([hx,hy-3],[A2P.ro[0],A2P.ro[1]+4]);
-  for(const s of A2P.sh){clear(s[0]-3,s[1]-3,s[0]+3,s[1]+3);road([hx,hy],[s[0],s[1]])}
-  // il cuore della costellazione, in mezzo: tre fiamme, una per stella
-  // (le lanterne sono arredi fissi: non ci si passa attraverso)
-  M[hy][hx]=6;DEC[hy][hx]='✦';
-  // i tre santuari, ognuno con la porta del suo dungeon e la sua lanterna
-  A2D.forEach((id,i)=>{const[x,y]=A2P.sh[i];ents.push(po(x,y-1,id+'@1',{st:'dun',n:DG[id].n}));M[y][x+2]=6;DEC[y][x+2]='✶';
-    for(const[a,b]of[[-3,-3],[3,-3],[-3,3],[3,3]])D(x+a,y+b,'◊')});
-  // la Rocca: un recinto di mura nere con la porta sbarrata finché le tre stelle non sono accese
-  const[rx,ry]=A2P.ro;for(let y=ry-5;y<=ry+4;y++)for(let x=rx-7;x<=rx+7;x++){if(x<1||y<1||x>n-2||y>n-2)continue;M[y][x]=0;DEC[y][x]='';if((y===ry-5||x===rx-7||x===rx+7||y===ry+4)&&!(y===ry+4&&Math.abs(x-rx)<=1)){M[y][x]=6;DEC[y][x]='▥'}}
-  for(const[a,b]of[[-7,-5],[7,-5],[-7,4],[7,4],[-2,4],[2,4]])if(M[ry+b]){M[ry+b][rx+a]=6;DEC[ry+b][rx+a]='▣'}
-  const rp=po(rx,ry,'rocca86@1',{st:'dun',n:DG.rocca86.n});if(!(P.unl&&P.unl.rocca86)){rp.lock='rocca86';rp.lockMsg='La porta della Rocca è sbarrata da una notte senza stelle: riaccendi prima le tre stelle della Lanterna.'}ents.push(rp);
-  // il ritorno: il Portale delle Stelle porta sulla cupola dell'Osservatorio
-  const[ex,ey]=A2P.ent;clear(ex-2,ey-2,ex+2,ey+1);ents.push(po(ex,ey,'oss_cupola',{st:'void',n:'Portale delle Stelle · Aldoria'}));
+  fonderia88:{n:T88('La Fonderia delle Campane','The Bell Foundry'),lv:21,fls:3,en:['automa88','fonditore88','scoria88'],boss:'brunilde88',th:'fonderia88',ent:'eldora88'},
+  giardini88:{n:T88('I Giardini Pensili','The Hanging Gardens'),lv:23,fls:3,en:['spora88','rovo88','ninfa88'],boss:'ysolde88',th:'giardini88',ent:'eldora88'},
+  archivio88:{n:T88('L\'Archivio dei Nomi','The Archive of Names'),lv:24,fls:3,en:['inchiostro88','scriba88','tomo88'],boss:'orsolo88',th:'archivio88',ent:'eldora88'},
+  trono88:{n:T88('Il Palazzo Sepolto','The Buried Palace'),lv:26,fls:3,en:['guardia88','sentinella88','sepolto88'],boss:'aldric88',th:'trono88',ent:'eldora88'}});
+if(typeof DGH!=='undefined')Object.assign(DGH,{fonderia88:T88('a Eldora, la città sotto il pozzo di Aldoria Vecchia: a ovest','in Eldora, the city under the well of Old Aldoria: to the west'),giardini88:T88('a Eldora, la città sotto il pozzo di Aldoria Vecchia: a est','in Eldora, the city under the well of Old Aldoria: to the east'),
+  archivio88:T88('a Eldora, la città sotto il pozzo di Aldoria Vecchia: a nord-ovest','in Eldora, the city under the well of Old Aldoria: to the north-west'),trono88:T88('a Eldora, in fondo alla città, a nord','in Eldora, at the far end of the city, to the north')});
+for(const[k,b]of[['trono88','cittadella'],['fonderia88','fucina'],['giardini88','abisso'],['archivio88','cristallo']])if(TRK[b]&&!TRK[k])TRK[k]=TRK[b];
+/* ---- Eldora ---- */
+const A88P={ent:[30,56],camp:[26,50],plaza:[30,30],vael:[30,23],fond:[7,31],giar:[52,31],arch:[19,14],pal:[39,14],re:[37,55]};
+// le dodici Pietre della Memoria: [x, y, titolo, testo]
+const INS88=[
+  [30,45,T88('La pietra della fondazione','The Founding Stone'),T88('«Qui Eldora, città degli scribi e dei costruttori, fu fondata sopra la roccia viva. Ciò che è scritto resta.»','“Here Eldora, city of scribes and builders, was founded upon the living rock. What is written remains.”')],
+  [13,35,T88('La pietra delle campane','The Stone of the Bells'),T88('«Una campana per ogni nato. Che la città sappia il tuo nome il giorno in cui arrivi.»','“A bell for every child born. Let the city know your name on the day you arrive.”')],
+  [24,30,T88('La pietra del Consiglio','The Council Stone'),T88('«Tre siedono al Consiglio: chi fonde, chi coltiva, chi ricorda. Nessuno di loro è re. Eldora non ha re.»','“Three sit on the Council: the one who casts, the one who tends, the one who remembers. None of them is king. Eldora has no king.”')],
+  [16,19,T88('La pietra del Pozzo','The Stone of the Well'),T88('«È vietato scrivere nel Pozzo dei Nomi ciò che non si conosce. Una parola sconosciuta è una porta aperta.»','“It is forbidden to write in the Well of Names what you do not know. An unknown word is an open door.”')],
+  [36,38,T88('La pietra del Prefetto','The Prefect\'s Stone'),T88('«Al Prefetto Aldric e ai suoi soldati, venuti da oltre le montagne, Eldora concede pane, tetto e un nome.»\n\nSotto, graffiato con un chiodo: «E lui ce li ha tolti tutti.»','“To Prefect Aldric and his soldiers, come from beyond the mountains, Eldora grants bread, a roof and a name.”\n\nBelow, scratched with a nail: “And he took them all away from us.”')],
+  [20,43,T88('La pietra raschiata','The Scraped Stone'),T88('«Qui riposano ———, ———, ——— e i loro figli ———.»\n\nI nomi sono stati raschiati via con cura, lettera per lettera. Chi l\'ha fatto ha lasciato intatte solo le parole «qui riposano».','“Here rest ———, ———, ——— and their children ———.”\n\nThe names have been scraped away with care, letter by letter. Whoever did it left only the words “here rest” untouched.')],
+  [44,44,T88('La pietra delle sette luci','The Stone of the Seven Lights'),T88('«Sei luci per i sei regni del mondo, dicevano i padri. La settima non ha colore e non ha regno: chi la trova non la porta, ne è portato. Apre la porta di una realtà che gli occhi non sanno ancora guardare.»\n\nLa pietra è più antica delle altre, e la scritta è in una lingua che nemmeno gli scribi di Eldora usavano più.','“Six lights for the six realms of the world, the fathers said. The seventh has no color and no realm: whoever finds it does not carry it, it carries them. It opens the door to a reality the eyes do not yet know how to look at.”\n\nThe stone is older than the others, and the writing is in a language not even the scribes of Eldora still used.')],
+  [47,24,T88('La pietra del giardino','The Garden Stone'),T88('«Ysolde del Consiglio piantò qui i fiori della luna, che si aprono solo al buio. "Anche nel buio qualcosa cresce", diceva.»','“Ysolde of the Council planted the moonflowers here, which open only in the dark. ‘Even in the dark something grows,’ she used to say.”')],
+  [8,25,T88('La pietra dell\'ultimo giorno','The Stone of the Last Day'),T88('«Le campane hanno suonato tutte insieme. Il Prefetto dice che è per salvarci. Mia figlia mi chiede perché il cielo di pietra scende. Non so cosa risponderle.»','“The bells rang all together. The Prefect says it is to save us. My daughter asks me why the stone sky is coming down. I don\'t know what to tell her.”')],
+  [25,17,T88('La pietra dell\'Archivio','The Archive Stone'),T88('«Centomila nomi in un solo libro. Se un giorno tutto sarà dimenticato, che resti almeno questo.» Firmato con una sola lettera: O.','“A hundred thousand names in a single book. If one day everything is forgotten, let at least this remain.” Signed with a single letter: O.')],
+  [35,18,T88('La pietra del Primo Re','The First King\'s Stone'),T88('«Aldric, Primo Re di Aldoria, chiuse l\'Occhio e salvò il mondo.»\n\nSotto, più piccolo, con un\'altra mano: «Il mondo, sì. Non noi.»','“Aldric, First King of Aldoria, closed the Eye and saved the world.”\n\nBelow, smaller, in another hand: “The world, yes. Not us.”')],
+  [33,26,T88('La pietra di Vael','Vael\'s Stone'),T88('«Ho scritto questa pietra mille volte. Ogni volta la polvere la cancella. Ogni volta la riscrivo. Mi chiamo Vael, e io esisto.»','“I have written this stone a thousand times. Each time the dust erases it. Each time I write it again. My name is Vael, and I exist.”')]];
+T88('Pietra della Memoria','Memory Stone');
+function genEldora({R4,D,F,H,RS,EN,N2,scat,n}){const r=sd(hs('eldora88'));
+  const road=(a,b,w=1)=>{let[x,y]=a;const put=()=>{for(let i=0;i<w;i++)for(let j=0;j<w;j++){const u=x+i,v=y+j;if(u>0&&v>0&&u<n-1&&v<n-1){M[v][u]=4;DEC[v][u]=''}}};put();while(x!==b[0]||y!==b[1]){if(Math.abs(b[0]-x)>Math.abs(b[1]-y))x+=Math.sign(b[0]-x);else y+=Math.sign(b[1]-y);put()}};
+  // la roccia della caverna: macerie e radici lungo i bordi, funghi luminosi sparsi
+  for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++){const e=Math.min(x,y,n-1-x,n-1-y);if(e<=2&&r()<.55)D(x,y,r()<.6?'Ꞗ':'Ꞷ')}
+  scat(3,3,n-6,n-6,'Ꞩ',.02);scat(3,3,n-6,n-6,'Ꞗ',.012);
+  // le strade: il viale dalla scala alla piazza, e dalla piazza ai quartieri
+  const[px,py]=A88P.plaza;road([30,55],[30,py+4],2);road([px-6,py],[A88P.fond[0]+1,A88P.fond[1]],2);road([px+6,py],[A88P.giar[0]-1,A88P.giar[1]],2);
+  road([px-2,py-6],[A88P.arch[0],A88P.arch[1]+1]);road([px+2,py-6],[A88P.pal[0],A88P.pal[1]+1],2);
+  // la piazza: un cerchio lastricato con la statua del Primo Re (il volto cancellato) e i bracieri
+  for(let y=py-6;y<=py+6;y++)for(let x=px-6;x<=px+6;x++){const d=Math.hypot(x-px,y-py);if(d<=6.2){M[y][x]=4;DEC[y][x]=''}}
+  F(px,py,'Ꟃ');for(const[a,b]of[[-5,-2],[5,-2],[-5,3],[5,3]])F(px+a,py+b,'Ꟁ');
+  for(const[a,b]of[[-3,-5],[3,-5],[-6,0],[6,0]])F(px+a,py+b,'Ꞓ');
+  // la Fonderia (ovest): case di pietra annerita, campane cadute, incudini
+  for(const[x,y,w,h]of[[5,22,5,4],[12,22,5,4],[5,37,5,4],[12,38,6,4],[16,27,3,3]])H({x,y,w,h,wall:'#4a3e3a',roof:'#2a2220',ht:22+((x+y)%3)*4});
+  for(const[x,y]of[[10,28],[14,33],[9,35],[17,24],[11,30]])D(x,y,'Ꞹ');for(const[x,y]of[[7,28],[13,29],[16,35]])D(x,y,'Ꞻ');
+  // i Giardini (est): vasche di luna, radici che scendono dal soffitto, funghi
+  for(const[x,y,w,h]of[[44,26,3,2],[49,35,3,2],[42,35,2,2]])R4(x,y,w,h,2);
+  for(const[x,y]of[[45,23],[52,26],[48,29],[43,31],[54,37],[46,39],[51,22]])D(x,y,'Ꞷ');scat(40,21,16,20,'Ꞩ',.07);
+  for(const[x,y,w,h]of[[42,21,4,3],[50,39,4,3]])H({x,y,w,h,wall:'#4a5a4e',roof:'#2a3a30',ht:20});
+  // l'Archivio (nord-ovest): la grande sala a colonne, gli scaffali crollati, le steli
+  H({x:13,y:5,w:12,h:7,wall:'#5a5664',roof:'#33303c',ht:40,st:'col'});for(const[x,y]of[[13,13],[24,13],[12,16],[22,17],[15,17]])D(x,y,'Ꞔ');for(const[x,y]of[[11,9],[27,9],[27,13]])D(x,y,'Ꞿ');
+  // il Palazzo (nord): le mura di pietra con le porte sigillate e le torri
+  const[qx,qy]=A88P.pal;for(let y=qy-10;y<=qy;y++)for(let x=qx-7;x<=qx+7;x++){if(x<1||y<1||x>n-2||y>n-2)continue;M[y][x]=0;DEC[y][x]='';if((y===qy-10||x===qx-7||x===qx+7||y===qy)&&!(y===qy&&Math.abs(x-qx)<=1)){M[y][x]=6;DEC[y][x]='Ꞽ'}}
+  H({x:qx-5,y:qy-9,w:11,h:6,wall:'#5a5662',roof:'#2a2a38',ht:52});for(const[a,b]of[[-7,-10],[7,-10],[-7,0],[7,0],[-2,0],[2,0]])if(M[qy+b])F(qx+a,qy+b,'Ꞛ');
+  // le case della città, lungo il viale, mezze crollate
+  for(const[x,y,w,h]of[[22,36,4,4],[34,36,4,4],[22,42,3,3],[35,43,4,3],[38,30,3,3],[19,30,3,3]])H({x,y,w,h,wall:'#5a5460',roof:'#34303c',ht:18+((x*y)%3)*5});
+  // l'accampamento di Oriana, accanto alla scala
+  const[cx,cy]=A88P.camp;R4(cx-3,cy-2,6,5,0);F(cx-2,cy-1,'Ꞝ');D(cx+1,cy+1,'Ꞟ');for(const[a,b]of[[-3,2],[2,-2]])D(cx+a,cy+b,'Ꞻ');N2('oriana88',cx,cy+1);
+  // Vael, davanti alla scalinata dell'Archivio
+  R4(A88P.vael[0]-1,A88P.vael[1]-1,3,2,4);const v=N2('vael88',A88P.vael[0],A88P.vael[1]);v.m=vael88M();v.ghost=1;
+  // le Pietre della Memoria
+  INS88.forEach(([x,y],i)=>{for(const[a,b]of[[0,0],[1,0],[0,1]])if(M[y+b][x+a]!==4){M[y+b][x+a]=0;DEC[y+b][x+a]=''}ents.push({k:'ins88',i,n:'',px:x+.5,py:y+.5})});
+  // le porte dei quattro dungeon (il Palazzo è sigillato finché i tre Custodi non sono liberi)
+  ents.push(po(A88P.fond[0],A88P.fond[1],'fonderia88@1',{st:'dun',n:DG.fonderia88.n}),po(A88P.giar[0],A88P.giar[1],'giardini88@1',{st:'dun',n:DG.giardini88.n}),po(A88P.arch[0],A88P.arch[1],'archivio88@1',{st:'dun',n:DG.archivio88.n}));
+  const pp=po(qx,qy,'trono88@1',{st:'dun',n:DG.trono88.n});if(!(P&&P.unl&&P.unl.trono88)){pp.lock='trono88';pp.lockMsg=T88('Le porte del Palazzo Sepolto sono sigillate da tre segni: una campana, un fiore e una penna. Libera prima i tre Custodi di Eldora.','The doors of the Buried Palace are sealed by three signs: a bell, a flower and a quill. Free the three Keepers of Eldora first.')}ents.push(pp);
+  // la scala verso Aldoria Vecchia e il passaggio dei re verso il castello
+  const[ex,ey]=A88P.ent;R4(ex-2,ey-2,5,2,4);ents.push(po(ex,ey,'vecchia',{st:'up',n:T88('Scala del pozzo · Aldoria Vecchia','Well stairs · Old Aldoria')}));
+  const[rx,ry]=A88P.re;R4(rx-1,ry-1,3,3,4);ents.push(Object.assign(po(rx,ry,'cas_prigioni',{st:'void',n:T88('Il passaggio dei re · Castello di Aldoria','The Kings\' Passage · Aldoria Castle')}),{col:'#9ab8ff'}));
   // creature, forzieri, raccolte
-  const fr=[];for(let y=3;y<n-3;y++)for(let x=2;x<n-2;x++)if(M[y][x]===0&&Math.hypot(x-ex,y-ey)>10&&!A2P.sh.some(s=>Math.hypot(x-s[0],y-s[1])<4)&&Math.hypot(x-rx,y-ry)>7)fr.push([x,y]);
+  const fr=[];for(let y=3;y<n-3;y++)for(let x=3;x<n-3;x++)if(M[y][x]===0&&Math.hypot(x-ex,y-ey)>11&&Math.hypot(x-px,y-py)>7&&Math.hypot(x-cx,y-cy)>6&&!(x>=qx-8&&x<=qx+8&&y<=qy+1))fr.push([x,y]);
   for(let i=fr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[fr[i],fr[j]]=[fr[j],fr[i]]}
-  const pool=['lupo86','cavaliere86','ombra86','lupo86','ombra86'];for(let i=0;i<15&&fr.length;i++){const q=fr.pop();EN(pool[i%pool.length],q[0],q[1])}
+  const pool=['sepolto88','sentinella88','radice88','sepolto88','sepolto88'];for(let i=0;i<16&&fr.length;i++){const q=fr.pop();EN(pool[i%pool.length],q[0],q[1])}
   for(let i=0;i<4&&fr.length;i++){const q=fr.pop();ents.push({k:'ch',px:q[0]+.5,py:q[1]+.5,rich:i<2?1:0})}
-  const rs=['lunare','ghiaccio','cimelio'].filter(k=>typeof RESM!=='undefined'&&typeof RESM[k]==='function');for(let i=0;i<8&&fr.length&&rs.length;i++){const q=fr.pop();RS(rs[i%rs.length],q[0],q[1])}
-  const from=String(LFROM||'');for(let i=0;i<3;i++)if(from.startsWith(A2D[i])){const[x,y]=A2P.sh[i];return[x,y+1]}
-  if(from.startsWith('rocca86'))return[rx,ry+2];return[ex,ey-2]}
-// gli arredi della Valle: alberi morti, cristalli di stella, menhir con le rune, le mura e le torri della Rocca
-const A2PR={
-  '✦':(x,y)=>lan86Draw({i:-1,px:x+.5,py:y+.5}),
-  '✶':(x,y)=>lan86Draw({i:lan86At(x,y),px:x+.5,py:y+.5}),
-  '◘':(x,y)=>{const k=hh(x*3.3,y*1.9);box(x+.18+k*.2,y+.22,0,.46,.4,4+k*3,'#3a3450');box(x+.26+k*.2,y+.28,4+k*3,.3,.26,2,'#4a4468');if(k>.6)box(x+.58,y+.6,0,.2,.18,2.5,'#332c48')},
-  '⸸':(x,y)=>{const k=hh(x,y),hx=.15+k*.3,c='#2a2238',c2='#3a3050';box(x+hx,y+.4,0,.14,.14,14+k*6,c);box(x+hx-.14,y+.38,10+k*3,.16,.08,2,c2);box(x+hx-.18,y+.38,12+k*3,.06,.08,5,c2);box(x+hx+.12,y+.4,14+k*4,.18,.07,2,c2);box(x+hx+.26,y+.4,16+k*4,.06,.07,5,c2);
-    if(k>.55){box(x+hx-.2,y+.37,17+k*3,.07,.07,.07*0+1.5,'#9a8aff',1.4);box(x+hx+.3,y+.39,21+k*4,.06,.06,1.5,'#9a8aff',1.4)}},
-  '✧':(x,y)=>{const k=hh(x*1.7,y*2.3),gl=.85+.35*Math.max(0,Math.sin(t*1.6+x+y));for(let i=0;i<3;i++){const a=i*2.1+k*6,px=x+.5+Math.cos(a)*.16,py=y+.5+Math.sin(a)*.16,hgt=6+((k*7+i*3)%7);box(px-.06,py-.06,0,.12,.12,hgt,i?'#9ab0ff':'#dfe8ff',gl)}
-    box(x+.38,y+.38,0,.24,.24,1.5,'#3a3460');if(NK>.1)nlight(x+.5,y+.5,8,1.1,'160,180,255',.45);if(SET.ultra)GLOW.push([x+.5,y+.5,8,18,'170,190,255',.22])},
-  '◊':(x,y)=>{box(x+.3,y+.32,0,.4,.36,4,'#2a2440');box(x+.34,y+.36,4,.32,.28,20,'#3a3450');box(x+.38,y+.39,24,.24,.22,3,'#3a3450');const on=.6+.4*Math.sin(t*1.3+x*.7+y);box(x+.42,y+.62,8,.16,.02,9,'#9ab0ff',.8+on*.7)},
-  '▥':(x,y)=>{box(x,y,0,1,1,22,'#2a2440');box(x+.02,y+.02,22,.96,.96,1,'#3a3450');for(const[a,b]of[[0,0],[.6,0],[0,.6],[.6,.6]])box(x+a,y+b,23,.4,.4,5,'#2e2846');box(x+.2,y+.995,8,.6,.01,2,'#7a8ad8',1.2)},
-  '▣':(x,y)=>{box(x-.05,y-.05,0,1.1,1.1,34,'#241e38');box(x-.1,y-.1,34,1.2,1.2,2,'#3a3450');for(const[a,b]of[[-.1,-.1],[.7,-.1],[-.1,.7],[.7,.7]])box(x+a,y+b,36,.4,.4,6,'#2e2846');
-    const f=.7+.3*Math.sin(t*4+x);box(x+.4,y+.4,42,.2,.2,5*f,'#9ab8ff',1.7);if(NK>.1)nlight(x+.5,y+.5,46,2,'160,180,255',.8);if(SET.ultra)GLOW.push([x+.5,y+.5,46,34,'160,180,255',.35])}};
-{const d0=dec;dec=function(x,y,c,h){const f=A2PR[c];if(f&&Zk&&(Zk==='valle86'||(typeof STGK!=='undefined')||true)){f(x,y,h);return}d0(x,y,c,h)}}
-Z.valle86={n:'Valle del Crepuscolo',lv:18,N:56,a:'#4a4470',b:'#433e68',bg:'#2a2050',mus:'cittadella',pt:'mote',gen:genValle,rd:['#6a6088','#625a80'],wl:'#2a2240',wh:14,dist:1,nolamp:1,en:['lupo86','cavaliere86','ombra86']};
-SKY.valle86=SKY.peaks||SKY.town;
-// le lanterne: spente (pietra fredda) o accese (la fiamma azzurra della stella); quella in mezzo ha tre fiamme
-function lan86Draw(e){const o=a2Fix(),lit=i=>!!o.l[i],x=e.px,y=e.py;if(e.i==null)return;
-  if(e.i<0){box(x-.45,y-.45,0,.9,.9,4,'#3a3450');box(x-.3,y-.3,4,.6,.6,24,'#2a2440');box(x-.4,y-.4,28,.8,.8,3,'#4a4468');
-    for(let i=0;i<3;i++){const a=i*2.094+.5,px=x+Math.cos(a)*.24,py=y+Math.sin(a)*.24,on=lit(i);box(px-.07,py-.07,31,.14,.14,on?7+Math.sin(t*6+i)*1.2:2,on?'#bfd0ff':'#4a4a5a',on?1.6:1);if(on){nlight(px,py,36,1.6,'191,208,255',.8);if(SET.ultra)GLOW.push([px,py,38,30,'191,208,255',.35])}}return}
-  const on=lit(e.i);box(x-.2,y-.2,0,.4,.4,3,'#3a3450');box(x-.06,y-.06,3,.12,.12,26,'#2a2440');box(x-.22,y-.22,29,.44,.44,2,'#4a4468');box(x-.18,y-.18,31,.36,.36,8,on?'#dfe8ff':'#3a3a48',on?1.5:.9);box(x-.22,y-.22,39,.44,.44,2,'#4a4468');
-  if(on){box(x-.08,y-.08,32,.16,.16,6+Math.sin(t*7)*1.2,'#9ab8ff',1.8);nlight(x,y,34,2.2,'191,208,255',.9);if(SET.ultra)GLOW.push([x,y,36,40,'191,208,255',.4])}}
-// la lanterna di un santuario è a due caselle dalla sua porta: da lì si sa quale stella è
-const lan86At=(x,y)=>A2P.sh.findIndex(s=>s[0]+2===x&&s[1]===y);
+  const rs=['cimelio','lunare','ferro'].filter(k=>typeof RESM!=='undefined'&&typeof RESM[k]==='function');for(let i=0;i<8&&fr.length&&rs.length;i++){const q=fr.pop();RS(rs[i%rs.length],q[0],q[1])}
+  // da dove si arriva
+  const from=String(LFROM||'');for(const[k,p]of[['fonderia88',A88P.fond],['giardini88',A88P.giar],['archivio88',A88P.arch]])if(from.startsWith(k))return[p[0]+(k==='fonderia88'?1:k==='giardini88'?-1:0),p[1]+(k==='archivio88'?1:0)];
+  if(from.startsWith('trono88'))return[qx,qy+2];if(from==='cas_prigioni')return[rx,ry-2];return[ex,ey-2]}
+Z.eldora88={n:'Eldora, la città sepolta',lv:20,N:60,a:'#4a4652',b:'#45414d',bg:'#07060c',mus:'cittadella',pt:'dust',gen:genEldora,rd:['#7a7280','#716a78'],wl:'#2a2630',wh:34,pool:'#2a5a6a',dist:1,nolamp:1,en:['sepolto88','sentinella88','radice88']};
+// sotto terra è sempre notte: si vedono solo le luci dei funghi, dei bracieri e del fuoco di Oriana
+{const t0=timeTick;timeTick=function(dt){t0(dt);if(Zk==='eldora88'){NK=a2Fix().s>=7?.45:.78;DK=0}}}
+// nella vista 3D, oltre i confini, la roccia spenta della caverna
+if(typeof d3Biome==='function'){const b0=d3Biome;d3Biome=function(k){return k==='eldora88'?'cenere':b0(k)}}
+if(typeof d3Backdrop==='function'){const b0=d3Backdrop;d3Backdrop=function(){const B=b0();try{if(Zk==='eldora88')for(let i=0;i+9<B.length;i+=10){const r=B[i+6],g=B[i+7],b=B[i+8],v=(r+g+b)/3;B[i+6]=v*.5;B[i+7]=v*.48;B[i+8]=v*.56}}catch(_){}return B}}
+/* ---- gli arredi di Eldora ---- */
+const A88PR={
+  'Ꞩ':(x,y)=>{const k=hh(x*2.1,y*1.3),gl=.9+.3*Math.sin(t*1.3+x*2+y);for(let i=0;i<3;i++){const a=i*2.1+k*5,px=x+.5+Math.cos(a)*.18,py=y+.5+Math.sin(a)*.18,hg=3+((k*9+i*4)%5);box(px-.03,py-.03,0,.06,.06,hg,'#c8d8d0');box(px-.1,py-.1,hg,.2,.2,2,i?'#6affd8':'#9affe8',gl)}
+    nlight(x+.5,y+.5,6,1.3,'120,255,220',.55);if(SET.ultra)GLOW.push([x+.5,y+.5,6,16,'120,255,220',.25])},
+  'Ꞓ':(x,y)=>{const k=hh(x,y*1.7),h=10+k*22;box(x+.22,y+.22,0,.56,.56,3,'#5a5662');box(x+.28,y+.28,3,.44,.44,h,'#6a6672');box(x+.3,y+.3,3+h,.4,.4,2,'#5a5662');if(k>.5)box(x+.1,y+.55,0,.3,.24,4,'#5a5662')},
+  'Ꞷ':(x,y)=>{const k=hh(x*1.3,y),c='#4a3426',c2='#5a4030';box(x+.3,y+.3,0,.4,.4,6,c2);box(x+.34+k*.06,y+.34,6,.3,.3,20,c);box(x+.36,y+.38-k*.06,26,.26,.26,22,c);box(x+.2,y+.36,10,.14,.1,6,c2);box(x+.6,y+.4,16,.12,.12,8,c2);
+    if(k>.6){box(x+.38,y+.38,40,.1,.1,4,'#6affd8',1.3);nlight(x+.5,y+.5,40,.9,'120,255,220',.35)}},
+  'Ꞹ':(x,y)=>{const k=hh(x,y);box(x+.18,y+.2,0,.64,.6,3,'#7a5220');box(x+.22,y+.24,3,.56,.52,6,'#b8803a');box(x+.3,y+.32,9,.4,.36,4,'#c8903a');box(x+.42,y+.42,13,.16,.16,2,'#7a5220');if(k>.5)box(x+.5,y+.05,0,.06,.4,2,'#5a4030')},
+  'Ꞻ':(x,y)=>{box(x+.25,y+.32,0,.5,.36,5,'#3a3640');box(x+.3,y+.36,5,.4,.28,4,'#4a4652');box(x+.18,y+.34,9,.64,.32,3,'#5a5662');box(x+.7,y+.4,12,.12,.06,1,'#9a96a2')},
+  'Ꞿ':(x,y)=>{box(x+.28,y+.38,0,.44,.24,3,'#4a4652');box(x+.32,y+.42,3,.36,.16,22,'#5a5662');for(let i=0;i<4;i++)box(x+.36,y+.58,6+i*4,.28,.01,1,'#9a96a2')},
+  'Ꞔ':(x,y)=>{const k=hh(x*3,y);box(x+.1,y+.3,0,.8,.3,14+k*8,'#4a3424');for(let i=0;i<3;i++)box(x+.14,y+.59,2+i*5,.72,.02,1,'#2a1a10');for(let i=0;i<5;i++)box(x+.14+i*.14,y+.6,3+((i*7)%3),.1,.02,3,['#7a2a2a','#2a4a6a','#5a5a2a','#e8dcc0'][i%4]);
+    if(k>.4){box(x+.15,y+.72,0,.22,.16,2,'#e8dcc0');box(x+.5,y+.75,0,.2,.14,1.5,'#7a2a2a')}},
+  'Ꞗ':(x,y)=>{const k=hh(x*1.7,y*2.9);box(x+.12+k*.2,y+.2,0,.42,.38,3+k*4,'#4a4652');box(x+.5,y+.5-k*.2,0,.3,.28,2+k*2,'#3e3a46');if(k>.5)box(x+.2,y+.62,0,.18,.16,1.5,'#5a5662')},
+  'Ꟁ':(x,y)=>{box(x+.3,y+.3,0,.4,.4,3,'#3a3640');box(x+.4,y+.4,3,.2,.2,14,'#4a4652');box(x+.24,y+.24,17,.52,.52,3,'#5a5662');const f=.8+.3*Math.sin(t*6+x);box(x+.36,y+.36,20,.28,.28,5*f,'#7ac8ff',1.7);box(x+.42,y+.42,24,.16,.16,4*f,'#dff4ff',1.8);
+    nlight(x+.5,y+.5,24,2.4,'140,200,255',.85);if(SET.ultra)GLOW.push([x+.5,y+.5,24,36,'140,200,255',.35])},
+  'Ꟃ':(x,y)=>{const lit=a2Fix().s>=7;box(x-.2,y-.2,0,1.4,1.4,6,'#4a4652');box(x-.1,y-.1,6,1.2,1.2,4,'#5a5662');box(x+.12,y+.2,10,.3,.3,14,'#7a7682');box(x+.58,y+.2,10,.3,.3,14,'#7a7682');box(x+.08,y+.12,24,.84,.5,20,'#7a7682');
+    box(x-.04,y+.24,28,.16,.3,14,'#7a7682');box(x+.88,y+.24,28,.16,.3,14,'#7a7682');box(x+.94,y+.28,42,.08,.08,16,'#6a6672');box(x+.28,y+.2,44,.44,.4,12,'#8a8692');box(x+.3,y+.58,47,.4,.03,6,'#5a5662');
+    box(x+.26,y+.18,56,.48,.44,3,'#6a6672');for(const a of[.28,.46,.64])box(x+a,y+.22,59,.08,.08,3,'#6a6672');if(lit){box(x+.44,y+.3,61,.12,.12,3,'#2a5ac8',1.5);nlight(x+.5,y+.5,60,2,'80,140,255',.7)}},
+  'Ꞽ':(x,y)=>{box(x,y,0,1,1,26,'#3a3644');box(x+.02,y+.02,26,.96,.96,1,'#4a4652');for(const[a,b]of[[0,0],[.6,0],[0,.6],[.6,.6]])box(x+a,y+b,27,.4,.4,5,'#3e3a48');box(x+.2,y+.995,10,.6,.01,2,'#9ab8ff',1.1)},
+  'Ꞛ':(x,y)=>{box(x-.05,y-.05,0,1.1,1.1,38,'#34303e');box(x-.1,y-.1,38,1.2,1.2,2,'#4a4652');for(const[a,b]of[[-.1,-.1],[.7,-.1],[-.1,.7],[.7,.7]])box(x+a,y+b,40,.4,.4,6,'#3a3644');
+    const f=.7+.3*Math.sin(t*4+x);box(x+.4,y+.4,46,.2,.2,5*f,'#9ab8ff',1.7);nlight(x+.5,y+.5,48,2,'150,180,255',.75);if(SET.ultra)GLOW.push([x+.5,y+.5,48,30,'150,180,255',.3])},
+  'Ꞝ':(x,y)=>{for(let i=0;i<5;i++){const a=i*1.257;box(x+.5+Math.cos(a)*.26-.07,y+.5+Math.sin(a)*.26-.07,0,.14,.14,2.5,'#4a4652')}box(x+.32,y+.42,0,.36,.08,2,'#5a3a1a');box(x+.42,y+.32,0,.08,.36,2,'#5a3a1a');
+    const f=.75+.35*Math.sin(t*9+x)*Math.sin(t*5.3);box(x+.38,y+.38,2,.24,.24,5*f+2,'#ff9a2a',1.7);box(x+.44,y+.44,5,.12,.12,4*f,'#ffe08a',1.8);nlight(x+.5,y+.5,10,3,'255,170,80',.95);if(SET.ultra)GLOW.push([x+.5,y+.5,10,50,'255,170,80',.4])},
+  'Ꞟ':(x,y)=>{box(x+.05,y+.1,0,.9,.8,1,'#5a4a3a');box(x+.1,y+.15,1,.8,.7,12,'#c8b890');box(x+.2,y+.2,13,.6,.6,6,'#b8a880');box(x+.35,y+.3,19,.3,.4,3,'#a89870');box(x+.4,y+.88,0,.2,.04,9,'#2a2018')}};
+{const d0=dec;dec=function(x,y,c,h){const f=A88PR[c];if(f){f(x,y,h);return}d0(x,y,c,h)}}
+/* ---- le Pietre della Memoria (si leggono) ---- */
+ITK.add('ins88');
+const INSL=(e)=>{const read=!!a2Fix().ins[e.i],gl=read?1:.9+.4*Math.max(0,Math.sin(t*2+e.i));return[[-.3,-.16,0,.6,.32,3,'#4a4652'],[-.24,-.1,3,.48,.2,20,'#6a6672'],[-.26,-.12,23,.52,.24,2,'#5a5662'],
+  ...[0,1,2,3].map(j=>[-.18,.1,7+j*3.6,.36,.02,1,read?'#bfe6ff':'#9a96a2',gl]),[-.06,.1,19,.12,.02,2,read?'#9adcff':'#d8d4e0',read?1.3:gl]]};
+{const e0=ent;ent=function(e){if(e&&e.k==='ins88'){drawL(INSL(e),e.px,e.py,0,0);if(!D3B&&dist(e,P)<2.6){const sx=PX(e.px,e.py),sy=PY(e.px,e.py,0);g.textAlign='center';g.font='bold 10px Georgia,serif';label((a2Fix().ins[e.i]?'✔ ':'📜 ')+INS88[e.i][2],sx,sy-32,'#dfe8ff')}return}return e0(e)}}
+{const a0=act;act=function(e){if(e&&e.k==='ins88'){ins88Read(e.i);return}if(e&&e.k==='npc')Q88={id:'',i:-1};return a0(e)}}
+function ins88Read(i){const o=a2Fix(),S=INS88[i];if(!S)return;PA={ti:S[2],sub:'Pietra della Memoria · '+(i+1)+'/12',tx:S[3]};pn('txt');tone(520,.12,'sine');if(o.ins[i])return;o.ins[i]=1;gainXP(60);
+  const n=Object.keys(o.ins).length;banner('📜 '+S[2],'Pietre della Memoria: '+n+'/12','pergamena');
+  if(n>=12&&!o.insR){o.insR=1;P.g+=3000;goldFly(3000);gainXP(1500);if(typeof titAdd==='function')titAdd('eldora88',T88('Lettore di Eldora','Reader of Eldora'));setTimeout(()=>banner(T88('Tutte le Pietre della Memoria','All the Memory Stones'),T88('Conosci tutta la storia di Eldora: 3000 oro, 1500 esperienza e il titolo «Lettore di Eldora»','You know the whole story of Eldora: 3000 gold, 1500 experience and the title “Reader of Eldora”'),'libro'),1600)}save()}
+T88('Pietre della Memoria: {0}/12','Memory Stones: {0}/12');T88('Pietra della Memoria · {0}/12','Memory Stone · {0}/12');
+/* ---- i personaggi ---- */
+Object.assign(NPCS,{
+  oriana88:{n:T88('Oriana, la cartografa','Oriana, the Cartographer'),c:'#3a6a8a',hat:'#7a4a2a',ln:[T88('Tre giorni per disegnare la piazza. E ancora non so come si chiama.','Three days to draw the square. And I still don\'t know what it\'s called.'),T88('Quaggiù il fuoco è l\'unica cosa che fa un rumore allegro.','Down here the fire is the only thing that makes a cheerful sound.')]},
+  vael88:{n:T88('Vael, l\'ultimo scriba','Vael, the Last Scribe'),c:'#8a8aa8',hat:'#5a5a7a',ln:[T88('Scrivo sulla polvere. La polvere si cancella. Io riscrivo.','I write on the dust. The dust wipes itself away. I write again.'),T88('Ogni nome è una lanterna. Senza, si cammina al buio.','Every name is a lantern. Without one, you walk in the dark.')]}});
+Object.assign(NPS,{oriana88:'c|braids:#7a3a1a|none|cap|scarf:#3a6a8a|map|look|f',vael88:'d|long:#d8d0c0|long:#d8d0c0|hood|collar|quill|write|old'});
+let VAELM=null;function vael88M(){if(!VAELM){try{VAELM=ghostL(npcModel('vael88',{},{px:1,py:1}),.6,'#cfe2ff')}catch(_){VAELM=hum('#cfe2ff','#e8f2ff',1,[6,'#9ab8d8'])}}return VAELM}
 /* ---- i passi della storia ---- */
-const A2S=['Parla con Re Malakar nel castello','Parla con l\'Astronomo Tolomeo nell\'Osservatorio (nord-est)','Sali alla cupola dell\'Osservatorio: Stella apre il Portale delle Stelle','Riaccendi le stelle della Lanterna nella Valle del Crepuscolo','Entra nella Rocca di Morvath e affrontalo','Torna da Re Malakar','Atto II completato: sei il Portatore dell\'Alba'];
-function a2Obj(){const o=a2Fix();if(o.s===3)return A2S[3]+': '+a2N()+'/3';return A2S[Math.min(6,o.s)]}
-const A2WHO=['malakar_re','astronomo','allieva',null,null,'malakar_re'];
-{const s0=storyObj;storyObj=function(sh){if(a2On()&&a2Fix().s<6)return'Atto II · '+a2Obj();return s0(sh)}}
-{const m0=npcMarks;npcMarks=function(){m0();try{if(!a2On())return;const w=A2WHO[a2Fix().s];if(w)for(const e of ents)if(e.k==='npc'&&e.nid===w)e.qm='!'}catch(_){}}}
-const A2T={
-  0:{ti:'Atto II · La costellazione perduta',who:'Re Malakar',tx:'Da quando l\'Occhio si è chiuso le notti si allungano. Ogni sera il sole se ne va un po\' prima, e la gente ha paura di uscire.\n\nIeri l\'Astronomo Tolomeo è venuto al castello, pallido come un lenzuolo: dice che in cielo tre stelle si sono spente, una dopo l\'altra.\n\nMio fratello mi avrebbe detto di non dare retta ai vecchi che guardano il cielo. Io ho imparato a mie spese che le storie vecchie dicono la verità. Va\' all\'Osservatorio, Campione, e ascoltalo.'},
-  1:{ti:'La costellazione che non c\'è',who:'Astronomo Tolomeo',tx:'Guarda queste carte. Sono le più antiche del regno: qui, tra il Grifone e la Bilancia, c\'era una costellazione. La chiamavano la Lanterna: tre stelle e un cuore.\n\nAldric il Primo la fece cancellare da tutte le carte. Ho trovato il perché in un registro del tempio: nella Lanterna chiuse Morvath, l\'Ultimo Custode, il cavaliere che per lui sorvegliava il sigillo sotto la città.\n\nOra che l\'Occhio è chiuso il sigillo non lo tiene più. Morvath è tornato, e sta spegnendo le stelle per portare su Aldoria una notte che non finisce. E con il buio i mostri si fanno più forti ogni giorno.\n\nLa mia allieva, Stella, ha trovato il modo di aprire una porta verso la Lanterna. Sali alla cupola.'},
-  2:{ti:'Il Portale delle Stelle',who:'Allieva Stella',tx:'Il maestro ti ha mandato! Guarda nel cannocchiale: la vedi quella macchia scura? È la Valle del Crepuscolo, dentro la Lanterna.\n\nHo allineato le lenti con le tre stelle spente, e la luce che manca ha aperto un varco. Il Portale delle Stelle è qui, accanto a me: ti porta nella Valle, e ti riporta indietro quando vuoi.\n\nLaggiù ci sono tre santuari, uno per stella. Riaccendile, e la porta di Morvath si aprirà. Stai attento: là dentro non sorge mai il sole del tutto.'},
-  5:{ti:'L\'alba',who:'Re Malakar',tx:'Stanotte il sole è sorto all\'ora giusta. La gente è scesa in piazza a guardarlo, come una festa.\n\nMorvath credeva di proteggerci con il buio, come io credevo di proteggerli con la paura. Siamo due custodi che hanno sbagliato strada: io ho avuto la fortuna di incontrare te.\n\nPrendi questi doni. E da oggi il regno ti chiamerà il Portatore dell\'Alba.'}};
-function a2Talk(){const o=a2Fix(),T=A2T[o.s];if(!T)return;const s=o.s;cl();
-  const go=()=>{PA={ti:T.ti,tx:T.who+': «'+T.tx.replace(/\n\n/g,'»\n\n«')+'»'};pn('txt');
-    if(s===0)o.s=1;else if(s===1)o.s=2;else if(s===2){o.s=3;a2Portal()}else if(s===5){o.s=6;a2Reward()}npcMarks();hud();save()};
-  if(s===0)filmOnce('a2_inizio',go);else go()}
-function a2Reward(){const lv=Math.max(26,P.lv|0);P.g+=15000;goldFly(15000);gainXP(8000);P.pot+=10;const a=item(lv,3,'w'),b=item(lv,3,'s');a.n='Lama del Portatore dell\'Alba';a.cr=Math.max(a.cr||0,18);b.n='Scudo della Lanterna';b.hp=Math.max(b.hp||0,160);
+const A88S=[T88('Parla con Re Malakar nel castello','Talk to King Malakar in the castle'),T88('Scendi nelle prigioni del castello e parla con Aldric, il Re deposto','Go down to the castle prisons and talk to Aldric, the deposed King'),
+  T88('Scendi la scala nel pozzo della vecchia piazza, ad Aldoria Vecchia','Go down the stairs in the well of the old square, in Old Aldoria'),T88('Trova chi ha acceso il fuoco nella città sepolta','Find whoever lit the fire in the buried city'),
+  T88('Cerca lo scriba che si sente di notte, nella piazza grande di Eldora','Look for the scribe who is heard at night, in the great square of Eldora'),T88('Libera i tre Custodi di Eldora','Free the three Keepers of Eldora'),
+  T88('Entra nel Palazzo Sepolto e affronta Aldric il Primo','Enter the Buried Palace and face Aldric the First'),T88('Torna da Re Malakar nel castello','Return to King Malakar in the castle'),T88('Atto II completato: sei il Custode della Memoria','Act II complete: you are the Keeper of Memory')];
+T88('Libera i tre Custodi di Eldora: {0}/3','Free the three Keepers of Eldora: {0}/3');
+function a2Obj(){const o=a2Fix();if(o.s===5)return A88S[5]+': '+a2N()+'/3';return A88S[Math.min(8,o.s)]}
+const A88WHO=['malakar_re','aldric_p',null,'oriana88','vael88',null,null,'malakar_re'];
+{const s0=storyObj;storyObj=function(sh){if(a2On()&&a2Fix().s<8)return T88('Atto II','Act II')+' · '+a2Obj();return s0(sh)}}
+T88('Atto II · {0}','Act II · {0}');
+{const m0=npcMarks;npcMarks=function(){m0();try{if(!a2On())return;const w=A88WHO[a2Fix().s];if(w)for(const e of ents)if(e.k==='npc'&&e.nid===w)e.qm='!'}catch(_){}}}
+// i dialoghi dei passi: [titolo, chi parla, testo]
+const A88T={
+  0:[T88('Atto II · La città sepolta','Act II · The Buried City'),'Re Malakar',T88('Campione, l\'hai sentito anche tu, stanotte? La terra ha tremato tre volte, sempre alla stessa ora, ogni volta più forte. Nelle cantine del castello si sono aperte crepe che ieri non c\'erano.\n\nStamattina mi hanno portato una notizia da Aldoria Vecchia: il pozzo prosciugato della vecchia piazza è crollato. Sotto, dove ci dovrebbe essere solo terra, c\'è una scala. Gradini di pietra lavorata, consumati da passi di mille anni fa.\n\nCon il tuo aiuto ho chiuso l\'Occhio, e pensavo che sotto Aldoria non ci fosse più niente da temere. Ma i re della mia famiglia hanno sempre saputo più di quello che dicevano. E uno di loro è ancora vivo, in fondo a queste prigioni.\n\nVa\' da mio fratello Aldric. A me non parla da quando gli ho tolto la Corona. Forse a te risponderà.',
+    'Champion, did you feel it too, last night? The ground shook three times, always at the same hour, each time harder. In the castle cellars cracks have opened that weren\'t there yesterday.\n\nThis morning they brought me news from Old Aldoria: the dry well in the old square has collapsed. Below it, where there should be nothing but earth, there is a staircase. Steps of worked stone, worn by footsteps a thousand years old.\n\nWith your help I closed the Eye, and I thought there was nothing left to fear beneath Aldoria. But the kings of my family always knew more than they said. And one of them is still alive, at the bottom of these prisons.\n\nGo to my brother Aldric. He hasn\'t spoken to me since I took the Crown from him. Perhaps he\'ll answer you.')],
+  1:[T88('Il Canto dei Re','The Song of Kings'),'Aldric, il Re deposto',T88('Mi hai portato la luce del giorno sulla faccia, eroe. Non ci sono più abituato.\n\nVuoi sapere cosa c\'è sotto il pozzo? Quando ero bambino mia madre mi cantava una ninna nanna che si tramanda ai figli dei re, e soltanto a loro. Nessuno ci ha mai fatto caso: sembrava una filastrocca.\n\n«Dorme sotto Aldoria Eldora la bella, / la città che il Primo Re chiuse con la sua stella. / Sei luci sul capo del re, sei luci sul trono, / la settima non ha colore e non ha padrone.»\n\nEldora. Non l\'ho mai letta in nessun libro, in nessuna mappa. Il Primo Re ha fatto sparire il suo nome dal mondo, e il mondo l\'ha dimenticata. Ma se la terra trema, forse Eldora si sta svegliando.\n\nScendi nel pozzo. E se laggiù trovi qualcosa del mio antenato... non perdonarlo troppo in fretta. Io non l\'ho fatto con me stesso.',
+    'You\'ve brought daylight onto my face, hero. I\'m not used to it anymore.\n\nYou want to know what lies under the well? When I was a child my mother sang me a lullaby that is handed down to the children of kings, and only to them. No one ever paid attention to it: it sounded like a nursery rhyme.\n\n“Under Aldoria sleeps Eldora the fair, / the city the First King sealed with his star. / Six lights on the king\'s head, six lights on the throne, / the seventh has no color and belongs to no one.”\n\nEldora. I have never read it in any book, on any map. The First King made its name vanish from the world, and the world forgot it. But if the ground is shaking, perhaps Eldora is waking up.\n\nGo down the well. And if down there you find something of my ancestor... don\'t forgive him too quickly. I didn\'t forgive myself.')],
+  3:[T88('Una cartografa sotto terra','A Cartographer Underground'),T88('Oriana, la cartografa','Oriana, the Cartographer'),T88('Ehi! Non calpestare la mappa! ...Scusa. È che ci ho messo tre giorni a disegnarla. Sono Oriana, cartografa della Biblioteca di Aldoria. Quando il pozzo è crollato sono scesa per prima: qualcuno doveva pur misurarla, questa città.\n\nGuarda: strade, piazze, una fonderia a ovest, dei giardini pensili a est, un archivio enorme a nord-ovest, e a nord un palazzo con le porte sigillate. È grande quanto Aldoria. Forse di più. E nessuno sapeva che esistesse.\n\nMa c\'è una cosa che non riesco a disegnare: quaggiù le statue hanno tutte il viso cancellato, e sulle lapidi mancano i nomi. Come se qualcuno li avesse raschiati via, uno per uno.\n\nE poi, di notte (be\', quaggiù è sempre notte) sento qualcuno che scrive. Nella piazza grande, davanti alla scalinata dell\'Archivio. Ci vai tu a vedere? Io ti tengo acceso il fuoco.',
+    'Hey! Don\'t step on the map! ...Sorry. It\'s just that it took me three days to draw it. I\'m Oriana, cartographer of the Library of Aldoria. When the well collapsed I was the first to come down: someone had to measure this city.\n\nLook: streets, squares, a foundry to the west, hanging gardens to the east, an enormous archive to the north-west, and to the north a palace with sealed doors. It\'s as big as Aldoria. Maybe bigger. And nobody knew it existed.\n\nBut there\'s one thing I can\'t draw: down here every statue has its face erased, and the gravestones are missing their names. As if someone had scraped them away, one by one.\n\nAnd at night (well, down here it\'s always night) I hear someone writing. In the great square, in front of the Archive steps. Will you go and see? I\'ll keep the fire going for you.')],
+  4:[T88('L\'ultimo scriba','The Last Scribe'),T88('Vael, l\'ultimo scriba','Vael, the Last Scribe'),T88('Tu... mi vedi. Sono mille anni che nessuno mi vede.\n\nMi chiamo Vael. Ero l\'allievo del Custode dei Nomi, nell\'Archivio di Eldora. Questa era la nostra città, la città degli scribi e dei costruttori. Noi credevamo che una cosa esista finché il suo nome resta scritto, e così scrivevamo tutto: ogni pietra, ogni bambino, ogni stella.\n\nUn giorno, nel Pozzo dei Nomi, in fondo all\'Archivio, qualcuno scrisse un nome che non apparteneva al nostro mondo. E dal pozzo si aprì un occhio. Aveva fame di nomi: chi veniva guardato veniva dimenticato, e chi veniva dimenticato spariva.\n\nIl Prefetto della Guardia era un soldato venuto da fuori. Si chiamava Aldric. Fu lui a chiudere l\'Occhio, con sette cuori di metallo e di luce. Ma perché il sigillo tenesse gli serviva qualcosa che l\'Occhio non potesse trovare: una città senza nomi. Così cancellò i nostri, e ci seppellì. Poi costruì Aldoria sopra di noi, e si fece chiamare il Primo Re.\n\nTre di noi lo servirono fino alla fine, e sono ancora qui, legati al sigillo: Brunilde la Fonditrice, Ysolde, la Regina che nessuno ricorda, e il mio maestro Orsolo, il Custode dei Nomi. Da quando hai chiuso l\'Occhio il sigillo si sta slegando, e loro si sono svegliati. È la loro rabbia che fa tremare Aldoria.\n\nLiberali, eroe. Non con l\'odio: ricordando chi erano. Poi le porte del Palazzo si apriranno. E là dentro c\'è lui.',
+    'You... can see me. For a thousand years no one has seen me.\n\nMy name is Vael. I was the apprentice of the Keeper of Names, in the Archive of Eldora. This was our city, the city of scribes and builders. We believed that a thing exists as long as its name remains written, and so we wrote everything down: every stone, every child, every star.\n\nOne day, in the Well of Names, at the bottom of the Archive, someone wrote a name that did not belong to our world. And from the well an eye opened. It hungered for names: whoever it looked upon was forgotten, and whoever was forgotten vanished.\n\nThe Prefect of the Guard was a soldier who had come from outside. His name was Aldric. It was he who closed the Eye, with seven hearts of metal and light. But for the seal to hold he needed something the Eye could not find: a city without names. So he erased ours, and buried us. Then he built Aldoria on top of us, and had himself called the First King.\n\nThree of us served him to the end, and they are still here, bound to the seal: Brunilde the Founder, Ysolde, the Queen no one remembers, and my master Orsolo, the Keeper of Names. Since you closed the Eye the seal has been coming undone, and they have woken. It is their rage that makes Aldoria shake.\n\nFree them, hero. Not with hatred: by remembering who they were. Then the doors of the Palace will open. And in there is him.')],
+  7:[T88('Eldora ricordata','Eldora Remembered'),'Re Malakar',T88('Ho sentito le campane, Campione. Tutta Aldoria le ha sentite: venivano da sotto i nostri piedi, e non facevano paura.\n\nOriana mi ha portato il Registro di Eldora, intero. Centomila nomi. Domani in piazza cominceremo a inciderli sulle mura della città, e ogni famiglia di Aldoria ne adotterà uno. Mio fratello ha chiesto di essere il primo a lavorare la pietra. Gliel\'ho concesso.\n\nIl Primo Re credeva che dimenticare proteggesse. Io credevo che proteggesse la paura, e Aldric il silenzio. Tu ci hai fatto vedere che l\'unica cosa che protegge davvero è ricordare.\n\nPrendi questi doni. Da oggi il regno ti chiamerà Custode della Memoria. E guarda la tua Corona: lo Zaffiro è tornato intero.',
+    'I heard the bells, Champion. All of Aldoria heard them: they came from beneath our feet, and they weren\'t frightening.\n\nOriana brought me the Register of Eldora, whole. A hundred thousand names. Tomorrow in the square we will begin carving them on the city walls, and every family in Aldoria will adopt one. My brother asked to be the first to work the stone. I granted it.\n\nThe First King believed that forgetting protects. I believed fear protects, and Aldric believed silence does. You showed us that the only thing that truly protects is remembering.\n\nTake these gifts. From today the kingdom will call you Keeper of Memory. And look at your Crown: the Sapphire is whole again.')]};
+T88('Re Malakar','King Malakar');T88('Aldric, il Re deposto','Aldric, the deposed King');T88('Ascolta','Listen');
+function a2Talk(){const o=a2Fix(),T=A88T[o.s];if(!T)return;const s=o.s;cl();
+  const go=()=>{PA={ti:T[0],sub:T[1],tx:T[2]};pn('txt');
+    if(s===0)o.s=1;else if(s===1)o.s=2;else if(s===3)o.s=4;else if(s===4){o.s=5;banner(T88('I tre Custodi di Eldora','The three Keepers of Eldora'),T88('La Fonderia a ovest, i Giardini a est, l\'Archivio a nord-ovest','The Foundry to the west, the Gardens to the east, the Archive to the north-west'),'pergamena')}else if(s===7){o.s=8;a2Reward()}npcMarks();hud();save()};
+  if(s===0)filmOnce('a88_inizio',go);else go()}
+function a2Reward(){const lv=Math.max(28,P.lv|0);P.g+=18000;goldFly(18000);gainXP(9000);P.pot+=10;const a=item(lv,3,'w'),b=item(lv,3,'h');a.n=T88('Lama della Memoria','Blade of Memory');a.cr=Math.max(a.cr||0,18);b.n=T88('Corona di Eldora','Crown of Eldora');b.hp=Math.max(b.hp||0,170);
   for(const x of[a,b]){if(P.inv.length<INV)P.inv.push(x);else ents.push(dropOk({k:'dr',px:P.px,py:P.py,it:x}))}
-  if(typeof titAdd==='function')titAdd('alba86','Portatore dell\'Alba');setTimeout(()=>banner('Atto II completato','15000 oro, 8000 esperienza, la Lama del Portatore dell\'Alba e lo Scudo della Lanterna','corona'),700);jingle([60,64,67,72,76,79,84],.12,'triangle')}
-// il riquadro del capitolo va in cima alle risposte (dentro la finestra di dialogo, se c'è)
+  if(typeof titAdd==='function')titAdd('memoria88',T88('Custode della Memoria','Keeper of Memory'));if(typeof cr80Got==='function')cr80Got('zaffiro88');
+  setTimeout(()=>banner(T88('Atto II completato','Act II complete'),T88('18000 oro, 9000 esperienza, la Lama della Memoria, la Corona di Eldora e il titolo «Custode della Memoria»','18000 gold, 9000 experience, the Blade of Memory, the Crown of Eldora and the title “Keeper of Memory”'),'corona'),700);jingle([60,64,67,72,76,79,84],.12,'triangle')}
+/* ---- le domande ai personaggi: si aprono man mano che la storia va avanti ([domanda, risposta, da quale passo, condizione]) ---- */
+const QA88={
+  malakar_re:[[T88('Che cosa sai del Primo Re?','What do you know about the First King?'),T88('Quello che sanno tutti: fondò Aldoria, forgiò la Corona e chiuse l\'Occhio. A scuola ci facevano imparare a memoria il suo nome. Strano, a pensarci adesso: è l\'unico nome di quei tempi che ci sia rimasto.','What everyone knows: he founded Aldoria, forged the Crown and closed the Eye. At school they made us learn his name by heart. Strange, now that I think of it: it\'s the only name from those times that has come down to us.'),0],
+    [T88('Perché la terra trema proprio adesso?','Why is the ground shaking right now?'),T88('Il sigillo del Primo Re era fatto di due cose: i sette cuori e la città sepolta. Tu hai chiuso l\'Occhio per sempre, e il sigillo non serve più. Quello che era legato si sta slegando. Non so se esserne felice o spaventato.','The First King\'s seal was made of two things: the seven hearts and the buried city. You closed the Eye for good, and the seal is no longer needed. What was bound is coming loose. I don\'t know whether to be glad or afraid.'),5],
+    [T88('Cosa farete di Eldora?','What will you do with Eldora?'),T88('La terremo aperta. Oriana vuole fare una biblioteca nell\'Archivio, e i fabbri di Aldoria vogliono riaccendere la Fonderia. Una città non muore finché qualcuno la abita.','We\'ll keep it open. Oriana wants to make a library in the Archive, and the smiths of Aldoria want to relight the Foundry. A city doesn\'t die as long as someone lives in it.'),8],
+    [T88('E vostro fratello?','And your brother?'),T88('Incide nomi dall\'alba al tramonto. Ieri mi ha detto che ha cominciato da quelli dei bambini. Credo che sia il suo modo di bussare a una porta che una volta non ha aperto.','He carves names from dawn to dusk. Yesterday he told me he started with the children\'s. I think it\'s his way of knocking on a door he once didn\'t open.'),8]],
+  aldric_p:[[T88('Cosa vuol dire la ninna nanna?','What does the lullaby mean?'),T88('Sei luci sul capo del re: i sei frammenti della Corona, è ovvio. Ma la settima... la settima non ha colore. Mia madre diceva che era una leggenda più vecchia del regno: una gemma che nessun re ha mai portato. Chi la trova vede quello che c\'è dietro il mondo. Era una favola per farmi dormire. Credo.','Six lights on the king\'s head: the six fragments of the Crown, obviously. But the seventh... the seventh has no color. My mother said it was a legend older than the kingdom: a gem no king has ever worn. Whoever finds it sees what lies behind the world. It was a fairy tale to put me to sleep. I think.'),1],
+    [T88('Sapevi di Eldora?','Did you know about Eldora?'),T88('No. Lo giuro sulla mia vergogna, che è l\'unica cosa che mi sia rimasta. Il Primo Re ha cancellato bene. Ha cancellato così bene che i suoi stessi figli hanno cantato il nome di Eldora per mille anni senza sapere cosa fosse.','No. I swear it on my shame, which is the only thing I have left. The First King erased well. He erased so well that his own children sang the name of Eldora for a thousand years without knowing what it was.'),2],
+    [T88('Il Primo Re era un uomo malvagio?','Was the First King a wicked man?'),T88('Era un uomo spaventato con un esercito in mano. È peggio, sai. Un malvagio sa quello che fa. Uno spaventato crede sempre di salvare qualcuno.','He was a frightened man with an army in his hands. That\'s worse, you know. A wicked man knows what he\'s doing. A frightened one always believes he\'s saving someone.'),5],
+    [T88('Cosa farai adesso?','What will you do now?'),T88('Incido nomi sulle mura. Uno per volta, lettera per lettera. La prima volta che ho sentito bussare non ho aperto. Adesso apro, ogni giorno, centomila volte.','I carve names on the walls. One at a time, letter by letter. The first time I heard knocking I didn\'t open. Now I open, every day, a hundred thousand times.'),8]],
+  oriana88:[[T88('Come sei arrivata quaggiù?','How did you get down here?'),T88('Con una corda, una lanterna e pochissimo buon senso. La bibliotecaria mi ha detto di aspettare la Guardia. La Guardia ha paura del buio. Io no: io ho paura delle mappe sbagliate.','With a rope, a lantern and very little common sense. The librarian told me to wait for the Guard. The Guard is afraid of the dark. I\'m not: I\'m afraid of wrong maps.'),3],
+    [T88('Cosa hai scoperto finora?','What have you found so far?'),T88('Che le strade di Eldora sono larghe il doppio delle nostre, che le case non hanno serrature e che in giro per la città ci sono dodici pietre con delle scritte. Le chiamo le Pietre della Memoria. Se le leggi tutte, raccontami cosa dicono: io l\'eldoriano antico lo leggo a fatica.','That the streets of Eldora are twice as wide as ours, that the houses have no locks, and that around the city there are twelve stones with writing on them. I call them the Memory Stones. If you read them all, tell me what they say: I can barely read old Eldoran.'),3],
+    [T88('Le case non hanno serrature?','The houses have no locks?'),T88('Nessuna. Neanche una. Ho controllato cento porte. A Eldora non si chiudeva niente a chiave: credo che ognuno sapesse il nome di tutti, e non si ruba a qualcuno di cui sai il nome.','None. Not one. I checked a hundred doors. In Eldora nothing was locked: I think everyone knew everyone\'s name, and you don\'t steal from someone whose name you know.'),4],
+    [T88('Hai paura del fantasma?','Are you afraid of the ghost?'),T88('Di Vael? No. L\'altra notte mi ha corretto un errore sulla mappa: avevo messo la Fonderia due strade troppo a sud. Ha una calligrafia bellissima. Per essere morto da mille anni, è molto preciso.','Of Vael? No. The other night he corrected a mistake on my map: I\'d put the Foundry two streets too far south. He has beautiful handwriting. For someone who\'s been dead a thousand years, he\'s very precise.'),5],
+    [T88('Cosa farai quando sarà finita?','What will you do when it\'s over?'),T88('Disegnerò la mappa di Eldora com\'era, con tutti i nomi delle strade. Vael me li sta dettando. Una città dimenticata è una mappa bianca, sai? E io odio le mappe bianche.','I\'ll draw the map of Eldora as it was, with all the street names. Vael is dictating them to me. A forgotten city is a blank map, you know? And I hate blank maps.'),6],
+    [T88('Ho letto tutte le Pietre della Memoria','I\'ve read all the Memory Stones'),T88('Davvero? Allora sei la prima persona in mille anni che conosce tutta la storia di Eldora. Le scrivo sul bordo della mappa, una per una. Così chi la guarderà saprà che qui non c\'era una città vuota: c\'era gente.','Really? Then you\'re the first person in a thousand years to know the whole story of Eldora. I\'m writing them along the edge of the map, one by one. That way whoever looks at it will know this wasn\'t an empty city: there were people here.'),3,()=>Object.keys(a2Fix().ins).length>=12]],
+  vael88:[[T88('Chi eri, prima?','Who were you, before?'),T88('Un ragazzo che copiava i nomi delle stelle. Avevo quindici anni quando la volta di pietra ci cadde addosso. Da allora scrivo, perché è l\'unica cosa che so fare. Scrivo sulla polvere, e la polvere si cancella.','A boy who copied the names of the stars. I was fifteen when the stone vault fell on us. Since then I write, because it\'s the only thing I know how to do. I write on the dust, and the dust wipes itself away.'),4],
+    [T88('Che cos\'era l\'Occhio, davvero?','What was the Eye, really?'),T88('Una fame che veniva da fuori dal mondo. Noi scrivevamo i nomi per tenere le cose al loro posto; lui li mangiava per farle sparire. Forse era soltanto un altro scriba, uno che cancellava invece di scrivere. Non l\'abbiamo mai capito. Forse non c\'era niente da capire.','A hunger that came from outside the world. We wrote names to keep things in their place; it ate them to make them vanish. Perhaps it was just another scribe, one who erased instead of writing. We never understood it. Perhaps there was nothing to understand.'),4],
+    [T88('Che cos\'è la gemma senza colore?','What is the colorless gem?'),T88('Ah, l\'hai sentita anche tu, quella storia. Nell\'Archivio c\'era un rotolo più vecchio della città: diceva che sei luci tengono insieme il mondo, e che la settima apre la porta di una realtà che gli occhi non sanno ancora guardare. Più grande, più vera, dove le cose hanno ombra e peso. Il mio maestro diceva che è una leggenda. Ma il mio maestro diceva anche che i nomi non si perdono mai.','Ah, you\'ve heard that story too. In the Archive there was a scroll older than the city: it said that six lights hold the world together, and that the seventh opens the door to a reality the eyes do not yet know how to look at. Bigger, truer, where things have shadow and weight. My master said it was a legend. But my master also said names are never lost.'),5],
+    [T88('Chi era Brunilde?','Who was Brunilde?'),T88('La donna più forte di Eldora. Suonava le campane per annunciare le nascite: una per ogni bambino, e la città rispondeva con il nome. Dopo aver fuso i sette cuori del Primo Re non le ha suonate più.','The strongest woman in Eldora. She rang the bells to announce births: one for every child, and the city answered with the name. After she cast the First King\'s seven hearts she never rang them again.'),5,()=>!!a2Fix().b[0]],
+    [T88('Chi era Ysolde?','Who was Ysolde?'),T88('La Regina che nessuno ricorda. Il Prefetto la amava, e proprio per questo non le ha mai chiesto cosa ne pensasse. Lei piantava fiori che si aprono solo al buio. Adesso capisco perché.','The Queen no one remembers. The Prefect loved her, and precisely for that reason he never asked her what she thought. She planted flowers that only open in the dark. Now I understand why.'),5,()=>!!a2Fix().b[1]],
+    [T88('Il tuo maestro mi ha parlato di te','Your master spoke to me about you'),T88('...Ha detto che non mi ha dimenticato? (Per la prima volta, Vael smette di scrivere.) Allora non ero io a tenerlo a mente, in tutti questi anni. Era lui a tenere a mente me.','...He said he hadn\'t forgotten me? (For the first time, Vael stops writing.) Then it wasn\'t me keeping him in mind, all these years. It was him keeping me in mind.'),5,()=>!!a2Fix().b[2]],
+    [T88('E adesso, Vael?','And now, Vael?'),T88('Adesso detto a Oriana i nomi delle strade. Quando avrà finito la mappa credo che andrò a dormire anch\'io. Non è triste: è come chiudere un libro che ha una bella fine.','Now I\'m dictating the street names to Oriana. When she has finished the map I think I\'ll go to sleep too. It isn\'t sad: it\'s like closing a book with a good ending.'),8]]};
+let Q88={id:'',i:-1};
+function qa88List(id){const o=a2Fix(),L=QA88[id];if(!L||!a2On())return[];return L.filter(q=>o.s>=q[2]&&(!q[3]||q[3]()))}
+function qa88HTML(id){const L=qa88List(id);if(!L.length)return'';
+  let h=`<h4>❓ ${esc(T88('Domande sull\'Atto II','Questions about Act II'))}</h4><div class="qa">`+L.map((q,i)=>`<button onclick="Q88={id:'${id}',i:${i}};pn('npc')"${Q88.id===id&&Q88.i===i?' class="on"':''}>${esc(q[0])}</button>`).join('')+'</div>';
+  if(Q88.id===id&&L[Q88.i])h+=`<div class="qb dlga" data-q="${esc(L[Q88.i][0])}"><i>«<span>${esc(L[Q88.i][1])}</span>»</i></div>`;return h}
+// il riquadro del passo va in cima alle risposte (dentro la finestra di dialogo, se c'è); le domande in fondo
 const a2Ins=(h,box)=>h.includes('<div class="dlgo">')?h.replace('<div class="dlgo">','<div class="dlgo">'+box):h.replace(/(<\/h3>)/,'$1'+box);
-{const h0=npcHTML;npcHTML=function(e){let h=h0(e);try{if(a2On()&&e&&!e.slp){const o=a2Fix(),w=A2WHO[o.s];if(w&&e.nid===w&&A2T[o.s]){const T=A2T[o.s];
-      h=a2Ins(h,`<div class="qb a2qb"><b>📜 ${esc(T.ti)}</b><p>${esc(T.tx.split('\n\n')[0])}</p><button onclick="a2Talk()">Ascolta</button></div>`)}
-    else if(o.s>=3&&o.s<5&&(e.nid==='astronomo'||e.nid==='allieva'||e.nid==='malakar_re'))h=a2Ins(h,`<div class="qb a2qb"><small>Atto II · ${esc(a2Obj())}.${o.s===3?' Il Portale delle Stelle è sulla cupola dell\'Osservatorio.':''}</small></div>`)}}catch(_){}return h}}
-// il Portale delle Stelle, sulla cupola
-function a2Portal(){if(Zk!=='oss_cupola'||ents.some(e=>e.k==='po'&&e.to==='valle86'))return;const[x,y]=nearFree(2,8);const p=po(x,y,'valle86',{st:'void',n:'Portale delle Stelle · Valle del Crepuscolo'});ents.push(p);if(cineOK())ringFx(p.px,p.py,'191,208,255',1,2.2)}
+{const h0=npcHTML;npcHTML=function(e){let h=h0(e);try{if(a2On()&&e&&!e.slp){const o=a2Fix(),w=A88WHO[o.s];
+      if(w&&e.nid===w&&A88T[o.s]){const T=A88T[o.s];h=a2Ins(h,`<div class="qb a2qb"><b>📜 ${esc(T[0])}</b><p>${esc(T[2].split('\n\n')[0])}</p><button onclick="a2Talk()">${esc('Ascolta')}</button></div>`)}
+      else if(o.s>=5&&o.s<7&&(e.nid==='vael88'||e.nid==='oriana88'||e.nid==='malakar_re'))h=a2Ins(h,`<div class="qb a2qb"><small>${esc(T88('Atto II','Act II'))} · ${esc(a2Obj())}.${o.s===5?' '+esc(A88C.map((k,i)=>(o.b[i]?'✔ ':'○ ')+E[k].n.split(',')[0]).join(' · ')):''}</small></div>`);
+      if(QA88[e.nid])h+=qa88HTML(e.nid)}}catch(x){console.warn('atto II',x)}return h}}
+T88('Domande sull\'Atto II','Questions about Act II');
+/* ---- il pozzo, le prigioni e il castello: le porte verso Eldora ---- */
 {const l0=loadPost;loadPost=function(k){l0(k);try{if(!a2On())return;const o=a2Fix();
-    if(k==='oss_cupola'&&o.s>=3)a2Portal();
-    if(k==='valle86'){if(!o.seen){o.seen=1;save();setTimeout(()=>{if(Zk==='valle86')filmOnce('a2_valle',()=>{})},900)}}
-    // Atto II già finito o non ancora cominciato: la Rocca resta aperta per chi l'ha aperta
+    if(k==='vecchia'&&o.s>=2&&!ents.some(e=>e.k==='po'&&e.to==='eldora88')){const[wx,wy]=typeof WELL!=='undefined'?WELL:[80,14];const[x,y]=freeNear(wx+2,wy+2);ents.push(po(x,y,'eldora88',{st:'down',n:T88('La scala nel pozzo · Eldora','The stairs in the well · Eldora')}));if(typeof reach==='function')reach(x,y)}
+    if(k==='cas_prigioni'&&o.s>=3&&!ents.some(e=>e.k==='po'&&e.to==='eldora88')){const[x,y]=nearFree(9,7);ents.push(Object.assign(po(x,y,'eldora88',{st:'void',n:T88('Il passaggio dei re · Eldora','The Kings\' Passage · Eldora')}),{col:'#9ab8ff'}))}
+    if(k==='eldora88'){if(o.s===2){o.s=3;save();setTimeout(()=>{if(Zk==='eldora88')filmOnce('a88_eldora',()=>{npcMarks();hud();banner(T88('Eldora, la città sepolta','Eldora, the Buried City'),T88('Qualcuno ha acceso un fuoco accanto alla scala','Someone has lit a fire next to the stairs'),'pergamena')})},700)}
+}
   }catch(e){console.warn('atto II',e)}}}
-// quando una delle stelle si riaccende, e quando cade Morvath
-{const b0=bossDown;bossDown=function(e){b0(e);try{if(!a2On()||!e)return;const o=a2Fix(),i=A2D.findIndex(id=>DG[id].boss===e.t);
-    if(i>=0&&!o.l[i]){o.l[i]=1;const n=a2N();setTimeout(()=>banner('✦ La stella di '+A2STAR[i]+' si riaccende',n<3?'Stelle della Lanterna: '+n+'/3':'Le tre stelle brillano: la Rocca di Morvath si è aperta','stella'),2600);
-      if(n>=3){P.unl=P.unl||{};P.unl.rocca86=1;if(o.s<4)o.s=4}save()}
-    if(e.t==='morvath86'&&o.s<5){o.s=5;const f=th86Fix();f.sub=Math.max(f.sub||0,1.5);save();setTimeout(()=>filmOnce('a2_fine',()=>{banner('L\'alba è tornata','La Minaccia del Regno scende. Torna da Re Malakar nel castello.','sole');npcMarks();hud()}),3200)}}catch(x){console.warn('atto II',x)}}}
+/* ---- i Custodi e il Re di Pietra: le parole, le fasi, le mosse ---- */
+const B88={
+  brunilde88:{hi:T88('«Chi suona alla mia porta? Nessuno suona più, da mille anni.»','“Who rings at my door? No one has rung in a thousand years.”'),
+    ph:T88('«Sei cuori per la sua corona e uno per la serratura. Li ho fusi con queste mani, e lui ha fuso me con la città!»','“Six hearts for his crown and one for the lock. I cast them with these hands, and he cast me into the city!”'),
+    end:[T88('Brunilde ricorda','Brunilde Remembers'),T88('Il martello mi cade di mano. Che strano: è la prima volta in mille anni che sento il silenzio, e non mi fa paura.\n\nAldric mi aveva promesso che la Fonderia sarebbe rimasta in piedi, che i miei apprendisti avrebbero rivisto il sole. Ho forgiato i sette cuori del sigillo credendogli. Poi le campane hanno suonato tutte insieme per l\'ultima volta, e il cielo di pietra ci è caduto addosso.\n\nIl mio nome è Brunilde. Ricordalo tu, adesso. Io posso finalmente dormire.',
+      'The hammer falls from my hand. How strange: it\'s the first time in a thousand years I hear silence, and it doesn\'t frighten me.\n\nAldric had promised me the Foundry would stay standing, that my apprentices would see the sun again. I forged the seven hearts of the seal believing him. Then the bells rang all together one last time, and the stone sky fell on us.\n\nMy name is Brunilde. You remember it now. I can finally sleep.')]},
+  ysolde88:{hi:T88('«Sei venuto a guardarmi? Tutti guardano. Nessuno ricorda.»','“Have you come to look at me? Everyone looks. No one remembers.”'),
+    ph:T88('«Quale di noi è la Regina? Nemmeno io lo so più.»','“Which of us is the Queen? Not even I know anymore.”'),ph2:T88('«Le radici mi tengono qui. Le radici sono l\'unica cosa che non mi ha mai lasciata.»','“The roots hold me here. The roots are the only thing that never left me.”'),
+    end:[T88('Ysolde ricorda','Ysolde Remembers'),T88('Ero del Consiglio di Eldora, la giardiniera della luna. Ho sposato il Prefetto perché la città e i suoi soldati smettessero di odiarsi. Lui mi amava, credo. Ma ha amato di più la sua paura.\n\nQuando ha deciso di seppellire Eldora gli ho chiesto di lasciarmi restare con la mia gente. Mi ha accontentata. È l\'unica promessa che abbia mantenuto.\n\nAnche lassù, mi dicono, una regina è sparita in una notte di nebbia. Di\' al re di sopra di ricordarla. Nessuna regina dovrebbe essere dimenticata due volte.\n\nIl mio nome è Ysolde.',
+      'I was of the Council of Eldora, the gardener of the moon. I married the Prefect so that the city and his soldiers would stop hating each other. He loved me, I think. But he loved his fear more.\n\nWhen he decided to bury Eldora I asked him to let me stay with my people. He granted it. It\'s the only promise he ever kept.\n\nUp there too, they tell me, a queen vanished on a night of fog. Tell the king above to remember her. No queen should be forgotten twice.\n\nMy name is Ysolde.')]},
+  orsolo88:{hi:T88('«Un nome! Sento un nome che cammina! Va cancellato, va cancellato...»','“A name! I hear a name walking! It must be erased, it must be erased...”'),
+    ph:T88('«Ogni nome che ho raschiato me lo porto dentro. Sono tutti qui, e urlano!»','“Every name I scraped away I carry inside me. They\'re all here, and they\'re screaming!”'),
+    end:[T88('Orsolo ricorda','Orsolo Remembers'),T88('Fermo. Lasciami... lasciami cercare. Ce l\'avevo, un nome. Il Prefetto mi ordinò di cancellare tutti quelli della città, uno per uno, perché l\'Occhio non ci trovasse. Ho obbedito per anni. Alla fine ho cancellato anche il mio, per sbaglio, e non sono più riuscito a ritrovarlo.\n\nMa non li ho distrutti, sai. Li ho copiati tutti, di nascosto, nel Registro di Eldora: centomila nomi su pagine di zaffiro. Il Prefetto lo scoprì e spezzò il Registro in due. Metà è qui, nell\'Archivio. L\'altra metà la porta sulla fronte, nella sua corona di pietra.\n\nVael... il mio allievo. Digli che non l\'ho dimenticato. Era l\'unico nome che non sono mai riuscito a cancellare. E io... io ero Orsolo. Sì. Orsolo.',
+      'Wait. Let me... let me search. I had one, a name. The Prefect ordered me to erase every name in the city, one by one, so the Eye would not find us. I obeyed for years. In the end I erased my own too, by mistake, and I never managed to find it again.\n\nBut I didn\'t destroy them, you know. I copied them all, in secret, into the Register of Eldora: a hundred thousand names on pages of sapphire. The Prefect found out and broke the Register in two. Half is here, in the Archive. The other half he wears on his brow, in his crown of stone.\n\nVael... my apprentice. Tell him I didn\'t forget him. His was the only name I never managed to erase. And I... I was Orsolo. Yes. Orsolo.')]},
+  aldric88:{pre:[T88('Il Re di Pietra','The Stone King'),T88('Aldric il Primo','Aldric the First'),T88('Sei arrivato fin qui. Hai liberato la Fonditrice, la mia Regina e il vecchio scriba. E adesso vuoi riportare su i loro nomi, tutti, come si riporta su un secchio dal pozzo.\n\nTu non sai cosa ho visto. Ho visto un occhio grande come il cielo guardare una madre, e la madre dimenticare il nome di suo figlio, e il figlio sparire. Ho chiuso quell\'occhio. Ho pagato con una città intera, e l\'ho pagato io, ogni giorno, per mille anni, seduto su questa pietra.\n\nSe i nomi tornano, qualcosa là fuori li sentirà. Ci sono sempre altri occhi.\n\nIo sono il sigillo. E il sigillo non si apre.',
+      'You\'ve come this far. You freed the Founder, my Queen and the old scribe. And now you want to bring their names back up, all of them, the way you draw a bucket up from the well.\n\nYou don\'t know what I saw. I saw an eye as big as the sky look at a mother, and the mother forget her son\'s name, and the son vanish. I closed that eye. I paid with a whole city, and I paid for it myself, every day, for a thousand years, sitting on this stone.\n\nIf the names return, something out there will hear them. There are always other eyes.\n\nI am the seal. And the seal does not open.')],
+    hi:T88('«Il sigillo non si apre.»','“The seal does not open.”'),ph:T88('«La corona di pietra pesa. Ma l\'ho portata da solo, per tutti voi!»','“The stone crown is heavy. But I carried it alone, for all of you!”'),
+    ph2:T88('«Chi mi tiene? Lasciatemi! Siete... siete i miei sudditi...»','“Who is holding me? Let me go! You are... you are my people...”'),help:T88('Vael: «Eroe, adesso! Lo tengono loro!»','Vael: “Hero, now! They\'re holding him!”')}};
+// le mosse speciali: rintocchi a cerchi (Brunilde), radici sotto i piedi e specchi (Ysolde), cancellature che inseguono e
+// inchiostro che protegge (Orsolo), crolli, corona di pietra e i Sepolti che lo trattengono (Aldric il Primo)
+const BOSS88=new Set(['brunilde88','ysolde88','orsolo88','aldric88']);
+function w88(x,y,r,tt,dmg){const ix=x|0,iy=y|0;if(ix<1||iy<1||ix>=N-1||iy>=N-1||!WK(M[iy][ix]))return;fx.push({k:'warn',x,y,r,t:tt,mx:tt,dmg})}
+function b88Ring(e,R0,tt,dmg){const n=Math.max(8,Math.round(R0*5));for(let i=0;i<n;i++){const a=i/n*6.283;w88(e.px+Math.cos(a)*R0,e.py+Math.sin(a)*R0,.62,tt,dmg)}}
+function b88Adds(e,k,n,R0,seed){for(let i=0;i<n;i++){const a=i/n*6.283+t,[x,y]=nearFree(clamp(Math.floor(e.px+Math.cos(a)*R0),1,N-2),clamp(Math.floor(e.py+Math.sin(a)*R0),1,N-2));if(WK(M[y][x])&&E[k]){const m=mk(k,x,y,seed+i);m.al=1;m.ink88=e.t==='orsolo88'?1:0;ents.push(m)}}}
+function boss88Tick(dt){if(!started||!ZZ||!ZZ.dg)return;for(const e of ents){if(e.k!=='en'||!BOSS88.has(e.t)||e.hp<=0)continue;const B=B88[e.t],k=e.hp/e.mx,d=dist(e,P);
+    if(!e.i88&&(e.al||d<7)){e.i88=1;e.al=1;
+      if(e.t==='aldric88'&&!e.pre88&&B.pre){e.pre88=1;PA={ti:B.pre[0],sub:B.pre[1],tx:B.pre[2]};pn('txt');music('boss')}
+      else{flt(e,'!','#ffe8b0');msg(B.hi)}e.n88=t+4;continue}
+    if(!e.i88||PM==='txt')continue;e.n88=e.n88||t+4;
+    if(e.t==='brunilde88'){
+      if(!e.p88&&k<=.5){e.p88=1;e.shd=t+2.2;flt(e,'Immune','#ffb04a');msg(B.ph);shake(.9);tone(70,1,'square',.07);b88Adds(e,'automa88',2,2.4,26100);b88Ring(e,2.6,1.1,e.at*.9)}
+      if(t>e.n88){e.n88=t+(e.p88?6:7.5);tone(196,.9,'triangle',.07);tone(98,1.2,'sine',.05);flt(e,T88('Rintocco!','Toll!'),'#ffd84a');for(let j=0;j<3;j++){const R0=1.6+j*1.7;setTimeout(()=>{if(started&&e.hp>0&&ents.includes(e))b88Ring(e,R0,.95,e.at*.72)},j*520)}}}
+    else if(e.t==='ysolde88'){
+      if(!e.p88&&k<=.7){e.p88=1;msg(B.ph);ys88Mirror(e)}
+      if(e.p88===1&&k<=.35){e.p88=2;msg(B.ph2);ys88Mirror(e);e.shd=t+1.5}
+      if(t>e.n88){e.n88=t+(e.p88?4.2:5.5);flt(e,T88('Radici!','Roots!'),'#9affd8');tone(130,.4,'sawtooth',.04);for(let j=0;j<3;j++)setTimeout(()=>{if(started&&ents.includes(e))w88(P.px+(Math.random()-.5)*.6,P.py+(Math.random()-.5)*.6,.85,.9,e.at*.8)},j*450)}}
+    else if(e.t==='orsolo88'){
+      const ink=ents.filter(q=>q.k==='en'&&q.ink88&&q.hp>0).length;
+      if(!e.p88&&k<=.5){e.p88=1;e.inkT88=t+9;msg(B.ph);shake(.6);b88Adds(e,'inchiostro88',4,2.6,26200);flt(e,T88('Protetto dall\'inchiostro','Shielded by ink'),'#8a7aff')}
+      if(e.p88===1){if(ink>0&&t<e.inkT88)e.shd=t+.3;else{e.p88=2;e.shd=0;flt(e,T88('L\'inchiostro si scioglie','The ink dissolves'),'#bfe6ff')}}
+      if(t>e.n88){e.n88=t+(e.p88?4.6:6);flt(e,T88('Cancellatura!','Erasure!'),'#8a7aff');tone(300,.3,'sawtooth',.04);for(let j=0;j<3;j++)setTimeout(()=>{if(started&&ents.includes(e))w88(P.px,P.py,.9,1,e.at*.8)},j*700)}}
+    else if(e.t==='aldric88'){
+      if(!e.p88&&k<=.66){e.p88=1;e.shd=t+3;flt(e,'Immune','#bfe6ff');msg(B.ph);shake(1);tone(55,1.2,'sawtooth',.08);b88Adds(e,'guardia88',2,2.5,26300);if(cineOK())ringFx(e.px,e.py,'160,200,255',1.4,4)}
+      if(e.p88===1&&k<=.33){e.p88=2;e.vul88=1;msg(B.ph2);setTimeout(()=>{if(started)msg(B.help)},1800);flash('#cfe2ff',.35,600);e.cd=(e.cd||1.3)*1.35;e.sp*=.75}
+      if(t>e.n88){e.n88=t+(e.p88===2?6.5:e.p88?4.5:6);flt(e,T88('Crollo!','Cave-in!'),'#bfe6ff');shake(.5);tone(60,.8,'sawtooth',.06);const n=e.p88?7:5;for(let j=0;j<n;j++){const a=Math.random()*6.283,r0=1+Math.random()*4.5;w88(P.px+Math.cos(a)*r0*(j?1:0),P.py+Math.sin(a)*r0*(j?1:0),.9,1.1,e.at*.72)}}}}}
+// gli specchi di Ysolde: due copie che lanciano incantesimi e svaniscono al primo colpo
+function ys88Mirror(e){if(cineOK())ringFx(e.px,e.py,'150,255,220',1,3);for(let i=0;i<2;i++){const a=i*3.14+t,[x,y]=nearFree(clamp(Math.floor(e.px+Math.cos(a)*3),1,N-2),clamp(Math.floor(e.py+Math.sin(a)*3),1,N-2));if(!WK(M[y][x]))continue;
+    const m=mk('ninfa88',x,y,26400+i);m.m=E.ysolde88.m;m.n=e.n;m.mx=m.hp=Math.round(e.mx*.04);m.at=Math.round(e.at*.55);m.mir88=1;m.xp=0;m.al=1;ents.push(m)}}
+// i colpi: gli specchi spariscono al primo colpo; il Re di Pietra trattenuto dai Sepolti ne prende di più
+{const h0=hurtE;hurtE=function(e,d,rem,cr){if(e&&e.vul88&&!(e.shd&&e.shd>t))d=Math.round(d*1.4);const r=h0(e,d,rem,cr);try{if(e&&e.mir88&&e.hp>0&&ents.includes(e)){e.hp=0;kill(e);if(cineOK())sparks(e.px,e.py,14,['#9affd8','#e8fff4'],60)}}catch(_){}return r}}
+{const u0=upd;upd=function(dt){u0(dt);try{boss88Tick(dt)}catch(x){console.warn('boss atto II',x)}}}
+// i Sepolti che trattengono il Re di Pietra: figure azzurre in cerchio, con le catene di luce
+{const d0=nightDraw;nightDraw=function(){d0();try{if(!started||!Zk||Zk.split('@')[0]!=='trono88')return;const e=ents.find(q=>q.k==='en'&&q.t==='aldric88'&&q.vul88);if(!e)return;g.setTransform(DPR,0,0,DPR,0,0);
+  const cx=PX(e.px,e.py),cy=PY(e.px,e.py,30);g.strokeStyle='rgba(190,225,255,.55)';g.lineWidth=2;for(let i=0;i<6;i++){const a=i/6*6.283+t*.3,x=e.px+Math.cos(a)*2.4,y=e.py+Math.sin(a)*2.4,sx=PX(x,y),sy=PY(x,y,24);
+    g.beginPath();g.moveTo(sx,sy);g.lineTo(cx,cy);g.stroke();g.fillStyle='rgba(200,230,255,.35)';g.beginPath();g.ellipse(sx,sy,8,16,0,0,6.3);g.fill()}}catch(_){}}}
+/* ---- quando cade un Custode, e quando cade il Re di Pietra ---- */
+{const b0=bossDown;bossDown=function(e){b0(e);try{if(!a2On()||!e)return;const o=a2Fix(),i=A88C.indexOf(e.t);
+    if(i>=0&&!o.b[i]){o.b[i]=1;const n=a2N(),B=B88[e.t];setTimeout(()=>{PA={ti:B.end[0],sub:E[e.t].n,tx:B.end[1]};pn('txt')},2400);
+      const nm=E[e.t].n.split(',')[0];setTimeout(()=>banner('✦ '+nm+(e.t==='orsolo88'?' è libero':' è libera'),n<3?T88('Custodi liberati: {0}/3','Keepers freed: {0}/3').replace('{0}',n):T88('I tre Custodi sono liberi: le porte del Palazzo Sepolto si sono aperte','The three Keepers are free: the doors of the Buried Palace have opened'),'stella'),2600);
+      if(n>=3){P.unl=P.unl||{};P.unl.trono88=1;if(o.s<6)o.s=6}else if(o.s<5)o.s=5;save()}
+    if(e.t==='aldric88'&&o.s<7){o.s=7;const f=th86Fix();f.sub=Math.max(f.sub||0,1.5);save();setTimeout(()=>filmOnce('a88_alba',()=>{banner(T88('Eldora ricorda','Eldora remembers'),T88('La Minaccia del Regno scende. Torna da Re Malakar nel castello.','The Kingdom Threat goes down. Return to King Malakar in the castle.'),'sole');npcMarks();hud()}),3200)}}catch(x){console.warn('atto II',x)}}}
+T88('Custodi liberati: {0}/3','Keepers freed: {0}/3');
+T88('Brunilde','Brunilde');T88('Ysolde','Ysolde');T88('Orsolo','Orsolo');T88('✦ {0} è libera','✦ {0} is free');T88('✦ {0} è libero','✦ {0} is free');
 // all'inizio (o appena finito il vero finale) l'annuncio del nuovo capitolo, una volta sola
-{const b0=begin;begin=function(d,s){b0(d,s);try{if(a2On()){const o=a2Fix();if(!o.ann){o.ann=1;setTimeout(()=>{if(started&&a2On())banner('Atto II · La costellazione perduta','Re Malakar ti cerca: le notti di Aldoria si allungano','stella')},4500)}}}catch(_){}}}
-{const t0=trueEnding;trueEnding=function(){t0();try{const o=a2Fix();if(!o.ann){o.ann=1;setTimeout(()=>{if(started&&a2On())banner('Atto II · La costellazione perduta','Quando sei pronto, Re Malakar ti aspetta nel castello','stella')},14000)}}catch(_){}}}
-// Morvath, alla prima metà della vita: l'Eclissi (immune per un momento, chiama le ombre)
-{const u0=upd;upd=function(dt){u0(dt);try{if(!started||Zk.split('@')[0]!=='rocca86')return;for(const e of ents){if(e.k!=='en'||e.t!=='morvath86'||e.pup||e.ecl86||e.hp>e.mx*.5)continue;e.ecl86=1;e.shd=t+2.6;flt(e,'Eclissi!','#bfd0ff');msg('Morvath spegne la luce: «Al buio non si risveglia nessuno!»');shake(.8);tone(55,.9,'sawtooth',.08);
-      if(cineOK())ringFx(e.px,e.py,'120,100,220',1.4,4);for(let i=0;i<3;i++){const an=i*2.094+t,[x,y]=nearFree(clamp(Math.floor(e.px+Math.cos(an)*2.2),1,N-2),clamp(Math.floor(e.py+Math.sin(an)*2.2),1,N-2));if(WK(M[y][x])){const m=mk('ombra86',x,y,26000+i);m.al=1;ents.push(m)}}
-      e.ecT=t+2.6}
-    // durante l'Eclissi la stanza si fa buia
-    }catch(_){}}}
-{const d0=nightDraw;nightDraw=function(){d0();try{if(!started||!Zk||Zk.split('@')[0]!=='rocca86')return;const e=ents.find(q=>q.k==='en'&&q.t==='morvath86'&&q.ecT&&q.ecT>t);if(!e)return;const k=Math.min(1,(e.ecT-t)/2.6);g.setTransform(DPR,0,0,DPR,0,0);g.fillStyle=`rgba(10,6,30,${(.55*k).toFixed(3)})`;g.fillRect(0,0,W,H)}catch(_){}}}
+{const b0=begin;begin=function(d,s){b0(d,s);try{if(a2On()){const o=a2Fix();if(!o.ann){o.ann=1;setTimeout(()=>{if(started&&a2On())banner(T88('Atto II · La città sepolta','Act II · The Buried City'),o.old?T88('L\'Atto II è stato riscritto da capo: Re Malakar ti cerca, Aldoria trema','Act II has been rewritten from scratch: King Malakar is looking for you, Aldoria is shaking'):T88('Re Malakar ti cerca: Aldoria trema','King Malakar is looking for you: Aldoria is shaking'),'pergamena')},4500)}}}catch(_){}}}
+{const t0=trueEnding;trueEnding=function(){t0();try{const o=a2Fix();if(!o.ann){o.ann=1;setTimeout(()=>{if(started&&a2On())banner(T88('Atto II · La città sepolta','Act II · The Buried City'),T88('Quando sei pronto, Re Malakar ti aspetta nel castello','When you\'re ready, King Malakar is waiting for you in the castle'),'pergamena')},14000)}}catch(_){}}}
 /* ---- la Cronaca: il capitolo ---- */
-{const c0=X43P.cro48;if(c0)X43P.cro48=()=>{let h=c0();try{if(a2On()){const o=a2Fix();h=h.replace('<h4>Titoli</h4>',`<h4>Atto II: la costellazione perduta</h4><p class="x43t">${esc(a2Obj())}.${o.s>=3?' Stelle: '+A2STAR.map((n,i)=>(o.l[i]?'✦ ':'· ')+n).join(', ')+'.':''}</p><h4>Titoli</h4>`)}}catch(_){}return h}}
+{const c0=X43P.cro48;if(c0)X43P.cro48=()=>{let h=c0();try{if(a2On()){const o=a2Fix(),ni=Object.keys(o.ins).length;
+  h=h.replace('<h4>Titoli</h4>',`<h4>${esc(T88('Atto II: la città sepolta','Act II: the Buried City'))}</h4><p class="x43t">${esc(a2Obj())}.${o.s>=5?' '+esc(A88C.map((k,i)=>(o.b[i]?'✔ ':'○ ')+E[k].n.split(',')[0]).join(', '))+'.':''}${o.s>=3?' '+esc(T88('Pietre della Memoria','Memory Stones'))+': '+ni+'/12.':''}</p><h4>Titoli</h4>`)}}catch(_){}return h}}
 /* ---- i filmati ---- */
-FILMS.a2_inizio={n:'Atto II · La costellazione perduta',mus:'notte',L:[
-  {d:8,st:'town',night:.85,mus:'notte',cam:[[35.5,38,1.05],[35.5,33,1.2]],title:'ATTO II',sub:'La costellazione perduta',tt:3.4,drop:['*'],
-    tx:'Da quando l\'Occhio si è chiuso, le notti di Aldoria si allungano. Ogni sera il sole se ne va un po\' prima, e le strade restano vuote.',act:[]},
-  {d:8.5,st:'town',night:.95,cam:[[62.5,12,1.25],[62.5,9.5,1.45]],drop:['*'],tx:'Dalla cupola dell\'Osservatorio, l\'Astronomo Tolomeo ha visto spegnersi tre stelle, una dopo l\'altra. Sempre nello stesso punto del cielo, dove le carte non segnano niente.',act:[]},
-  {d:9,st:'valle86',night:.7,tint:'rgba(40,20,90,.3)',cam:[[28.5,14,1.1],[28.5,11,1.45]],who:'Morvath',
-    tx:'«Mille anni ho custodito il sigillo per Aldric il Primo. E lui, per ringraziarmi, mi ha chiuso tra le stelle. Ora il sigillo dorme, e io sono libero. Su Aldoria non sorgerà più il sole: al buio, nulla si risveglia.»',
-    act:[fA('mv',{boss:'morvath86',p:[28.5,10.8],f:'S'})]}]};
-FILMS.a2_valle={n:'La Valle del Crepuscolo',mus:'cittadella',L:[
-  {d:8,st:'valle86',night:.6,tint:'rgba(40,20,90,.25)',cam:[[28,40,1],[28,30,1.1]],title:'LA VALLE DEL CREPUSCOLO',sub:'dentro la Lanterna',tt:3.2,
-    tx:'Dentro la Lanterna il sole non sorge mai del tutto. Tre santuari, ognuno con la sua stella spenta. In mezzo, il cuore della costellazione aspetta di tornare a brillare.',act:[]},
-  {d:8,st:'valle86',night:.6,tint:'rgba(40,20,90,.25)',cam:[[28.5,14,1.2],[28.5,11,1.5]],who:'Morvath',
-    tx:'«Sei venuto fin qui per ridare la luce a chi dorme sotto Aldoria? Torna a casa, eroe. Le mie stelle non le riaccenderai.»',act:[fA('mv',{boss:'morvath86',p:[28.5,10.8],f:'S'})]}]};
-FILMS.a2_fine={n:'Atto II · L\'alba',mus:'castello',L:[
-  {d:8,st:'valle86',dusk:.6,cam:[[28,30,1.1],[28,26,1.3]],tx:'Le tre stelle e il cuore della Lanterna tornano a brillare. Per la prima volta in mille anni, la costellazione perduta si vede di nuovo dalla terra.',act:[]},
-  {d:8.5,st:'valle86',dusk:.4,cam:[[28.5,13,1.25],[28.5,11,1.5]],who:'Morvath',tx:'«Aldric mi aveva detto che il buio era l\'unica difesa. Mi sbagliavo a credergli. Custodisci tu Aldoria, ora: io resterò a guardarla da quassù.»',act:[fA('mv',{boss:'morvath86',p:[28.5,10.8],f:'S',ghost:1})]},
-  {d:8,st:'town',dusk:.8,mus:'castello',cam:[[35.5,40,1.05],[35.5,36,1.15]],drop:['*'],tx:'Quella mattina, ad Aldoria, il sole sorse all\'ora giusta. E la gente scese in piazza a guardarlo, come per una festa.',act:[]}]};
+FILMS.a88_inizio={n:T88('Atto II · La città sepolta','Act II · The Buried City'),mus:'notte',L:[
+  {d:8,st:'town',night:.85,mus:'notte',cam:[[35.5,38,1.05],[35.5,33,1.2]],title:T88('ATTO II','ACT II'),sub:T88('La città sepolta','The Buried City'),tt:3.4,drop:['*'],
+    tx:T88('Da quando l\'Occhio si è chiuso, ogni notte, alla stessa ora, la terra di Aldoria trema. Tre volte. Ogni volta più forte.','Ever since the Eye closed, every night, at the same hour, the ground of Aldoria shakes. Three times. Each time harder.'),act:[]},
+  {d:8.5,st:'vecchia',night:.9,tint:'rgba(20,20,40,.3)',cam:[[80.5,17,1.25],[80.5,15.5,1.6]],drop:['*'],tx:T88('Nella vecchia piazza di Aldoria Vecchia il pozzo prosciugato crolla su se stesso. Sotto, dove ci dovrebbe essere solo terra, c\'è una scala di pietra che scende nel buio.','In the old square of Old Aldoria the dry well caves in on itself. Below it, where there should be nothing but earth, a stone staircase descends into the dark.'),act:[]},
+  {d:9,st:'eldora88',night:.8,tint:'rgba(20,30,60,.35)',cam:[[30.5,36,1.05],[30.5,31,1.35]],who:T88('Una voce dal buio','A voice from the dark'),
+    tx:T88('«Mille anni ho scritto i loro nomi sulla polvere, e la polvere li ha cancellati. Qualcuno sta scendendo. Qualcuno, finalmente, mi sentirà.»','“For a thousand years I wrote their names on the dust, and the dust wiped them away. Someone is coming down. Someone, at last, will hear me.”'),
+    act:[fA('va',{n:'vael88',ghostC:'#cfe2ff',ghost:1,p:[30.5,23.8],f:'S'})]}]};
+FILMS.a88_eldora={n:T88('Eldora, la città sepolta','Eldora, the Buried City'),mus:'cittadella',L:[
+  {d:8.5,st:'eldora88',night:.75,tint:'rgba(20,30,60,.3)',cam:[[30.5,50,1],[30.5,40,1.1]],title:T88('ELDORA','ELDORA'),sub:T88('la città sotto la città','the city beneath the city'),tt:3.2,
+    tx:T88('Sotto Aldoria c\'è un\'altra città. Strade larghe, case senza serrature, una piazza grande con una statua senza volto. Sopra, un cielo di pietra da cui scendono radici.','Beneath Aldoria there is another city. Wide streets, houses without locks, a great square with a faceless statue. Above, a sky of stone from which roots hang down.'),act:[]},
+  {d:8,st:'eldora88',night:.75,tint:'rgba(20,30,60,.3)',cam:[[30.5,33,1.25],[30.5,30.5,1.55]],tx:T88('Su ogni lapide, su ogni statua, su ogni porta, i nomi sono stati raschiati via. Lettera per lettera. Con una cura che fa più paura della rabbia.','On every gravestone, every statue, every door, the names have been scraped away. Letter by letter. With a care more frightening than rage.'),act:[]},
+  {d:7,st:'eldora88',night:.7,cam:[[26.5,53,1.3],[26.5,51.5,1.55]],tx:T88('E vicino alla scala, contro ogni ragionevolezza, qualcuno ha acceso un fuoco.','And next to the stairs, against all good sense, someone has lit a fire.'),act:[fA('or',{n:'oriana88',p:[26.5,51.5],f:'S'})]}]};
+FILMS.a88_alba={n:T88('Atto II · Eldora ricorda','Act II · Eldora Remembers'),mus:'castello',L:[
+  {d:9,st:'eldora88',night:.6,tint:'rgba(30,40,80,.25)',cam:[[30.5,34,1.2],[30.5,31,1.45]],who:T88('Aldric il Primo','Aldric the First'),
+    tx:T88('«Avevo paura che l\'Occhio vi trovasse. Ho fatto di voi il mio sigillo, e di me la vostra prigione. Ditemi i vostri nomi. Voglio sentirli, almeno una volta.»','“I was afraid the Eye would find you. I made you my seal, and myself your prison. Tell me your names. I want to hear them, at least once.”'),act:[fA('al',{boss:'aldric88',p:[30.5,28.6],f:'S',ghost:1})]},
+  {d:9,st:'eldora88',night:.35,tint:'rgba(60,90,160,.18)',cam:[[30.5,30,1.05],[30.5,26,1.25]],tx:T88('Le due metà del Registro si ritrovano, e le pagine di zaffiro si accendono. Centomila nomi salgono nell\'aria come lucciole. Nella Fonderia, una campana suona da sola. Poi un\'altra. Poi tutte.','The two halves of the Register find each other, and the sapphire pages light up. A hundred thousand names rise into the air like fireflies. In the Foundry, a bell rings by itself. Then another. Then all of them.'),
+    act:[fA('va',{n:'vael88',ghostC:'#cfe2ff',ghost:1,p:[30.5,23.8],f:'S'}),fA('or',{n:'oriana88',p:[29.2,33.5],f:'N'})]},
+  {d:8,st:'town',dusk:.6,mus:'castello',cam:[[35.5,40,1.05],[35.5,36,1.15]],drop:['*'],tx:T88('Ad Aldoria, quella notte, nessuno ebbe paura della terra che tremava. Era solo il suono delle campane di Eldora, che dopo mille anni dicevano di nuovo i nomi della loro gente.','In Aldoria, that night, no one was afraid of the shaking ground. It was only the sound of the bells of Eldora, which after a thousand years were once again saying the names of their people.'),act:[]}]};
 (function(){const st=document.createElement('style');st.textContent=`.a2qb{border-color:#9ab0ff!important}.a2qb b{color:#3a2a7a}`;document.head.appendChild(st)})();
-// nella vista 3D, oltre i confini della Valle il paesaggio è quello spento delle ceneri (non i boschi verdi di un campo)
-if(typeof d3Biome==='function'){const b0=d3Biome;d3Biome=function(k){return k==='valle86'?'cenere':b0(k)}}
-// e gli alberi lontani (che il paesaggio 3D fa sempre verdi) diventano tronchi spenti color crepuscolo
-if(typeof d3Backdrop==='function'){const b0=d3Backdrop;d3Backdrop=function(){const B=b0();try{if(Zk==='valle86')for(let i=0;i+9<B.length;i+=10){const r=B[i+6],g=B[i+7],b=B[i+8];if(g>r+18&&g>b+8){const v=(r+g+b)/3;B[i+6]=v*.62;B[i+7]=v*.52;B[i+8]=v*.82}}}catch(_){}return B}}
+T88('Immune','Immune');

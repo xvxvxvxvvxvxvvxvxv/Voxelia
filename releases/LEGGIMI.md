@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-120 versions, newest first.
+121 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.8](voxelia_v8.8.html) | November 13, 2026 | Act II rewritten, The Buried City: Eldora, three Keepers and the Stone King, a longer story full of dialogue; the six splinters of the Crown with the Sapphire made whole | 3,562 KB |
 | [8.7.2](voxelia_v8.7.2.html) | November 13, 2026 | The gates, fixed: pillars in place of the towers, nothing inside the walls, leaves that swing whole on their hinges | 3,498 KB |
 | [8.7.1](voxelia_v8.7.1.html) | November 12, 2026 | Maintenance: the page declares the chosen language, dates and gold in the English format | 3,485 KB |
 | [8.7](voxelia_v8.7.html) | November 12, 2026 | Voxelia in English: English is the default language, the first stage of the translation (menus, interface, Story Mode) and the repository in English | 3,482 KB |

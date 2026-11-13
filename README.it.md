@@ -6,7 +6,7 @@ Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costrui
 
 🇬🇧 **[English](README.md)** · 🇮🇹 Italiano
 
-**Versione attuale: 8.7.2** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.8** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.it.md)
 
@@ -200,7 +200,7 @@ Il menu è la **Corona di Voxel** in 3D: ogni gemma porta a una modalità.
 | Ametista | **Parco giochi · Voxelia Studio** | L'editor per costruire e giocare i propri mondi. |
 | Topazio | **Mondi della community** | I mondi pubblicati dagli altri giocatori sul server: si giocano, si votano, si commentano. |
 | Diamante | **Prologo e filmati** | Il prologo e le scene della storia già viste. Sul server anche le [versioni precedenti](#versioni-precedenti). |
-| Zaffiro infranto | **La gemma spezzata** | Qui c'era Aldoria 3026, tolta nella 8.4 per concentrare il gioco sulla Storia e su Tomorrow. La gemma resta sulla Corona, spezzata. |
+| Zaffiro | **Atto II · La città sepolta** | Spezzato dalla 8.4, quando è stata tolta Aldoria 3026: torna intero quando finisci l'Atto II (8.8), e da lì porta alla Storia. |
 
 ---
 
@@ -220,10 +220,13 @@ in una battaglia in cinque fasi.
   città bianca sulla baia, con il Palazzo della Regina, la Piazza del Serpente, la Taverna della Sirena, il Mercato
   delle spezie, i moli e il faro; la Giungla di Smeraldo ha la cascata, il fiume con i ponti di corda e il tempio fra le
   rovine.
-- **Atto II · La costellazione perduta** (8.6), dopo il vero finale: le notti si allungano e in cielo si spengono le
-  stelle della Lanterna, dove Aldric il Primo chiuse Morvath, l'Ultimo Custode. Dalla cupola dell'Osservatorio il
-  Portale delle Stelle porta nella Valle del Crepuscolo: tre dungeon riaccendono le tre stelle (il Pozzo delle Stelle
-  Spente, la Forgia dell'Eclissi, il Giardino della Luna Capovolta) e aprono la Rocca di Morvath.
+- **Atto II · La città sepolta** (riscritto nella 8.8), dopo il vero finale: Aldoria trema ogni notte e il pozzo
+  prosciugato di Aldoria Vecchia crolla su una scala. Sotto c'è **Eldora**, la città degli scribi e dei costruttori che
+  Aldric il Primo seppellì, cancellandone tutti i nomi, per sigillare l'Occhio. Con Oriana la cartografa e Vael,
+  l'ultimo scriba (un fantasma), liberi i tre Custodi legati al sigillo (Brunilde la Fonditrice delle Campane, Ysolde
+  la Regina che nessuno ricorda, Orsolo il Custode dei Nomi), ognuno nel suo dungeon, poi affronti Aldric il Primo, il
+  Re di Pietra, nel Palazzo Sepolto. Dodici Pietre della Memoria da leggere, domande ai personaggi che si aprono man
+  mano che la storia va avanti, tre filmati. Finirlo riporta intero lo **Zaffiro** della Corona.
 
 ### Difficoltà
 
@@ -720,6 +723,7 @@ nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della
 | `9_changelog.js` | Generato da `build.sh` a partire da `CHANGELOG.md` e `CHANGELOG.it.md`: non si modifica a mano |
 | `lingua/9a_lingua.js` | Il motore delle lingue (8.7): l'inglese è la lingua di partenza; traduce testi, suggerimenti, scritte disegnate e finestre del browser, con le parti che cambiano ({0}, {1}…) |
 | `lingua/9b_en_base.js` | Le traduzioni in inglese di menu, impostazioni, interfaccia e Modalità Storia (dal testo italiano all'inglese) |
+| `lingua/9c_en_atto2.js` | Registra l'inglese dell'Atto II (8.8), scritto accanto all'italiano in `storia/8zzzzs_atto2.js`, e della Corona con sei schegge |
 
 **Storia, Aldoria e filmati**
 
@@ -840,11 +844,11 @@ nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della
 | `combattimento/8zzzzc_chimere.js` | Le chimere: armi, armature e compagni montati con i pezzi di quelli che ci sono già |
 | `combattimento/8zzzzd_serraglio.js` | Il Serraglio di Aldoria, la casa dei compagni, con la Domatrice Selene e le sue postazioni |
 | `combattimento/8zzzze_dungeon.js` | Ogni dungeon un'altra dimensione: stanze di forme diverse, stile e arredi propri |
-| `corona/8zzzzf_zaffiro.js` | Lo Zaffiro infranto: Voxelia Dimension (7.55) e Aldoria 3026 (8.4) tolte dal gioco; lo sblocco di Tomorrow |
+| `corona/8zzzzf_zaffiro.js` | Voxelia Dimension (7.55) e Aldoria 3026 (8.4) tolte dal gioco; lo sblocco di Tomorrow |
 | `sistemi/8zzzzn_dev3.js` | Il pannello sviluppatore per provare tutto (8.5): missioni e variabili della storia, trucchi, mondo, debug sopra il gioco, console, stati e prova di tutte le zone |
 | `combattimento/8zzzzq_minaccia.js` | La Minaccia del Regno (8.6): il livello dalla storia e dai giorni, le mosse nuove dei nemici, i poteri dei Campioni, le mosse in più dei boss |
 | `combattimento/8zzzzr_notti.js` | Le notti pericolose e le invasioni dei quartieri di Aldoria (8.6) |
-| `storia/8zzzzs_atto2.js` | Atto II · La costellazione perduta (8.6): la Valle del Crepuscolo, quattro dungeon, creature, boss e filmati |
+| `storia/8zzzzs_atto2.js` | Atto II · La città sepolta (8.8): Eldora, quattro dungeon, creature, quattro boss a fasi, personaggi, dialoghi, Pietre della Memoria e filmati |
 | `sistemi/8zzzzt_dev86.js` | La scheda «☠ Minaccia e Atto II» del pannello sviluppatore (8.6) |
 | `combattimento/8zzzzk_bilancio.js` | Il bilanciamento: Campioni per piano, Cripta, Fucina, Tempio di Giada, Tomorrow ai livelli alti (8.1); nemici, Campioni e prezzi che seguono il tuo livello (8.3) |
 | `corona/8zzzzh_corona80.js` | La Corona Riunita: i sei frammenti, il Cuore della Corona e l'Album |

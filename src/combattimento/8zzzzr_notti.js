@@ -9,7 +9,7 @@
      prezzi dei negozi salgono del 10%. */
 XSV.add('nt86');XSV.add('iv86');
 const NT86={next:0,said:0};
-const NTZ86=['forest','desert','peaks','giungla48','valle86'];
+const NTZ86=['forest','desert','peaks','giungla48'];
 function nt86Tick(dt){if(!P||!started||P.hp<=0||!ZZ||ZZ.dg||!NTZ86.includes(Zk)||!isNight())return;const L=th86();if(L<2)return;
   if(!NT86.said&&!P.nt86){NT86.said=1;P.nt86=1;banner('🌙 Una notte pericolosa','Con la Minaccia del Regno, di notte dal buio arrivano altre creature. Stai vicino alla luce, o torna di giorno.','luna')}
   if(t<NT86.next)return;NT86.next=t+Math.max(16,40-L*2.4)+Math.random()*8;

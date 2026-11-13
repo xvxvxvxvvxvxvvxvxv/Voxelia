@@ -83,19 +83,21 @@ void main(){vec3 N=normalize(nn);vec3 V=normalize(CAM-wp);if(dot(N,V)<0.)N=-N;
  if(LITK>0.&&m<4.5){vec3 d=GP-wp;float dd=length(d);col+=base*LITC*LITK*(max(dot(N,d/max(dd,.01)),0.)*.8+.25)*9./(1.+dd*dd*.012);}
  col*=edge;float mx=max(max(col.r,col.g),max(col.b,.001)),f=mx<.9?1.12*mx/(1.+.32*mx):1.-.22*exp(-(mx-.9)*1.4);col=mix(col/mx*f,vec3(f),smoothstep(3.,12.,mx)*.4);o=vec4(pow(max(col,0.),vec3(.95)),1.);}`;
 
+// 8.8: la Corona si rifà (per esempio quando lo Zaffiro torna intero) senza ricreare la tela
+function crMeshUp(gl){const M=crBuild(),mesh={};for(const k in M){const{V,I}=M[k],buf=new ArrayBuffer(V.length/9*36),F=new Float32Array(buf),U8=new Uint8Array(buf);
+    for(let i=0,v=0;i<V.length;i+=9,v++){const o=v*9;F[o]=V[i];F[o+1]=V[i+1];F[o+2]=V[i+2];F[o+3]=V[i+3];F[o+4]=V[i+4];F[o+5]=V[i+5];const b=v*36;
+      U8[b+24]=V[i+6]&255;U8[b+25]=V[i+6]>>8&255;U8[b+26]=V[i+6]>>16&255;U8[b+27]=255;U8[b+28]=V[i+7];U8[b+29]=V[i+8]&255;U8[b+30]=V[i+8]>>8&255;U8[b+31]=0}
+    const va=gl.createVertexArray();gl.bindVertexArray(va);const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,buf,gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,36,0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,36,12);
+    gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,4,gl.UNSIGNED_BYTE,true,36,24);gl.enableVertexAttribArray(3);gl.vertexAttribPointer(3,4,gl.UNSIGNED_BYTE,true,36,28);
+    const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(I),gl.STATIC_DRAW);gl.bindVertexArray(null);mesh[k]={va,n:I.length}}return mesh}
 function crInit(){if(CRW.ok!=null)return CRW.ok;CRW.ok=false;try{
   const host=$('crown');if(!host)return false;const cv=$('crcv'),gl=cv.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:true});if(!gl)return false;
   const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o};
   const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,CR_VS));gl.attachShader(p,sh(gl.FRAGMENT_SHADER,CR_FS));['a','n','c','e'].forEach((k,i)=>gl.bindAttribLocation(p,i,k));gl.linkProgram(p);
   if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(p));
   const U={};for(const k of['VP','MD','CAM','KEY','KC','FILL','FC','AMB','LITC','GP','TM','SEL','HOV','LITI','LITK','LOCK'])U[k]=gl.getUniformLocation(p,k);
-  const M=crBuild();CRW.mesh={};for(const k in M){const{V,I}=M[k],buf=new ArrayBuffer(V.length/9*36),F=new Float32Array(buf),U8=new Uint8Array(buf);
-    for(let i=0,v=0;i<V.length;i+=9,v++){const o=v*9;F[o]=V[i];F[o+1]=V[i+1];F[o+2]=V[i+2];F[o+3]=V[i+3];F[o+4]=V[i+4];F[o+5]=V[i+5];const b=v*36;
-      U8[b+24]=V[i+6]&255;U8[b+25]=V[i+6]>>8&255;U8[b+26]=V[i+6]>>16&255;U8[b+27]=255;U8[b+28]=V[i+7];U8[b+29]=V[i+8]&255;U8[b+30]=V[i+8]>>8&255;U8[b+31]=0}
-    const va=gl.createVertexArray();gl.bindVertexArray(va);const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,buf,gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,36,0);gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,36,12);
-    gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,4,gl.UNSIGNED_BYTE,true,36,24);gl.enableVertexAttribArray(3);gl.vertexAttribPointer(3,4,gl.UNSIGNED_BYTE,true,36,28);
-    const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(I),gl.STATIC_DRAW);gl.bindVertexArray(null);CRW.mesh[k]={va,n:I.length}}
+  CRW.mesh=crMeshUp(gl);
   CRW.gl=gl;CRW.cv=cv;CRW.p=p;CRW.U=U;cv.addEventListener('webglcontextlost',e=>{e.preventDefault();CRW.ok=false;crShow(0)});return CRW.ok=true}
  catch(e){console.warn('Corona 3D non disponibile',e);return CRW.ok=false}}
 

@@ -6,7 +6,7 @@ Tomorrow you found a kingdom of your own, and with the **Voxelia Studio** editor
 
 🇬🇧 English · 🇮🇹 **[Italiano](README.it.md)**
 
-**Current version: 8.8** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
+**Current version: 8.9** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
 [⌨️ Controls](#controls) · [🖥 Server](#the-multiplayer-server) · [🛠 Development](#development) ·
 [📝 What's new (CHANGELOG)](CHANGELOG.md)
 
@@ -202,6 +202,51 @@ The menu is the **Voxel Crown** in 3D: each gem leads to a mode.
 | Topaz | **Community worlds** | Worlds published on the server by other players: play them, rate them, comment on them. |
 | Diamond | **Prologue and cutscenes** | The prologue and the story scenes you've already seen. On the server also the [previous versions](#previous-versions). |
 | Sapphire | **Act II · The Buried City** | Broken since 8.4, when Aldoria 3026 was removed: it becomes whole again when you finish Act II (8.8), and from then on it leads to the Story. |
+| Colorless (the seventh) | **Behind the Crown · The Voxeliaverse** | It appears after you take the seventh fragment in the Heart of the Crown (8.9): turn the Crown to the small point between the Diamond and the Ruby. |
+
+### The Heart of the Crown and the seventh fragment
+
+With all six splinters you enter the **Heart of the Crown**: a golden square floating in the void, with six walkways
+toward six rooms, one per splinter. The Echo of the Crown no longer fights you: it is your guide. In every room the
+splinter has a power, and you need it to solve a puzzle:
+
+| Room | Puzzle |
+|---|---|
+| 🔴 Ruby · fire | Seven braziers in a ring: lighting one also toggles its two neighbors. Light them all. |
+| ⚪ Diamond · truth | Three rows of three identical bridges over the void, only one per row holds: the Diamond shows them for a few seconds, then you have to remember them. |
+| 🟢 Emerald · time | A collapsed bridge: the Emerald brings it back in time, but it crumbles behind you. |
+| 🟣 Amethyst · building | Three blocks to place over the void to reach the other side: only one path works with three. |
+| 🟡 Topaz · travel | Six islands with two portals each: the wrong ones take you back to the start. |
+| 🔵 Sapphire · memory | Six columns light up in a sequence: repeat it, in rounds of 4, 6 and 8. |
+
+The puzzles are hard: after three mistakes in the same room the Echo gives a hint. They're done once, and what you solve
+stays solved. With all six solved, the **seventh fragment**, the Founders' fragment, opens in the middle: a cutscene ("The
+world comes apart"), 20,000 gold, the Reunited Crown, and the door to the Voxeliaverse.
+
+### The Voxeliaverse
+
+Behind the Crown there's a room, built with a **new 3D engine**: real voxels in three dimensions, a third-person camera
+behind the hero, soft shadows from the moon or the sun, firelight. You walk with WASD (or the joystick on phones), jump
+with Space, look around by dragging the mouse, use things with E. In the room there are:
+
+- **the fireplace**: you sit, meditate and the fire takes you into an **unknown reality**, a new one on every journey;
+- **the library**: the glowing books are realities already written (you see their name and how dangerous they are).
+  "Look for another book" always finds new ones. *No one has ever truly counted them.*
+
+Every reality is born from a number, and everything comes from that number: completely random names (the reality, its
+people, its founder, its creatures, its guardian), an island of voxels floating in the void (hills, terraces, craters,
+spires or canyons, with a still sea or without), trees, crystals, giant mushrooms, corals or boulders, the sky (day,
+sunset, night or a sun of another color), up to three moons, the gravity (in some you fall slowly).
+
+- **The mystery.** Three beams of light are the three signs; each is guarded by its creatures. Read all three and the
+  guardian wakes in the middle of the island: defeat it and take the Heart of the reality (gold for your hero).
+- **Combat.** Click (or J) to strike with the sword, three hits in a row make the strong one; Shift, Q or right click to
+  roll (you can't be hit while rolling; hold Shift to run afterwards). Enemies glow or draw a red circle on the ground
+  before they strike. Four kinds of creatures (the leaping ball, the charging beast, the crushing giant, the flying eye
+  that shoots) and the guardian, with three attacks and a second phase.
+- **Saving a reality.** When the guardian falls you can save the reality: it stays at the top of the library and when
+  you return it's as you left it (signs read, guardian defeated). The door asks before you leave without saving.
+
 
 ---
 
@@ -681,6 +726,7 @@ The sources live in folders, one per part of the game:
 | `src/combattimento/` | Combat, bosses, dungeons, companions, elements and chimeras |
 | `src/tomorrow/` | Tomorrow: the endless world, villages, factions and wars |
 | `src/corona/` | The Crown menu, the shards, the Heart of the Crown and the Album |
+| `src/voxeliaverse/` | The Voxeliaverse (8.9): the new 3D engine, the room behind the Crown, the realities |
 | `src/studio/` | Voxelia Studio (the editor) and the Community worlds |
 | `src/grafica/` | The 3D view, virtual reality and graphics options |
 | `src/sistemi/` | Parts shared by the whole game: events, crafting, pets, photos, menu, fixes |
@@ -855,6 +901,10 @@ a translation of their own. The game's logic never sees the translation.
 | `sistemi/8zzzzt_dev86.js` | The developer panel's "☠ Threat and Act II" tab (8.6) |
 | `combattimento/8zzzzk_bilancio.js` | Balancing: Champions per floor, Crypt, Forge, Jade Temple, Tomorrow at high levels (8.1); enemies, Champions and prices that follow your level (8.3) |
 | `corona/8zzzzh_corona80.js` | The Reunited Crown: the six shards, the Heart of the Crown and the Album |
+| `corona/8zzzzu_cuore89.js` | The Heart of the Crown remade (8.9): the six puzzle rooms, the Echo as a guide, the seventh fragment and its cutscene |
+| `voxeliaverse/8zzzzv_motore.js` | The Voxeliaverse engine (8.9): WebGL2 voxels with corner shading, soft shadows, lights, fog, third-person camera, physics and controls |
+| `voxeliaverse/8zzzzw_stanza.js` | The room behind the Crown (8.9) and the seventh, colorless gem on the menu's Crown |
+| `voxeliaverse/8zzzzx_realta.js` | The realities of the Voxeliaverse (8.9): names, islands, skies, creatures, signs, guardian, combat, saving, the fireplace and the library |
 | `sistemi/8zzzzh_menu.js` | The menu fits the window: the Crown fills the screen, the other screens shrink instead of scrolling |
 | `sistemi/8zzzzi_avvisi.js` | The game's on-screen labels (events, active food, wars…) don't cover the hero box, windows or the end of battle |
 | `sistemi/8zzzzj_intralcio.js` | Pets walk behind the hero; R, the green button and clicks pick doors, items and characters first |

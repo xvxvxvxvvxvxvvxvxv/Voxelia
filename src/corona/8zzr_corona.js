@@ -112,7 +112,8 @@ const crLocked=i=>!!(CRGEM[i].lock&&CRGEM[i].lock());
 function crFrame(dt){const gl=CRW.gl,cv=CRW.cv,dpr=Math.min(2,window.devicePixelRatio||1),Wc=cv.clientWidth||innerWidth,Hc=cv.clientHeight||innerHeight;CRW.W=Wc;CRW.H=Hc;
   const w=Math.round(Wc*dpr),h=Math.round(Hc*dpr);if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}CRW.t+=dt;const k=1-Math.exp(-dt*3.2),c=CRW.cam;
   // la corona gira da sola; con una gemma scelta si ferma con la gemma davanti
-  if(CRW.drag){}else if(CRW.sel>=0){const tg=CRW.sel/6*Math.PI*2-Math.PI/2;CRW.th+=crWrap(tg-CRW.th)*Math.min(1,dt*3.4);CRW.thv=0}
+  if(CRW.drag){}else if(CRW.sel>=0){const tg=(CRW.sel===6&&typeof CR7A!=='undefined'?CR7A:CRW.sel/6*Math.PI*2)-Math.PI/2;   // 8.9: la settima gemma, senza colore (8zzzzw_stanza.js)
+  CRW.th+=crWrap(tg-CRW.th)*Math.min(1,dt*3.4);CRW.thv=0}
   else{CRW.thv+=(.32-CRW.thv)*Math.min(1,dt*1.5);CRW.th+=CRW.thv*dt}
   // l'inquadratura: lo spazio libero fra il titolo e la scheda in basso
   const hd=document.querySelector('#menu .mhead'),ui=document.querySelector('#crown .crui');let top=hd&&CRW.sel<0?hd.getBoundingClientRect().bottom+4:Hc*.03,bot=ui?ui.getBoundingClientRect().top-4:Hc*.72;

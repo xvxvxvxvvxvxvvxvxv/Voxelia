@@ -5,6 +5,12 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.9.1 — Le battute dei dialoghi senza codice in mezzo (13 novembre 2026)
+
+- **Le battute dei personaggi non mostrano più `<span>`.** Dalla 8.8 ogni battuta nella finestra del dialogo si leggeva con il codice intorno: `«<span>La Biblioteca custodisce le pagine del diario di Malakar.</span>»`, e in eldoriano `«<ven>…</ven>»` (l'alfabeto eldoriano traduceva anche il codice). La finestra che scrive la battuta lettera per lettera ora prende solo il testo, in italiano, in inglese e in eldoriano, per le battute normali e per le risposte alle domande.
+
+---
+
 ## 8.9 — Il settimo frammento e il Voxeliaverse (13 novembre 2026)
 
 Il Cuore della Corona non finisce più con una battaglia: finisce con una porta. Dietro c'è un gioco nuovo, fatto con un motore 3D nuovo, e realtà che nessuno ha mai contato.

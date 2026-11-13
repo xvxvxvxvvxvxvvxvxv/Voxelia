@@ -6,6 +6,12 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.9.1 — Dialogue lines without stray code (November 13, 2026)
+
+- **The characters' lines no longer show `<span>`.** Since 8.8 every line in the dialogue window was written with the code around it: `«<span>The Library keeps the pages of Malakar's diary.</span>»`, and in Eldorian `«<ven>…</ven>»` (the Eldorian alphabet translated the code too). The window that writes the line letter by letter now takes the text alone, in Italian, English and Eldorian, for ordinary lines and for the answers to the questions.
+
+---
+
 ## 8.9 — The seventh fragment and the Voxeliaverse (November 13, 2026)
 
 The Heart of the Crown no longer ends with a battle: it ends with a door. Behind it there's a new game, made with a new 3D engine, and realities no one has ever counted.

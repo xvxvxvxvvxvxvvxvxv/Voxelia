@@ -1169,6 +1169,9 @@ let DLG={e:null,line:'',tw:0,raf:0,t0:0};
 function dlgWrap(e,h){const m=h.match(/^<h3>([\s\S]*?)<\/h3><p><i>([\s\S]*?)<\/i><\/p>/);if(!m)return h;
   // la risposta a una domanda la dice il personaggio, nella battuta in alto (non in fondo alla finestra)
   let raw=m[2].replace(/^«|»$/g,''),ask='';const an=h.match(/<div class="qb dlga" data-q="([^"]*)"><i>«([\s\S]*?)»<\/i><\/div>/);if(an){raw=an[2];ask=an[1];h=h.replace(an[0],'')}
+  // 8.9.1: dalla 8.8 la battuta è dentro uno <span> (perché si traduca per intero): qui si toglie, se no la macchina da
+  // scrivere la mostrava come testo («<span>…</span>», e in eldoriano «<ven>…</ven>»)
+  raw=raw.replace(/<\/?span>/g,'');
   const d=NPCS[e.nid]||{},role=d.role&&DROLE[d.role]?DROLE[d.role]:'',aq=P.q.find(q=>q.npc===e.nid);
   const st=aq?(qReady(aq)?'<span class="dlgs ok">✔ missione pronta</span>':'<span class="dlgs">missione in corso</span>'):qAvail(e.nid)?'<span class="dlgs nw">! nuova missione</span>':'';
   return`<div class="dlgh" onclick="dlgSkip()"><div class="dlgp"><canvas id="dlgc" width="128" height="148"></canvas></div><div class="dlgb"><div class="dlgn">${m[1]}${role?` <small>${esc(role)}</small>`:''}${st}</div>${ask?`<p class="dlgask">Hai chiesto: «${ask}»</p>`:''}<p class="dlgl" id="dlgl" data-t="${raw.replace(/"/g,'&quot;')}">${raw}</p></div></div><div class="dlgo">${h.slice(m[0].length)}</div>`}

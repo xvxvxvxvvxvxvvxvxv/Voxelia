@@ -234,6 +234,10 @@ function edGen(z){const m=z.edm,n=N;PIERD=new Set();GT=new Set();BM=grid(-1);TB=
   if(EDIT)edEditEnts(m);else edPlayEnts(m);
   return(m.sp||[n>>1,n>>1]).slice()}
 // in modifica la zona si costruisce senza musica, salvataggio né cartelli
+/* 8.7.2: il cancello dello Studio si adatta al passaggio in cui l'hai messo: il varco è la sua casella più quelle libere
+   accanto (al massimo una per parte, quindi largo 1, 2 o 3 caselle) e i due pilastri stanno nelle caselle subito fuori,
+   al posto del muro. Così non entra più nei muri accanto, come facevano i cancelli larghi sempre tre caselle. */
+function edGateFit(x,y,dir){const w=i=>{const[u,v]=dir==='y'?[x,y+i]:[x+i,y];return u>=0&&v>=0&&u<N&&v<N&&WK(M[v][u])},a=w(-1)?1:0,b=w(1)?1:0;return{span:a+b+2,off:-(a+1),pil:'mura'}}
 function edPortalFace(x,y){const w=(a,b)=>M[b]&&M[b][a]===1||(M[b]&&M[b][a]===3);return w(x,y-1)?'n':w(x,y+1)?'s':w(x-1,y)?'w':w(x+1,y)?'e':'n'}
 
 /* ---- disegno: pavimenti e muri delle mappe dell'editor ---- */
@@ -473,7 +477,7 @@ function edMakePlayEnt(d,m){const x=d.x,y=d.y,S2=EDG;switch(d.k){
   case 'en':{if(!E[d.t])return null;const dt=S2.dead[d.u];if(dt&&(!d.resp||Date.now()-dt<d.resp*1000))return null;const o=ZZ.lv;ZZ.lv=d.lv||m.lv||1;const e=mk(d.t,x,y);ZZ.lv=o;
     if(d.boss&&!E[d.t].boss){e.mx=e.hp=Math.round(e.mx*2.5);e.at*=1.3;e.xp*=4}if(d.boss)e.boss=1;const hm=+d.hp||1,am=+d.at||1;e.mx=e.hp=Math.max(1,Math.round(e.mx*hm));e.at*=am;e.n=d.n||e.n;e.ed=d;if(d.guard==='pass'){e.ag=0;e.pas=1}return e}
   case 'ch':return S2.open[d.u]?null:{k:'ch',px:x+.5,py:y+.5,rich:d.rich?1:0,ed:d};
-  case 'po':{const to=EW.maps[d.to],st=d.st||'door',e=po(x,y,edZk(d.to||'_'),{st,n:d.n||(to?to.n:'?')});e.ed=d;e.face=d.face||edPortalFace(x,y);if(st==='cancello')Object.assign(e,{dir:d.dir||'x',span:3,off:-1.5,eo:0,sw:1,sty:d.sty||'ferro'});return e}
+  case 'po':{const to=EW.maps[d.to],st=d.st||'door',e=po(x,y,edZk(d.to||'_'),{st,n:d.n||(to?to.n:'?')});e.ed=d;e.face=d.face||edPortalFace(x,y);if(st==='cancello')Object.assign(e,{dir:d.dir||'x',eo:0,sw:1,sty:d.sty||'ferro'},edGateFit(x,y,d.dir||'x'));return e}
   case 'it':{if(S2.taken[d.u])return null;const it=EW.items[d.item];if(!it)return null;return{k:'edi',px:x+.5,py:y+.5,ed:d,n:it.n+(d.n>1?' ×'+d.n:'')}}
   case 'sign':return{k:'edsign',px:x+.5,py:y+.5,ed:d,n:d.ti||'Cartello'};
   case 'note':return S2.taken[d.u]?null:{k:'ednote',px:x+.5,py:y+.5,ed:d,n:d.ti||'Nota'};
@@ -618,7 +622,7 @@ function edDispEnt(d){const x=d.x,y=d.y;switch(d.k){
   case 'npc':{const nd=EW.npcs[d.npc];if(!nd)return{k:'edsign',px:x+.5,py:y+.5,n:'? personaggio cancellato'};const e=edMakeNpc(nd,x,y);e.fc0=d.fc|0;e.n=nd.n;return e}
   case 'en':{if(!E[d.t])return{k:'edsign',px:x+.5,py:y+.5,n:'? nemico'};const o=ZZ.lv;if(d.lv)ZZ.lv=d.lv;const e=mk(d.t,x,y);ZZ.lv=o;e.n=d.n||E[d.t].n;if(d.boss)e.boss=1;return e}
   case 'ch':return{k:'ch',px:x+.5,py:y+.5,rich:d.rich?1:0};
-  case 'po':{const to=EW.maps[d.to],st=d.st||'door',e=po(x,y,edZk(d.to||'_'),{st,n:d.n||(to?'→ '+to.n:'(senza destinazione)')});e.face=d.face||edPortalFace(x,y);if(st==='cancello')Object.assign(e,{dir:d.dir||'x',span:3,off:-1.5,eo:0,sw:1,sty:d.sty||'ferro'});return e}
+  case 'po':{const to=EW.maps[d.to],st=d.st||'door',e=po(x,y,edZk(d.to||'_'),{st,n:d.n||(to?'→ '+to.n:'(senza destinazione)')});e.face=d.face||edPortalFace(x,y);if(st==='cancello')Object.assign(e,{dir:d.dir||'x',eo:0,sw:1,sty:d.sty||'ferro'},edGateFit(x,y,d.dir||'x'));return e}
   case 'it':{const it=EW.items[d.item];return{k:'edi',px:x+.5,py:y+.5,ed:d,n:it?it.n+(d.n>1?' ×'+d.n:''):'? oggetto'}}
   case 'sign':return{k:'edsign',px:x+.5,py:y+.5,ed:d,n:d.ti||'Cartello'};
   case 'note':return{k:'ednote',px:x+.5,py:y+.5,ed:d,n:d.ti||'Nota'};

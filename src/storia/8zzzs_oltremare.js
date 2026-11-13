@@ -59,7 +59,7 @@ function genThal({R4,D,F,H,gate,N2,FS,scat,n}){
   for(const[x,y]of[[2,12],[14,12],[33,12],[45,12],[2,24],[20,24],[27,24],[45,24],[8,34],[18,34],[29,34],[40,34],[13,22],[34,22]])D(x,y,'ꞁ');
   for(const[x,y,c]of[[27,20,'Ы'],[28,20,'Щ'],[29,20,'Ы'],[19,20,'Щ'],[20,20,'Ы']])F(x,y,c);
   for(const[x,y]of[[21,22],[26,22]])D(x,y,'o');scat(3,12,42,2,'h',.06);
-  R4(1,26,3,3,4);Object.assign(gate(1,27,'giungla48',{n:'Verso la Giungla di Smeraldo'}),{st:'cancello',dir:'y',span:3,off:-1.5,eo:-1,sw:1,sty:'thalassa'});
+  R4(1,26,3,3,4);Object.assign(gate(1,27,'giungla48',{n:'Verso la Giungla di Smeraldo'}),{st:'cancello',dir:'y',span:4,off:-2,pil:'mura',eo:-1,sw:1,sty:'thalassa'});
   ents.push(mkShip('caravella',29,40,'y'),mkShip('barca',13.5,39,'y'),mkShip('gozzo',40,40,'y'));ents.push({k:'trag48b',px:23.5,py:43.5,n:'La Stella del Sud · per Aldoria'});
   FS(10,40,0,1);FS(37,40,0,1);
   N2('oreste48',24,13);N2('guardia48',21,12);N2('guardia48',27,12);N2('zefiro48',24,21);N2('coral48',14,27,{wd:1});N2('ilio48',36,37);
@@ -80,7 +80,7 @@ function genGiungla({R4,D,RS,EN,gate,scat,n}){const r=sd(hs('giungla48|'+dayKey(
   for(let y=2;y<=9;y++)for(let x=c-5;x<=c+5;x++){M[y][x]=0;DEC[y][x]='';if((y===2||x===c-5||x===c+5)&&r()<.85){M[y][x]=6;DEC[y][x]='ꞅ'}}
   const tp=po(c,4,'tempio48@1',{st:'dun',n:'Tempio di Giada'});if(!(P.unl&&P.unl.tempio48)){tp.lock='tempio48';tp.lockMsg='Le porte del tempio sono sigillate: servono i tre Sigilli di Giada.'}ents.push(tp);
   S.forEach((s,i)=>{for(let y=s[1]-2;y<=s[1]+2;y++)for(let x=s[0]-2;x<=s[0]+2;x++)if(x>0&&y>0&&x<n-1&&y<n-1&&M[y][x]!==2){M[y][x]=0;DEC[y][x]=''}ents.push({k:'sig48',i,px:s[0]+.5,py:s[1]+.5,n:'Santuario del Sigillo di Giada'})});
-  for(let y=n-4;y<n-1;y++)for(let x=c-2;x<=c+2;x++){M[y][x]=0;DEC[y][x]=''}Object.assign(gate(c,n-2,'thal48',{n:'Verso Thalassa'}),{st:'cancello',dir:'x',span:3,off:-1.5,eo:1,sw:-1,sty:'giada'});
+  for(let y=n-4;y<n-1;y++)for(let x=c-2;x<=c+2;x++){M[y][x]=0;DEC[y][x]=''}Object.assign(gate(c,n-2,'thal48',{n:'Verso Thalassa'}),{st:'cancello',dir:'x',span:4,off:-2,pil:'stile',eo:1,sw:-1,sty:'giada'});
   // creature, forzieri, raccolte
   const fr=[];for(let y=3;y<n-3;y++)for(let x=2;x<n-2;x++)if(M[y][x]===0&&Math.hypot(x-ent0[0],y-ent0[1])>9&&!S.some(s=>Math.hypot(x-s[0],y-s[1])<4))fr.push([x,y]);for(let i=fr.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[fr[i],fr[j]]=[fr[j],fr[i]]}
   const pool=['scimmia48','pantera48','serpe48','scimmia48','serpe48'];for(let i=0;i<16&&fr.length;i++){const q=fr.pop();EN(pool[i%pool.length],q[0],q[1])}
@@ -90,16 +90,16 @@ function genGiungla({R4,D,RS,EN,gate,scat,n}){const r=sd(hs('giungla48|'+dayKey(
 Z.giungla48={n:'Giungla di Smeraldo',lv:13,N:56,a:'#4f9a4c',b:'#47904a',bg:'#8fd0b0',mus:'forest',pt:'leaf',gen:genGiungla,rd:['#7a6a48','#726244'],wl:'#2f5a2a',wh:14,dist:1,nolamp:1,en:['scimmia48','pantera48','serpe48']};
 for(const k of['thal48','giungla48'])SKY[k]=SKY.porto||SKY.town;
 /* ---- 7.49: i cancelli di Thalassa e della giungla, come quelli dei quartieri di Aldoria ---- */
-Object.assign(GSTY,{thalassa:{p:'#f4f0e8',c:'#2ab8a8',l:'#2a6a8a',l2:'#1f5a7a',h:'#d4af37',bars:1,ex:(Q,o,sp,eo)=>{
+Object.assign(GSTY,{thalassa:{p:'#f4f0e8',c:'#2ab8a8',l:'#2a6a8a',l2:'#1f5a7a',h:'#d4af37',bars:1,gd:1,ex:(Q,o,sp,eo,e,G)=>{
     for(const a of[o,o+sp]){Q(a-.24,eo-.24,58,.48,.48,3,'#f4f0e8');Q(a-.18,eo-.18,61,.36,.36,5,'#2ab8a8');Q(a-.1,eo-.1,66,.2,.2,4,'#f4f0e8');Q(a-.05,eo-.05,70,.1,.1,4,'#d4af37')}
     Q(o+sp/2-.45,eo-.25,44,.9,.06,12,'#2a6a8a');Q(o+sp/2-.3,eo-.27,47,.6,.05,6,'#f4f0e8');Q(o+sp/2-.12,eo-.28,48,.24,.04,4,'#2ab8a8');Q(o+sp/2-.05,eo-.29,49.5,.1,.03,1.2,'#d4af37');
-    for(const a of[o-1.05,o+sp+.6]){Q(a,eo-.3,0,.45,.45,6,'#c8a070');Q(a+.05,eo-.25,6,.35,.35,2,'#3f7a32');Q(a+.18,eo-.12,8,.08,.08,22,'#8a6a42');Q(a-.1,eo-.22,28,.65,.3,2,'#3a9a4a');Q(a+.05,eo-.4,28,.3,.6,2,'#4aa85a')}
-    for(const a of[o-.5,o+sp+.32])Q(a,eo+.3,0,.18,.18,4,'#f0e0c8')}},
-  giada:{p:'#5a7a6a',c:'#2ab87a',l:'#4a3a2a',l2:'#3a2a1a',h:'#6affc0',v:'#3a8a3a',ex:(Q,o,sp,eo)=>{
+    // 8.7.2: le fioriere con la palma e le conchiglie davanti al pilastro, non più dentro il muro
+    for(const s of[0,1]){const u=s?-.1:-.35;G.D(s,u,.1,0,.45,.45,6,'#c8a070');G.D(s,u+.05,.15,6,.35,.35,2,'#3f7a32');G.D(s,u+.18,.28,8,.08,.08,22,'#8a6a42');G.D(s,u-.1,.18,28,.65,.3,2,'#3a9a4a');G.D(s,u+.05,.02,28,.3,.6,2,'#4aa85a');G.D(s,s?-.4:.22,.62,0,.18,.18,4,'#f0e0c8')}}},
+  giada:{p:'#5a7a6a',c:'#2ab87a',l:'#4a3a2a',l2:'#3a2a1a',h:'#6affc0',v:'#3a8a3a',gd:1,ex:(Q,o,sp,eo,e,G)=>{
     for(const a of[o,o+sp]){Q(a-.3,eo-.3,58,.6,.6,4,'#4a6a5a');Q(a-.22,eo-.22,62,.44,.44,6,'#2ab87a');Q(a-.12,eo+.18,64,.24,.08,4,'#ffe84a');Q(a-.14,eo-.14,68,.28,.28,3,'#1f8a5a')}
     Q(o+sp/2-.55,eo-.3,46,1.1,.1,8,'#4a6a5a');Q(o+sp/2-.2,eo-.32,48,.4,.05,5,'#6affc0');Q(o+sp/2-.08,eo-.33,49,.16,.04,2,'#ffffff');
-    for(let i=0;i<6;i++){Q(o-.4+i*.05,eo+.32,6+i*9,.07,.07,9,'#3a8a3a');Q(o+sp+.32-i*.05,eo+.32,8+i*8,.07,.07,8,'#4a9a4a')}
-    for(const a of[o-1.1,o+sp+.55]){Q(a,eo-.35,0,.55,.55,10,'#5a7a6a');Q(a+.05,eo-.3,10,.45,.45,6,'#4a6a5a');Q(a+.12,eo-.36,12,.06,.02,2,'#6affc0');Q(a+.32,eo-.36,12,.06,.02,2,'#6affc0')}}}});
+    for(let i=0;i<6;i++){G.F(0,-.4+i*.05,0,6+i*9,.07,.06,9,'#3a8a3a');G.F(1,.33-i*.05,0,8+i*8,.07,.06,8,'#4a9a4a')}
+    for(const s of[0,1]){G.D(s,-.27,.1,0,.55,.55,10,'#5a7a6a');G.D(s,-.22,.15,10,.45,.45,6,'#4a6a5a');G.D(s,-.15,.08,12,.06,.02,2,'#6affc0');G.D(s,.05,.08,12,.06,.02,2,'#6affc0')}}}});
 /* ---- i santuari dei sigilli ---- */
 function olShrine(e){const o=olFix();if(o.s<2){msg('Un antico santuario di giada. Un\'iscrizione dice: «Solo chi è mandato dalla Regina può prendere il sigillo».');return}
   if(o.sig[e.i]){msg('Il sigillo di questo santuario è già tuo');return}

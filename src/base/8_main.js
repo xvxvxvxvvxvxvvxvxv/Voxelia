@@ -984,26 +984,27 @@ function pierTile(x,y,h){const water=(a,b)=>M[b]&&M[b][a]===2,isP=(a,b)=>(M[b]&&
   if(water(x+1,y)&&y%2===0)box(x+.86,y+.4,-16,.16,.16,17,'#4a3420');if(water(x,y+1)&&x%2===0)box(x+.4,y+.86,-16,.16,.16,17,'#4a3420');
   if(water(x+1,y)&&water(x,y+1))box(x+.82,y+.82,-16,.18,.18,19,'#4a3420')}
 // ---- cancelli ispirati ai quartieri: marmo e ferro battuto per i nobili, legno e paglia per i campi ----
-Object.assign(GSTY,{nobile:{p:'#ece6da',c:'#d4af37',l:'#1c1c24',l2:'#2a2a34',h:'#d4af37',ex:(Q,o,sp,eo)=>{
+// 8.7.2: le siepi, i covoni e la cenere non stanno più sulla linea delle mura (dentro il muro) ma davanti al pilastro,
+// dalla parte del quartiere (G.D, solo se lì la casella è libera); gli anelli dei pilastri seguono la misura del pilastro
+Object.assign(GSTY,{nobile:{p:'#ece6da',c:'#d4af37',l:'#1c1c24',l2:'#2a2a34',h:'#d4af37',gd:1,ex:(Q,o,sp,eo,e,G)=>{
     for(const a of[o,o+sp]){Q(a-.22,eo-.22,58,.44,.44,3,'#ece6da');Q(a-.16,eo-.16,61,.32,.32,6,'#d4af37');Q(a-.1,eo-.1,67,.2,.2,4,'#ece6da');Q(a-.06,eo-.06,71,.12,.12,3,'#d4af37')}
     Q(o+sp/2-.32,eo-.25,43,.64,.06,13,'#2a4a8a');Q(o+sp/2-.2,eo-.27,46,.4,.05,7,'#d4af37');Q(o+sp/2-.06,eo-.28,48,.12,.04,3,'#a8303a');
-    Q(o-1.25,eo-.42,0,.8,.84,15,'#3f7a32');Q(o-1.2,eo-.38,15,.7,.76,3,'#4a8a3a');Q(o+sp+.45,eo-.42,0,.8,.84,15,'#3f7a32');Q(o+sp+.5,eo-.38,15,.7,.76,3,'#4a8a3a');
-    for(const a of[o-.85,o+sp+.85]){Q(a-.12,eo-.12,18,.24,.24,4,'#e8e0d0');Q(a-.06,eo-.06,22,.12,.12,5,'#e0304a')}}},
-  campi:{p:'#7a5a3a',c:'#e0c060',l:'#a07a4a',l2:'#8a6a3a',h:'#3a3a3a',ex:(Q,o,sp,eo)=>{
+    for(const s of[0,1]){G.D(s,-.4,.04,0,.8,.7,15,'#3f7a32');G.D(s,-.35,.09,15,.7,.6,3,'#4a8a3a');G.D(s,-.12,.27,18,.24,.24,4,'#e8e0d0');G.D(s,-.06,.33,22,.12,.12,5,'#e0304a')}}},
+  campi:{p:'#7a5a3a',c:'#e0c060',l:'#a07a4a',l2:'#8a6a3a',h:'#3a3a3a',gd:1,ex:(Q,o,sp,eo,e,G)=>{
     for(const a of[o,o+sp]){Q(a-.28,eo-.28,58,.56,.56,3,'#d8b850');Q(a-.14,eo-.14,61,.28,.28,8,'#e0c050');Q(a-.04,eo-.04,69,.08,.08,4,'#c8a040')}
     Q(o+sp/2-.48,eo-.27,47,.96,.07,10,'#a07a4a');Q(o+sp/2-.4,eo-.29,49,.8,.04,6,'#8a6a3a');Q(o+sp/2-.3,eo-.3,51,.12,.03,2,'#e8e0c8');Q(o+sp/2-.1,eo-.3,51,.2,.03,2,'#e8e0c8');Q(o+sp/2+.18,eo-.3,51,.12,.03,2,'#e8e0c8');
-    Q(o-1.15,eo-.36,0,.72,.66,8,'#e0c060');Q(o-1.1,eo-.31,8,.62,.56,6,'#d8b850');Q(o-1.15,eo-.36,4,.72,.66,.8,'#a08030');
-    Q(o+sp+.42,eo-.3,0,.6,.56,7,'#e0c060');Q(o+sp+.5,eo-.06,7,.06,.08,16,'#6a4a2a');Q(o+sp+.4,eo-.08,16,.26,.06,2,'#6a4a2a');Q(o+sp+.47,eo-.1,23,.12,.1,5,'#e0c060')}},
+    G.D(0,-.36,.04,0,.72,.66,8,'#e0c060');G.D(0,-.31,.09,8,.62,.56,6,'#d8b850');G.D(0,-.37,.03,4,.74,.68,.8,'#a08030');
+    G.D(1,-.3,.06,0,.6,.56,7,'#e0c060');G.D(1,-.22,.3,7,.06,.08,16,'#6a4a2a');G.D(1,-.32,.31,16,.26,.06,2,'#6a4a2a');G.D(1,-.25,.29,23,.12,.1,5,'#e0c060')}},
   // 7.12: il cancello del Borgo delle Ceneri, come quelli degli altri lati della città: pilastri anneriti dal fuoco, sbarre di
   // ferro arrugginito, un arco di ferro con le punte, bracieri spenti (con qualche brace) e l'insegna bruciata
-  ceneri:{p:'#5e5854',c:'#36312e',l:'#2e2420',l2:'#3e2e26',h:'#8a4a22',v:'#4a4038',bars:1,ex:(Q,o,sp,eo)=>{
-    for(const a of[o,o+sp]){Q(a-.37,eo-.37,30,.74,.74,5,'#3e3936');Q(a-.37,eo-.37,12,.74,.74,3,'#46403c');
+  ceneri:{p:'#5e5854',c:'#36312e',l:'#2e2420',l2:'#3e2e26',h:'#8a4a22',v:'#4a4038',bars:1,gd:1,ex:(Q,o,sp,eo,e,G)=>{
+    for(const a of[o,o+sp]){Q(a-G.pw/2-.03,eo-G.pd/2-.03,30,G.pw+.06,G.pd+.06,5,'#3e3936');Q(a-G.pw/2-.03,eo-G.pd/2-.03,12,G.pw+.06,G.pd+.06,3,'#46403c');
       Q(a-.24,eo-.24,58,.48,.48,3,'#2a2624');Q(a-.3,eo-.3,61,.6,.6,4,'#2e2826');Q(a-.2,eo-.2,64.2,.4,.4,.8,'#4a4440');
       for(let i=0;i<3;i++){const k=.5+.5*Math.sin(t*(2.3+i)+a*3+i*2);Q(a-.16+i*.11,eo-.12+(i%2)*.14,65,.08,.08,1+k,k>.7?'#ff8a3a':'#a8401a')}}
-    for(let k=0;k<=8;k++){const a=o+sp*k/8,z=50+Math.sin(k/8*Math.PI)*7;Q(a-.06,eo-.06,z,.12,.12,3,'#33282a');if(k%2===0&&k&&k<8)Q(a-.03,eo-.03,z+3,.06,.06,4,'#4a3a32')}
+    for(let k=0;k<=8;k++){const a=o+sp*k/8,z=50+Math.sin(k/8*Math.PI)*7;if(a-o<G.pw/2+.06||o+sp-a<G.pw/2+.06)continue;Q(a-.06,eo-.06,z,.12,.12,3,'#33282a');if(k%2===0&&k&&k<8)Q(a-.03,eo-.03,z+3,.06,.06,4,'#4a3a32')}
     Q(o+sp/2-.42,eo-.1,40,.84,.08,7,'#2e221a');Q(o+sp/2-.36,eo-.12,42,.72,.04,3,'#4a3626');Q(o+sp/2-.3,eo-.13,44,.1,.03,2,'#6a5a4a');Q(o+sp/2+.06,eo-.13,43,.16,.03,2,'#6a5a4a');
     Q(o+sp/2-.3,eo-.08,47,.04,.04,3,'#2a2420');Q(o+sp/2+.26,eo-.08,47,.04,.04,3,'#2a2420');
-    Q(o-1.15,eo-.32,0,.62,.55,2,'#6a6560');Q(o-1.05,eo-.25,2,.4,.35,1.5,'#7a7470');Q(o+sp+.5,eo-.28,0,.52,.46,1.6,'#5e5a56');Q(o+sp+.56,eo-.22,1.6,.3,.28,1.2,'#8a3a1a')}}});
+    G.D(0,-.3,.06,0,.62,.55,2,'#6a6560');G.D(0,-.2,.13,2,.4,.35,1.5,'#7a7470');G.D(1,-.26,.08,0,.52,.46,1.6,'#5e5a56');G.D(1,-.2,.14,1.6,.3,.28,1.2,'#8a3a1a')}}});
 // ---- il mulino: distrutto dalla tempesta finché Pietro non lo ripara ----
 const millOK=()=>!!(P&&P.unl&&P.unl.mulino);
 function millBroken(x,y,b,ht){const zc=ht*.75;box(x+.42,y+1.02,zc-3,.16,.06,6,'#5a3a2a');

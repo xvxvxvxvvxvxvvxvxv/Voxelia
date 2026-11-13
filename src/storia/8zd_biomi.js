@@ -50,7 +50,7 @@ function genBiome(z){const n=N,k=Zk,rnd=sd(hs('bioma|'+k+'|7.12')),rr=(a,b)=>a+M
   // la porta della città, sul bordo (come prima)
   const[gx,gy,gd,geo,gsw]=k==='forest'?[n>>1,n-2,'x',1,-1]:k==='desert'?[1,n>>1,'y',-1,1]:[n-2,n>>1,'y',1,-1];
   for(let y=gy-3;y<=gy+3;y++)for(let x=gx-3;x<=gx+3;x++)if(ok(x,y))C.F(x,y,'1');for(let q=-1;q<=1;q++){if(gd==='x')M[gy+geo][gx+q]=0;else M[gy+q][gx+geo]=0}
-  ents.push(Object.assign(po(gx,gy,'town',{st:'cancello',n:'Aldoria'}),{dir:gd,span:3,off:-1.5,eo:geo,sw:gsw,sty:k==='forest'?'legno':k==='desert'?'sabbia':'gelo'}));
+  ents.push(Object.assign(po(gx,gy,'town',{st:'cancello',n:'Aldoria'}),{dir:gd,span:4,off:-2,pil:'stile',eo:geo,sw:gsw,sty:k==='forest'?'legno':k==='desert'?'sabbia':'gelo'}));
   const sp=gd==='x'?[gx,gy-3]:[gx-3*geo,gy];C.gate=[gx,gy];C.sp=sp;
   B.build(C);                                                   // luoghi, acqua, sentieri, strutture
   for(let y=1;y<n-1;y++)for(let x=1;x<n-1;x++)if(!RS[y*n+x]&&M[y][x]===0)B.fill(C,x,y);   // boschi, rocce, dune

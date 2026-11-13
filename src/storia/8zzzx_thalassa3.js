@@ -91,7 +91,7 @@ function genThal50({R4,D,F,W,H,gate,N2,AN,FS,n}){
   for(const[x,y]of[[4,37],[8,38],[5,41],[9,43]])D(x,y,'ꞥ');for(const[x,y]of[[2,35],[10,36],[6,35],[1,39]])D(x,y,'ꞁ');
   ents.push(mkShip('gozzo',8.5,40.5,'x'));for(const[x,y]of[[1,42],[1,44],[3,44],[4,44]])D(x,y,'ꞃ');ents.push({k:'rel48',px:2.5,py:42.5,n:'Relitto',on:perP()>=2});
   // il cancello verso la giungla
-  R4(1,21,3,3,4);Object.assign(gate(1,22,'giungla48',{n:'Verso la Giungla di Smeraldo'}),{st:'cancello',dir:'y',span:3,off:-1.5,eo:-1,sw:1,sty:'thalassa'});
+  R4(1,21,3,3,4);Object.assign(gate(1,22,'giungla48',{n:'Verso la Giungla di Smeraldo'}),{st:'cancello',dir:'y',span:4,off:-2,pil:'mura',eo:-1,sw:1,sty:'thalassa'});
   // le barche, il traghetto, i punti di pesca
   ents.push(mkShip('caravella',36.5,50,'y'),mkShip('barca',16.5,48,'y'),mkShip('gozzo',24.5,49,'y'),mkShip('barca',44.5,48,'y'));ents.push({k:'trag48b',px:31.5,py:52.5,n:'La Stella del Sud · per Aldoria'});
   FS(20,51,0,1);FS(41,48,0,1);FS(28,44,0,1);
@@ -144,7 +144,7 @@ function genGiungla50({R4,D,W,RS,EN,gate,n}){const r=sd(hs('giungla50|'+dayKey()
   // le tavolette nella giungla: vicino alla prima testa, davanti al tempio, alla capanna
   ents.push({k:'tav48',i:3,px:c-11.5,py:39.5,n:'Tavoletta di Giada'},{k:'tav48',i:4,px:c+4.5,py:T[1]+1.5,n:'Tavoletta di Giada'},{k:'tav48',i:5,px:hut[0]+2.5,py:hut[1]+2.5,n:'Tavoletta di Giada'});
   // l'ingresso e il cancello
-  for(let y=n-5;y<n-1;y++)for(let x=c-2;x<=c+3;x++){M[y][x]=y>n-4?4:0;DEC[y][x]=''}Object.assign(gate(c,n-2,'thal48',{n:'Verso Thalassa'}),{st:'cancello',dir:'x',span:3,off:-1.5,eo:1,sw:-1,sty:'giada'});
+  for(let y=n-5;y<n-1;y++)for(let x=c-2;x<=c+3;x++){M[y][x]=y>n-4?4:0;DEC[y][x]=''}Object.assign(gate(c,n-2,'thal48',{n:'Verso Thalassa'}),{st:'cancello',dir:'x',span:4,off:-2,pil:'stile',eo:1,sw:-1,sty:'giada'});
   // la gente e le creature
   return{c,T,S,camp,hut,r}}
 function genGiungla50w(o){const n=o.n,{c,T,S,camp,hut,r}=genGiungla50(o),{RS,EN,N2}=o;N2('ilva',camp[0]-1,camp[1]+1);

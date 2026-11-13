@@ -14,6 +14,8 @@ function floor(x,y,c,h){const z=ZZ;if(z&&z.boat&&BOATA.has(y*N+x)){deckTile(x,y,
   else if(z.dg&&h>.95)box(x+.2,y+.5,0,.3,.12,2,'#d8d4c8');
   if(SET.ultra)floorDetail(x,y,z)}
 function wall(x,y,h){const z=ZZ;
+  // 8.7.2: nelle caselle dei pilastri di un cancello il muro non c'è (c'è il pilastro), sul varco solo il selciato
+  gateFit();if(GPIL.size){const k=x+','+y;if(GPIL.has(k))return;if(GOPN.has(k)){const rc=(z&&z.rd)||['#a89a84','#9e917c'];box(x,y,-6,1,1,6,(x+y)&1?rc[0]:rc[1],.92+h*.12);return}}
   if(z.int){const fr=x===N-1||y===N-1;box(x,y,0,1,1,fr?6:44,z.wall,.9+h*.08);if(!fr&&h>.75&&(x===0)!==(y===0)){if(y===0)box(x+.25,y+.98,20,.5,.04,12,'#a83a3a');else box(x+.98,y+.25,20,.04,.5,12,'#3a6aa8')}return}
   if(z.dist){const c=z.wl;if(GT.has(x+','+y)){const rc=z.rd||['#a89a84','#9e917c'];box(x,y,-6,1,1,6,(x+y)&1?rc[0]:rc[1],.92+h*.12);box(x,y,z.wh-4,1,1,10,c,.85);return}if(z.ruin){const r=h>.3?8+h*24:4;box(x,y,0,1,1,r,c,.8+h*.15);if(h>.6)box(x+.2,y+.2,r,.5,.5,4,c,.7);return}box(x,y,0,1,1,z.wh,c,.9+h*.1);if((x+y)%2===0)box(x+.2,y+.2,z.wh,.6,.6,5,c,.95);return}
   if(Zk==='town'){const gate=(y===0&&x>=34&&x<=37)||((x===N-1||x===0)&&y>=34&&y<=37)||(y===0&&x>=16&&x<=17)||(x===N-1&&y>=16&&y<=17)||(x===0&&y>=52&&y<=53)||(y===N-1&&x>=53&&x<=56),tw=(y===0&&(x===33||x===38||x===15||x===18))||((x===N-1||x===0)&&(y===33||y===38))||(x===N-1&&(y===15||y===18))||(x===0&&(y===51||y===54))||(y===N-1&&(x===52||x===57));
@@ -351,7 +353,7 @@ function genNord({R4,D,F,H,gate,N2,RS,scat,n}){
   for(const[x,y]of[[6,16],[33,13],[50,29],[18,43],[37,46]])D(x,y,'$');
   for(const y of[34,38,48])D(25,y,'n'),D(30,y,'n');
   for(const[x,y]of[[3,12],[14,12],[38,12],[52,12],[3,41],[13,41],[41,41],[52,41]])D(x,y,'o');
-  Object.assign(gate(27,54,'town'),{st:'cancello',dir:'x',span:3,off:-1.5,eo:1,sw:-1,sty:'nobile'});R4(26,54,4,1,4);
+  Object.assign(gate(27,54,'town'),{st:'cancello',dir:'x',span:4,off:-2,pil:'mura',eo:1,sw:-1,sty:'nobile'});R4(26,54,4,1,4);
   N2('giardiniere',18,46);N2('beatrice',23,26);N2('lorenzo',33,24);N2('guardia_nord',25,52);
   [['Lady Clarissa','#8a2a5a','#f0d0e0',27,36],['Sir Edmondo','#2a3a6a','#d4af37',10,31],['Marchesa Ottavia','#6a4a8a','#ffffff',45,31],['Barone Ugolino','#5a3a2a','#2a2a2a',31,45]].forEach(([nm,c,hat,x,y])=>N2('nobile',x,y,{n:nm,c,hat,wd:1}));
   return[27,52]}
@@ -384,7 +386,7 @@ function genCampi({R4,D,F,W,H,gate,N2,AN,RS,scat,fence,n}){
   for(const[x,y]of[[12,10],[24,24],[29,24],[12,29],[25,41]])D(x,y,'x');
   for(const[x,y]of[[2,29],[13,29],[3,36],[13,37],[29,30],[29,40]])D(x,y,'o');
   fence(28,42,2,12);D(24,46,'W');D(24,50,'y');D(25,52,'y');
-  Object.assign(gate(1,26,'town'),{st:'cancello',dir:'y',span:3,off:-1.5,eo:-1,sw:1,sty:'campi'});if(!millOK())for(const[x,y]of[[12,4],[12,8],[22,9],[11,6]])if(M[y][x]===0&&!DEC[y][x]){M[y][x]=6;DEC[y][x]='Г'}
+  Object.assign(gate(1,26,'town'),{st:'cancello',dir:'y',span:4,off:-2,pil:'stile',eo:-1,sw:1,sty:'campi'});if(!millOK())for(const[x,y]of[[12,4],[12,8],[22,9],[11,6]])if(M[y][x]===0&&!DEC[y][x]){M[y][x]=6;DEC[y][x]='Г'}
   N2('marta',12,25);N2('pietro',21,9);N2('bruno_b',37,25);N2('elio',14,40);N2('lia_r',30,29);N2('mercante_campi',24,28);
   N2('contadino',27,15,{n:'Contadino Nando',wd:1});N2('contadino',15,27,{n:'Contadina Tilde',c:'#a85a5a',wd:1});N2('contadino',27,44,{n:'Bracciante Ugo',c:'#5a7a3a',wd:1});
   return[3,26]}
@@ -406,7 +408,7 @@ function genRovine({R4,D,F,H,gate,N2,RS,EN,scat,n}){
   for(const[t,c]of[['ratto',12],['bandito',9],['spettro',9],['ghoul',7]])for(let i=0;i<c;i++){const p=free();if(p)EN(t,p[0],p[1])}
   for(const[x,y,c]of[[32,46,';'],[35,46,';'],[32,50,';'],[34,48,','],[36,49,'k'],[31,48,'b'],[35,51,'x']])F(x,y,c);
   F(26,24,'Y');F(25,24,'u');F(27,25,'u');scat(2,2,52,52,'{',.008);for(const[x,y]of[[8,40],[50,13]])D(x,y,'W');
-  Object.assign(gate(54,28,'town'),{st:'cancello',dir:'y',span:3,off:-1.5,eo:1,sw:-1,sty:'ceneri'});N2('ada',8,28);N2('sentinella',51,29);
+  Object.assign(gate(54,28,'town'),{st:'cancello',dir:'y',span:4,off:-2,pil:'mura',eo:1,sw:-1,sty:'ceneri'});N2('ada',8,28);N2('sentinella',51,29);
   return[52,28]}
 
 
@@ -563,7 +565,7 @@ function genPorto({R4,D,F,H,gate,N2,AN,RS,FS,scat,n}){
   N2('ammiraglio',36,33);for(const[x,y,c]of[[44,40,'Ю'],[44,42,'Ю'],[46,40,'Я'],[45,43,'Ь'],[46,42,'Ю']])F(x,y,c);
   // 7.12: il pozzo delle alghe sta sulla banchina, in fondo alla strada che scende dalla città: lo si vede appena si arriva al porto
   // (prima era sull'isolotto del faro, nascosto dietro la torre). Intorno una lanterna, scogli con le alghe e il cartello.
-  ents.push(po(27,27,'abisso@1',{st:'pozzo',n:'Pozzo delle alghe · Abisso Sommerso'}));for(const[x,y,c]of[[26,26,'Ю'],[28,26,'Ю'],[28,28,'Э'],[26,28,'₪c']])F(x,y,c);R4(21,1,12,2,4);for(const[x,y,c]of[[21,2,'Y'],[32,2,'Y'],[23,1,'l'],[31,1,'l'],[24,2,'§'],[30,2,'§'],[21,1,'o'],[32,1,'o']])F(x,y,c);Object.assign(gate(27,1,'town'),{st:'cancello',dir:'x',span:3,off:-1.5,eo:-1,sw:1,sty:'mare'});
+  ents.push(po(27,27,'abisso@1',{st:'pozzo',n:'Pozzo delle alghe · Abisso Sommerso'}));for(const[x,y,c]of[[26,26,'Ю'],[28,26,'Ю'],[28,28,'Э'],[26,28,'₪c']])F(x,y,c);R4(21,1,12,2,4);for(const[x,y,c]of[[21,2,'Y'],[32,2,'Y'],[23,1,'l'],[31,1,'l'],[24,2,'§'],[30,2,'§'],[21,1,'o'],[32,1,'o']])F(x,y,c);Object.assign(gate(27,1,'town'),{st:'cancello',dir:'x',span:4,off:-2,pil:'mura',eo:-1,sw:1,sty:'mare'});
   N2('gino',23,28);{const s73=N2('stefano',10,45);s73.fc0=faceOf(1,0)}N2('nella',21,24);N2('doganiere',33,27);N2('rocco',37,30);N2('pippo',11,28);N2('ernesto',51,13);
   N2('marinaio',27,10,{n:'Marinaio Tito',wd:1});N2('marinaio',15,27,{n:'Marinaia Sara',c:'#6a3a3a',wd:1});N2('marinaio',38,13,{n:'Nostromo Lupo',c:'#3a3a3a',wd:1});
   return[27,3]}
@@ -754,20 +756,72 @@ Object.assign(QT,{pn1:{t:'boss',e:['scarlatto'],n:1,lv:4,ti:'Il terrore dei mari
 /* ================= 6.1: cancelli che si aprono e il pozzo delle alghe ================= */
 const GSTY={legno:{p:'#6a6a62',c:'#5a5a52',l:'#6b4a2b',l2:'#5a3a20',h:'#3a3a3a',v:'#3f7a32'},sabbia:{p:'#d9b56b',c:'#c9a050',l:'#8a6a3a',l2:'#7a5a2a',h:'#d4af37'},
   gelo:{p:'#8a9aaa',c:'#e6edf4',l:'#3a4a5a',l2:'#2a3a4a',h:'#9adcff'},ferro:{p:'#7b7f89',c:'#6b6f79',l:'#3a3a42',l2:'#2e2e36',h:'#d4af37'}};
-function gateL(e){const op=e.op||0,sp=e.span||3,o=e.off!=null?e.off:-sp/2,eo=e.eo||0,sw=e.sw||1,S=GSTY[e.sty]||GSTY.ferro,L=[];
-  const Q=(a,b,z,w,d,h,c)=>{if(e.dir==='y')L.push([b,a,z,d,w,h,c]);else L.push([a,b,z,w,d,h,c])};
-  Q(o-.35,eo-.35,0,.7,.7,52,S.p);Q(o+sp-.35,eo-.35,0,.7,.7,52,S.p);Q(o-.45,eo-.45,52,.9,.9,6,S.c);Q(o+sp-.45,eo-.45,52,.9,.9,6,S.c);Q(o,eo-.2,42,sp,.4,8,S.p);
-  const lw=sp/2,ang=op*Math.PI/2*.92,seg=S.bars?7:6;
-  for(const side of[0,1]){const ax=side?o+sp:o,da=side?-1:1;for(let i=0;i<seg;i++){const r0=(i+.5)/seg*lw,X=ax+Math.cos(ang)*r0*da,Y=eo+Math.sin(ang)*r0*sw;
-      // 7.12: cancelli a sbarre di ferro (sbarre sottili con la punta, e tre traverse), oltre a quelli di assi
-      if(S.bars){const bw=lw/seg*.36;Q(X-bw/2,Y-.05,2,bw,.1,34,i%2?S.l:S.l2);Q(X-bw*.3,Y-.035,36,bw*.6,.07,3,S.h);for(const z of[5,19,31])Q(X-lw/seg/2,Y-.04,z,lw/seg+.02,.08,2.2,S.l2)}
-      else Q(X-lw/seg/2,Y-.06,2,lw/seg+.02,.12,36,i%2?S.l:S.l2)}
-    Q(ax+Math.cos(ang)*lw*.5*da-.05,eo+Math.sin(ang)*lw*.5*sw-.07,18,.1,.14,4,S.h);Q(ax+Math.cos(ang)*lw*.9*da-.04,eo+Math.sin(ang)*lw*.9*sw-.07,30,.08,.14,3,S.h)}
-  if(S.v)for(let i=0;i<4;i++)Q(o-.42+i*.04,eo+.36,4+i*12,.07,.07,10,S.v);if(S.ex)S.ex(Q,o,sp,eo,e);
-  // 7.12: un cancello sbarrato ha le catene incrociate davanti alle ante e un grosso lucchetto
-  if(gateLocked(e)&&op<.05){const n=12;for(let k=0;k<=n;k++){const a=o+.3+(sp-.6)*k/n,c=k%2?'#9a8a7a':'#7a5a44';Q(a-.08,eo+.08,7+26*k/n,.16,.08,3.4,c);Q(a-.08,eo+.08,33-26*k/n,.16,.08,3.4,c)}
-    Q(o+sp/2-.18,eo+.1,13,.36,.1,8,'#b8902a');Q(o+sp/2-.12,eo+.1,21,.24,.06,4,'#7a7068');Q(o+sp/2-.04,eo+.2,15,.08,.02,3,'#2a1a10')}
-  return L}
+/* 8.7.2: I CANCELLI, RIFATTI PERCHÉ NON SI COMPENETRINO PIÙ CON LE MURA E NON SI ROMPANO APRENDOSI.
+   Cosa non andava: i pilastri del cancello stavano a cavallo tra due caselle, dentro le torri delle mura; sopra il varco
+   le mura disegnavano un architrave di pietra pieno, e le ante ci passavano attraverso; le decorazioni dei quartieri (siepi,
+   covoni, fioriere) erano sulla linea delle mura, dentro i blocchi del muro; e le ante si aprivano spostando ogni asse dritta
+   lungo un arco, così a metà diventavano una scala di assi staccate e, aperte, un pettine. Ora:
+   - IL CANCELLO È FATTO SULLE CASELLE: il varco è fatto di caselle intere e i due pilastri stanno ciascuno al centro della
+     casella di muro accanto al varco (in città, al posto delle torrette). Le mura non disegnano più niente nelle caselle
+     dei pilastri né sopra il varco (l'architrave è quello del cancello), così non c'è più niente dentro nient'altro;
+   - IL PILASTRO prende il colore delle mura della zona (o quello del cancello, dove le mura sono alberi o siepi), è largo
+     una casella lungo il muro e un po' più spesso del muro; sopra ha la cimasa del cancello del quartiere;
+   - LE ANTE girano sul cardine, sul fianco interno del pilastro: l'anta è divisa in tanti pezzi piccoli che seguono la sua
+     inclinazione, quindi a metà resta un'anta intera, e da aperta è un'anta sottile appoggiata al pilastro, a 90 gradi;
+     le assi, le sbarre, le traverse e le bandelle restano al loro posto sull'anta mentre gira;
+   - LE DECORAZIONI A TERRA (siepi, covoni, fioriere, cenere) stanno davanti al pilastro, dalla parte del quartiere, in una
+     casella libera che diventa un ostacolo (l'eroe non ci passa più dentro); se la casella non è libera non ci sono;
+   - nella vista classica l'anta che si apre verso il fondo si disegna prima dei pilastri, quella che viene verso chi
+     guarda dopo: non si vede più passare sopra il pilastro.
+   Un cancello senza «pil» (quelli messi nello Studio) resta con i pali sottili di prima, ma con le ante nuove. */
+let GPIL=new Set(),GOPN=new Set(),GFK=null;
+const hexK=(c,f)=>{const n=parseInt(c.slice(1),16),q=v=>Math.max(0,Math.min(255,Math.round(v*f))).toString(16).padStart(2,'0');return'#'+q(n>>16)+q(n>>8&255)+q(n&255)};
+// la geometria del cancello: dove sono i pilastri, il varco e le caselle davanti ai pilastri (in coordinate del mondo)
+function gateGeo(e){const sp=e.span||3,o=e.off!=null?e.off:-sp/2,eo=e.eo||0,W=(a,b)=>e.dir==='y'?[e.px+b,e.py+a]:[e.px+a,e.py+b],C=(a,b)=>W(a,b).map(Math.floor),ins=eo?-Math.sign(eo):1;
+  const op=[];for(let a=Math.ceil(o+.25);a<o+sp-.25;a++)op.push(C(a,eo));/* le caselle del varco: i centri tra i due pilastri */return{sp,o,eo,ins,pil:[C(o,eo),C(o+sp,eo)],op,spot:[C(o,eo+ins),C(o+sp,eo+ins)]}}
+function gatePil(e){if(!e.pil)return null;const S=GSTY[e.sty]||GSTY.ferro,z=ZZ||{};
+  if(e.pil==='mura'){const c=Zk==='town'||!z.wl?'#7b7f89':z.wl;return{w:1,d:1.2,h:46,c,c2:Zk==='town'?'#6b6f79':hexK(c,.86)}}
+  return{w:1,d:1.1,h:46,c:S.p,c2:hexK(S.p,.86)}}
+// una volta per zona: le caselle dei pilastri e del varco (le mura lì non disegnano), i pilastri come ostacoli e le
+// caselle delle decorazioni a terra (solo se libere: niente case, lampioni, persone o altri oggetti)
+function gateFit(){if(GFK===M)return;GFK=M;GPIL=new Set();GOPN=new Set();
+  for(const e of ents){if(e.st!=='cancello')continue;const G=gateGeo(e),S=GSTY[e.sty]||GSTY.ferro,ok=([x,y])=>x>=0&&y>=0&&x<N&&y<N;
+    if(e.pil)for(const c of G.pil)if(ok(c)){GPIL.add(c+'');const[x,y]=c;if(WK(M[y][x])){M[y][x]=6;DEC[y][x]=''}}
+    if(e.pil)for(const c of G.op)if(ok(c))GOPN.add(c+'');
+    if(e.dsp===undefined){e.dsp=[0,0];if(S.gd)G.spot.forEach(([x,y],i)=>{if(!ok([x,y])||x<1||y<1||x>N-2||y>N-2)return;const m=M[y][x];
+      if((m!==0&&m!==4)||DEC[y][x]||ents.some(q=>q!==e&&q.k!=='dr'&&Math.floor(q.px)===x&&Math.floor(q.py)===y))return;
+      M[y][x]=6;DEC[y][x]='';if(m===4)RDF.add(y*N+x);e.dsp[i]=1})}}}
+// appena caricata la zona (prima che l'eroe possa fare un passo)
+{const l0=loadPost;loadPost=function(k){l0(k);try{gateFit()}catch(e){console.warn('cancelli',e)}}}
+function gateL(e){gateFit();const op=clamp(e.op||0,0,1),sp=e.span||3,o=e.off!=null?e.off:-sp/2,eo=e.eo||0,sw=e.sw||1,S=GSTY[e.sty]||GSTY.ferro,L=[],LF=[],pl=gatePil(e),ins=eo?-Math.sign(eo):1;
+  let tgt=L;const Q=(a,b,z,w,d,h,c)=>{if(e.dir==='y')tgt.push([b,a,z,d,w,h,c]);else tgt.push([a,b,z,w,d,h,c])};
+  const pw=pl?pl.w:.7,pd=pl?pl.d:.7;
+  // i pilastri: quelli in muratura (come le torrette delle mura) o i pali sottili di una volta, con la cimasa del cancello
+  for(const a of[o,o+sp]){if(pl){Q(a-pw/2,eo-pd/2,0,pw,pd,pl.h,pl.c);Q(a-pw/2-.05,eo-pd/2-.05,pl.h,pw+.1,pd+.1,6,pl.c2)}else Q(a-.35,eo-.35,0,.7,.7,52,S.p);Q(a-.45,eo-.45,52,.9,.9,6,S.c)}
+  Q(o+pw/2,eo-.2,42,sp-pw,.4,8,S.p);   // l'architrave, tra i due pilastri (non più dentro)
+  // F: un pezzo attaccato alla faccia del pilastro verso il quartiere; D: una decorazione a terra davanti al pilastro
+  // (u lungo il muro, dal centro del pilastro; v in fuori, dalla faccia del pilastro), solo dove la casella è libera
+  const F=(s,u,v,z,w,d,h,c)=>{const a=(s?o+sp:o)+u,f=eo+ins*(pd/2+.02);Q(a,ins>0?f+v:f-v-d,z,w,d,h,c)},D=(s,...r)=>{if(e.dsp&&e.dsp[s])F(s,...r)};
+  const G={pw,pd,ins,F,D};
+  const hg=pw/2+.06,len=(sp-pw)/2-.07,th=S.bars?.1:.12,k=op*op*(3-2*op),ang=k*Math.PI/2*.985,ca=Math.cos(ang),sa=Math.sin(ang),seg=S.bars?7:6;
+  // un pezzo dell'anta lungo l'anta da r0 a r1, alto da z a z+h: il riquadro che contiene quel pezzo inclinato
+  tgt=LF;const piece=(ax,da,r0,r1,z,h,c,t2)=>{const T=t2||th,l=r1-r0,rm=(r0+r1)/2,cx=ax+ca*rm*da,cy=eo+sa*rm*sw,w=Math.abs(ca)*l+Math.abs(sa)*T,d=Math.abs(sa)*l+Math.abs(ca)*T;Q(cx-w/2,cy-d/2,z,w,d,h,c)};
+  const sub=Math.max(1,Math.round(1+Math.sin(ang*2)*11)),sb=Math.min(sub,6);   // più pezzi quando l'anta è di sbieco (i gradini restano piccoli)
+  for(const side of[0,1]){const da=side?-1:1,ax=(side?o+sp:o)+hg*da;
+    for(let i=0;i<seg;i++){const p0=i/seg*len,p1=(i+1)/seg*len;
+      if(S.bars){const bw=len/seg*.36,pm=(p0+p1)/2;piece(ax,da,pm-bw/2,pm+bw/2,2,34,i%2?S.l:S.l2,.1);piece(ax,da,pm-bw*.3,pm+bw*.3,36,3,S.h,.07)}
+      else for(let j=0;j<sub;j++)piece(ax,da,p0+(p1-p0)*j/sub,p0+(p1-p0)*(j+1)/sub,2,36,i%2?S.l:S.l2)}
+    if(S.bars)for(const z of[5,19,31])for(let j=0;j<seg*sb;j++)piece(ax,da,len*j/(seg*sb),len*(j+1)/(seg*sb),z,2.2,S.l2,.08);
+    // le ferramenta: due bandelle di ferro sull'anta, che girano con lei
+    piece(ax,da,len*.42,len*.58,18,4,S.h,th+.03);piece(ax,da,len*.82,len*.95,30,3,S.h,th+.03)}
+  tgt=L;
+  if(S.v)for(let i=0;i<4;i++)F(0,-pw/2+.06+i*.05,0,4+i*12,.07,.06,10,S.v);if(S.ex)S.ex(Q,o,sp,eo,e,G);
+  // 7.12: un cancello sbarrato ha le catene incrociate davanti alle ante e un grosso lucchetto (dalla parte del quartiere)
+  if(gateLocked(e)&&op<.05){const n=12,a0=o+pw/2+.05,aw=sp-pw-.1,b=v=>ins>0?eo+v:eo-v-.08;for(let k=0;k<=n;k++){const a=a0+aw*k/n,c=k%2?'#9a8a7a':'#7a5a44';Q(a-.08,b(.08),7+26*k/n,.16,.08,3.4,c);Q(a-.08,b(.08),33-26*k/n,.16,.08,3.4,c)}
+    Q(o+sp/2-.18,ins>0?eo+.1:eo-.2,13,.36,.1,8,'#b8902a');Q(o+sp/2-.12,ins>0?eo+.1:eo-.16,21,.24,.06,4,'#7a7068');Q(o+sp/2-.04,ins>0?eo+.2:eo-.22,15,.08,.02,3,'#2a1a10')}
+  // nella vista classica i blocchi si disegnano nell'ordine della lista: le ante verso il fondo vanno prima del resto
+  const dep=q=>q[0]+q[3]/2+q[1]+q[4]/2;LF.sort((p,q)=>dep(p)-dep(q));
+  return sw*sa<-.05?LF.concat(L):L.concat(LF)}
 // nei filmati il cancello del vecchio quartiere è sempre sbarrato, come nella storia
 const gateLocked=e=>!!(e.lock&&((typeof CN!=='undefined'&&CN&&CN.film)||!(P&&P.unl&&P.unl[e.lock])));
 // 7.12: il pozzo delle alghe è più grande e si fa notare: bordo di pietra col muschio, acqua che brilla di verde acqua
@@ -782,7 +836,7 @@ function wellL(e){const L=[],T=6.2832,pu=.5+.5*Math.sin(t*2.2);
   for(let k=0;k<4;k++)L.push([-.78+k*.1,-.58+k*.13,47+k*3,1.56-k*.2,1.16-k*.26,3,k%2?'#2a6a5a':'#3a7a6a']);
   nlight(e.px,e.py,14,130,'110,255,225',.55+pu*.25);if(SET.ultra)GLOW.push([e.px,e.py,14,46,'110,255,225',.22+pu*.12]);
   return L}
-function gateTick(dt){for(const e of ents){if(e.st!=='cancello')continue;const tg=dist(P,e)<3.6&&!gateLocked(e)?1:0;if(tg&&!e.lt&&AU.ac&&SET.sf)try{vtone(AU.ac.currentTime+.02,38,.8,'sawtooth',1.5,.03);vtone(AU.ac.currentTime+.05,45,.6,'square',.7,.015)}catch(_){}
+function gateTick(dt){gateFit();for(const e of ents){if(e.st!=='cancello')continue;const tg=dist(P,e)<3.6&&!gateLocked(e)?1:0;if(tg&&!e.lt&&AU.ac&&SET.sf)try{vtone(AU.ac.currentTime+.02,38,.8,'sawtooth',1.5,.03);vtone(AU.ac.currentTime+.05,45,.6,'square',.7,.015)}catch(_){}
   e.lt=tg;e.op=(e.op||0)+(tg-(e.op||0))*Math.min(1,dt*2.4)}}
 
 /* ================= 6.2: maestria delle armi, zaini, abilità dei boss, falò, motel con due scale ================= */

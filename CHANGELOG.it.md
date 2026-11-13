@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.9.2 — Le battute nella lingua giusta dalla prima lettera (13 novembre 2026)
+
+- **La battuta si scrive subito nella tua lingua.** In inglese la finestra del dialogo scriveva la battuta lettera per lettera in italiano e la faceva diventare inglese solo alla fine; in eldoriano ogni pezzo già scritto si traduceva da solo, così le parole cambiavano mentre la battuta si scriveva. Ora la battuta intera si traduce prima della prima lettera, e il traduttore della pagina non la tocca più.
+- **Il cursore segue le lettere.** Il cursore lampeggiante stava in fondo alla parte di battuta non ancora mostrata, spesso molto più a destra del testo (in eldoriano ancora di più, perché la parte nascosta era quella italiana). Ora sta subito dopo l'ultima lettera scritta.
+
+---
+
 ## 8.9.1 — Le battute dei dialoghi senza codice in mezzo (13 novembre 2026)
 
 - **Le battute dei personaggi non mostrano più `<span>`.** Dalla 8.8 ogni battuta nella finestra del dialogo si leggeva con il codice intorno: `«<span>La Biblioteca custodisce le pagine del diario di Malakar.</span>»`, e in eldoriano `«<ven>…</ven>»` (l'alfabeto eldoriano traduceva anche il codice). La finestra che scrive la battuta lettera per lettera ora prende solo il testo, in italiano, in inglese e in eldoriano, per le battute normali e per le risposte alle domande.

@@ -1172,9 +1172,14 @@ function dlgWrap(e,h){const m=h.match(/^<h3>([\s\S]*?)<\/h3><p><i>([\s\S]*?)<\/i
   // 8.9.1: dalla 8.8 la battuta è dentro uno <span> (perché si traduca per intero): qui si toglie, se no la macchina da
   // scrivere la mostrava come testo («<span>…</span>», e in eldoriano «<ven>…</ven>»)
   raw=raw.replace(/<\/?span>/g,'');
+  // 8.9.2: la battuta si traduce qui, tutta intera, prima che la macchina da scrivere cominci (classe «nol»: il traduttore
+  // della pagina non la tocca più). Prima si scriveva in italiano e diventava inglese solo alla fine, e in eldoriano ogni
+  // pezzo scritto si traduceva da solo, con parole diverse da quelle della battuta intera
+  const un=x=>x.replace(/<[^>]*>/g,'').replace(/&(amp|lt|gt|quot|#39);/g,(a,c)=>({amp:'&',lt:'<',gt:'>',quot:'"','#39':"'"}[c]));
+  let say=un(raw);try{if(SET.lang!=='it')say=trText(say)}catch(e){}
   const d=NPCS[e.nid]||{},role=d.role&&DROLE[d.role]?DROLE[d.role]:'',aq=P.q.find(q=>q.npc===e.nid);
   const st=aq?(qReady(aq)?'<span class="dlgs ok">✔ missione pronta</span>':'<span class="dlgs">missione in corso</span>'):qAvail(e.nid)?'<span class="dlgs nw">! nuova missione</span>':'';
-  return`<div class="dlgh" onclick="dlgSkip()"><div class="dlgp"><canvas id="dlgc" width="128" height="148"></canvas></div><div class="dlgb"><div class="dlgn">${m[1]}${role?` <small>${esc(role)}</small>`:''}${st}</div>${ask?`<p class="dlgask">Hai chiesto: «${ask}»</p>`:''}<p class="dlgl" id="dlgl" data-t="${raw.replace(/"/g,'&quot;')}">${raw}</p></div></div><div class="dlgo">${h.slice(m[0].length)}</div>`}
+  return`<div class="dlgh" onclick="dlgSkip()"><div class="dlgp"><canvas id="dlgc" width="128" height="148"></canvas></div><div class="dlgb"><div class="dlgn">${m[1]}${role?` <small>${esc(role)}</small>`:''}${st}</div>${ask?`<p class="dlgask">Hai chiesto: «${ask}»</p>`:''}<p class="dlgl nol" id="dlgl" data-t="${esc(say)}">${esc(say)}</p></div></div><div class="dlgo">${h.slice(m[0].length)}</div>`}
 const _npcHTML72=npcHTML;npcHTML=function(e){return dlgWrap(e,_npcHTML72(e))};
 function dlgOn(m,pe,was){const on=m==='npc'&&PA&&PA.k==='npc';pe.classList.toggle('dlgm',!!on);document.body.classList.toggle('dlgo',!!on);if(!on)return;
   const el=$('dlgl');if(!el)return;const tx=el.textContent;
@@ -1182,8 +1187,9 @@ function dlgOn(m,pe,was){const on=m==='npc'&&PA&&PA.k==='npc';pe.classList.toggl
   if(was&&DLG.e===PA&&DLG.line===tx){el.classList.add('done')}
   else{DLG.e=PA;DLG.line=tx;DLG.t0=performance.now();pe.scrollTop=0;if(cineOK()&&!matchMedia('(prefers-reduced-motion:reduce)').matches){el.dataset.n='0';el.classList.remove('done');dlgType()}else el.classList.add('done')}
   if(!DLG.raf)DLG.raf=requestAnimationFrame(dlgLoop)}
-function dlgType(){const el=$('dlgl');if(!el||el.classList.contains('done'))return;const full=el.dataset.t.replace(/&quot;/g,'"'),n=Math.min(full.length,Math.floor((performance.now()-DLG.t0)/22));
-  el.innerHTML=esc(full.slice(0,n))+'<span class="dlgr">'+esc(full.slice(n))+'</span>';if(n>=full.length)el.classList.add('done')}
+function dlgType(){const el=$('dlgl');if(!el||el.classList.contains('done'))return;const full=el.dataset.t,n=Math.min(full.length,Math.floor((performance.now()-DLG.t0)/22));
+  // 8.9.2: il cursore sta subito dopo l'ultima lettera scritta (prima era in fondo alla battuta ancora invisibile)
+  el.innerHTML=esc(full.slice(0,n))+(n<full.length?'<span class="dlgk"></span>':'')+'<span class="dlgr">'+esc(full.slice(n))+'</span>';if(n>=full.length)el.classList.add('done')}
 function dlgSkip(){const el=$('dlgl');if(el&&!el.classList.contains('done')){DLG.t0=-1e9;dlgType()}}
 function dlgLoop(n){const pe=$('pn');if(!pe||pe.style.display!=='block'||PM!=='npc'||!PA||PA.k!=='npc'){DLG.raf=0;document.body.classList.remove('dlgo');if(pe)pe.classList.remove('dlgm');return}
   DLG.raf=requestAnimationFrame(dlgLoop);dlgType();const c=$('dlgc');if(c)paintNpc(c,PA,n/1000,!$('dlgl')||!$('dlgl').classList.contains('done'))}
@@ -1202,7 +1208,7 @@ addEventListener('keydown',ev=>{if(PM!=='npc'||!document.body.classList.contains
 #pn.dlgm .dlgn small{font:italic 14px Georgia,serif;color:var(--fg);opacity:.7}
 #pn.dlgm .dlgs{font:600 12px Georgia,serif;padding:2px 8px;border-radius:9px;background:#0003;color:var(--fg);opacity:.85}#pn.dlgm .dlgs.ok{background:#2f7a3a;color:#fff}#pn.dlgm .dlgs.nw{background:#b8861e;color:#fff}
 #pn.dlgm .dlgl{font:17px/1.55 Georgia,serif;margin:0;min-height:3.1em}#pn.dlgm .dlgask{margin:0 0 3px;font:italic 13px Georgia,serif;color:var(--mu)}#pn.dlgm .dlgl:before{content:'«';opacity:.6}#pn.dlgm .dlgl:after{content:'»';opacity:.6}
-#pn.dlgm .dlgl .dlgr{opacity:0}#pn.dlgm .dlgl:not(.done):after{content:'▍';opacity:.8;animation:dlgC .6s steps(2) infinite}@keyframes dlgC{50%{opacity:0}}
+#pn.dlgm .dlgl .dlgr{opacity:0}#pn.dlgm .dlgl:not(.done):after{opacity:0}#pn.dlgm .dlgl .dlgk{position:relative}#pn.dlgm .dlgl .dlgk:after{content:'▍';position:absolute;left:1px;top:0;opacity:.8;animation:dlgC .6s steps(2) infinite;pointer-events:none}@keyframes dlgC{50%{opacity:0}}
 #pn.dlgm .dlgo{background:color-mix(in srgb,var(--pn) 98%,transparent);border:1px solid color-mix(in srgb,var(--ac) 55%,transparent);border-radius:10px;padding:8px 10px;box-shadow:0 10px 36px #0008;overflow:auto;max-height:38vh;counter-reset:dl;margin-top:8px}
 #pn.dlgm .dlgo:empty{display:none}
 #pn.dlgm .dlgo button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:1px 0;padding:6px 12px;border-radius:7px;background:#0000;border:1px solid transparent;color:inherit;font:16px Georgia,serif;transition:background .15s,border-color .15s,transform .15s}

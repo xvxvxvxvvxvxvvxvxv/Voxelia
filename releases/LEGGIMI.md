@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-123 versions, newest first.
+124 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.9.2](voxelia_v8.9.2.html) | November 13, 2026 | Dialogue lines in the right language from the first letter, and the cursor right after the letters | 3,727 KB |
 | [8.9.1](voxelia_v8.9.1.html) | November 13, 2026 | Dialogue lines without stray code: no more `<span>` (or `<ven>` in Eldorian) around what the characters say | 3,724 KB |
 | [8.9](voxelia_v8.9.html) | November 13, 2026 | The seventh fragment and the Voxeliaverse: the Heart of the Crown with six puzzle rooms, a new 3D engine, the room behind the Crown and endless random realities to explore, fight in and save | 3,723 KB |
 | [8.8](voxelia_v8.8.html) | November 13, 2026 | Act II rewritten, The Buried City: Eldora, three Keepers and the Stone King, a longer story full of dialogue; the six splinters of the Crown with the Sapphire made whole | 3,562 KB |

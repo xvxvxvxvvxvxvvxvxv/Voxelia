@@ -6,6 +6,13 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.9.2 — Dialogue lines in the right language from the first letter (November 13, 2026)
+
+- **The line is written straight in your language.** In English the dialogue window wrote the line letter by letter in Italian and turned it into English only at the end; in Eldorian every piece already written was translated on its own, so the words changed while the line was being written. Now the whole line is translated before the first letter, and the page's translator no longer touches it.
+- **The cursor follows the letters.** The blinking cursor stood at the end of the part of the line not yet shown, often far to the right of the text (in Eldorian even more, because the hidden part was still the Italian one). Now it sits right after the last letter written.
+
+---
+
 ## 8.9.1 — Dialogue lines without stray code (November 13, 2026)
 
 - **The characters' lines no longer show `<span>`.** Since 8.8 every line in the dialogue window was written with the code around it: `«<span>The Library keeps the pages of Malakar's diary.</span>»`, and in Eldorian `«<ven>…</ven>»` (the Eldorian alphabet translated the code too). The window that writes the line letter by letter now takes the text alone, in Italian, English and Eldorian, for ordinary lines and for the answers to the questions.

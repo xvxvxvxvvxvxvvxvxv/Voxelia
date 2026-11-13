@@ -6,6 +6,11 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.7.1 — Maintenance: page language, dates and numbers in English (November 12, 2026)
+
+- **The page now says which language it's in.** It always declared itself Italian, even in English: screen readers read the English text with an Italian voice and the browser offered to "translate from Italian" a page that was already in English (and translating it would mix up the game's text). Now it follows the language chosen in Settings.
+- **Dates, times and gold in the English format.** In English the dates were still written the Italian way, so "12/11/2026" on the Continue button read as December 11, and "43.210 gold" in the overwrite warning looked like 43 coins. Now in English they follow the browser's format (11/12/2026, 43,210); in Italian nothing changes. This applies to the menu, the overwrite warning, photos, the Album, the Crown, houses, factions, Voxelia Studio and the developer panel.
+
 ## 8.7 — Voxelia in English (November 12, 2026)
 
 - **English is the default language.** Anyone opening the game for the first time finds it in English, and anyone who had it in Italian finds it in English once: you can switch back to Italian in Settings → General → Language, and from then on it stays the way you chose.

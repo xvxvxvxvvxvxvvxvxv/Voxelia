@@ -13,7 +13,7 @@ async function mapi(p,o={}){const h={'x-voxelia':'1','x-voxelia-key':mKey()};let
   let j=null;try{j=await r.json()}catch(e){}if(!r.ok||!j)throw Object.assign({err:(j&&j.err)||'Errore del server ('+r.status+')'},j||{},{st:r.status});return j}
 const mJ=v=>esc(JSON.stringify(String(v==null?'':v)));   // testo dentro un onclick: prima stringa JS, poi attributo HTML
 const mN=n=>{n=+n||0;return n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,'')+' Mln':n>=1e4?Math.round(n/1e3)+'k':n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,'')+'k':String(n|0)};
-function mAgo(t){const s=(Date.now()-t)/1000;if(s<60)return'adesso';if(s<3600)return Math.floor(s/60)+' min fa';if(s<7200)return'un\'ora fa';if(s<86400)return Math.floor(s/3600)+' ore fa';if(s<172800)return'ieri';if(s<604800)return Math.floor(s/86400)+' giorni fa';return new Date(t).toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'})}
+function mAgo(t){const s=(Date.now()-t)/1000;if(s<60)return'adesso';if(s<3600)return Math.floor(s/60)+' min fa';if(s<7200)return'un\'ora fa';if(s<86400)return Math.floor(s/3600)+' ore fa';if(s<172800)return'ieri';if(s<604800)return Math.floor(s/86400)+' giorni fa';return new Date(t).toLocaleDateString(i18Loc(),{day:'numeric',month:'short',year:'numeric'})}
 const mStars=(v,cls)=>`<span class="mst${cls?' '+cls:''}" style="--v:${Math.max(0,Math.min(100,v/5*100))}%" role="img" aria-label="${(+v||0).toString().replace('.',',')} stelle su 5">★★★★★</span>`;
 const mHue=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))%360;return h};
 const mCover=(c,big)=>c.cover?`<img src="${esc(c.cover)}" alt="" loading="lazy">`:`<div class="mph" style="--h:${mHue(c.id)}"><span>${big?'🗺':'🗺'}</span><b>${esc((c.n||'?').slice(0,1).toUpperCase())}</b></div>`;
@@ -71,7 +71,7 @@ async function mbLista(){const p=new URLSearchParams({ord:MB.ord,q:MB.q,tag:MB.t
   B.innerHTML=h}
 async function mbPref(){const d=await mapi('/io');if(MB.page!=='pref')return;$('mbb').innerHTML=`<div class="mbhead"><h2>❤ I tuoi preferiti</h2></div>`+(d.favs.length?`<div class="mbgrid">${d.favs.map(c=>mbCard(c)).join('')}</div>`:`<div class="mbempty">Non hai ancora preferiti: premi ❤ nella scheda di un mondo per ritrovarlo qui.</div>`)}
 async function mbAutore(u){const d=await mapi('/autore/'+encodeURIComponent(u));if(MB.page!=='autore')return;
-  $('mbb').innerHTML=`<button class="mbback" onclick="mbBack()">← Indietro</button><div class="mbauth"><div class="mbav" style="--h:${mHue(u)}">${esc((d.n||'?').slice(0,1).toUpperCase())}</div><div><h2>${esc(d.n)}</h2><p class="mu">${d.L.length} ${d.L.length===1?'mondo pubblicato':'mondi pubblicati'} · ▶ ${mN(d.plays)} partite${d.nrev?' · media '+String(d.avg).replace('.',',')+' ★ su '+d.nrev+' recensioni':''}${d.since?' · autore dal '+new Date(d.since).toLocaleDateString('it-IT'):''}</p></div></div>
+  $('mbb').innerHTML=`<button class="mbback" onclick="mbBack()">← Indietro</button><div class="mbauth"><div class="mbav" style="--h:${mHue(u)}">${esc((d.n||'?').slice(0,1).toUpperCase())}</div><div><h2>${esc(d.n)}</h2><p class="mu">${d.L.length} ${d.L.length===1?'mondo pubblicato':'mondi pubblicati'} · ▶ ${mN(d.plays)} partite${d.nrev?' · media '+String(d.avg).replace('.',',')+' ★ su '+d.nrev+' recensioni':''}${d.since?' · autore dal '+new Date(d.since).toLocaleDateString(i18Loc()):''}</p></div></div>
     ${d.L.length?`<div class="mbgrid">${d.L.map(c=>mbCard(c)).join('')}</div>`:'<div class="mbempty">Nessun mondo pubblicato.</div>'}`}
 
 /* ---- la scheda di un mondo ---- */

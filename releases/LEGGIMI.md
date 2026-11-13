@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-118 versions, newest first.
+119 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.7.1](voxelia_v8.7.1.html) | November 12, 2026 | Maintenance: the page declares the chosen language, dates and gold in the English format | 3,485 KB |
 | [8.7](voxelia_v8.7.html) | November 12, 2026 | Voxelia in English: English is the default language, the first stage of the translation (menus, interface, Story Mode) and the repository in English | 3,482 KB |
 | [8.6](voxelia_v8.6.html) | November 12, 2026 | The Kingdom Threat and Act II: enemies with new moves, Champions with powers, tougher bosses, nights and invasions, the lost constellation | 3,145 KB |
 | [8.5](voxelia_v8.5.html) | November 10, 2026 | The developer panel tests everything: quests, cheats, debug, console, states and testing every area | 3,079 KB |

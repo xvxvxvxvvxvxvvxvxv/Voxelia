@@ -5,6 +5,11 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.7.1 — Manutenzione: lingua della pagina, date e numeri in inglese (12 novembre 2026)
+
+- **La pagina dice in che lingua è.** Si dichiarava sempre in italiano, anche in inglese: i lettori di schermo leggevano il testo inglese con la voce italiana e il browser proponeva di «tradurre dall'italiano» una pagina già in inglese (e tradurla mescolerebbe i testi del gioco). Ora segue la lingua scelta nelle Impostazioni.
+- **Date, ore e oro nel formato inglese.** In inglese le date restavano all'italiana, così «12/11/2026» sul pulsante Continua si leggeva 11 dicembre, e «43.210 oro» nell'avviso di sovrascrittura sembrava 43 monete. Ora in inglese seguono il formato del browser (11/12/2026, 43,210); in italiano non cambia niente. Vale per il menu, l'avviso di sovrascrittura, le foto, l'Album, la Corona, le case, le fazioni, Voxelia Studio e il pannello sviluppatore.
+
 ## 8.7 — Voxelia in inglese (12 novembre 2026)
 
 - **L'inglese è la lingua di partenza.** Chi apre il gioco per la prima volta lo trova in inglese, e chi lo aveva in italiano lo trova in inglese una volta sola: si rimette in italiano da Impostazioni → Generale → Lingua, e da lì in poi resta come lo hai scelto.

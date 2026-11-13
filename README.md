@@ -6,7 +6,7 @@ Tomorrow you found a kingdom of your own, and with the **Voxelia Studio** editor
 
 🇬🇧 English · 🇮🇹 **[Italiano](README.it.md)**
 
-**Current version: 8.7** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
+**Current version: 8.7.1** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
 [⌨️ Controls](#controls) · [🖥 Server](#the-multiplayer-server) · [🛠 Development](#development) ·
 [📝 What's new (CHANGELOG)](CHANGELOG.md)
 

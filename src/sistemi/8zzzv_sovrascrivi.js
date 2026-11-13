@@ -8,14 +8,14 @@
       doppio clic non passa per sbaglio, e se non lo premi entro 12 secondi l'avviso sparisce e la partita resta. */
 const OVR={go:null,o:null,tm:0,ul:0,bye:0};
 const OVR_T=12000,OVR_LOCK=1500;
-function ovrWhen(t){if(!t)return'';const d=new Date(t),n=new Date(),hm=d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}),
+function ovrWhen(t){if(!t)return'';const d=new Date(t),n=new Date(),hm=d.toLocaleTimeString(i18Loc(),{hour:'2-digit',minute:'2-digit'}),
     g=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),dd=Math.round((g(n)-g(d))/864e5);
-  return dd===0?'oggi alle '+hm:dd===1?'ieri alle '+hm:'il '+d.toLocaleDateString('it-IT')+' alle '+hm}
+  return dd===0?'oggi alle '+hm:dd===1?'ieri alle '+hm:'il '+d.toLocaleDateString(i18Loc())+' alle '+hm}
 function ovrOpen(){return!!(($('ovrm')&&!$('ovrm').hidden)||($('ovrt')&&!$('ovrt').hidden))}
 // o: {ti titolo, cosa testo, eroe, lv, df, g oro, t ultimo salvataggio, ic icona, dati «i dati di…» per l'avviso, ok testo del pulsante, extra HTML in più sopra i pulsanti (7.52)}
 function ovrAsk(o,go){ovrClose(1);OVR.go=go;OVR.o=o;let el=$('ovrm');
   if(!el){el=document.createElement('div');el.id='ovrm';document.body.appendChild(el);el.addEventListener('click',e=>{if(e.target===el)ovrClose()})}
-  const r=[];if(o.lv)r.push('Livello '+o.lv);if(o.df)r.push(o.df);if(o.g!=null)r.push('💰 '+Number(o.g).toLocaleString('it-IT')+' oro');
+  const r=[];if(o.lv)r.push('Livello '+o.lv);if(o.df)r.push(o.df);if(o.g!=null)r.push('💰 '+Number(o.g).toLocaleString(i18Loc())+' oro');
   for(const x of o.righe||[])r.push(x);
   el.innerHTML=`<div class="ovb" role="alertdialog" aria-modal="true" aria-labelledby="ovrh" aria-describedby="ovrd">
     <div class="ovh"><span class="ovi" aria-hidden="true">⚠</span><h3 id="ovrh">${esc(o.ti)}</h3></div>

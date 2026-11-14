@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.12.1 — Manutenzione: la scheda Stanze e il registro del pannello admin (14 novembre 2026)
+
+- **Niente più «undefined» nella scheda Stanze.** Il pannello admin non conosceva il nome del Tempio di Giada (un dungeon dalla 7.48): in ogni stanza la casella del suo ciclo si chiamava «undefined», e un giocatore al suo interno compariva come «tempio48@2» nell'elenco dei Giocatori. Ora si legge «Tempio di Giada» come gli altri dungeon.
+- **Il registro e i piani in inglese.** Con il pannello in inglese molte righe del registro restavano in italiano o uscivano a metà («Anna joined nella stanza prova»): accessi, ban, espulsioni, silenzi, annunci, mondi, classifica, stanze, plugin e avvio del server. Ora sono in inglese, come i piani dei dungeon nell'elenco dei Giocatori («Forgotten Crypt · floor 2») e i nomi delle caselle dei cicli per i lettori di schermo. In italiano non cambia niente.
+
+---
+
 ## 8.12 — Voxelia in inglese, l'ultima tappa: Voxelia Studio, il server e il pannello admin (13 novembre 2026)
 
 La traduzione in inglese è completa: ogni parte del gioco ora parla inglese come lingua di partenza, e l'italiano resta a un clic nelle Impostazioni.

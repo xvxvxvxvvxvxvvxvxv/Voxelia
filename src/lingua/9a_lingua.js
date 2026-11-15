@@ -19,7 +19,10 @@ function i18Build(){I18.ok=1;const ex=new Map(),lead=new Map(),trail=new Map(),f
     if(!/\{\d+\}/.test(nk)){ex.set(nk,v);continue}
     // due segnaposto attaccati ({0}{1}) diventano una parte sola: il testo che li riempie va tutto nel primo
     const parts=nk.split(/(\{\d+\})/),ids=[],skip=[];let re='^',prevPh=false;
-    for(const p of parts){const m=p.match(/^\{(\d+)\}$/);if(m){if(prevPh){skip.push(+m[1]);continue}ids.push(+m[1]);re+='(.+?)';prevPh=true}else{if(p)prevPh=false;re+=i18Esc(p)}}
+    // 8.12.2: un segnaposto attaccato a una parola o a un simbolo («in pensione{0}.», «oggetti{1}») è un'aggiunta che può
+    // mancare: può anche restare vuoto (prima «…lasciarli in pensione.» restava in italiano quando non c'era niente da aggiungere)
+    let prev='';
+    for(const p of parts){const m=p.match(/^\{(\d+)\}$/);if(m){if(prevPh){skip.push(+m[1]);continue}ids.push(+m[1]);re+=/[\p{L}\p{N}\p{Extended_Pictographic})»]$/u.test(prev)?'(.*?)':'(.+?)';prevPh=true}else{if(p)prevPh=false;prev=p;re+=i18Esc(p)}}
     re+='$';let rx;try{rx=new RegExp(re,'su')}catch(e){continue}
     const pat={rx,ids,skip,v,len:nk.replace(/\{\d+\}/g,'').length};
     const L=parts[0],T=parts[parts.length-1];
@@ -49,6 +52,8 @@ function i18Find(s,depth){const ex=I18.ex.get(s);if(ex!=null)return ex;if(depth>
   // simboli davanti o dietro (🌲 Foresta di Elmwood, ⚔ Campi di battaglia)
   {const m=s.match(/^([^A-Za-zÀ-ÿ0-9«"(¿¡]+)(.*[A-Za-zÀ-ÿ].*)$/u);if(m&&m[2].trim()!==s){const r=i18Find(m[2].trim(),depth+1);if(r!=null)return m[1]+r}}
   {const m=s.match(/^(.*[A-Za-zÀ-ÿ.!?)»])([^A-Za-zÀ-ÿ0-9.!?)»]+)$/u);if(m&&m[1]!==s){const r=i18Find(m[1],depth+1);if(r!=null)return r+m[2]}}
+  // 8.12.2: il potenziamento e la maestria dietro il nome di un oggetto («Spada +2», «Clava del Troll +1 ★3»)
+  {const m=s.match(/^(.*[A-Za-zÀ-ÿ'])((?:\s[+★]\d+)+)$/u);if(m){const r=i18Find(m[1],depth+1);if(r!=null)return r+m[2]}}
   for(const sep of[' · ',' — ',', ']){if(!s.includes(sep))continue;const P=s.split(sep);let ch=0;const R=P.map(x=>{const t=x.trim();if(!t||!/[A-Za-zÀ-ÿ]/.test(t))return x;let r=i18Find(t,depth+1);if(r==null&&sep===' · '){const r2=i18Find('· '+t,depth+1);if(r2!=null)r=r2.replace(/^·\s*/,'')}if(r!=null){ch++;return x.replace(t,r)}return x});if(ch&&(sep!==', '||P.every(x=>x.split(' ').length<=4)))return R.join(sep)}
   const F=s.split(/(?<=[.!?…»])\s+(?=[«A-ZÀ-Ý¡¿0-9])/);if(F.length>1){let ch=0;const R=F.map(x=>{const r=i18Find(x,depth+1);if(r!=null){ch++;return r}return x});if(ch)return R.join(' ')}
   return null}

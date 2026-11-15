@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-128 versions, newest first.
+129 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.12.2](voxelia_v8.12.2.html) | November 15, 2026 | Maintenance: item names and characters in English (Steel, Rune and Dragon gear, upgraded items, the backpack comparison, ten lines of dialogue) | 4,117 KB |
 | [8.12.1](voxelia_v8.12.1.html) | November 14, 2026 | Maintenance: the admin panel's Rooms tab and log (the Jade Temple without "undefined", the log in English) | 4,112 KB |
 | [8.12](voxelia_v8.12.html) | November 13, 2026 | Voxelia in English, the last stage: Voxelia Studio and the community worlds, the server's messages and the admin panel (English or Italian) | 4,111 KB |
 | [8.11](voxelia_v8.11.html) | November 13, 2026 | Voxelia in English, stage 2: Tomorrow (contracts, factions, towns, houses, mines, caravans, wars), unique items, the 3D and VR views and the Voxeliaverse | 3,928 KB |

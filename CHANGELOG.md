@@ -6,6 +6,16 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.12.2 — Maintenance: item names and characters in English (November 15, 2026)
+
+- **Weapons and armor found in the world have English names.** Steel, Rune and Dragon gear (every rare, epic and legendary item found at random) kept its Italian name in English: "Pugnale delle Rune", "Cotta di maglia d'Acciaio". Now it's "Rune Dagger", "Steel Chainmail", "Dragon Sword", in the backpack, the shops and the messages ("Collected: Rune Dagger +2").
+- **Upgraded items too.** A name followed by its upgrade or mastery ("Sword +2", "Troll's Club +1 ★3") stayed in Italian even for common items: now it's translated, with the number kept.
+- **The comparison in the backpack.** The line "Compared to …" under an item, with the attack, defense and HP differences, and the tooltip of the backpack bar ("3 of 24 items") were in Italian.
+- **Ten lines of dialogue** from characters of Aldoria (the Royal Guard, Gerald, the croupier, Stefano the Mad Horse, the archivist and others) had no translation and appeared in Italian.
+- **Sentences with an optional ending.** Some texts with a part that is sometimes empty (for example "…and retire them." in the companions window, or "Sold 7 items") stayed in Italian when that part was missing.
+
+---
+
 ## 8.12.1 — Maintenance: the admin panel's Rooms tab and log (November 14, 2026)
 
 - **No more "undefined" in the Rooms tab.** The admin panel didn't know the name of the Jade Temple (a dungeon since 7.48): in every room its cycle box was labelled "undefined", and a player inside it was shown as "tempio48@2" in the Players list. Now it says "Jade Temple" like the other dungeons.

@@ -3583,5 +3583,31 @@ Object.assign(ENX,{
 "Accendi tutte":"Light all",
 "Spegni":"Put out",
 "Filmati":"Cutscenes",
-"☠ Minaccia e Atto II":"☠ Threat and Act II"
+"☠ Minaccia e Atto II":"☠ Threat and Act II",
+// 8.12.2: il confronto con l'oggetto indossato e la barra dello zaino (6_ui.js) restavano in italiano
+"Rispetto a {0}:":"Compared to {0}:",
+"+{0} ATT":"+{0} ATK",
+"-{0} ATT":"-{0} ATK",
+"+{0} DIF":"+{0} DEF",
+"-{0} DIF":"-{0} DEF",
+"+{0} PV":"+{0} HP",
+"-{0} PV":"-{0} HP",
+"uguale":"same",
+"{0} oggetti su {1}":"{0} of {1} items",
+// 8.12.2: battute dei personaggi (NPCS in 2_data.js) che non avevano la traduzione
+"La Cittadella del Vuoto... dicono che le sue mura si muovano da sole.":"The Void Citadel... they say its walls move on their own.",
+"Mio figlio Tommaso non sta mai fermo...":"My son Tommaso never sits still...",
+"Ai miei tempi ero il miglior lanciere del regno. Poi ho preso una freccia... nella schiena.":"In my day I was the best spearman in the kingdom. Then I took an arrow... in the back.",
+"La fortuna ama gli audaci... e chi sa fermarsi.":"Fortune favors the bold... and those who know when to stop.",
+"La luce del tramonto su Aldoria... impossibile da dipingere.":"The sunset light over Aldoria... impossible to paint.",
+"Shh... stanno abboccando.":"Shh... they're biting.",
+"Acqua... per favore...":"Water... please...",
+"Aspetto il mio mantello da tre settimane...":"I've been waiting for my cloak for three weeks...",
+"Alcuni registri sono stati... riordinati. Su ordine del Ciambellano.":"Some records have been... rearranged. On the Chamberlain's orders.",
+"Mi chiamano il Cavallo Pazzo da quando inseguii un tonno al galoppo... dentro il mare. Col cavallo. Non chiedere.":"They've called me the Mad Horse ever since I chased a tuna at a gallop... into the sea. On horseback. Don't ask."
 });
+// 8.12.2: le armi e le armature trovate a caso (item() in 2_data.js) hanno il nome fatto di due pezzi, «Spada» + « delle Rune»:
+// in inglese restavano in italiano. Qui le voci di tutte le combinazioni, sul modello di «Celata del Drago» → «Dragon Sallet»
+// (quelle già scritte a mano restano come sono).
+{const SUF={" d'Acciaio":'Steel'," delle Rune":'Rune'," del Drago":'Dragon'};
+  for(const s in SL)for(const b of SL[s])for(const k in SUF){const n=b+k;if(ENX[n]==null&&ENX[b])ENX[n]=SUF[k]+' '+ENX[b]}}

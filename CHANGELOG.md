@@ -6,6 +6,13 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.12.1 — Maintenance: the admin panel's Rooms tab and log (November 14, 2026)
+
+- **No more "undefined" in the Rooms tab.** The admin panel didn't know the name of the Jade Temple (a dungeon since 7.48): in every room its cycle box was labelled "undefined", and a player inside it was shown as "tempio48@2" in the Players list. Now it says "Jade Temple" like the other dungeons.
+- **The log and the floors in English.** With the panel in English, many log lines stayed in Italian or came out half and half ("Anna joined nella stanza prova"): logins, bans, kicks, mutes, announcements, worlds, leaderboard, rooms, plugins and server start. Now they're in English, and so are the dungeon floors in the Players list ("Forgotten Crypt · floor 2") and the cycle boxes' labels for screen readers. In Italian nothing changes.
+
+---
+
 ## 8.12 — Voxelia in English, the last stage: Voxelia Studio, the server and the admin panel (November 13, 2026)
 
 The English translation is complete: every part of the game now speaks English by default, and Italian stays one click away in Settings.

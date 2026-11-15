@@ -5,6 +5,17 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.12.2 — Manutenzione: nomi degli oggetti e personaggi in inglese (15 novembre 2026)
+
+- **Le armi e le armature trovate hanno il nome in inglese.** L'equipaggiamento d'Acciaio, delle Rune e del Drago (tutti gli oggetti rari, epici e leggendari trovati a caso) in inglese teneva il nome italiano: «Pugnale delle Rune», «Cotta di maglia d'Acciaio». Ora si legge «Rune Dagger», «Steel Chainmail», «Dragon Sword», nello zaino, nelle botteghe e nei messaggi («Collected: Rune Dagger +2»).
+- **Anche gli oggetti potenziati.** Un nome seguito dal potenziamento o dalla maestria («Spada +2», «Clava del Troll +1 ★3») restava in italiano anche per gli oggetti comuni: ora si traduce, con il numero com'era.
+- **Il confronto nello zaino.** La riga «Rispetto a …» sotto un oggetto, con le differenze di attacco, difesa e vita, e il suggerimento della barra dello zaino («3 oggetti su 24») erano in italiano.
+- **Dieci battute** di personaggi di Aldoria (la Guardia Reale, Gerald, il croupier, Stefano il Cavallo Pazzo, l'archivista e altri) non avevano la traduzione e comparivano in italiano.
+- **Frasi con una parte che può mancare.** Alcuni testi con un pezzo a volte vuoto (per esempio «…lasciarli in pensione.» nella finestra dei compagni, o «Venduti 7 oggetti») restavano in italiano quando quel pezzo mancava.
+- In italiano non cambia niente.
+
+---
+
 ## 8.12.1 — Manutenzione: la scheda Stanze e il registro del pannello admin (14 novembre 2026)
 
 - **Niente più «undefined» nella scheda Stanze.** Il pannello admin non conosceva il nome del Tempio di Giada (un dungeon dalla 7.48): in ogni stanza la casella del suo ciclo si chiamava «undefined», e un giocatore al suo interno compariva come «tempio48@2» nell'elenco dei Giocatori. Ora si legge «Tempio di Giada» come gli altri dungeon.

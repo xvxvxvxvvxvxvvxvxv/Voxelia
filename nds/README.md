@@ -1,15 +1,15 @@
-# Voxelia DS 1.3 — Il Regno Perduto
+# Voxelia DS 1.4 — Il Regno Perduto
 
-Versione del port: **1.3** (contenuti di Voxelia **8.5**).
+Versione del port: **1.4** (contenuti di Voxelia **8.12.1**).
 
-Port per **Nintendo DS / DS Lite / DSi** di *Voxelia 8.5 – Il Regno Perduto*. Usa la stessa base del port
+Port per **Nintendo DS / DS Lite / DSi** di *Voxelia 8.12.1 – Il Regno Perduto*. Usa la stessa base del port
 per 3DS (cartella [`3ds/`](../3ds)):
 - **in comune con il 3DS:** logica del gioco, mondo, missioni e storia, interfaccia, rete e plugin del server;
 - **riscritti per il DS:** grafica, testo, audio e comandi.
 
 | | |
 |---|---|
-| **Scarica** | [`releases/voxelia_nds_v1.3.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/nds/releases/voxelia_nds_v1.3.zip): `voxelia.nds`, README, CHANGELOG e PLUGIN |
+| **Scarica** | [`releases/voxelia_nds_v1.4.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/nds/releases/voxelia_nds_v1.4.zip): `voxelia.nds`, README, CHANGELOG e PLUGIN |
 | **Novità** | [CHANGELOG.md](CHANGELOG.md) · **Plugin del server:** [PLUGIN.md](PLUGIN.md) |
 | **In questa cartella** | il port DS: il codice (`source/`), i dati per la ROM (`nitro/`, ricavati da quelli del 3DS), mbedtls per l'ARM9 (`libs/`), gli strumenti (`tools/`) e gli zip di ogni versione (`releases/`) |
 | **Gli altri port** | nelle cartelle accanto di questo branch: 3DS in [`3ds/`](../3ds), PS Vita in [`psvita/`](../psvita), PS4 in [`ps4/`](../ps4), PSP in [`psp/`](../psp); il gioco per browser e il server sul branch `main` |
@@ -80,7 +80,7 @@ Il gioco cifra comunque i dati verso il server con TLS, anche su una rete aperta
 Il DS ha 4 MB di RAM, un processore a 67 MHz senza virgola mobile e disegna al massimo 1.536 quadrilateri per
 fotogramma. Il 3DS disegna decine di migliaia di voxel. Quindi:
 - **Mondo a blocchi.** Ogni casella è un pavimento più al massimo un blocco (tetto e lati colorati), ricavato dai
-  voxel della 8.5 da `tools/dsassets.py`. Gli edifici si riconoscono, i dettagli piccoli no.
+  voxel della 8.12.1 da `tools/dsassets.py`. Gli edifici si riconoscono, i dettagli piccoli no.
 - **Personaggi come sprite.** Nemici, personaggi ed eroe sono sprite a 16 colori ricavati dai modelli animati,
   in 5 direzioni (le altre 3 sono specchiate).
   - L'eroe mostra il tipo di arma, la corazza, l'elmo e lo scudo, con i colori della rarità.
@@ -95,10 +95,12 @@ fotogramma. Il 3DS disegna decine di migliaia di voxel. Quindi:
 - **Varianti dei compagni:** sul DS i compagni sono sprite già colorati, quindi la variante si vede nel nome ma
   non cambia i colori.
 
-Contenuti, missioni, storia e meccaniche sono quelli del port **3DS 1.7** (Voxelia 8.5): nemici condivisi in rete,
+Contenuti, missioni, storia e meccaniche sono quelli del port **3DS 1.8** (Voxelia 8.12.1): nemici condivisi in rete,
 cavalli, animali, compagni con Serraglio e incroci, elementi, scelte e titoli, il regno oltre il mare, boss a fasi,
 armi che crescono, maledizioni, scavi, eventi a orario, scoperte, Bottega dei mestieri, Torre della Corona (le sale
-si costruiscono sul DS), carte, e la difficoltà della 8.3. Sul touch ci sono **Comp.**, **Doma** e **Sella**.
+si costruiscono sul DS), carte, la difficoltà della 8.3, e dalla 1.4 Aldoria Vecchia con i segreti e il vero
+finale (l'Abominio in cinque fasi, disegnato a blocchi), la Minaccia del Regno con le notti e le invasioni, e
+l'Atto II · La città sepolta (Eldora, i tre Custodi, il Re di Pietra). Sul touch ci sono **Comp.**, **Doma** e **Sella**.
 Restano fuori le stesse cose del 3DS (pesca, miniere, Tomorrow…).
 
 ## Compilare

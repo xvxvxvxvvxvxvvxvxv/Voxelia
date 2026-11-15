@@ -31,7 +31,7 @@ const JS=`(${function(){
     return addModel(fr,4)}
   // 3DS 1.5: le cose della storia che la 3DS disegna e usa da sé (con la posizione del browser) non vanno nella geometria fissa
   const XK=['dig','dil48','stalla46','gara46','ani47s','mest47','al48','sig48','torre43','merc46','met46','ani47','pet','rpet','torb54'];
-  const STATICK=k=>!['npc','en','ch','cho','dr','shard','lore','dead','pl','tc','abo','resx','lev'].includes(k)&&!XK.includes(k);
+  const STATICK=k=>!['npc','en','ch','cho','dr','shard','lore','dead','pl','tc','abo','resx','lev','reliq','shard7','figura','mkghost','elara_free'].includes(k)&&!XK.includes(k);
   function capZone(k){load(k);const sp=[+P.px.toFixed(2),+P.py.toFixed(2)];let vp=null;if(ZZ.lay)ZZ.lay.forEach((r,y)=>{const x=r.indexOf('V');if(x>=0)vp=[x+.5,y+.5]});t=0;NK=0;DK=0;FC=null;P.px=-999;P.py=-999;P.path=[];P.tg=null;PA=null;PM=0;
     const z=ZZ,n=N,B=[],L=[];LREC=L;
     for(let y=0;y<n;y++)for(let x=0;x<n;x++){CUR=[];try{tile(x,y)}catch(err){}for(const b of enc(CUR,0,0))b[10]=y*n+x,B.push(b)}
@@ -44,6 +44,7 @@ const JS=`(${function(){
       else if(e.k==='po'){q.to=e.to;q.st=e.st;q.n=e.n0||e.n;q.col=e.col;if(seal)q.seal=1,e.seal=seal;if(e.lock)q.lock=e.lock,q.lockMsg=e.lockMsg;}
       else if(e.k==='ch'){if(e.rich)q.rich=1;if(e.hc)q.hc=e.hc}
       else if(e.n)q.n=e.n;
+      if(e.sid)q.sid=e.sid;if(typeof e.li==='number')q.li=e.li;if(e.k==='ins88')q.i=e.i;if(e.look)q.look=e.look;
       if(e.id!=null&&typeof e.id==='string')q.id=e.id;if(e.r!=null&&typeof e.r==='string')q.r=e.r;
       E2.push(q)}
     LREC=null;
@@ -76,11 +77,22 @@ const JS=`(${function(){
       X.props.dil48=capFn((fc)=>{P.px=12+D[fc][0]*3;P.py=12+D[fc][1]*3;ent(e)},[0]);P.px=ox;P.py=oy}catch(err){}
     // l'elemento di ogni specie (7.55): dal nome o dal colpo; '' se dipende dal tema della zona
     X.el={};if(typeof elOfType==='function')for(const k of Object.keys(E)){const a=elOfType(k,{th:'cave'}),b=elOfType(k,{th:'fire'});X.el[k]=a===b?a:'';X.elh=X.elh||{};X.elh[k]=ELK55[hs(k)%ELK55.length]}
+    // 8.12.1: il vero finale e l'Atto II (l'Abominio: il corpo nelle sue fasi e le quattro braccia; i fantasmi; i personaggi che cambiano)
+    try{X.abo={};const sv=ents,oO=OCC,t0=t,te=P.te;t=1.3;
+      const cap=(arms,ph,cl,te2)=>{ents=arms.map(i=>({k:'en',t:'abo_braccio',ax:ARMS[i][0],ay:ARMS[i][1],fl:0}));OCC=ph?{ph,closed:cl?1e9:0,pools:[]}:null;P.te=te2||1;
+        CUR=[];try{aboDraw({k:'abo',px:BX,py:BY})}catch(err){}const f=enc(CUR,BX,BY);CUR=null;return f};
+      const none=cap([],1),key=b=>JSON.stringify(b),base=new Set(none.map(key));
+      X.abo.b1=addModel([none],1);for(let i=0;i<4;i++){const f=cap([i],1).filter(b=>!base.has(key(b)));X.abo['a'+i]=addModel([f],1)}
+      X.abo.b2=addModel([cap([],2)],1);X.abo.b2c=addModel([cap([],2,1)],1);X.abo.b4=addModel([cap([],4)],1);X.abo.b5=addModel([cap([],5)],1);X.abo.b0=addModel([cap([],0,0,2)],1);
+      ents=sv;OCC=oO;t=t0;P.te=te}catch(err){console.error('abo',String(err).slice(0,200))}
+    try{X.npc88={};const gh=mkNpc('malakar_g',12,12);gh.m=malakarGhostM();gh.ghost=1;X.npc88.malakar_g=capNpc(gh);
+      for(const id of ['malakar_re','aldric_p','elara']){const e=mkNpc(id,12,12);X.npc88[id]=capNpc(e)}
+      const v=mkNpc('vael88',12,12);if(typeof vael88M==='function')v.m=vael88M();v.ghost=1;X.npc88.vael88=capNpc(v)}catch(err){console.error('npc88',String(err).slice(0,200))}
     return X}
   window.__VX={capZone,capEn,capNpc,capHero,capX,MODELS,col};return 1}})()`;
 setTimeout(()=>{try{
   ev('begin(1,null)');ev(JS);
-  const skip=/^(neo_|pl82_|cuore80|dim_|mare$|arrembaggio|stiva|sogno|bat_|mare_|cella|occhio|culto|vecchia|torre\d|cava43|abissi46)/;
+  const skip=/^(neo_|pl82_|cuore80|dim_|mare$|arrembaggio|stiva|bat_|mare_|vecchia_viva|torre\d|cava43|abissi46)/;
   const zones=ev('Object.keys(Z)').filter(k=>!skip.test(k));
   const dgs=ev('Object.keys(DG).map(k=>[k,DG[k].fls])');
   const list=[];for(const k of zones)list.push([k,0]);for(const[d,f]of dgs)for(let fl=1;fl<=f;fl++)for(let run=0;run<2;run++)list.push([d+'@'+fl,run]);
@@ -93,7 +105,7 @@ setTimeout(()=>{try{
   // nemici
   ev(`load('forest')`);
   const et=ev('Object.keys(E)');const EN={};
-  for(const t of et){try{const mdl=ev(`(()=>{const e=mk(${JSON.stringify(t)},12,12);return __VX.capEn(e)})()`);EN[t]=mdl}catch(e){console.error('nemico',t,String(e).slice(0,120))}}
+  for(const t of et){try{const mdl=ev(`(()=>{const e=mk(${JSON.stringify(t)},12,12);if(e.t==='elara_ombra'&&typeof elaraShade==='function')e.m=elaraShade();return __VX.capEn(e)})()`);EN[t]=mdl}catch(e){console.error('nemico',t,String(e).slice(0,120))}}
   const XM=ev('__VX.capX()');
   const models=ev('__VX.MODELS');writeModels(path.join(OUT,'models.bin'),models);
   const hero=ev('__VX.capHero()');writeHero(path.join(OUT,'hero.bin'),hero);
@@ -101,6 +113,13 @@ setTimeout(()=>{try{
     NPCS,QT,DG,STORY,RESN:typeof RESN!=='undefined'?RESN:{},SHT,LORE,DGH:typeof DGH!=='undefined'?DGH:{},RC,RN,SL,SN,UQ,LG,LGA,DFS,TH,VILL,VLINES,EQT,
     Z:Object.fromEntries(Object.entries(Z).map(([k,v])=>[k,{n:v.n,N:v.N,lv:v.lv,int:v.int?1:0,out:SKY[k]?1:0}]))}))`);
   for(const t in EN)if(data.E[t])data.E[t].mdl=EN[t];
+  // 8.12.1: i testi della verità, dell'Atto II, della Minaccia del Regno e dei filmati
+  const XD=ev(`JSON.parse(JSON.stringify((()=>{const F={};for(const k in FILMS){const f=FILMS[k];F[k]={n:f.n,L:(f.L||[]).map(s=>({ti:s.title||'',sub:s.sub||'',who:s.who||'',tx:s.tx||''}))}}
+    const cond=q=>{if(!q[3])return'';const s=String(q[3]);if(s.includes('ins'))return'ins';const m=s.match(/b\\[(\\d)\\]/);return m?'b'+m[1]:''};
+    const QB={};for(const id in QA88)QB[id]=QA88[id].map(q=>[q[0],q[1],q[2],cond(q)]);
+    return{TRU:{SECD,TRUTHT,QA,VNOTES:typeof VNOTES!=='undefined'?VNOTES:[],DLINES,ENDC:ENDC.map(c=>c.tx),ARRC:ARRC.map(c=>c.tx),WELL},
+      A88:{INS88,A88T,A88S,A88WHO,QA88:QB,B88,A88P},TH86:{N:THN86,D:THD86},FILMS:F}})()))`);
+  Object.assign(data,XD);
   data.zones=meta;data.XM=XM;fs.writeFileSync(path.join(OUT,'data.json'),JSON.stringify(data));
   console.log('zone',tot,'modelli',models.length,'eroe',hero.length);process.exit(0)}catch(e){console.error(e);process.exit(1)}},2500);
 function u16(a,v){a.push(v&255,(v>>8)&255)}

@@ -38,6 +38,12 @@ typedef struct {
 	char egA[24], egB[24], egNa[24], egNb[24]; u8 egVa, egVb; double egT;   // incroci (7.47)
 	u8 crt[57], crtSt, crtW[4]; u16 crtV, crtN;   // carte (7.47)
 	u32 mkK; u16 mxp[3]; u8 cib[24]; s8 meal, eli; double mealU, eliU; struct { u32 key; u8 tp; } tmp[8]; ResCount xres[24];
+	// 8.12.1 (story10.c, story11.c): segreti e verità, vero finale, il passaggio nel muro, le reliquie del giorno, i filmati visti
+	u32 sec; u8 secR1, secR2, tru, s7, te, key, vcult, vdug; u16 vdp; u32 film; s32 vld; u32 vl, vn;
+	// la Minaccia del Regno (giorni, l'alba di Eldora, il massimo annunciato) e le invasioni
+	float thD, thSub; u8 thMax, thIntro, ntSaid, ivN, ivWon, ivLost, ivZ, ivW, ivOn, ivId; s16 ivLs; float ivSt, ivEnd, ivPen;
+	// l'Atto II: il passo, i Custodi liberati, le Pietre della Memoria
+	u8 a2s, a2b, a2insR, a2ann; u16 a2ins;
 	// spazio per le versioni dopo
 	u8 future[64];
 } HeroX;
@@ -155,6 +161,12 @@ int incBuild(int page); int incAct(int a, int i); void incTick(float dt); float 
 int xPanelAct3(int a, int i);
 void x3DrawLabels(void);
 // story9.c: la difficoltà della Storia (7.11, 8.1, 8.3)
+// story10.c, story11.c: la 8.12.1
+bool t10Json(const char *k, J *e, float x, float y); void t10ZonePre(void); void t10Zone(void); void t10Tick(float dt); void t10Kill(Ent *dead);
+bool t10Interactable(Ent *e); const char *t10Verb(Ent *e); bool t10ActEnt(Ent *e); bool t10Draw(Ent *e); int t10Hit(Ent *e, int d); bool t10Shield(void); float t10AtkMul(void);
+bool t10Npc(const char *nid); int t10Build(int page); int t10Act(int a, int i); void t10Pause(void); bool t10Obj(char *out, int n); bool tSeqNext(void);
+void thMk(Ent *e); int thHit(Ent *e, int d); bool thAI(Ent *e, float d, float dt); void thShoot(Ent *e); void thKill(Ent *dead); void thDraw(Ent *e); void thZone(void); void thTick(float dt);
+const char *thHud(u32 *col); float thPriceMul(void); void thPause(void); int thLevel(void);
 int lv83(const char *k, int lv0); void hardMk(Ent *e); void hardZone(void); void hardTick(float dt); float mer83(void); extern int ZLV0;
 // ui.c
 void uiXTitle(const char *ti, const char *body);

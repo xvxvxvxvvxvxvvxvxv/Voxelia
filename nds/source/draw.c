@@ -178,6 +178,7 @@ void drawPeers(void) {
 
 void drawEntity(Ent *e) {
 	float u;
+	if (e->k == K_EN) thDraw(e);   // 8.6: la guardia, lo scudo dei Campioni, la carica che si prepara
 	switch (e->k) {
 	case K_X: xDraw(e); return;
 	case K_TC: {
@@ -290,7 +291,7 @@ void drawWorldEntities(void) {
 	if (TITLE_MODE) { hs = (camY + 10) / 16.f; hd = camX / 32.f; }
 	for (int i = 0; i < NENT; i++) {
 		Ent *e = &ents[i]; if (!e->k) continue;
-		if (fabsf((e->px - e->py) - hd) > 11 || (e->px + e->py) - hs > 22 || (e->px + e->py) - hs < -16) continue;
+		if ((fabsf((e->px - e->py) - hd) > 11 || (e->px + e->py) - hs > 22 || (e->px + e->py) - hs < -16) && !(e->k == K_X && e->xk == 36)) continue;
 		drawEntity(e);
 	}
 	drawPeers();

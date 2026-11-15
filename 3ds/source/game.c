@@ -7,7 +7,7 @@ int MODE_DEAD = 0;
 Ent *IT = NULL, *TGT = NULL;
 float shake = 0;
 float gtime = 0;
-Fx FX[64]; int NFX = 0;
+Fx FX[NFXMAX]; int NFX = 0;
 Pop POP[48]; int NPOP = 0;
 Proj PJ[64]; int NPJ = 0;
 Part PARTS[256]; int NPARTS = 0;
@@ -37,13 +37,16 @@ void flt(float x, float y, const char *s, u32 c) {
 	Pop *p = &POP[NPOP++]; p->x = x; p->y = y; p->t = 1; p->c = c; snprintf(p->s, sizeof p->s, "%s", s);
 }
 void fxRing(float x, float y, float r, float t, u32 c) {
-	if (NFX >= 64) return;
+	if (NFX >= NFXMAX) return;
 	FX[NFX++] = (Fx){FX_RING, x, y, r, t, t, 0, 0, 0, c};
 }
 static void fxAdd(u8 k, float x, float y, float r, float t, float dmg) {
-	if (NFX >= 64) return;
+	if (NFX >= NFXMAX) return;
 	FX[NFX++] = (Fx){k, x, y, r, t, t, dmg, 0, 0, 0};
 }
+// 8.12.1: gli avvisi a terra e i colpi della storia (Abominio, Minaccia, Custodi)
+void fxWarn(float x, float y, float r, float t, float dmg) { fxAdd(FX_WARN, x, y, r, t, dmg); }
+void projAdd(float x, float y, float vx, float vy, float t, float d, u32 c) { if (NPJ < 64) PJ[NPJ++] = (Proj){x, y, vx, vy, t, d, c}; }
 void sparks(float x, float y, int n, u32 c, float sp) {
 	for (int i = 0; i < n && NPARTS < 256; i++) {
 		float a = frnd() * 6.283f, v = (.5f + frnd()) * sp / 60.f;
@@ -141,7 +144,7 @@ void gainXP(int x) {
 }
 typedef struct { int d; bool cr; } Roll;
 static Roll roll(float m) {
-	float d = atkV() * m * wmMul() * torDmgMul() * (.8f + frnd() * .4f); bool cr = false;   // 7.44: +4% per livello di maestria; benedizioni della Torre
+	float d = atkV() * m * wmMul() * torDmgMul() * t10AtkMul() * (.8f + frnd() * .4f); bool cr = false;   // 7.44: +4% per livello di maestria; benedizioni della Torre
 	if (P.pf > 0 || frnd() * 100 < critV() + torCritAdd()) { d *= 1.8f; cr = true; P.pf = 0; }
 	Roll r = {(int)roundf(d), cr}; if (r.d < 1) r.d = 1; return r;
 }
@@ -165,12 +168,13 @@ void hurtEnemyRaw(Ent *e, int d, bool cr) {
 	if (e->hp <= 0) killEnt(e);
 }
 // i colpi dell'eroe: con l'elemento dell'arma (7.55)
-static void hurtE(Ent *e, int d, bool cr) { d = bossDmg(e, d); if (d <= 0) return; wmHit(); torOnHit(d); const Item *w = &P.eq[SL_W]; int k = itemEl(w); xHurtEnemy(e, d, cr, k ? (k << 3) | itemElLv(w) : 0); }
+static void hurtE(Ent *e, int d, bool cr) { d = bossDmg(e, d); if (d > 0) d = t10Hit(e, d); if (d > 0) d = thHit(e, d); if (d <= 0) return; wmHit(); torOnHit(d); const Item *w = &P.eq[SL_W]; int k = itemEl(w); xHurtEnemy(e, d, cr, k ? (k << 3) | itemElLv(w) : 0); }
 void xHeroHit(Ent *e, float m) { Roll r = roll(m); hurtE(e, r.d, r.cr); }
 static void die(void);
 static void hurtP(float at);
 void hurtPfrom(float at) { hurtP(at); }
 static void hurtP(float at) {
+	if (t10Shield()) return;   // 8.12.1: lo scudo di Malakar
 	at *= torHurtMul();
 	if (P.hp <= 0) return;
 	if (P.iv > 0) { flt(P.px, P.py, "Schivata!", 0x8ce7ff); P.pf = 3; tone(900, .05f, W_TRIANGLE, .05f); return; }
@@ -441,6 +445,7 @@ static void shoot(Ent *e) {
 		float a = a0 + (i - (n - 1) / 2.f) * .25f;
 		PJ[NPJ++] = (Proj){e->px, e->py, cosf(a) * 7, sinf(a) * 7, 1.6f, e->at, E[e->t].rng};
 	}
+	thShoot(e);
 	tone(600, .05f, W_TRIANGLE, .03f);
 }
 
@@ -450,6 +455,10 @@ int qAvail(int nid) {
 	const NpcDef *d = ndef(nid);
 	if (!d || !d->nqs || P.nq >= MAXQ) return -1;
 	for (int i = 0; i < P.nq; i++) if (P.q[i].npc == nid) return -1;
+	// 8.12.1: il Moreau chiede di scavare il muro verso Aldoria Vecchia, poi di esplorarla
+	if (!strcmp(d->id, "moreau")) { int a = questIdx("mo5"), b = questIdx("mo6");
+		if (a >= 0 && !P.qd[a] && QT[a].lv <= P.lv + 1) return a;
+		if (a >= 0 && b >= 0 && P.qd[a] && !P.qd[b] && QT[b].lv <= P.lv + 1) return b; }
 	int n = d->nqs;
 	for (int k = 0; k < n; k++) {
 		int qi = questIdx(d->qs[(P.qi[nid] + k) % n]);
@@ -535,6 +544,7 @@ void npcMarks(void) {
 /* ---------------- storia ---------------- */
 static int shardCount(void) { int n = 0; for (int i = 0; i < NSHARD; i++) if (P.sh & (1u << i)) n++; return n; }
 void storyObj(char *out, int n) {
+	if (P.st >= 5 && t10Obj(out, n)) return;
 	switch (P.st) {
 	case 0: snprintf(out, n, "Parla con il Re Aldric, nel castello di Aldoria (a nord-ovest della città)."); break;
 	case 1: snprintf(out, n, "Recupera i frammenti della Corona di Voxel (%d/6) nei sei dungeon del regno.", shardCount()); break;
@@ -1090,6 +1100,7 @@ void gameUpdate(float dt) {
 		if (e->ptg) { if (xPetAlive(e->ptg)) continue; e->ptg = 0; }   // insegue il compagno
 		float spK = e->eSl > gtime ? e->eSlK : 1;
 		float d = dist(e, P.px, P.py);
+		if (thAI(e, d, dt)) continue;   // 8.6: guardia, carica, colpo pesante, indietreggiare
 		// 7.41: un altro eroe più vicino: il nemico va da lui, e il colpo glielo manda il gioco
 		{ extern Peer *syncNearestPeer(Ent *, float); extern void syncEH(const char *, float); Peer *tp = (e->al || d < e->ag) ? syncNearestPeer(e, d) : NULL;
 		  if (tp) { float pd = hyp(tp->x - e->px, tp->y - e->py);
@@ -1213,6 +1224,16 @@ void newGame(int df, const char *name) {
 	if (VOX_TEST == 25) { X.cavOn = 0; X.ess[6] = 20; loadZone("in_serraglio", "town"); xOpen(XP_SERR); }
 	if (VOX_TEST == 21) { X.cavOn = 0; loadZone("town", NULL); P.px = 34.5f; P.py = 37.4f; }
 	if (VOX_TEST == 22) { X.pet = -1; loadZone("forest", "town"); for (int i = 0; i < NENT; i++) if (ents[i].k == K_EN && !ents[i].boss) { ents[i].px = P.px + 2; ents[i].py = P.py + 1; ents[i].hp = ents[i].mx * .2f; break; } }
+	// 1.8 (8.12.1): il vero finale, l'Abominio, l'Atto II, la Minaccia del Regno
+	if (VOX_TEST >= 30 && VOX_TEST <= 39) { P.st = 5; P.sh = 63; P.lv = 26; recalc(); P.hp = P.mx; X.thD = 6; for (int i = 0; i < 4; i++) P.eq[i] = mkItem(26, 3, i); recalc(); P.hp = P.mx; }
+	if (VOX_TEST == 30) { X.sec = 0x7ffffff; X.tru = 1; loadZone("vecchia", "town"); P.px = 80.5f; P.py = 16.8f; }                 // il pozzo e il settimo cuore
+	if (VOX_TEST == 31) { X.te = 1; X.key = 1; X.s7 = 2; loadZone("occhio", "culto"); }                                                 // l'Abominio
+	if (VOX_TEST == 32) { X.te = 1; X.s7 = 2; loadZone("cella", "in_castle"); }                                                         // la cella e il fantasma
+	if (VOX_TEST == 33) { X.te = 2; X.a2s = 5; loadZone("eldora88", "vecchia"); }                                                       // Eldora
+	if (VOX_TEST == 34) { X.te = 2; X.a2s = 5; loadZone("fonderia88@3", NULL); for (int i = 0; i < NENT; i++) if (ents[i].k == K_EN && ents[i].boss) { P.px = ents[i].px + 3; P.py = ents[i].py; } }   // Brunilde
+	if (VOX_TEST == 35) { X.te = 2; X.thD = 40; loadZone("forest", "town"); }                                                           // la Minaccia alta
+	if (VOX_TEST == 36) { X.te = 2; loadZone("in_castle", "town"); for (int i = 0; i < NENT; i++) if (ents[i].k == K_NPC && ents[i].nid == npcIdx("malakar_re")) { P.px = ents[i].px; P.py = ents[i].py + 1.2f; } }                                                                    // Re Malakar
+	if (VOX_TEST == 37) { X.te = 1; X.key = 1; X.s7 = 2; loadZone("occhio", "culto"); for (int i = 0; i < NENT; i++) if (ents[i].k == K_EN) ents[i].hp = 1; }   // l'Abominio, fasi in fila
 #ifdef VOX_URL
 	snprintf(NETC.url, sizeof NETC.url, "%s", VOX_URL); snprintf(NETC.code, sizeof NETC.code, "test3ds"); netStart();
 #endif

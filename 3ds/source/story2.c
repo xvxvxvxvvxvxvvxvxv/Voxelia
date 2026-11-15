@@ -131,12 +131,12 @@ static const PathDef STP[3] = {{"Via della misericordia", "I mercanti ti stimano
 	{"Via della spada", "Temprato dalle battaglie: vita massima +6%. Ma i mercanti ti temono: prezzi +10%.", "la Spada di Aldoria"},
 	{"Via dell'equilibrio", "Né troppo buono né troppo duro: il regno non sa ancora che cosa aspettarsi da te.", "il Custode dell'Equilibrio"}};
 enum { PATH_PACE, PATH_SPADA, PATH_EQUI };
-static const char *TITN[8] = {"il Misericordioso", "la Spada di Aldoria", "il Custode dell'Equilibrio", "Eroe di Thalassa", "", "", "", ""};
+static const char *TITN[8] = {"il Misericordioso", "la Spada di Aldoria", "il Custode dell'Equilibrio", "Eroe di Thalassa", "Lettore di Eldora", "Custode della Memoria", "", ""};
 static int karma(void) { int a = 0; for (int i = 0; i < 12; i++) a += X.bossCh[i]; return a + clampi(X.dilSum, -5, 5); }
 static int stPath(void) { int k = karma(); return k >= 3 ? PATH_PACE : k <= -3 ? PATH_SPADA : PATH_EQUI; }
 static int lastPath = -1;
 static void stCheck(void) { int p = stPath(); if (lastPath >= 0 && lastPath != p) banner(STP[p].n, STP[p].d); lastPath = p; recalc(); }
-float xPriceMul(void) { int p = stPath(); return p == PATH_PACE ? .9f : p == PATH_SPADA ? 1.1f : 1; }
+float xPriceMul(void) { int p = stPath(); return (p == PATH_PACE ? .9f : p == PATH_SPADA ? 1.1f : 1) * thPriceMul(); }
 float xHpMul(void) { return (stPath() == PATH_SPADA && (karma() || X.dilN) ? 1.06f : 1) * (malOn(4) ? .7f : 1) * mestHpMul() * torHpMul(); }
 const char *titleNow(void) { return X.title >= 0 && X.title < 8 && (X.titles & (1u << X.title)) ? TITN[X.title] : ""; }
 void titleAdd(int id) { if (X.titles & (1u << id)) return; X.titles |= 1u << id; if (X.title < 0) X.title = id; char b[64]; snprintf(b, sizeof b, "Nuovo titolo: %s", TITN[id]); banner(b, "Si sceglie nella Cronaca (menu)"); saveGame(); }
@@ -286,11 +286,12 @@ static const char *OLS[6] = {"Al Porto di Aldoria la Capitana Marina cerca chi l
 static int olSigN(void) { return X.olSig[0] + X.olSig[1] + X.olSig[2]; }
 const char *olStatus(void) { static char b[160]; int s = X.olS > 5 ? 5 : X.olS; if (s == 2) snprintf(b, sizeof b, "%s (%d/3).", OLS[2], olSigN()); else snprintf(b, sizeof b, "%s", OLS[s]); return b; }
 bool xNpcStory(const char *nid) {
+	bool t10 = t10Npc(nid);
 	if (!strcmp(nid, "capitanomarina48")) { uiXOpt(Zk[0] && !strcmp(Zk, "thal48") ? "Torna al Porto di Aldoria" : "Parla della traversata per Thalassa", "", XARG(XA_GO, XP_MARINA), C_GOLD, false); return true; }
 	if (!strcmp(nid, "oreste48")) { uiXOpt("Ascolta il Cancelliere", "", XARG(XA_GO, XP_ORESTE), C_GOLD, false); return true; }
 	if (!strcmp(nid, "selene55")) { uiXOpt("Il Serraglio: potenzia, modifica, muta forma, pensione, uova", "", XARG(XA_GO, XP_SERR), C_GOLD, false); return true; }
 	if (!strcmp(nid, "nerea48")) { uiXOpt("Parla con la Regina", "", XARG(XA_GO, XP_NEREA), C_GOLD, false); return true; }
-	return false;
+	return t10;
 }
 void olZoneLoad(void) {
 	if (!strcmp(Zk, "in_pal48") && X.olS >= 4) {

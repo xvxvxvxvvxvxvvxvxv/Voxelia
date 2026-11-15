@@ -14,8 +14,8 @@
 #include <stdarg.h>
 #include "json.h"
 
-#define PORT_VER "1.3"            // versione del port per DS
-#define DATA_VER "7.50"           // versione di Voxelia da cui arrivano mappe, modelli e testi
+#define PORT_VER "1.4"            // versione del port per DS
+#define DATA_VER "8.12.1"          // versione di Voxelia da cui arrivano mappe, modelli e testi
 #define GAME_VER "DS " PORT_VER
 #define DATADIR "nitro:/"
 // colori come citro2d (r, g, b, a in un u32): l'interfaccia del 3DS si usa così com'è
@@ -146,6 +146,12 @@ void modelsLoad(void);
 enum { K_NONE, K_EN, K_NPC, K_PO, K_CH, K_DR, K_SHARD, K_LORE, K_TC, K_DEAD, K_CHO, K_RES, K_PEER, K_LEV, K_X };
 enum { PO_DOOR, PO_EXIT, PO_GATE, PO_DUN, PO_DOWN, PO_UP, PO_VOID, PO_OTHER };
 
+// 8.12.1 (story10.c, story11.c): la Minaccia del Regno (guardia, carica, poteri dei Campioni), le parti dell'Abominio,
+// i Custodi dell'Atto II
+typedef struct {
+	float gd, gb, gn, dg, cn, kp, kt, wu, ds, vp, fu, bt, bx, ph, n88, inkT, shd, ax, ay, wdx, wdy, wlen;
+	u16 bar, bmx; u8 gh, hv, wk, af, brf, ev, role, lv, lb, p88, i88, ink, mir, vul, anc, nt, iv;
+} T86;
 typedef struct {
 	u8 k;
 	float px, py;
@@ -191,6 +197,7 @@ typedef struct {
 	char sg[24]; s8 own;
 	u8 bph, bstg; float bshd, bwkO, bwkN, bstn;   // boss a fasi (7.44)
 	u8 pk, fury, champ;                           // branco, ultima furia, Campione (7.11)
+	T86 t1;                                       // 8.12.1
 } Ent;
 extern Ent ents[MAXE];
 extern int NENT;
@@ -388,7 +395,8 @@ const char *cbMoveName(void);
 const char *cbHeavyName(void);
 float cbCharge(void);
 float cbHeavyCd(void);
-extern Fx FX[64]; extern int NFX;
+#define NFXMAX 160
+extern Fx FX[NFXMAX]; extern int NFX;
 extern Pop POP[48]; extern int NPOP;
 extern Proj PJ[64]; extern int NPJ;
 extern Part PARTS[256]; extern int NPARTS;

@@ -21,7 +21,7 @@ GFXBUILD	:=	$(BUILD)
 ROMFS		:=	romfs
 
 APP_TITLE	:=	Voxelia
-APP_DESCRIPTION	:=	Il Regno Perduto - port 3DS 1.7 (Voxelia 8.5)
+APP_DESCRIPTION	:=	Il Regno Perduto - port 3DS 1.8 (Voxelia 8.12.1)
 APP_AUTHOR	:=	Voxelia 3DS
 ICON		:=	icon.png
 

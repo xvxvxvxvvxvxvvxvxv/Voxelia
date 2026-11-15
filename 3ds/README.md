@@ -1,14 +1,14 @@
-# Voxelia 3DS 1.7 — Il Regno Perduto
+# Voxelia 3DS 1.8 — Il Regno Perduto
 
-Versione del port: **1.7** (contenuti di Voxelia **8.5**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
+Versione del port: **1.8** (contenuti di Voxelia **8.12.1**, le novità sono in [CHANGELOG.md](CHANGELOG.md)).
 
-Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 8.5 – Il Regno Perduto*,
+Port per **Nintendo 3DS / 3DS XL** (e New 3DS / 2DS) di *Voxelia 8.12.1 – Il Regno Perduto*,
 il gioco di ruolo voxel isometrico per browser. È riscritto da zero in C con devkitARM,
 libctru, citro3d e citro2d, e pensato per l'hardware della console.
 
 | | |
 |---|---|
-| **Scarica** | [`releases/voxelia_3ds_v1.7.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/3ds/releases/voxelia_3ds_v1.7.zip): `voxelia.3dsx`, README, CHANGELOG e PLUGIN |
+| **Scarica** | [`releases/voxelia_3ds_v1.8.zip`](https://github.com/xvxvxvxvvxvxvvxvxv/Voxelia/raw/ports/3ds/releases/voxelia_3ds_v1.8.zip): `voxelia.3dsx`, README, CHANGELOG e PLUGIN |
 | **Novità** | [CHANGELOG.md](CHANGELOG.md) · **Plugin del server:** [PLUGIN.md](PLUGIN.md) |
 | **In questa cartella** | il port 3DS: il codice (`source/`), i dati esportati dal gioco (`romfs/`), gli strumenti per rigenerarli (`tools/`) e gli zip di ogni versione (`releases/`) |
 | **Gli altri port** | nelle cartelle accanto di questo branch: DS in [`nds/`](../nds), PS Vita in [`psvita/`](../psvita), PS4 in [`ps4/`](../ps4), PSP in [`psp/`](../psp); il gioco per browser e il server sul branch `main` |
@@ -71,24 +71,25 @@ più velocemente, sinistra/destra per cambiare volumi, zoom e puntate. Le righe 
   - il cambio di brano come nell'originale: musica notturna in città, musica del boss quando è vicino, dissolvenze.
   Le note sono estratte da `voxelia.html` con `tools/songs.js` in `romfs/music.json`.
 
-## Contenuti: sincronizzati con la 8.5
+## Contenuti: sincronizzati con la 8.12.1
 
 Mappe, modelli, nemici, personaggi e missioni non sono più riscritti a mano: arrivano direttamente dalla versione
-browser più recente. `tools/export.js` esegue `voxelia.html` 8.5 in Node (jsdom, senza grafica), carica ogni
+browser più recente. `tools/export.js` esegue `voxelia.html` 8.12.1 in Node (jsdom, senza grafica), carica ogni
 zona con il codice originale e registra ogni voxel che il renderer disegna (`box`/`rbox`), oltre a collisioni,
 luci ed entità. Poi cattura in 8 direzioni i fotogrammi di camminata e di attacco dei modelli animati della 7.18
-e compone l'eroe per ogni tipo d'arma, elmo, corazza e scudo. Il risultato (circa 12 MB) sta nella romfs.
+e compone l'eroe per ogni tipo d'arma, elmo, corazza e scudo. Il risultato (circa 16 MB) sta nella romfs.
 
-- **134 file di zona**:
+- **164 file di zona**:
   - Aldoria con i quartieri Nord, Campi, Borgo delle Ceneri e Porto, la Foresta, il Deserto, i Picchi e il Colosseo;
   - 75 interni, tra cui le stanze del castello, il Serraglio, il palazzo e le case di Thalassa;
   - Thalassa e la Giungla di Smeraldo;
-  - gli 8 dungeon, compreso il Tempio di Giada, con due varianti per ogni piano (48 file).
-- **64 nemici e 15 boss**, con i modelli animati e le statistiche della 8.5 (il bilanciamento della 8.1 e della 8.3).
-- **197 personaggi**, ognuno con il proprio modello.
+  - Aldoria Vecchia, la stanza del culto, la cella, la stanza dell'Occhio ed Eldora, la città sepolta;
+  - i 12 dungeon, compresi il Tempio di Giada e i quattro dell'Atto II, con due varianti per ogni piano (72 file).
+- **77 nemici e 19 boss** (con le parti dell'Abominio e i Custodi di Eldora), con i modelli animati e le statistiche della 8.12.1 (il bilanciamento della 8.1 e della 8.3).
+- **200 personaggi**, ognuno con il proprio modello.
 - **130 missioni**: caccia, raccolta dai nemici, boss, consegne e raccolta di risorse nei quartieri.
   Le missioni di pesca, tappe e battaglie non vengono proposte.
-- **Le tabelle della 8.5**: storia, pagine del diario, sblocchi, oggetti unici dei boss, elementi, risorse.
+- **Le tabelle della 8.12.1**: i segreti e la verità, i testi dell'Atto II e i filmati come pagine, storia, pagine del diario, sblocchi, oggetti unici dei boss, elementi, risorse.
 - **I modelli della Storia**: cavalli, animali, botteghe, stallo, Torre, Viandante, Regina Nerea, nelle posizioni
   in cui li mette il browser.
 
@@ -170,7 +171,7 @@ Limiti:
   - le finestre di Casa, Discoteca e Mercatino;
   - il sensore del Guardiano nel gioco: il Guardiano controlla comunque i progressi dal server.
 
-## La Modalità Storia della 8.5
+## La Modalità Storia della 8.12.1
 
 Dalla 1.5 la console ha le meccaniche della Storia arrivate nel browser dopo la 7.50, con le stesse regole e gli
 stessi messaggi di rete (`story*.c`, `sync.c`):
@@ -189,15 +190,26 @@ stessi messaggi di rete (`story*.c`, `sync.c`):
 - **Bottega dei mestieri (7.47)**, **Torre della Corona (7.44/7.49)** con le sale generate sulla console,
   **duello delle carte (7.47)**.
 
+- **Aldoria Vecchia e il vero finale (6.9/7.11, dalla 1.8):** il passaggio nel muro della missione del Moreau, le
+  reliquie, i 27 segreti di Aldoria, il settimo cuore, l'arresto, il fantasma di Malakar e l'Abominio in cinque fasi;
+  dopo il finale Re Malakar e Aldric rispondono alle domande.
+- **La Minaccia del Regno (8.6, dalla 1.8):** da 0 a 10 con la storia e i giorni; guardia, schivate, cariche, colpi
+  pesanti, ventagli, i poteri dei Campioni, Croce, Anello e Ultimo Respiro dei boss; le notti pericolose e le
+  invasioni dei quartieri.
+- **Atto II · La città sepolta (8.8, dalla 1.8):** Eldora, Oriana e Vael, le Pietre della Memoria, i tre Custodi e
+  Aldric il Primo nei quattro dungeon nuovi, i titoli «Lettore di Eldora» e «Custode della Memoria».
+
 Comandi: sul touch ci sono **Comp.** (i compagni), **Doma** (quando un mostro indebolito si può domare) e
-**Sella/Scendi** (con un cavallo). Dal menu di pausa: compagni, animali, incroci, cronaca, diario delle scoperte.
+**Sella/Scendi** (con un cavallo). Dal menu di pausa: compagni, animali, incroci, cronaca, diario delle scoperte, la verità su Aldoria Vecchia e la
+Minaccia del Regno.
 
 ## Cosa non c'è ancora
 
-- **Modalità a sé:** Tomorrow, il Cuore della Corona (servono le schegge di più modalità), il pannello
-  sviluppatore della 8.5 (Aldoria 3026 nel browser non c'è più dalla 8.4), Voxelia Studio, realtà virtuale.
+- **Modalità a sé:** Tomorrow, il Cuore della Corona e le sue stanze (8.9), il pannello sviluppatore, Voxelia
+  Studio, realtà virtuale. La traduzione in inglese della 8.7 vale solo nel browser: il port resta in italiano.
 - **Storia:** pesca, miniere, battaglia navale, la casa (lavagna e trofei), le classifiche della settimana,
-  i filmati, il vero finale (Aldoria Vecchia, l'Abominio), l'editor dell'aspetto e il file dell'eroe.
+  i sogni, i filmati animati (sul 3DS diventano pagine di testo), il minigioco del piccone (il muro si scava a
+  colpi), l'editor dell'aspetto e il file dell'eroe.
 - **Semplificazioni:** le chimere hanno il corpo di una specie (la testa dell'altra resta nel nome); il passaggio
   segreto degli scavi è crollato (dà un tesoro, non la grotta); le armi chimera degli altri si vedono con la loro testa.
 

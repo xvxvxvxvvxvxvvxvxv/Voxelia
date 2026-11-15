@@ -402,7 +402,7 @@ static void buildDynamic(void) {
 		Ent *e = &ents[i];
 		if (!e->k) continue;
 		float sx, sy; worldToScreen(e->px, e->py, 0, &sx, &sy);
-		if (sx < -120 || sx > 520 || sy < -60 || sy > 360) continue;
+		if ((sx < -120 || sx > 520 || sy < -60 || sy > 360) && !(e->k == K_X && e->xk == 36)) continue;   // l'Abominio è più grande dello schermo
 		drawEntity(e);
 	}
 	// copie trasparenti dei muri davanti all'eroe

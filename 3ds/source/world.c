@@ -116,7 +116,7 @@ Ent *mkEn(int t, int x, int y) {
 	if (malOn(0)) { e->sp *= 1.3f; e->cd *= .85f; e->cdt = e->cd; }   // maledizioni: nemici veloci
 	if (malOn(1)) e->at *= 1.3f;                                          // furia
 	snprintf(e->name, sizeof e->name, "%s", b->n);
-	if (!b->np) hardMk(e);   // 7.11/8.3: il regno più difficile, i Campioni
+	if (!b->np) { hardMk(e); thMk(e); }   // 7.11/8.3: il regno più difficile, i Campioni; 8.6: la Minaccia del Regno
 	return e;
 }
 static int poSt(const char *s) {
@@ -223,6 +223,8 @@ static bool loadFiles(const char *k, int run) {
 			int li = -1; for (int i = 0; i < NLORE; i++) if (!strcmp(LOREID[i], id)) li = i;
 			if (li < 0 || (P.lore & (1u << li))) continue;
 			q = entNew(K_LORE, x, y); if (q) { q->sid = li; snprintf(q->name, sizeof q->name, "Pagina di diario"); }
+		} else if (t10Json(k2, e, x, y)) {
+			// 8.12.1: segreti, reliquie, botola, porta di pietra, Pietre della Memoria, l'Abominio
 		} else if (xPropKind(k2) > 0) {
 			// 3DS 1.5: botteghe, stallo, Viandante, Casa degli alleati, Torre... dove li mette il browser
 			q = xEntNew((u8)xPropKind(k2), x, y); if (q) { q->model = xPropModel(k2); snprintf(q->name, sizeof q->name, "%s", jgs(e, "n", "")); }
@@ -261,6 +263,7 @@ void loadZone(const char *k, const char *from) {
 	snprintf(Zk, sizeof Zk, "%s", key);
 	if (gen) { extern void torGen(const char *k); NSLIGHT = 0; torGen(key); }
 	else if (!loadFiles(key, ZRUN)) { msg("Errore nel caricare %s", key); return; }
+	t10ZonePre();   // 8.12.1: le porte e i personaggi che cambiano con la storia
 	float sx = spX, sy = spY;
 	if (from && *from) {
 		Ent *best = NULL; float bd = 1e9f;

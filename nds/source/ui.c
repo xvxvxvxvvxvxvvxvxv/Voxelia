@@ -591,6 +591,7 @@ static void doAct(Opt *o, int dir) {
 	int a = o->arg;
 	switch (o->act) {
 	case A_CLOSE:
+		if (PM == PM_TXT && tSeqNext()) return;   // 8.12.1: le pagine dei racconti lunghi e dei filmati
 		if (PM == PM_TXT && txtBack == PM_DIARY) { PM = PM_DIARY; buildPanel(); return; }
 		uiClose(); return;
 	case A_BACK:
@@ -756,6 +757,7 @@ static void drawHud(void) {
 	txtWrap(x, y, 196, .42f, C_GOLD, ZNAME); y += lineH(.42f) * (txtW(ZNAME, .42f) > 196 ? 2 : 1) + 2;
 	char so[200]; storyObj(so, sizeof so);
 	y += txtWrapMax(x, y, 196, .38f, C_TXT, so, 46) + 3;
+	{ u32 tc; const char *th = thHud(&tc); if (th) { y += txtWrapMax(x, y, 196, .34f, C2D_Color32(tc >> 16, (tc >> 8) & 255, tc & 255, 255), th, 24) + 2; } }   // 8.6: la Minaccia del Regno
 	for (int i = 0; i < P.nq && y < 156; i++) {
 		const QuestDef *T = &QT[P.q[i].id]; char pr[48];
 		if (qReady(&P.q[i])) snprintf(pr, sizeof pr, "pronta!"); else qProg(&P.q[i], pr, sizeof pr);

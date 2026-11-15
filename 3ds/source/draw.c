@@ -101,6 +101,7 @@ void drawPeers(void) {
 
 void drawEntity(Ent *e) {
 	float u;
+	if (e->k == K_EN) thDraw(e);   // 8.6: la guardia, lo scudo dei Campioni, la carica che si prepara
 	switch (e->k) {
 	case K_X: xDraw(e); return;
 	case K_TC: {

@@ -3,6 +3,35 @@
 Il port ha una versione sua. In ogni versione c'è anche la versione di Voxelia (il gioco per browser) da cui
 arrivano mappe, modelli, nemici, personaggi e missioni.
 
+## 1.4 · contenuti di Voxelia 8.12.1
+
+**Aggiornato alla 8.12.1: il vero finale, la Minaccia del Regno e l'Atto II.**
+- **Aldoria Vecchia e la verità (6.9/7.11), che sul port non c'erano.** Il Moreau ora chiede di scavare il muro
+  crepato dietro le casse vicino al porto: si apre il passaggio per Aldoria Vecchia (96x96: sul DS ci sta), con il ricordo del
+  quartiere prima della nebbia, le reliquie da raccogliere ogni giorno, la botola e la stanza del culto con la porta
+  di pietra. I **27 segreti di Aldoria** (castello, biblioteca, taverna, tempio, municipio, caserma, casinò,
+  osservatorio, rovine) si esaminano e finiscono nel menu «La verità su Aldoria Vecchia».
+- **Il vero finale.** Con tutti i segreti si compone la verità e nel pozzo della vecchia piazza compare il settimo
+  cuore della Corona. Mostrato al Re, ti arresta: la cella, il fantasma di Malakar, la chiave, il varco, e la
+  battaglia contro **l'Abominio in cinque fasi** (le braccia, il ventre che si chiude, l'ombra della Regina Elara da
+  liberare, l'Occhio con lo sguardo che ruota, il cuore con la nebbia che si stringe e lo scudo di Malakar). Poi il
+  vero finale: Re Malakar sul trono, Aldric nelle prigioni, le loro domande, la Lama dell'Alba e il Diadema.
+- **La Minaccia del Regno (8.6).** Da 0 (Quieta) a 10 (Il Crepuscolo): sale con la storia e con i giorni di gioco,
+  si legge sul touch sotto la zona e nel menu. I nemici si mettono in guardia, schivano, caricano, colpiscono
+  pesante, indietreggiano, tirano a ventaglio; i Campioni hanno poteri (Scudo, Veloce, Vampiro, Esplosivo,
+  Evocatore); i boss aggiungono la Croce, l'Anello e l'Ultimo Respiro; la furia del branco. Tutto annunciato dai
+  cerchi rossi. **Le notti pericolose** (creature in più nelle zone aperte) e **le invasioni** dei quartieri ogni due
+  giorni di gioco, con tre ondate e il Capitano dei predoni.
+- **L'Atto II · La città sepolta (8.8).** Dopo il vero finale: Re Malakar, Aldric, la scala nel pozzo, **Eldora**,
+  Oriana e il fantasma di Vael, le dodici Pietre della Memoria, i tre Custodi (Brunilde, Ysolde, Orsolo) con le
+  loro mosse e le loro fasi in tre dungeon nuovi, il Palazzo Sepolto e Aldric il Primo, il Re di Pietra. Premi, i
+  titoli «Lettore di Eldora» e «Custode della Memoria». I filmati del browser diventano pagine di testo.
+- Sul DS l'Abominio è disegnato a blocchi (un'immagine così grande non ci starebbe).
+- Dati riesportati dalla 8.12.1 (164 zone, 13 creature e 4 boss nuovi). Le zone dell'Atto II, i segreti e le figure
+  nuove arrivano dal gioco per browser come sempre.
+- Restano solo nel browser: la traduzione in inglese (8.7), il Cuore della Corona e le sue stanze (8.9) e le altre
+  modalità.
+
 ## 1.3 · contenuti di Voxelia 8.5
 
 **La Modalità Storia della 8.5, come sul 3DS 1.7.** Il DS era ancora ai contenuti della 7.50.

@@ -506,7 +506,7 @@ void xDrawPeerHorse(Peer *o, bool mv, float ph) { if (o->cavB >= 0) cavDrawAt(o-
 void xZoneLoad(void) {
 	CAP.eu = 0; PETU = 0; AME.uid = 0;
 	extern void syncZoneLoad(void); syncZoneLoad();
-	chZoneLoad(); olZoneLoad(); discZone(); digZoneLoad(); evZoneLoad(); mestZoneLoad();
+	chZoneLoad(); olZoneLoad(); discZone(); digZoneLoad(); evZoneLoad(); mestZoneLoad(); t10Zone(); thZone();
 	if (malOn(2)) { int n0 = NENT; for (int i = 0; i < n0; i++) { Ent *e = &ents[i]; if (e->k != K_EN || e->boss || frnd() >= .5f) continue; int x, y, t = e->t; nearFree((int)e->px + 1, (int)e->py, &x, &y); if (WK(M[y][x])) mkEn(t, x, y); } }   // orda
 	if (X.cavOn && !cavOk()) {}   // si scende da soli dove non si può andare a cavallo (resta in sella per dopo)
 	if (CR.on && strcmp(CR.zk, Zk)) CR.on = false;
@@ -519,7 +519,7 @@ void xTick(float dt) {
 	extern void syncTick(float); syncTick(dt);
 	bossTick(dt); evTick(dt);
 	hardTick(dt);
-	serrTick(dt); mestTick(dt); torTick(dt); incTick(dt);
+	serrTick(dt); mestTick(dt); torTick(dt); incTick(dt); t10Tick(dt); thTick(dt);
 	cavRaceTick(); aniTick(dt); domTick(); domPetTick(dt); peerTick(dt); elTick(dt); chTick(dt);
 }
 void xOnKill(Ent *dead) {
@@ -528,10 +528,12 @@ void xOnKill(Ent *dead) {
 	elOnKill(dead);
 	olOnKill(dead);
 	torKill(dead);
+	t10Kill(dead); thKill(dead);
 }
-bool xInteractable(Ent *e) { return e->k == K_X && (e->xk == XK_CARTE || e->xk == XK_TORRE || e->xk == XK_MEST || e->xk == XK_DIG || e->xk == XK_MERC || e->xk == XK_SIG || e->xk == XK_STALLA || e->xk == XK_GARA || e->xk == XK_ANISHOP || (e->xk == XK_ANI && e->xo) || e->xk == XK_VIAND || e->xk == XK_ALLY); }
-const char *xVerb(Ent *e) { return e->xk == XK_CARTE ? "Siediti al" : e->xk == XK_TORRE ? "Entra nella" : e->xk == XK_MEST ? "Entra nella" : e->xk == XK_DIG ? "Scava la" : e->xk == XK_MERC ? "Parla con il" : e->xk == XK_SIG ? "Esamina il" : e->xk == XK_ANI ? "Accarezza" : e->xk == XK_VIAND || e->xk == XK_ALLY ? "Parla con" : "Apri"; }
+bool xInteractable(Ent *e) { return e->k == K_X && (t10Interactable(e) || e->xk == XK_CARTE || e->xk == XK_TORRE || e->xk == XK_MEST || e->xk == XK_DIG || e->xk == XK_MERC || e->xk == XK_SIG || e->xk == XK_STALLA || e->xk == XK_GARA || e->xk == XK_ANISHOP || (e->xk == XK_ANI && e->xo) || e->xk == XK_VIAND || e->xk == XK_ALLY); }
+const char *xVerb(Ent *e) { if (t10Verb(e)) return t10Verb(e); return e->xk == XK_CARTE ? "Siediti al" : e->xk == XK_TORRE ? "Entra nella" : e->xk == XK_MEST ? "Entra nella" : e->xk == XK_DIG ? "Scava la" : e->xk == XK_MERC ? "Parla con il" : e->xk == XK_SIG ? "Esamina il" : e->xk == XK_ANI ? "Accarezza" : e->xk == XK_VIAND || e->xk == XK_ALLY ? "Parla con" : "Apri"; }
 void xAct(Ent *e) {
+	if (t10ActEnt(e)) return;
 	switch (e->xk) {
 	case XK_STALLA: xOpen(XP_STALLA); break;
 	case XK_GARA: xOpen(XP_GARA); break;
@@ -548,6 +550,7 @@ void xAct(Ent *e) {
 	}
 }
 void xDraw(Ent *e) {
+	if (t10Draw(e)) return;
 	switch (e->xk) {
 	case XK_STALLA: case XK_GARA: case XK_ANISHOP: drawModelFrame(e->model, 0, e->px, e->py, 0, 0, 255); break;
 	case XK_ANI: if (e->xs >= 0 && MD_ANI[e->xs] >= 0) drawModelFrame(MD_ANI[e->xs], (e->face & 7) * 8 + aniFrame(e), e->px, e->py, 0, 0, 255);
@@ -726,5 +729,6 @@ void xPauseOpts(void) {
 	if (X.cavOwn) o2(X.cavOn ? "Scendi da cavallo" : "Monta a cavallo", "", XARG(XA_CAVTOG, 0), C_GOLD, false);
 	o2("Cronaca, vie e titoli", "", XARG(XA_GO, XP_CRON), C_GOLD, false);
 	o2("Diario delle scoperte", "", XARG(XA_GO, XP_DISC), C_GOLD, false);
+	t10Pause(); thPause();
 	if (X.malNoAsk) o2("Proponimi di nuovo le maledizioni", "", XARG(105, 0), C_MU, false);
 }

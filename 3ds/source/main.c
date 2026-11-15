@@ -135,9 +135,9 @@ int main(int argc, char **argv) {
 		}
 		// telecamera morbida con un piccolo tremolio sui colpi forti
 		float k = 1 - powf(.88f, dt * 60);
-		camTX = 32 * (P.px - P.py); camTY = 16 * (P.px + P.py) - 10;
+		{ float fx = P.px, fy = P.py; extern void t10Cam(float *, float *); t10Cam(&fx, &fy); camTX = 32 * (fx - fy); camTY = 16 * (fx + fy) - 10; }   // 8.12.1: nella stanza dell'Occhio la camera guarda anche il mostro
 		camX += (camTX - camX) * k; camY += (camTY - camY) * k;
-		camS += (SET.zoom - camS) * k;
+		camS += (SET.zoom * (!strcmp(Zk, "occhio") ? .7f : 1) - camS) * k;
 		float sx = camX, sy = camY;
 		if (shake > 0) { camX += (frnd() - .5f) * shake * 30; camY += (frnd() - .5f) * shake * 30; }
 		rFrame();

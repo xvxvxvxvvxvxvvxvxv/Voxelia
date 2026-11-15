@@ -96,7 +96,7 @@ static void buyPack(void) {
 static void cardLabel(int i, char *out, int n) { if (i >= 54) snprintf(out, n, "%s (%s)", cName(i), i == 54 ? "Re, 10" : i == 55 ? "giullare" : "arcobaleno, 6"); else snprintf(out, n, "%s · %s %d", cName(i), EN[cE(i)], cV(i)); }
 static char CB[600];
 int crtBuild(int page) {
-	if (page != XP_CARTE) return 0;
+	if (page != XP_CARTE) return t10Build(page);
 	fix();
 	if (G.on) {
 		const Foe *A = &CRTA[G.a]; char ti[64]; snprintf(ti, sizeof ti, "Carte · tu %d - %d %s", G.sc[0], G.sc[1], A->n);
@@ -126,5 +126,5 @@ int crtAct(int a, int i) {
 	case 163: betI = (betI + 1) % 4; return 0;
 	case 164: buyPack(); return 0;
 	}
-	return -1;
+	return t10Act(a, i);
 }

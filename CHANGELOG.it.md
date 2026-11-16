@@ -5,6 +5,24 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.13 — Il combattimento più reattivo: si muove, si sente, e i nemici avvisano (16 novembre 2026)
+
+Il combattimento d'azione risponde subito, si vede muovere e si sente quando il colpo prende; e i nemici non colpiscono più senza avviso. Le armi, le mosse e i danni restano quelli di prima.
+
+- **Le pressioni non si perdono.** Prima, durante il primo terzo di una mossa, premere non contava: chi premeva in fretta aveva l'impressione che il gioco non rispondesse. Ora una pressione in qualsiasi momento prenota la mossa dopo.
+- **Il colpo arriva prima.** A circa un terzo della mossa invece che a metà (con la spada dopo 0,12 secondi invece di 0,17); le armi pesanti restano un po' più lente.
+- **La coda della mossa si salta.** Dopo che il colpo è arrivato, se hai già premuto parte subito la mossa dopo; se ti muovi, cammini. Con la spada in 1,6 secondi i colpi passano da 5 a 6.
+- **Il colpo perfetto va preso al momento giusto.** Il +30% arriva se premi dopo che il colpo è arrivato; premere a ripetizione non lo dà più (prima arrivava quasi sempre da solo).
+- **La capriola parte appena premi Maiusc**, non quando lo lasci; tenendolo premuto, poi si corre come prima.
+- **L'affondo.** Con ogni colpo l'eroe fa un passo vero in avanti, scorrevole (prima era un salto di pochi pixel), più lungo col terzo colpo; si ferma davanti al nemico invece di passargli attraverso.
+- **Il colpo si sente.** Quando prende, il gioco si ferma per qualche centesimo di secondo (di più col terzo colpo e i colpi forti), il nemico diventa bianco e scivola indietro (prima scattava), le scintille volano dalla parte del colpo e la visuale dà un piccolo strattone; la capriola e l'affondo alzano la polvere.
+- **Il terzo colpo della catena fa barcollare** i nemici normali per un attimo (i boss no).
+- **Sempre girato verso il nemico.** In combattimento l'eroe guarda il nemico con cui sta combattendo anche mentre cammina di lato o all'indietro: quello bloccato con Tab; se no l'ultimo che ha colpito o quello che lo attacca (anche da dietro); se no il più vicino che gli sta addosso. Mentre colpisce guarda dove va il colpo, mentre rotola o corre guarda dove va.
+- **I nemici avvisano prima di colpire.** Prima un nemico faceva male nello stesso istante in cui decideva di colpire, e schivarlo era solo fortuna. Ora si ferma, sopra compare un «!» rosso e per terra un cerchio rosso che si riempie in mezzo secondo (un po' meno per i boss): quando è pieno colpisce. Se sei uscito dal cerchio va a vuoto, se stai rotolando lo schivi. Il ritmo dei suoi attacchi resta lo stesso, e un nemico che barcolla perde l'attacco che stava preparando.
+- **Schivata perfetta e contrattacco.** Se la capriola parte proprio all'ultimo (meno di tre decimi di secondo prima del colpo) il tempo rallenta un attimo e il colpo dopo è un contrattacco con il doppio della forza.
+- Tutto vale per il combattimento d'azione; chi ha scelto il combattimento classico nelle impostazioni lo ritrova com'era. Gli effetti (fermo immagine, rallentatore, strattone) seguono l'opzione degli effetti cinematografici.
+- **Per gli sviluppatori.** Il file nuovo `src/combattimento/8zzzzzr_reattivo.js`; in `src/base/5_game.js` il colpo di un nemico vicino passa da `rxWind()`. `tools/prova.js` ha un passo nuovo che prova la catena, la capriola, lo sguardo verso il nemico, l'avviso, la schivata perfetta e il contrattacco.
+
 ## 8.12.3 — Manutenzione: il Maestro Dino, la vetrina del fabbro e altri testi in inglese (16 novembre 2026)
 
 - **Le tecniche del Maestro Dino.** Nella sua finestra la descrizione delle quattro tecniche (Palmo del Drago, Calcio del Tornado, Passo dell'Ombra, Respiro della Tigre) restava in italiano, in maiuscolo, anche se la traduzione c'era: la battuta è scritta tra «», e il motore della lingua con le virgolette non la trovava. Ora una battuta tra «» che ha la traduzione si legge in inglese tra “ ”.

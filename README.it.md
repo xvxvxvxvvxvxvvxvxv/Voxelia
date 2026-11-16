@@ -6,7 +6,7 @@ Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costrui
 
 🇬🇧 **[English](README.md)** · 🇮🇹 Italiano
 
-**Versione attuale: 8.12.3** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.13** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.it.md)
 
@@ -118,7 +118,7 @@ oppure si pubblica il server: vedi [Pubblicare il server online](#pubblicare-il-
 | Clic su nemici, forzieri, oggetti, personaggi | Attaccare (se il nemico è lontano l'eroe ci va prima), aprire, raccogliere, parlare |
 | **R** | Interagire con ciò che hai vicino |
 | **Spazio** o **X** | Attacco: ogni pressione fa la mossa seguente della catena; tenuto premuto, il colpo caricato |
-| **Maiusc** | Capriola (premuto e lasciato) · corsa (tenuto mentre ti muovi) |
+| **Maiusc** | Capriola (appena lo premi) · corsa (tenendolo premuto mentre ti muovi) |
 | **E** | Capriola |
 | **F** | Affondo (diverso per ogni arma) |
 | **1 2 3 4** | Abilità delle arti marziali |
@@ -306,6 +306,16 @@ Impostazioni → Comandi.
 - **Stamina.** Attacchi, capriole e corsa la consumano e si ricarica da sola (il massimo è 100 più il livello, fino a
   160). A zero si resta **senza fiato**: niente attacchi, capriole o corsa finché non torna al 30%.
 - **Bersaglio** (Tab): l'eroe guarda sempre il nemico bloccato e ogni colpo va su di lui.
+- **Combattimento reattivo** (8.13). Le pressioni non si perdono: una in qualsiasi momento della mossa prenota la
+  seguente, e dopo che il colpo è arrivato la mossa dopo parte senza aspettare la fine di quella prima; il colpo arriva
+  prima (a circa un terzo della mossa) e la capriola parte appena premi Maiusc. Ogni colpo è un affondo vero in avanti;
+  quando prende il gioco si ferma un istante, il nemico diventa bianco e scivola indietro, le scintille volano dalla
+  parte del colpo. Il terzo colpo della catena fa barcollare i nemici normali. In combattimento l'eroe guarda sempre il
+  nemico con cui combatte (quello bloccato, l'ultimo colpito o quello che lo attacca), anche camminando di lato o
+  all'indietro.
+- **I nemici avvisano prima di colpire** (8.13). Si fermano, compare un **!** rosso e per terra un cerchio rosso che si
+  riempie: quando è pieno colpiscono. Se esci dal cerchio vanno a vuoto; se rotoli proprio all'ultimo è una **schivata
+  perfetta**: il tempo rallenta e il colpo dopo è un **contrattacco** con il doppio della forza.
 - **Armi che crescono**: con l'uso prendono un nome e una mossa speciale. La **maestria** di ogni tipo d'arma sale fino
   a ★10 (+4% di danno per livello).
 - **Domare i mostri**: un mostro sotto un terzo della vita si doma con un **Sigillo di doma** (tasto Z; i boss no). I

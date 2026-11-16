@@ -6,7 +6,7 @@ Tomorrow you found a kingdom of your own, and with the **Voxelia Studio** editor
 
 🇬🇧 English · 🇮🇹 **[Italiano](README.it.md)**
 
-**Current version: 8.12.3** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
+**Current version: 8.13** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
 [⌨️ Controls](#controls) · [🖥 Server](#the-multiplayer-server) · [🛠 Development](#development) ·
 [📝 What's new (CHANGELOG)](CHANGELOG.md)
 
@@ -120,7 +120,7 @@ or put the server online: see [Putting the server online](#putting-the-server-on
 | Click on enemies, chests, items, characters | Attack (if the enemy is far the hero walks there first), open, pick up, talk |
 | **R** | Interact with what's near you |
 | **Space** or **X** | Attack: each press does the next move in the chain; held down, the charged strike |
-| **Shift** | Roll (press and release) · run (hold while moving) |
+| **Shift** | Roll (as soon as you press it) · run (keep holding while moving) |
 | **E** | Roll |
 | **F** | Lunge (different for each weapon) |
 | **1 2 3 4** | Martial arts skills |
@@ -306,6 +306,15 @@ Settings → Controls.
 - **Stamina.** Attacks, rolls and running use it up and it recharges by itself (the maximum is 100 plus your level, up
   to 160). At zero you're **out of breath**: no attacks, rolls or running until it's back to 30%.
 - **Target** (Tab): the hero always faces the locked enemy and every hit goes to it.
+- **Reactive combat** (8.13). Presses are never lost: one at any point of a move books the next, and once the blow has
+  landed the next move starts without waiting for the end of the previous one; the blow lands earlier (about a third of
+  the move) and the roll starts as soon as you press Shift. Every blow is a real lunge forward; when it connects the
+  game freezes for an instant, the enemy turns white and slides back, sparks fly the way of the blow. The third blow of
+  the chain makes normal enemies stagger. In combat the hero always faces the enemy he's fighting (the locked one, the
+  last one hit or the one attacking him), even when walking sideways or backwards.
+- **Enemies warn before striking** (8.13). They stop, a red **!** appears and a red circle on the ground fills up: when
+  it's full they strike. Step out and they miss; roll at the very last moment for a **perfect dodge**: time slows down
+  and your next blow is a **counterattack** with twice the strength.
 - **Weapons that grow**: with use they earn a name and a special move. The **mastery** of each weapon type rises up to
   ★10 (+4% damage per level).
 - **Taming monsters**: a monster below a third of its health can be tamed with a **Taming seal** (Z key; not bosses).

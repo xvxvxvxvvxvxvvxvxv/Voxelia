@@ -27,6 +27,24 @@ const PASSI=[
     th86Fix().d=2.36;TH86.dev=null;load('town','cripta@3');for(let i=0;i<40;i++)upd(1/30);const a=iv86Act();if(!a)throw new Error('nessuna invasione');load(a.z,'town');for(let i=0;i<10;i++)upd(1/30);
     for(let w=0;w<3;w++){for(const e of ents.filter(e=>e.iv86))kill(e);for(let i=0;i<100;i++)upd(1/30)}if(!a.done||!iv86Fix().won)throw new Error('invasione non vinta');
     load('forest','town');P.gt=DAYM*3+23*60;NT86.next=0;for(let i=0;i<60;i++){upd(1/30);P.hp=P.mx}if(!ents.some(e=>e.nt86))throw new Error('di notte non arriva nessuno');pn('th86');cl();`],
+  ['Il combattimento reattivo: catena, capriola, sguardo verso il nemico, avviso, schivata perfetta, contrattacco (8.13)',`toMenu();localStorage.setItem('voxelia_intro','1');SET.film=0;SET.act=1;begin(1,null);try{cl()}catch(e){}P.lv=20;P.mx=P.hp=99999;P.eq.w=Object.assign({},P.eq.w,{n:'Spada lunga'});devGo('forest')`,
+    `try{cl()}catch(e){}const step=dt=>{cineTick(dt);upd(dt*TS)},run=(s,f)=>{for(let i=0;i<s*60;i++){if(f&&f(i/60)===false)break;step(1/60)}};
+    let best=null;for(let y=4;y<N-4&&!best;y++)for(let x=4;x<N-4;x++){let ok=1;for(let j=-3;j<=3&&ok;j++)for(let i=-3;i<=5;i++)if(!WK(M[y+j][x+i])){ok=0;break}if(ok){best=[x,y];break}}if(!best)throw new Error('nella foresta non c\u2019è un posto aperto');
+    const e=mk('goblin',best[0]+1,best[1]);for(const q of ents.filter(q=>q.k==='en'))ents.splice(ents.indexOf(q),1);ents.push(e);
+    const X=best[0]+.5,Y=best[1]+.5,place=()=>{for(const q of ents.filter(q=>q.k==='en'&&q!==e))ents.splice(ents.indexOf(q),1);P.px=X;P.py=Y;P.path=[];P.dm=null;P.iv=0;P.dgc=0;P.sta=999;P.tg=null;e.px=X+(e.r||1)*.7;e.py=Y;e.al=1;e.wu=null;e.cbs=0;e.hp=e.mx=1e7;e.np=0};
+    // la catena: tre colpi in meno di un secondo, il colpo dopo 0,15 s al massimo, l'eroe avanza, il nemico arretra
+    place();e.cdt=e.cd=999;P.dr=[0,1];run(.1);let hp=e.hp,H=[],T=0;const x0=P.px,y0=P.py,ex0=e.px,ey0=e.py;run(1.2,s=>{if(Math.round(s*60)%7===0&&s<.9)cbPress('k');if(e.hp<hp){H.push(s);hp=e.hp}});
+    if(H.length<3||H[0]>.15||H[2]>1)throw new Error('la catena è lenta: colpi a '+H.map(v=>v.toFixed(2)).join(', '));if(Math.hypot(P.px-x0,P.py-y0)<.3)throw new Error('l\\u2019eroe non fa l\\u2019affondo');if(Math.hypot(e.px-ex0,e.py-ey0)<.2)throw new Error('il nemico non viene spinto');
+    // sempre girato verso il nemico, anche camminando all'indietro
+    place();e.cdt=e.cd=999;run(.3);const kd=keyDir;keyDir=()=>[-1,0];run(.5);keyDir=kd;if(P.fc!==faceOf(e.px-P.px,e.py-P.py))throw new Error('camminando all\u2019indietro l\u2019eroe non guarda il nemico');
+    // l'avviso: il colpo arriva mezzo secondo dopo, uscendo dal cerchio va a vuoto
+    place();e.cd=1;e.cdt=0;e.at=10;let p0=P.hp,ts=null,th=null;run(1.5,s=>{if(ts==null&&e.wu)ts=s;if(P.hp<p0){th=s;return false}});if(ts==null||th==null||th-ts<.4)throw new Error('il nemico colpisce senza avviso');
+    place();e.cdt=0;p0=P.hp;let mv=0;run(1.2,()=>{if(e.wu&&!mv){mv=1;P.px-=2.4}});if(P.hp<p0)throw new Error('uscendo dal cerchio il colpo prende lo stesso');
+    // la schivata perfetta e il contrattacco
+    place();e.cdt=0;p0=P.hp;let dn=0;run(1.4,()=>{if(e.wu&&!dn&&t>=e.wu.t1-.15){dn=1;const k=keyDir;keyDir=()=>[0,1];dodge();keyDir=k}});if(P.hp<p0||!(RX.ctr>t))throw new Error('niente schivata perfetta');
+    place();e.cdt=e.cd=999;run(.1);const h0=e.hp;cbPress('k');run(.4);if(!(h0-e.hp>0))throw new Error('il contrattacco non colpisce');
+    // il combattimento classico resta com'era: il colpo arriva subito
+    SET.act=0;place();e.cdt=0;p0=P.hp;run(.1);SET.act=1;if(!(P.hp<p0))throw new Error('nel combattimento classico il nemico non colpisce subito')`],
   ['Atto II: la città sepolta, dall’inizio alla fine (8.8)',`SET.film=0;DEV.on=true;DEV.god=1;P.st=5;P.te=2;P.lv=28;recalc();P.hp=P.mx;const o=a2Fix();o.s=0;load('in_castle','town');try{cl()}catch(e){}const re=ents.find(e=>e.nid==='malakar_re');PA=re;pn('npc');if(!/a2qb/.test($('pn').innerHTML))throw new Error('il Re non parla dell’Atto II');a2Talk();cl();
     load('cas_prigioni','in_castle');PA=ents.find(e=>e.nid==='aldric_p');pn('npc');a2Talk();cl();if(o.s!==2)throw new Error('Aldric non racconta il Canto dei Re');
     load('vecchia','town');try{cl()}catch(e){}if(!ents.some(e=>e.k==='po'&&e.to==='eldora88'))throw new Error('manca la scala nel pozzo');

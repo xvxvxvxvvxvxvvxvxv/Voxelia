@@ -6,6 +6,24 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.13 — More reactive combat: it moves, you can feel it, and enemies warn you (November 16, 2026)
+
+Action combat responds at once, you can see it move and feel when a blow connects; and enemies no longer strike without warning. Weapons, moves and damage are the same as before.
+
+- **Presses are never lost.** Before, pressing during the first third of a move didn't count: anyone pressing quickly felt the game wasn't responding. Now a press at any point books the next move.
+- **The blow lands earlier.** At about a third of the move instead of halfway (with the sword after 0.12 seconds instead of 0.17); heavy weapons stay a bit slower.
+- **The tail of the move is skipped.** Once the blow has landed, if you've already pressed the next move starts at once; if you move, you walk. With the sword, hits in 1.6 seconds go from 5 to 6.
+- **The perfect strike needs the right moment.** The +30% comes if you press after the blow has landed; mashing no longer gives it (before, it came almost by itself).
+- **The roll starts as soon as you press Shift**, not when you release it; keep holding it and you run as before.
+- **The lunge.** With every blow the hero takes a real, smooth step forward (before it was a jump of a few pixels), longer on the third blow; he stops in front of the enemy instead of passing through it.
+- **You can feel the blow.** When it connects the game freezes for a few hundredths of a second (longer on the third blow and strong blows), the enemy turns white and slides back (before it jumped), sparks fly the way of the blow and the view gives a small jolt; the roll and the lunge raise dust.
+- **The third blow of the chain makes normal enemies stagger** for a moment (bosses don't).
+- **Always facing the enemy.** In combat the hero looks at the enemy he's fighting even while walking sideways or backwards: the one locked with Tab; otherwise the last one he hit or the one attacking him (even from behind); otherwise the nearest one on him. While striking he looks where the blow goes, while rolling or running he looks where he's going.
+- **Enemies warn before striking.** Before, an enemy did damage the very instant it decided to strike, and dodging was pure luck. Now it stops, a red "!" appears above it and a red circle on the ground fills up in half a second (a bit less for bosses): when it's full it strikes. If you've left the circle it misses, if you're rolling you dodge it. The rhythm of its attacks stays the same, and an enemy that staggers loses the attack it was preparing.
+- **Perfect dodge and counterattack.** If the roll starts at the very last moment (less than three tenths of a second before the blow) time slows down for a moment and your next blow is a counterattack with twice the strength.
+- It all applies to action combat; anyone who chose classic combat in the settings finds it as it was. The effects (freeze, slow motion, jolt) follow the cinematic effects option.
+- **For developers.** The new file `src/combattimento/8zzzzzr_reattivo.js`; in `src/base/5_game.js` a nearby enemy's blow goes through `rxWind()`. `tools/prova.js` has a new step that tests the chain, the roll, facing the enemy, the warning, the perfect dodge and the counterattack.
+
 ## 8.12.3 — Maintenance: Master Dino, the smith's goods and other texts in English (November 16, 2026)
 
 - **Master Dino's techniques.** In his window the description of the four techniques (Dragon Palm, Tornado Kick, Shadow Step, Tiger Breath) stayed in Italian, in capitals, even though the translation was there: the line is shown between «», and the language engine couldn't find it with the quotes. Now a line between «» whose text has a translation is shown in English between “ ”.

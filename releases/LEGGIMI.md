@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-130 versions, newest first.
+131 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.13](voxelia_v8.13.html) | November 16, 2026 | More reactive combat: blows land sooner and presses are never lost, the hero lunges and always faces the enemy, hits freeze and push, enemies warn before striking, perfect dodge and counterattack | 4,140 KB |
 | [8.12.3](voxelia_v8.12.3.html) | November 16, 2026 | Maintenance: Master Dino, the smith's goods and other texts in English (the techniques' descriptions, Borin's sets, the Crafts Workshop hints, pets and the Crown's buttons) | 4,122 KB |
 | [8.12.2](voxelia_v8.12.2.html) | November 15, 2026 | Maintenance: item names and characters in English (Steel, Rune and Dragon gear, upgraded items, the backpack comparison, ten lines of dialogue) | 4,117 KB |
 | [8.12.1](voxelia_v8.12.1.html) | November 14, 2026 | Maintenance: the admin panel's Rooms tab and log (the Jade Temple without "undefined", the log in English) | 4,112 KB |

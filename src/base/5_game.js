@@ -166,7 +166,7 @@ function upd(dt){t+=dt;timeTick(dt);if(Zk==='mare'&&NAV)navTick(dt);gateTick(dt)
         if(e.b.sum)for(let i=0;i<3;i++){const a=i*2.1,[x,y]=nearFree(clamp(Math.floor(e.px+Math.cos(a)*1.7),1,N-2),clamp(Math.floor(e.py+Math.sin(a)*1.7),1,N-2));if(WK(M[y][x])){const m=mk(e.b.sum,x,y,10000+e.id*10+i);m.al=1;ents.push(m)}}}
       if(e.b.slam&&e.slt<=0&&d<5){e.slt=e.enr?5:7;fx.push({k:'warn',x:e.px,y:e.py,r:2.6,t:1.1,mx:1.1,dmg:e.at*1.5});tone(70,.3,'sawtooth',.05)}
       if(d>e.r*.9)enMove(e,tp,d,dt)
-      else if(e.cdt<=0){e.cdt=e.cd;const dd=Math.hypot(tp.px-e.px,tp.py-e.py)||1;e.atkT=t;e.atkD=[(tp.px-e.px)/dd,(tp.py-e.py)/dd];if(e.b.rng){shoot(e,tp);if(tp!==P&&tp.k==='pl'&&typeof syncEH==='function')syncEH(tp.id,e.at)}else if(tp===P)hurtP(e.at);else if(tp.k==='pl'&&typeof syncEH==='function')syncEH(tp.id,e.at)}}}
+      else if(e.cdt<=0){e.cdt=e.cd;const dd=Math.hypot(tp.px-e.px,tp.py-e.py)||1;e.atkT=t;e.atkD=[(tp.px-e.px)/dd,(tp.py-e.py)/dd];if(e.b.rng){shoot(e,tp);if(tp!==P&&tp.k==='pl'&&typeof syncEH==='function')syncEH(tp.id,e.at)}else if(tp===P){if(!(typeof rxWind==='function'&&rxWind(e)))hurtP(e.at)}else if(tp.k==='pl'&&typeof syncEH==='function')syncEH(tp.id,e.at)}}}
   for(const p of PJ){p.t-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;if(blk(p.x,p.y))p.t=0;else if(Math.hypot(p.x-P.px,p.y-P.py)<.45&&started){p.t=0;hurtP(p.d)}}PJ=PJ.filter(p=>p.t>0);
   for(const f of fx){f.t-=dt;if(f.k==='warn'&&f.t<=0){fx.push({k:'boom',x:f.x,y:f.y,r:f.r,t:.4});tone(60,.25,'sawtooth',.08);if(Math.hypot(P.px-f.x,P.py-f.y)<f.r)hurtP(f.dmg);if(typeof syncEH==='function'&&!f.pup)for(const o of NET.list)if(Math.hypot(o.px-f.x,o.py-f.y)<f.r)syncEH(o.id,f.dmg)}}
   fx=fx.filter(f=>f.t>0);for(const p of pop)p.t-=dt;pop=pop.filter(p=>p.t>0);

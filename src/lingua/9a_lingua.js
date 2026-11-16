@@ -52,6 +52,8 @@ function i18Find(s,depth){const ex=I18.ex.get(s);if(ex!=null)return ex;if(depth>
   // simboli davanti o dietro (🌲 Foresta di Elmwood, ⚔ Campi di battaglia)
   {const m=s.match(/^([^A-Za-zÀ-ÿ0-9«"(¿¡]+)(.*[A-Za-zÀ-ÿ].*)$/u);if(m&&m[2].trim()!==s){const r=i18Find(m[2].trim(),depth+1);if(r!=null)return m[1]+r}}
   {const m=s.match(/^(.*[A-Za-zÀ-ÿ.!?)»])([^A-Za-zÀ-ÿ0-9.!?)»]+)$/u);if(m&&m[1]!==s){const r=i18Find(m[1],depth+1);if(r!=null)return r+m[2]}}
+  // 8.12.3: una battuta tra «» che ha la traduzione senza virgolette (le tecniche del Maestro Dino): “…” come le altre
+  {const m=s.match(/^«([^«»]+)»$/u);if(m){const r=i18Find(i18Norm(m[1]),depth+1);if(r!=null)return'“'+r+'”'}}
   // 8.12.2: il potenziamento e la maestria dietro il nome di un oggetto («Spada +2», «Clava del Troll +1 ★3»)
   {const m=s.match(/^(.*[A-Za-zÀ-ÿ'])((?:\s[+★]\d+)+)$/u);if(m){const r=i18Find(m[1],depth+1);if(r!=null)return r+m[2]}}
   for(const sep of[' · ',' — ',', ']){if(!s.includes(sep))continue;const P=s.split(sep);let ch=0;const R=P.map(x=>{const t=x.trim();if(!t||!/[A-Za-zÀ-ÿ]/.test(t))return x;let r=i18Find(t,depth+1);if(r==null&&sep===' · '){const r2=i18Find('· '+t,depth+1);if(r2!=null)r=r2.replace(/^·\s*/,'')}if(r!=null){ch++;return x.replace(t,r)}return x});if(ch&&(sep!==', '||P.every(x=>x.split(' ').length<=4)))return R.join(sep)}

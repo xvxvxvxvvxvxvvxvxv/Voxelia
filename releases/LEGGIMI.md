@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-129 versions, newest first.
+130 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.12.3](voxelia_v8.12.3.html) | November 16, 2026 | Maintenance: Master Dino, the smith's goods and other texts in English (the techniques' descriptions, Borin's sets, the Crafts Workshop hints, pets and the Crown's buttons) | 4,122 KB |
 | [8.12.2](voxelia_v8.12.2.html) | November 15, 2026 | Maintenance: item names and characters in English (Steel, Rune and Dragon gear, upgraded items, the backpack comparison, ten lines of dialogue) | 4,117 KB |
 | [8.12.1](voxelia_v8.12.1.html) | November 14, 2026 | Maintenance: the admin panel's Rooms tab and log (the Jade Temple without "undefined", the log in English) | 4,112 KB |
 | [8.12](voxelia_v8.12.html) | November 13, 2026 | Voxelia in English, the last stage: Voxelia Studio and the community worlds, the server's messages and the admin panel (English or Italian) | 4,111 KB |

@@ -5,6 +5,16 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.12.3 — Manutenzione: il Maestro Dino, la vetrina del fabbro e altri testi in inglese (16 novembre 2026)
+
+- **Le tecniche del Maestro Dino.** Nella sua finestra la descrizione delle quattro tecniche (Palmo del Drago, Calcio del Tornado, Passo dell'Ombra, Respiro della Tigre) restava in italiano, in maiuscolo, anche se la traduzione c'era: la battuta è scritta tra «», e il motore della lingua con le virgolette non la trovava. Ora una battuta tra «» che ha la traduzione si legge in inglese tra “ ”.
+- **La merce del giorno di Borin.** I set nella finestra del fabbro («Spada del Grifone», «Elmo dell'Orso (epico)»…) avevano il nome italiano: ora sono «Griffin Sword», «Bear Helmet (epic)» e così via, per tutti e nove i set e i quattro pezzi, anche nello zaino dopo averli comprati.
+- **I suggerimenti dei Mestieri.** Il riquadro sopra ogni ingrediente («Grano: Campi di Aldoria (est), o al Mercato del banco») restava in italiano anche se le due parti erano tradotte.
+- **Testi più piccoli:** la descrizione del Cane e del Pinguino nel negozio degli animali («Trova monete e, a volte, an item»), «From days passed (0 giorni)» nella finestra della Minaccia del Regno, e i nomi dei pulsanti delle gemme della Corona per i lettori di schermo («Gemma precedente», «Gemma successiva»).
+- In italiano non cambia niente.
+
+---
+
 ## 8.12.2 — Manutenzione: nomi degli oggetti e personaggi in inglese (15 novembre 2026)
 
 - **Le armi e le armature trovate hanno il nome in inglese.** L'equipaggiamento d'Acciaio, delle Rune e del Drago (tutti gli oggetti rari, epici e leggendari trovati a caso) in inglese teneva il nome italiano: «Pugnale delle Rune», «Cotta di maglia d'Acciaio». Ora si legge «Rune Dagger», «Steel Chainmail», «Dragon Sword», nello zaino, nelle botteghe e nei messaggi («Collected: Rune Dagger +2»).

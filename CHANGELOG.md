@@ -6,6 +6,16 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.12.3 — Maintenance: Master Dino, the smith's goods and other texts in English (November 16, 2026)
+
+- **Master Dino's techniques.** In his window the description of the four techniques (Dragon Palm, Tornado Kick, Shadow Step, Tiger Breath) stayed in Italian, in capitals, even though the translation was there: the line is shown between «», and the language engine couldn't find it with the quotes. Now a line between «» whose text has a translation is shown in English between “ ”.
+- **Borin's daily goods.** The sets in the smith's window ("Spada del Grifone", "Elmo dell'Orso (epico)"…) had Italian names: now they're "Griffin Sword", "Bear Helmet (epic)" and so on, for all nine sets and the four pieces, also in the backpack once bought.
+- **The Crafts Workshop hints.** The tooltip over each ingredient ("Wheat: Aldoria's Fields (east), or at the Market stall") stayed in Italian although both parts were translated.
+- **Smaller texts:** the Dog's and the Penguin's descriptions in the Pet Shop ("Trova monete e, a volte, an item"), "From days passed (0 giorni)" in the Kingdom Threat window, and the labels of the Crown's gem buttons for screen readers ("Previous gem", "Next gem").
+- In Italian nothing changes.
+
+---
+
 ## 8.12.2 — Maintenance: item names and characters in English (November 15, 2026)
 
 - **Weapons and armor found in the world have English names.** Steel, Rune and Dragon gear (every rare, epic and legendary item found at random) kept its Italian name in English: "Pugnale delle Rune", "Cotta di maglia d'Acciaio". Now it's "Rune Dagger", "Steel Chainmail", "Dragon Sword", in the backpack, the shops and the messages ("Collected: Rune Dagger +2").

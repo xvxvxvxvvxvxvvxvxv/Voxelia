@@ -1629,3 +1629,7 @@ Object.assign(ENX,{
 "Celata del Drago":"Dragon Sallet",
 "Qui vivono i nemici che hai risparmiato. Ogni giorno ognuno ti fa un dono.":"Here live the enemies you spared. Every day each of them gives you a gift."
 });
+// 8.12.3: il suggerimento sopra gli ingredienti dei Mestieri («Grano: Campi di Aldoria (est), o al Mercato del banco», ingRow in
+// 8zzzk_mestieri.js) è fatto di due pezzi che hanno già la traduzione, ma insieme restava in italiano: qui le voci intere
+// (sta qui, dopo 9d, perché i nomi di carbone, rame, pepite e gemme sono tradotti in questo file)
+{for(const id in MSTW){const w=MSTW[id],f=FISHT.find(q=>q.id===id),n=RESN[id]||(f&&f.n);if(!n||!w||ENX[n]==null||ENX[w]==null)continue;const k=n+': '+w;if(ENX[k]==null)ENX[k]=ENX[n]+': '+ENX[w]}}

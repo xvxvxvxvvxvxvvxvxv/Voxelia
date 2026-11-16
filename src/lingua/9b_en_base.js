@@ -2573,6 +2573,9 @@ Object.assign(ENX,{
 "Entra ▶":"Enter ▶",
 "Scegli una gemma della Corona":"Choose a gem of the Crown",
 "Clic su una gemma · ◀ ▶ per girare · trascina per ruotare":"Click a gem · ◀ ▶ to turn · drag to rotate",
+"Le gemme della Corona":"The gems of the Crown",
+"Gemma precedente":"Previous gem",
+"Gemma successiva":"Next gem",
 "Tomorrow si apre a chi ha finito la Storia: sconfiggi il Re Lich Malakar nella Cittadella del Vuoto.":"Tomorrow opens to those who have finished the Story: defeat the Lich King Malakar in the Void Citadel.",
 "🌅 Tomorrow si è aperto!":"🌅 Tomorrow is open!",
 "Nel menu della Corona, lo Smeraldo: un mondo nuovo e senza confini":"In the Crown menu, the Emerald: a new world without borders",
@@ -3436,6 +3439,7 @@ Object.assign(ENX,{
 "Più vai avanti nella storia e più giorni passano, più il regno diventa pericoloso: i nemici imparano mosse nuove, i Campioni hanno poteri, i boss diventano più duri. Vale nei dungeon e nelle zone aperte della Storia.":"The further you go in the story and the more days pass, the more dangerous the kingdom becomes: enemies learn new moves, Champions gain powers, bosses get tougher. It applies in the dungeons and open areas of the Story.",
 "Dalla storia":"From the story",
 "Dai giorni passati ({0} {1})":"From days passed ({0} {1})",
+"Dai giorni passati ({0} giorni)":"From days passed ({0} days)",
 "(massimo +{0})":"(max +{0})",
 "Livello per livello":"Level by level",
 "Veloce":"Swift",
@@ -3611,3 +3615,7 @@ Object.assign(ENX,{
 // (quelle già scritte a mano restano come sono).
 {const SUF={" d'Acciaio":'Steel'," delle Rune":'Rune'," del Drago":'Dragon'};
   for(const s in SL)for(const b of SL[s])for(const k in SUF){const n=b+k;if(ENX[n]==null&&ENX[b])ENX[n]=SUF[k]+' '+ENX[b]}}
+// 8.12.3: i set della vetrina di Borin il fabbro (stockOf in 4_render.js) hanno il nome fatto di due pezzi, «Spada» + «del Grifone»,
+// a volte con « (epico)»: in inglese restavano in italiano. Qui tutte le combinazioni, sul modello di «Dragon Sword»
+{const NM={'del Lupo':'Wolf','del Grifone':'Griffin','della Fenice':'Phoenix','del Leone':'Lion',"dell'Aquila":'Eagle','del Drago':'Dragon','della Tempesta':'Storm','del Corvo':'Raven',"dell'Orso":'Bear'};
+  for(const nm of SETN)for(const s in SLOTN){const n=SLOTN[s]+' '+nm,b=ENX[SLOTN[s]];if(!NM[nm]||!b)continue;if(ENX[n]==null)ENX[n]=NM[nm]+' '+b;if(ENX[n+' (epico)']==null)ENX[n+' (epico)']=ENX[n]+' (epic)'}}

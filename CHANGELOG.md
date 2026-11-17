@@ -6,6 +6,15 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.15 — The Voxeliaverse in the normal game (November 17, 2026)
+
+- **The room behind the Crown is a zone of the game.** You enter it as before from the menu's Crown (the seventh gem) or right after the seventh fragment's cutscene, but now it's a room like those of Aldoria: the isometric view (or the game's 3D view), the Story hero moving with a click or the keyboard. Inside there are the fireplace with the armchair and the rug, the library up to the ceiling with the ladder and the glowing books, the round window with the stars, the seventh fragment on its pedestal, the table with the open book (a note from Vael), the candles and the door that takes you back to the menu.
+- **The realities are zones of the game.** Each reality is an island floating in the sky, generated from its number as before, in the game's graphics: scattered hills, rock terraces, craters full of liquid, very tall spires or canyons with ridges; trees, crystals, giant mushrooms, corals or boulders in the reality's colors; the still sea, the sky by day, at sunset, at night or with a sun of another color. You fight with the game's combat (action or classic), with your weapons, potions and the map.
+- **The creatures** still have completely random names and their reality's colors: the leaping ball, the charging beast, the giant, the eye that shoots from afar; the guardian is a real boss, with its bar and its ground slam. They grow with the hero's level and the reality's danger.
+- **The mystery stays the same.** Three obelisks with a beam of light, each guarded by its creatures; once the three signs are read the guardian wakes, and behind it is the Heart (gold for the hero). After the guardian the reality can be saved and found again as it was; the purple door asks before you leave without saving. If you die in a reality you wake in the room, without losing anything. Paths from the center to the door and the signs (with bridges over the liquid) mean you can always reach everything.
+- **The separate 3D engine is gone** (`src/voxeliaverse/8zzzzv_motore.js`): the realities' gravity no longer exists (in the isometric view you don't jump). Realities already saved in the library remain, with the same name.
+- **For developers.** `8zzzzw_stanza.js` and `8zzzzx_realta.js` rewritten for the game's engine (zones `vx2stanza` and `vxr:<seed>`). The Voxeliaverse step of `tools/prova.js` enters from the Crown, tests the room and the library, checks that in one reality per land shape the signs and the Heart can be reached, then reads the signs, defeats the guardian, saves, takes the Heart, goes back, dies and forgets.
+
 ## 8.14 — Cutscenes in the classic style, the prologue remade and the test game (November 17, 2026)
 
 - **The drawn-scene filter is gone.** Cutscenes no longer go through the pixel-art picture with the white text box and the "blips": they play full screen, in the game's voxel graphics, with the cinema bars and the text below. The option in the settings is gone.

@@ -6,7 +6,7 @@ Tomorrow you found a kingdom of your own, and with the **Voxelia Studio** editor
 
 🇬🇧 English · 🇮🇹 **[Italiano](README.it.md)**
 
-**Current version: 8.14** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
+**Current version: 8.15** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
 [⌨️ Controls](#controls) · [🖥 Server](#the-multiplayer-server) · [🛠 Development](#development) ·
 [📝 What's new (CHANGELOG)](CHANGELOG.md)
 
@@ -225,27 +225,28 @@ world comes apart"), 20,000 gold, the Reunited Crown, and the door to the Voxeli
 
 ### The Voxeliaverse
 
-Behind the Crown there's a room, built with a **new 3D engine**: real voxels in three dimensions, a third-person camera
-behind the hero, soft shadows from the moon or the sun, firelight. You walk with WASD (or the joystick on phones), jump
-with Space, look around by dragging the mouse, use things with E. In the room there are:
+Behind the Crown there's a room: you enter it from the menu, turning the Crown to the seventh gem, with your Story hero.
+Since 8.15 it's a zone of the game like the others: the isometric view (or the game's 3D view), you move with a click or
+the keyboard, and you fight with the game's combat. In the room there are:
 
 - **the fireplace**: you sit, meditate and the fire takes you into an **unknown reality**, a new one on every journey;
 - **the library**: the glowing books are realities already written (you see their name and how dangerous they are).
   "Look for another book" always finds new ones. *No one has ever truly counted them.*
+- the round window with the stars, the seventh fragment on its pedestal, a table with an open book (a note from Vael),
+  and the door that takes you back to the menu.
 
 Every reality is born from a number, and everything comes from that number: completely random names (the reality, its
-people, its founder, its creatures, its guardian), an island of voxels floating in the void (hills, terraces, craters,
-spires or canyons, with a still sea or without), trees, crystals, giant mushrooms, corals or boulders, the sky (day,
-sunset, night or a sun of another color), up to three moons, the gravity (in some you fall slowly).
+people, its founder, its creatures, its guardian), an island floating in the sky (scattered hills, rock terraces,
+craters full of liquid, very tall spires or canyons with ridges, with a still sea or without), trees, crystals, giant
+mushrooms, corals or boulders in the reality's colors, and the sky (day, sunset, night or a sun of another color).
 
 - **The mystery.** Three beams of light are the three signs; each is guarded by its creatures. Read all three and the
   guardian wakes in the middle of the island: defeat it and take the Heart of the reality (gold for your hero).
-- **Combat.** Click (or J) to strike with the sword, three hits in a row make the strong one; Shift, Q or right click to
-  roll (you can't be hit while rolling; hold Shift to run afterwards). Enemies glow or draw a red circle on the ground
-  before they strike. Four kinds of creatures (the leaping ball, the charging beast, the crushing giant, the flying eye
-  that shoots) and the guardian, with three attacks and a second phase.
+- **The creatures** have random names and the reality's colors: the leaping ball, the charging beast, the giant, the
+  eye that shoots from afar, and the guardian, a boss. You fight them with your hero, weapons and potions.
 - **Saving a reality.** When the guardian falls you can save the reality: it stays at the top of the library and when
-  you return it's as you left it (signs read, guardian defeated). The door asks before you leave without saving.
+  you return it's as you left it (signs read, guardian defeated). The purple door asks before you leave without saving.
+  If you die in a reality you wake up in the room, without losing anything.
 
 
 ---
@@ -735,7 +736,7 @@ The sources live in folders, one per part of the game:
 | `src/combattimento/` | Combat, bosses, dungeons, companions, elements and chimeras |
 | `src/tomorrow/` | Tomorrow: the endless world, villages, factions and wars |
 | `src/corona/` | The Crown menu, the shards, the Heart of the Crown and the Album |
-| `src/voxeliaverse/` | The Voxeliaverse (8.9): the new 3D engine, the room behind the Crown, the realities |
+| `src/voxeliaverse/` | The Voxeliaverse: the room behind the Crown and the realities (in the normal game since 8.15) |
 | `src/studio/` | Voxelia Studio (the editor) and the Community worlds |
 | `src/grafica/` | The 3D view, virtual reality and graphics options |
 | `src/sistemi/` | Parts shared by the whole game: events, crafting, pets, photos, menu, fixes |
@@ -911,9 +912,8 @@ a translation of their own. The game's logic never sees the translation.
 | `combattimento/8zzzzk_bilancio.js` | Balancing: Champions per floor, Crypt, Forge, Jade Temple, Tomorrow at high levels (8.1); enemies, Champions and prices that follow your level (8.3) |
 | `corona/8zzzzh_corona80.js` | The Reunited Crown: the six shards, the Heart of the Crown and the Album |
 | `corona/8zzzzu_cuore89.js` | The Heart of the Crown remade (8.9): the six puzzle rooms, the Echo as a guide, the seventh fragment and its cutscene |
-| `voxeliaverse/8zzzzv_motore.js` | The Voxeliaverse engine (8.9): WebGL2 voxels with corner shading, soft shadows, lights, fog, third-person camera, physics and controls |
-| `voxeliaverse/8zzzzw_stanza.js` | The room behind the Crown (8.9) and the seventh, colorless gem on the menu's Crown |
-| `voxeliaverse/8zzzzx_realta.js` | The realities of the Voxeliaverse (8.9): names, islands, skies, creatures, signs, guardian, combat, saving, the fireplace and the library |
+| `voxeliaverse/8zzzzw_stanza.js` | The room behind the Crown (8.15: a zone of the game, isometric) and the seventh, colorless gem on the menu's Crown |
+| `voxeliaverse/8zzzzx_realta.js` | The realities of the Voxeliaverse (8.15: zones of the game, isometric): names, islands, skies, creatures, signs, guardian, saving, the fireplace and the library |
 | `sistemi/8zzzzh_menu.js` | The menu fits the window: the Crown fills the screen, the other screens shrink instead of scrolling |
 | `sistemi/8zzzzi_avvisi.js` | The game's on-screen labels (events, active food, wars…) don't cover the hero box, windows or the end of battle |
 | `sistemi/8zzzzj_intralcio.js` | Pets walk behind the hero; R, the green button and clicks pick doors, items and characters first |

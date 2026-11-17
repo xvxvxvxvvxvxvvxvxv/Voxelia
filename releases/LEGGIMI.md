@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-132 versions, newest first.
+133 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.15](voxelia_v8.15.html) | November 17, 2026 | The Voxeliaverse in the normal game: the room behind the Crown and the realities become isometric zones, with the game's combat | 4,098 KB |
 | [8.14](voxelia_v8.14.html) | November 17, 2026 | Cutscenes in the classic style (no drawn-scene filter, no color washes), the prologue shot again from scratch, and a test game in the developer panel | 4,153 KB |
 | [8.13](voxelia_v8.13.html) | November 16, 2026 | More reactive combat: blows land sooner and presses are never lost, the hero lunges and always faces the enemy, hits freeze and push, enemies warn before striking, perfect dodge and counterattack | 4,140 KB |
 | [8.12.3](voxelia_v8.12.3.html) | November 16, 2026 | Maintenance: Master Dino, the smith's goods and other texts in English (the techniques' descriptions, Borin's sets, the Crafts Workshop hints, pets and the Crown's buttons) | 4,122 KB |

@@ -21,7 +21,7 @@ const PASSI=[
   ['La Minaccia del Regno: mosse, Campioni, boss, notti, invasioni',`toMenu();localStorage.setItem('voxelia_intro','1');SET.film=0;begin(1,null);try{cl()}catch(e){}P.st=3;P.sh=SHARDS.slice();P.lv=22;recalc();P.hp=P.mx;P.pot=50;
     if(th86Val()<2.9)throw new Error('la storia non alza la Minaccia: '+th86Val());th86Fix().d=6;if(th86L()<4)throw new Error('i giorni non alzano la Minaccia');
     TH86.dev=8;load('cripta@3','town');try{cl()}catch(e){}if(!ents.some(e=>e.af86))throw new Error('nessun Campione con i poteri');const ev={};
-    for(let i=0;i<600;i++){upd(1/30);if(i%2===0)draw();P.hp=P.mx;for(const e of ents){if(e.gd86>t)ev.g=1;if(e.wu86)ev[e.wu86.k]=1;if(e.ds86)ev.d=1}const L=ents.filter(e=>e.k==='en'&&!e.boss);let b=null,bd=1e9;for(const e of L){const d=dist(e,P);if(d<bd){bd=d;b=e}}if(b&&bd<2.5&&i%4===0)hurtE(b,3,0,0)}
+    for(let i=0;i<1500&&!(ev.g&&ev.charge);i++){upd(1/30);if(i%2===0)draw();P.hp=P.mx;for(const e of ents){if(e.gd86>t)ev.g=1;if(e.wu86)ev[e.wu86.k]=1;if(e.ds86)ev.d=1}const L=ents.filter(e=>e.k==='en'&&!e.boss);let b=null,bd=1e9;for(const e of L){const d=dist(e,P);if(d<bd){bd=d;b=e}}if(b&&bd<2.5&&i%4===0)hurtE(b,3,0,0)}
     if(!ev.g||!ev.charge)throw new Error('mosse nuove mancanti: '+JSON.stringify(ev));
     const bs=ents.find(e=>e.boss);if(bs){bs.al=1;bs.hp=bs.mx*.3;P.px=bs.px+2;P.py=bs.py;for(let i=0;i<400;i++){upd(1/30);P.hp=P.mx}}
     th86Fix().d=2.36;TH86.dev=null;load('town','cripta@3');for(let i=0;i<40;i++)upd(1/30);const a=iv86Act();if(!a)throw new Error('nessuna invasione');load(a.z,'town');for(let i=0;i<10;i++)upd(1/30);

@@ -6,7 +6,7 @@ Tomorrow you found a kingdom of your own, and with the **Voxelia Studio** editor
 
 🇬🇧 English · 🇮🇹 **[Italiano](README.it.md)**
 
-**Current version: 8.13** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
+**Current version: 8.14** · [📖 Guide](#the-complete-guide) · [🎮 Getting started](#getting-started) ·
 [⌨️ Controls](#controls) · [🖥 Server](#the-multiplayer-server) · [🛠 Development](#development) ·
 [📝 What's new (CHANGELOG)](CHANGELOG.md)
 
@@ -72,7 +72,7 @@ Images from version 7.51.
 <table>
 <tr>
 <td width="50%"><img src="docs/vista3d.jpg" alt="Aldoria in the 3D view, with the horizon"><br><sub><b>The 3D view</b> · Aldoria with hills and fields up to the horizon</sub></td>
-<td width="50%"><img src="docs/prologo.jpg" alt="A drawn scene from the prologue"><br><sub><b>The prologue</b> · the founding of Aldoria, in a scene drawn in pixel art</sub></td>
+<td width="50%"><img src="docs/prologo.jpg" alt="A scene from the prologue"><br><sub><b>The prologue</b> · the First King and the Crown of Voxel, in the throne room</sub></td>
 </tr>
 <tr>
 <td><img src="docs/combattimento.jpg" alt="The hero fighting goblins in Elmwood Forest"><br><sub><b>Combat</b> · against the goblins in Elmwood Forest</sub></td>
@@ -874,7 +874,7 @@ a translation of their own. The game's logic never sees the translation.
 | `sistemi/8zzo_dev2.js` | The developer panel that gives and creates everything, with the Tomorrow tools |
 | `sistemi/8zzp_sync.js` | Online every enemy has an owner that drives it and everyone sees the same copy |
 | `corona/8zzr_corona.js` | The 3D Voxel Crown menu |
-| `sistemi/8zzs_disegnate.js` | The pixel-art drawn scenes, with letter-by-letter text |
+| `storia/8zzzzzs_filmati814.js` | The cutscenes in the classic style (8.14): no drawn-scene filter and no color washes, the prologue shot again from scratch in the game's real places; the developer panel's "Test game" tab |
 | `sistemi/8zzt_aiuti.js` | Common helpers for new features (fields to save, panels, challenge day) |
 | `sistemi/8zzt_versioni.js` | The previous-versions picker (needs the server) |
 | `sistemi/8zzta_frasi.js` | The yellow title splash lines |

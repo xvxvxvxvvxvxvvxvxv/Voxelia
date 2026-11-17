@@ -6,6 +6,15 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.14 — Cutscenes in the classic style, the prologue remade and the test game (November 17, 2026)
+
+- **The drawn-scene filter is gone.** Cutscenes no longer go through the pixel-art picture with the white text box and the "blips": they play full screen, in the game's voxel graphics, with the cinema bars and the text below. The option in the settings is gone.
+- **The color washes are gone.** No more sepia on memories or purple halo on visions: a scene's light is that of its place and time.
+- **The prologue shot again from scratch.** Eleven new scenes and a new text, all in the game's real places and with its characters: Aldoria's square in the morning, the First King and the Crown of Voxel in the throne room, the two brothers as children, Malakar at night before the Crown, the flight from the old quarter on the night of the fog, the six splinters crossing the sky above the castle and falling in the woods, in the sands of Khem and among the ice, the walled-up gate, and the hero arriving in the city by the southern road. The music is still the prologue's three tracks.
+- **No references to other games.** Removed the two Voxelia Dimension cutscenes (the mode has been gone since 8.4) and the title phrase that quoted another game.
+- **🧪 Test game in the developer panel.** A new tab, the first one: choose the difficulty, level, gold, potions, story phase, shards already found, the legendary weapon, invincibility, the combat (action or classic) and the starting zone, and start. Three ready-made starts: "New hero", "Mid story", "End of the game". It's a separate game: it isn't saved and doesn't touch the real save. With the test running, from the same tab you can heal the hero, change zone, start again with the same choices or close it.
+- **For developers.** Removed `src/sistemi/8zzs_disegnate.js`; the new file is `src/storia/8zzzzzs_filmati814.js`. The other story cutscenes still have their previous scenes (without the filter and the washes): they will be shot again in the following updates.
+
 ## 8.13 — More reactive combat: it moves, you can feel it, and enemies warn you (November 16, 2026)
 
 Action combat responds at once, you can see it move and feel when a blow connects; and enemies no longer strike without warning. Weapons, moves and damage are the same as before.

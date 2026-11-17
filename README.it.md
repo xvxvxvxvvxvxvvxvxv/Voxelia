@@ -6,7 +6,7 @@ Tomorrow si fonda un regno proprio, e con l'editor **Voxelia Studio** si costrui
 
 🇬🇧 **[English](README.md)** · 🇮🇹 Italiano
 
-**Versione attuale: 8.13** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
+**Versione attuale: 8.14** · [📖 Guida](#la-guida-completa) · [🎮 Come iniziare](#come-iniziare) ·
 [⌨️ Comandi](#comandi) · [🖥 Server](#il-server-multigiocatore) · [🛠 Sviluppo](#sviluppo) ·
 [📝 Novità (CHANGELOG)](CHANGELOG.it.md)
 
@@ -70,7 +70,7 @@ Immagini della versione 7.51.
 <table>
 <tr>
 <td width="50%"><img src="docs/vista3d.jpg" alt="Aldoria nella vista 3D, con l'orizzonte"><br><sub><b>La vista 3D</b> · Aldoria con le colline e i campi fino all'orizzonte</sub></td>
-<td width="50%"><img src="docs/prologo.jpg" alt="Una scena disegnata del prologo"><br><sub><b>Il prologo</b> · la fondazione di Aldoria, in una scena disegnata in pixel art</sub></td>
+<td width="50%"><img src="docs/prologo.jpg" alt="Una scena del prologo"><br><sub><b>Il prologo</b> · il Primo Re e la Corona di Voxel, nella sala del trono</sub></td>
 </tr>
 <tr>
 <td><img src="docs/combattimento.jpg" alt="L'eroe combatte i goblin nella Foresta di Elmwood"><br><sub><b>Il combattimento</b> · contro i goblin nella Foresta di Elmwood</sub></td>
@@ -876,7 +876,7 @@ nome che viene dopo gli altri (`8zzzzk_…`, `8zzzzl_…`), nella cartella della
 | `sistemi/8zzo_dev2.js` | Il pannello sviluppatore che dà e crea tutto, con gli strumenti di Tomorrow |
 | `sistemi/8zzp_sync.js` | In rete ogni nemico ha un padrone che lo guida e tutti ne vedono la stessa copia |
 | `corona/8zzr_corona.js` | Il menu della Corona di Voxel in 3D |
-| `sistemi/8zzs_disegnate.js` | Le scene disegnate in pixel art, con il testo lettera per lettera |
+| `storia/8zzzzzs_filmati814.js` | I filmati nello stile classico (8.14): niente filtro delle scene disegnate e niente patine colorate, il prologo girato da capo nei luoghi veri del gioco; la scheda «Partita di prova» del pannello sviluppatore |
 | `sistemi/8zzt_aiuti.js` | Aiuti comuni per le novità (campi da salvare, pannelli, giorno della sfida) |
 | `sistemi/8zzt_versioni.js` | Il selettore delle versioni precedenti (serve il server) |
 | `sistemi/8zzta_frasi.js` | Le frasi gialle del titolo |

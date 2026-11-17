@@ -1,4 +1,4 @@
-/* ================= 7.44: le frasi del titolo, come in Minecraft =================
+/* ================= 7.44: le frasi del titolo =================
    Accanto a VOXELIA compare una frase gialla, storta, che pulsa: una diversa a ogni apertura (cliccandola cambia).
    Alcune arrivano solo in certi giorni. */
 const FRASI43=["Ora con il 100% di voxel in più!",
@@ -45,7 +45,6 @@ const FRASI43=["Ora con il 100% di voxel in più!",
   "Anche Aldric si perde nel castello",
   "Il drago di brina odia l'estate",
   "Le leve vanno tirate insieme!",
-  "Disegnato come Undertale!",
   "Il diario non si scrive da solo",
   "Il mercante ha sempre ragione",
   "Ma l'hai provato in 3D?",

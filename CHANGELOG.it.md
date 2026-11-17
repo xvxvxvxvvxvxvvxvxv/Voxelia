@@ -5,6 +5,15 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.14 — I filmati nello stile classico, il prologo rifatto e la partita di prova (17 novembre 2026)
+
+- **Via il filtro delle scene disegnate.** I filmati non passano più dal quadro in pixel art con il riquadro bianco del testo e i «bip»: si vedono a tutto schermo, con la grafica voxel del gioco, le bande nere del cinema e il testo sotto. L'opzione nelle impostazioni non c'è più.
+- **Via le patine colorate.** Niente più seppia sui ricordi né alone viola sulle visioni: la luce di una scena è quella del luogo e dell'ora.
+- **Il prologo girato da capo.** Undici scene nuove e un testo nuovo, tutte nei luoghi veri del gioco e con i suoi personaggi: la piazza di Aldoria al mattino, il Primo Re e la Corona di Voxel nella sala del trono, i due fratelli da bambini, Malakar di notte davanti alla Corona, la fuga dal quartiere vecchio nella notte della nebbia, le sei schegge che attraversano il cielo sopra il castello e cadono nei boschi, nelle sabbie di Khem e tra i ghiacci, il cancello murato, e l'eroe che arriva in città dalla strada del sud. Le musiche restano le tre del prologo.
+- **Niente richiami ad altri giochi.** Tolti i due filmati di Voxelia Dimension (la modalità non c'è più dalla 8.4) e la frase del titolo che citava un altro gioco.
+- **🧪 Partita di prova nel pannello sviluppatore.** Una scheda nuova, la prima: si scelgono la difficoltà, il livello, l'oro, le pozioni, la fase della storia, i frammenti già trovati, l'arma leggendaria, l'invincibilità, il combattimento (d'azione o classico) e la zona di partenza, e si avvia. Tre partenze già fatte: «Eroe nuovo», «A metà storia», «Fine del gioco». È una partita a parte: non si salva e non tocca il salvataggio vero. Con la prova avviata, dalla stessa scheda si cura l'eroe, si cambia zona, si ricomincia con le stesse scelte o si chiude.
+- **Per gli sviluppatori.** Tolto `src/sistemi/8zzs_disegnate.js`; il file nuovo è `src/storia/8zzzzzs_filmati814.js`. Gli altri filmati della storia hanno ancora le scene di prima (senza filtro e senza patine): verranno rigirati negli aggiornamenti seguenti.
+
 ## 8.13 — Il combattimento più reattivo: si muove, si sente, e i nemici avvisano (16 novembre 2026)
 
 Il combattimento d'azione risponde subito, si vede muovere e si sente quando il colpo prende; e i nemici non colpiscono più senza avviso. Le armi, le mosse e i danni restano quelli di prima.

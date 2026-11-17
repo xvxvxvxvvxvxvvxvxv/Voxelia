@@ -5,6 +5,15 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.15 — Il Voxeliaverse nel gioco normale (17 novembre 2026)
+
+- **La stanza dietro la Corona è una zona del gioco.** Ci si entra come prima dalla Corona del menu (la settima gemma) o subito dopo il filmato del settimo frammento, ma adesso è una stanza come quelle di Aldoria: vista isometrica (o la vista 3D del gioco), l'eroe della Storia che si muove con il clic o con la tastiera. Dentro ci sono il camino con la poltrona e il tappeto, la libreria alta fino al soffitto con la scala e i libri che brillano, la finestra rotonda con le stelle, il settimo frammento sul piedistallo, il tavolino con il libro aperto (una nota di Vael), le candele e la porta che riporta al menu.
+- **Le realtà sono zone del gioco.** Ogni realtà è un'isola sospesa nel cielo, generata dal suo numero come prima, con la grafica del gioco: colli sparsi, terrazze di roccia, crateri pieni di liquido, guglie altissime o canyon con le creste; alberi, cristalli, funghi giganti, coralli o massi con i colori della realtà; il mare fermo, il cielo di giorno, al tramonto, di notte o con un sole di un altro colore. Si combatte con il combattimento del gioco (d'azione o classico), con le armi, le pozioni e la mappa.
+- **Le creature** hanno ancora nomi del tutto a caso e i colori della loro realtà: la palla che salta, la bestia che carica, il gigante, l'occhio che spara da lontano; il guardiano è un boss vero, con la sua barra e il suo colpo a terra. Crescono con il livello dell'eroe e con il pericolo della realtà.
+- **Il mistero resta lo stesso.** Tre obelischi con un raggio di luce, ognuno protetto dalle sue creature; letti i tre segni si sveglia il guardiano, e dietro di lui c'è il Cuore (monete all'eroe). Dopo il guardiano la realtà si salva e si ritrova com'era; la porta viola chiede prima di andare via senza salvare. Chi muore in una realtà si sveglia nella stanza, senza perdere niente. I sentieri dal centro alla porta e ai segni (con i ponti sul liquido) fanno sì che si arrivi sempre dappertutto.
+- **Via il motore 3D a parte** (`src/voxeliaverse/8zzzzv_motore.js`): la gravità delle realtà non c'è più (in vista isometrica non si salta). Le realtà già salvate nella libreria restano, con lo stesso nome.
+- **Per gli sviluppatori.** `8zzzzw_stanza.js` e `8zzzzx_realta.js` riscritti per il motore del gioco (zone `vx2stanza` e `vxr:<seme>`). Il passo del Voxeliaverse di `tools/prova.js` entra dalla Corona, prova la stanza e la libreria, controlla che in una realtà per ogni forma della terra si arrivi ai segni e al Cuore, poi legge i segni, sconfigge il guardiano, salva, prende il Cuore, torna, muore e dimentica.
+
 ## 8.14 — I filmati nello stile classico, il prologo rifatto e la partita di prova (17 novembre 2026)
 
 - **Via il filtro delle scene disegnate.** I filmati non passano più dal quadro in pixel art con il riquadro bianco del testo e i «bip»: si vedono a tutto schermo, con la grafica voxel del gioco, le bande nere del cinema e il testo sotto. L'opzione nelle impostazioni non c'è più.

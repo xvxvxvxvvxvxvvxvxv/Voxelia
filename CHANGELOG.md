@@ -6,6 +6,15 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.15.1 — Maintenance: the Crown's gems, the field battle and the Essences in English (November 19, 2026)
+
+- **The Crown's gems.** With cutscene effects turned off, the notice of a splinter found came out half in Italian ("Rubino della Corona — Splinters gathered: 1/6…"): "Ruby/Diamond/Emerald/Amethyst/Topaz of the Crown" and the whole sentence were missing. Now it reads "Ruby of the Crown — Splinters gathered: 1/6 · see them in the Crown Album".
+- **The gem buttons in the menu.** The tooltip over the Emerald, the Amethyst, the Diamond and the seventh gem stayed in Italian ("Ametista: Parco giochi", "Senza colore: Dietro la Corona"): now "Amethyst: Playground", "Colorless: Behind the Crown" and so on.
+- **Ryan's field battle.** The tooltip over the troop buttons ("Arcieri: Tirano da lontano…"), the white flag ("Abbandona la battaglia") and the "rifornimenti" label stayed in Italian although names and descriptions were translated.
+- **The Essences.** The tooltip over each Essence in the backpack ("Essenza di fuoco") now reads "Fire essence", for all nine elements.
+- **For developers.** In `tools/prova.js` the Kingdom Threat step sometimes failed by chance ("mosse nuove mancanti"): an enemy's charge starts only 55% of the time, and in the test's 50 seconds there could be a single chance. Now during the test the wait between charges is reset until a charge has been seen (14 runs out of 14 passed; before, 3 out of 6 failed). The game doesn't change.
+- In Italian nothing changes.
+
 ## 8.15 — The Voxeliaverse in the normal game (November 17, 2026)
 
 - **The room behind the Crown is a zone of the game.** You enter it as before from the menu's Crown (the seventh gem) or right after the seventh fragment's cutscene, but now it's a room like those of Aldoria: the isometric view (or the game's 3D view), the Story hero moving with a click or the keyboard. Inside there are the fireplace with the armchair and the rug, the library up to the ceiling with the ladder and the glowing books, the round window with the stars, the seventh fragment on its pedestal, the table with the open book (a note from Vael), the candles and the door that takes you back to the menu.

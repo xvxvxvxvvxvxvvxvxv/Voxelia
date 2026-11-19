@@ -5,6 +5,15 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.15.1 — Manutenzione: le gemme della Corona, la battaglia campale e le Essenze in inglese (19 novembre 2026)
+
+- **Le gemme della Corona.** Con gli effetti dei filmati spenti, l'avviso di una scheggia trovata usciva a metà in italiano («Rubino della Corona — Splinters gathered: 1/6…»): mancavano «Rubino/Diamante/Smeraldo/Ametista/Topazio della Corona» e la frase intera. Ora si legge «Ruby of the Crown — Splinters gathered: 1/6 · see them in the Crown Album».
+- **I pulsanti delle gemme nel menu.** Il riquadro che compare passando sopra lo Smeraldo, l'Ametista, il Diamante e la settima gemma restava in italiano («Ametista: Parco giochi», «Senza colore: Dietro la Corona»): ora «Amethyst: Playground», «Colorless: Behind the Crown» e così via.
+- **La battaglia campale di Ryan.** Il riquadro sopra i pulsanti delle truppe («Arcieri: Tirano da lontano…»), la bandiera bianca («Abbandona la battaglia») e la scritta «rifornimenti» restavano in italiano anche se nomi e descrizioni erano tradotti.
+- **Le Essenze.** Il riquadro sopra ogni Essenza dello zaino («Essenza di fuoco») ora si legge «Fire essence», per tutti e nove gli elementi.
+- **Per gli sviluppatori.** In `tools/prova.js` il passo della Minaccia del Regno a volte falliva per caso («mosse nuove mancanti»): la carica di un nemico parte solo con il 55% di probabilità e nei 50 secondi della prova poteva capitare una sola occasione. Ora durante la prova l'attesa tra una carica e l'altra si azzera finché la carica non si è vista (14 prove su 14 riuscite; prima ne falliva 3 su 6). Il gioco non cambia.
+- In italiano non cambia niente.
+
 ## 8.15 — Il Voxeliaverse nel gioco normale (17 novembre 2026)
 
 - **La stanza dietro la Corona è una zona del gioco.** Ci si entra come prima dalla Corona del menu (la settima gemma) o subito dopo il filmato del settimo frammento, ma adesso è una stanza come quelle di Aldoria: vista isometrica (o la vista 3D del gioco), l'eroe della Storia che si muove con il clic o con la tastiera. Dentro ci sono il camino con la poltrona e il tappeto, la libreria alta fino al soffitto con la scala e i libri che brillano, la finestra rotonda con le stelle, il settimo frammento sul piedistallo, il tavolino con il libro aperto (una nota di Vael), le candele e la porta che riporta al menu.

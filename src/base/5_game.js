@@ -40,7 +40,9 @@ function dungeonClear(e){const id=ZZ.dg,d=DG[id],x=Math.floor(e.px),y=Math.floor
   const ex=exitSpot(x,y);const ep=po(ex[0],ex[1],d.ent,{st:'exit',n:'Uscita: '+zname(d.ent)});ep.dgx=1;ents.push(ep);
   P.done[id]=(P.done[id]||0)+1;
   if(NET.ok)NET.send({t:'dgdone',d:id,run:ZZ.run});else P.runs[id]=ZZ.run+1;
-  setTimeout(()=>msg('Dungeon completato! Al prossimo ingresso si rigenererà, più forte (ciclo '+(ZZ.run+2)+').'),2900);
+  // 8.15.2: il numero del ciclo si legge adesso: fra 2,9 secondi si può essere già in un'altra zona (dopo Malakar, nell'Atto II),
+  // dove ZZ.run non c'è e il messaggio diceva «ciclo NaN»
+  {const cy=(ZZ.run|0)+2;setTimeout(()=>msg('Dungeon completato! Al prossimo ingresso si rigenererà, più forte (ciclo '+cy+').'),2900)}
   if(d.fin&&P.st===3){P.st=4;setTimeout(()=>{const show=()=>{PA={ti:'La caduta di Malakar',tx:'Il Re Lich si dissolve in una nube di voxel neri. Torna dal Re Aldric al castello.'};pn('txt')};if(typeof filmFall==='function')filmFall(show);else show()},1500)}
   save()}
 function die(){sceneDeath();if(MODE==='dim'){dimDie();return}if(DF.pm){started=0;LS.del(SAVEK);netLeave();pn('dead');return}

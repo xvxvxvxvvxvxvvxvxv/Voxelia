@@ -16,7 +16,9 @@ function camTarget(){if(CAM.f&&CAM.f.px!=null){const k=CAM.k;return[P.px+(CAM.f.
 
 /* ---- stendardi al centro dello schermo (livello, missioni, frammenti, boss, nuovo giorno) ---- */
 const BQ=[];let BB=0;
-function banner(ti,sub,icn){if(!cineOK()){msg(ti+(sub?' — '+sub:''));return}BQ.push([ti,sub,icn]);if(!BB)bnNext()}
+// 8.15.2: senza effetti dei filmati, in inglese il titolo e il testo si traducono ognuno per conto suo: uniti, un titolo con
+// il simbolo davanti («🌙 Una notte pericolosa — …») restava in italiano
+function banner(ti,sub,icn){if(!cineOK()){msg(sub&&SET.lang==='en'&&typeof i18En==='function'?i18En(ti)+' — '+i18En(sub):ti+(sub?' — '+sub:''));return}BQ.push([ti,sub,icn]);if(!BB)bnNext()}
 function bnNext(){const b=BQ.shift();const el=$('bnr');if(!b){BB=0;el.className='';return}BB=1;
   el.innerHTML=`${b[2]?ico(b[2],32,'bi'):''}<b>${esc(b[0])}</b>${b[1]?`<small>${esc(b[1])}</small>`:''}`;el.className='';void el.offsetWidth;el.className='on';
   setTimeout(()=>{el.className='off';setTimeout(bnNext,450)},BQ.length?1700:2600)}

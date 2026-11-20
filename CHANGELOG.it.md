@@ -5,6 +5,15 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.15.2 — Manutenzione: il ciclo dei dungeon, gli avvisi in inglese e il pannello sviluppatore (20 novembre 2026)
+
+- **«Ciclo NaN».** Il messaggio «Dungeon completato! Al prossimo ingresso si rigenererà, più forte (ciclo …)» compare circa tre secondi dopo la caduta del boss: se nel frattempo si era già in un'altra zona (dopo Malakar, o nell'Atto II, dove la storia porta al castello) diceva «ciclo NaN». Ora il numero si legge quando il boss cade.
+- **Gli avvisi con un simbolo, in inglese.** Con gli effetti dei filmati spenti, gli avvisi il cui titolo comincia con un simbolo tenevano il titolo in italiano («🌙 Una notte pericolosa — With the Kingdom Threat…», e così «🏠 La tua casa», «🥚 Un uovo misterioso», «⛏ La miniera» e gli altri). Ora titolo e testo sono tutti e due in inglese.
+- **Le regioni di Tomorrow in inglese.** I nomi delle regioni restavano a metà in italiano («Boschi di Thalagor», «Prati di Orgor»): ora «Woods of Thalagor», «Meadows of Orgor», «Dunes of…», «Peaks of…», «Ash wastes of…».
+- **La vista 3D.** Le descrizioni per i lettori di schermo dei due pulsanti che girano la telecamera restavano in italiano: ora «Turn the camera left/right».
+- **Per gli sviluppatori.** Dopo aver giocato a Tomorrow, il pannello sviluppatore di una partita di Storia elencava anche le regioni di Tomorrow già visitate (più di 200): senza un eroe di Tomorrow non si possono caricare, quindi il teletrasporto e «Prova tutte le zone» finivano con un errore («Cannot read properties of undefined (reading 'ch')»). Ora compaiono solo in Tomorrow. `tools/prova.js` ora fallisce anche quando una zona della prova lancia un errore, non solo quando ne scrive uno nella console.
+- In italiano cambiano solo il primo e l'ultimo punto.
+
 ## 8.15.1 — Manutenzione: le gemme della Corona, la battaglia campale e le Essenze in inglese (19 novembre 2026)
 
 - **Le gemme della Corona.** Con gli effetti dei filmati spenti, l'avviso di una scheggia trovata usciva a metà in italiano («Rubino della Corona — Splinters gathered: 1/6…»): mancavano «Rubino/Diamante/Smeraldo/Ametista/Topazio della Corona» e la frase intera. Ora si legge «Ruby of the Crown — Splinters gathered: 1/6 · see them in the Crown Album».

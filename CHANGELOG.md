@@ -6,6 +6,15 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.15.2 — Maintenance: the dungeon cycle, the notices in English and the developer panel (November 20, 2026)
+
+- **"Cycle NaN".** The message "Dungeon complete! Next time you enter it will be reborn, stronger (cycle …)" appears about three seconds after the boss falls: if by then you were already in another zone (after Malakar, or in Act II, where the story takes you to the castle) it read "cycle NaN". Now the number is taken when the boss falls.
+- **The notices with a symbol, in English.** With cutscene effects turned off, the notices whose title starts with a symbol kept the title in Italian ("🌙 Una notte pericolosa — With the Kingdom Threat…", and so "🏠 La tua casa", "🥚 Un uovo misterioso", "⛏ La miniera" and the others). Now title and text are both in English.
+- **Tomorrow's regions in English.** The names of the regions read half in Italian ("Boschi di Thalagor", "Prati di Orgor"): now "Woods of Thalagor", "Meadows of Orgor", "Dunes of…", "Peaks of…", "Ash wastes of…".
+- **The 3D view.** The descriptions for screen readers of the two buttons that turn the camera stayed in Italian: now "Turn the camera left/right".
+- **For developers.** After playing Tomorrow, the developer panel of a Story game also listed the Tomorrow regions already visited (more than 200): they can't be loaded without a Tomorrow hero, so teleporting there and "Test all zones" ended in an error ("Cannot read properties of undefined (reading 'ch')"). Now they're listed only in Tomorrow. `tools/prova.js` now also fails when a zone of the test throws an error, not only when it writes one in the console.
+- In Italian only the first and the last points change.
+
 ## 8.15.1 — Maintenance: the Crown's gems, the field battle and the Essences in English (November 19, 2026)
 
 - **The Crown's gems.** With cutscene effects turned off, the notice of a splinter found came out half in Italian ("Rubino della Corona — Splinters gathered: 1/6…"): "Ruby/Diamond/Emerald/Amethyst/Topaz of the Crown" and the whole sentence were missing. Now it reads "Ruby of the Crown — Splinters gathered: 1/6 · see them in the Crown Album".

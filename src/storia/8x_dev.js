@@ -54,7 +54,8 @@ function devFilm(code){devClose();if(started&&!DEV.sess){if(!confirm('Per vedere
 const DEVSPEC={sogno:'il sogno del motel',occhio:'la stanza dell\'Occhio',culto:'il covo del culto',cella:'la cella delle prigioni',mare:'la navigazione',arrembaggio:'l\'arrembaggio',stiva:'la stiva della nave',dim_hub:'la Cabina di Dimension'};
 function devZones(){const Z2=Object.keys(Z),cat={'Città e dintorni':[],'Interni':[],'Dungeon (tutti i piani)':[],'Mare e battaglie':[],'Speciali e segrete':[]};
   for(const k of Z2){const z=Z[k];if(!z||z.ed)continue;const n=z.n||k;
-    if(k.startsWith('dim_'))continue;if(k.startsWith('mare')||k.startsWith('bat_')||k==='arrembaggio'||k==='stiva')cat['Mare e battaglie'].push([k,n]);
+    // 8.15.2: le regioni di Tomorrow già visitate restano in Z: in una partita di Storia non si possono caricare (manca P.tw)
+    if(k.startsWith('dim_')||(k.startsWith('tw:')&&!(typeof OW!=='undefined'&&OW.on)))continue;if(k.startsWith('mare')||k.startsWith('bat_')||k==='arrembaggio'||k==='stiva')cat['Mare e battaglie'].push([k,n]);
     else if(DEVSPEC[k]||/segret|cripta|passaggio|prigion|sogno|culto|occhio|cella/.test(k))cat['Speciali e segrete'].push([k,n]);else if(z.lay||k.startsWith('in_')||k.startsWith('cas_')||k.startsWith('lib_'))cat['Interni'].push([k,n]);else cat['Città e dintorni'].push([k,n])}
   for(const id of Object.keys(DG)){const d=DG[id];for(let f=1;f<=(d.fls||3);f++)cat['Dungeon (tutti i piani)'].push([id+'@'+f,d.n+' · piano '+f+(f===d.fls?' (boss)':'')])}return cat}
 function devBody(){switch(DEV.tab){

@@ -1079,6 +1079,9 @@ Object.assign(ENX,{
 "Pratofiorito":"Flowermead",
 "Grotta degli slime":"Slime cave",
 "Benvenuti a Pratofiorito! A est: il Bosco dei Sussurri. Al Municipio: la Sindaca Ortensia. (Si raccomanda di non dare da mangiare agli slime.)":"Welcome to Flowermead! To the east: the Whispering Woods. At the Town Hall: Mayor Ortensia. (Please don't feed the slimes.)",
+// 8.15.3: il cartello va a capo dopo ogni frase: anche le righe da sole
+"Al Municipio: la Sindaca Ortensia.":"At the Town Hall: Mayor Ortensia.",
+"(Si raccomanda di non dare da mangiare agli slime.)":"(Please don't feed the slimes.)",
 "Il villaggio dei fiori":"The village of flowers",
 "Registro del faro":"Lighthouse log",
 "«Il faro della valle si accende solo con la sua chiave d'ottone. Chi la custodisce custodisce la luce.» Sotto, a matita: «Il Re degli Slime l'ha inghiottita. Di nuovo.»":"“The valley lighthouse only lights up with its brass key. Whoever keeps it keeps the light.” Below, in pencil: “The Slime King swallowed it. Again.”",

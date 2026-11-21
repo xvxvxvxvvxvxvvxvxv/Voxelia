@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-135 versions, newest first.
+136 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.15.3](voxelia_v8.15.3.html) | November 21, 2026 | Maintenance: the notes and inscriptions in English (the doors of the Eye, the signed notes, the Council's minutes, the Eldorian grammar, the Flowermead sign) | 4,113 KB |
 | [8.15.2](voxelia_v8.15.2.html) | November 20, 2026 | Maintenance: the dungeon cycle, the notices in English and the developer panel ("cycle NaN", the notices with a symbol, Tomorrow's regions, the 3D view's buttons, the Tomorrow zones in a Story game) | 4,107 KB |
 | [8.15.1](voxelia_v8.15.1.html) | November 19, 2026 | Maintenance: the Crown's gems, the field battle and the Essences in English (the splinter notice, the gem buttons' tooltips, the troop buttons, the white flag, the supplies) | 4,103 KB |
 | [8.15](voxelia_v8.15.html) | November 17, 2026 | The Voxeliaverse in the normal game: the room behind the Crown and the realities become isometric zones, with the game's combat | 4,098 KB |

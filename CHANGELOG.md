@@ -6,6 +6,15 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.15.3 — Maintenance: the notes and inscriptions in English (November 21, 2026)
+
+- **The Eye's doors.** In English, the stone door under Old Aldoria and the door of the Eye in the castle crypt stayed in Italian ("Una lastra di pietra nera, liscia come vetro…", "Sotto, incise in lettere antiche:", "«La verità sarà nei tuoi occhi, a tempo debito.»"). These texts go to a new line in the middle, and the English sentences ending with ” weren't split like the Italian ones ending with », so the lines couldn't be found. Now the sentences are split after ” too, and the lines that stop on a colon have their own translation.
+- **The signed notes.** The castle's secret notes signed under the text ("«…» — M.", "— Il Ciambellano") showed the last sentence in Italian ("…Evacuate the quarter, I beg you. Se non mi ascolterai, la spezzerò io stesso.”") and the Chamberlain's signature untranslated. Now quote and signature are translated line by line.
+- **The texts with a part that changes at the end** (the seventh heart of the Crown, the Crown Reunited ending) are now also split sentence by sentence, and a sentence quoted between «» is found without the quote marks too: the Council's minutes ("«Il Consiglio approva all'unanimità…»") are now all in English.
+- **The Eldorian grammar and the cell wall.** The lines "«turmsi» — il re", "«lahig» — nasconde", "«uoi» — ciò che sta sotto" now read "“turmsi” — the king", "“lahig” — hides", "“uoi” — what lies beneath".
+- **Voxelia Studio's example world.** The Flowermead sign's last lines ("Al Municipio: la Sindaca Ortensia.", "(Si raccomanda di non dare da mangiare agli slime.)") are now in English.
+- In Italian nothing changes.
+
 ## 8.15.2 — Maintenance: the dungeon cycle, the notices in English and the developer panel (November 20, 2026)
 
 - **"Cycle NaN".** The message "Dungeon complete! Next time you enter it will be reborn, stronger (cycle …)" appears about three seconds after the boss falls: if by then you were already in another zone (after Malakar, or in Act II, where the story takes you to the castle) it read "cycle NaN". Now the number is taken when the boss falls.

@@ -32,10 +32,18 @@ function i18Build(){I18.ok=1;const ex=new Map(),lead=new Map(),trail=new Map(),f
   for(const m of[lead,trail])for(const L of m.values())L.sort((a,b)=>b.len-a.len);free.sort((a,b)=>b.len-a.len);
   // pezzi di testi lunghi: le frasi di un paragrafo tradotto (quando il gioco le mostra una alla volta)
   // e l'inizio di «Dove: {0}» quando il valore sta in un'altra parte della pagina
-  const SP=/(?<=[.!?…»])\s+(?=[«A-ZÀ-Ý¡¿0-9])/;const ex2=new Map();
-  for(const[k,v]of ex){if(k.length<40)continue;const a=k.split(SP),b=v.split(SP);if(a.length>1&&a.length===b.length)for(let i=0;i<a.length;i++)if(a[i].length>3&&!ex.has(a[i]))ex2.set(a[i],b[i])}
-  for(const k in ENX){const v=ENX[k];if(!v)continue;const nk=i18Norm(k);let m=nk.match(/^(.*\S)\s*\{\d+\}$/),n=v.match(/^(.*\S)\s*\{\d+\}$/);if(m&&n&&!/\{\d+\}/.test(m[1])&&!/\{\d+\}/.test(n[1])&&!ex.has(m[1]))ex2.set(m[1],n[1]);
-    m=nk.match(/^\{\d+\}\s*(\S.*)$/);n=v.match(/^\{\d+\}\s*(\S.*)$/);if(m&&n&&!/\{\d+\}/.test(m[1])&&!/\{\d+\}/.test(n[1])&&!ex.has(m[1]))ex2.set(m[1],n[1])}
+  // 8.15.3: le frasi si dividono anche dopo le virgolette inglesi (”) e prima di “: prima in inglese «…tempo debito.” La porta…»
+  // restava una frase sola, le frasi non tornavano e i paragrafi di quei testi (le righe dopo un a capo) restavano in italiano.
+  // Si dividono anche i testi con una parte che cambia in fondo («…segnato per sempre.{0}»), tolta quella parte.
+  const SP=/(?<=[.!?…»”])\s+(?=[«“A-ZÀ-Ý¡¿0-9])/;const ex2=new Map(),cut=new Map();
+  for(const k in ENX){const v=ENX[k];if(!v)continue;const nk=i18Norm(k);let m=nk.match(/^(.*\S)\s*\{\d+\}$/),n=v.match(/^(.*\S)\s*\{\d+\}$/);if(m&&n&&!/\{\d+\}/.test(m[1])&&!/\{\d+\}/.test(n[1])&&!ex.has(m[1]))cut.set(m[1],n[1]);
+    m=nk.match(/^\{\d+\}\s*(\S.*)$/);n=v.match(/^\{\d+\}\s*(\S.*)$/);if(m&&n&&!/\{\d+\}/.test(m[1])&&!/\{\d+\}/.test(n[1])&&!ex.has(m[1]))cut.set(m[1],n[1])}
+  for(const[k,v]of[...ex,...cut]){if(k.length<40)continue;const a=k.split(SP),b=v.split(SP);if(a.length>1&&a.length===b.length)for(let i=0;i<a.length;i++){let x=a[i],y=b[i];if(x.length>3&&!ex.has(x)&&!cut.has(x))ex2.set(x,y);
+      // anche senza le virgolette d'apertura o di chiusura, per quando la battuta intera «…» si traduce frase per frase
+      if(x[0]==='«'&&y[0]==='“'){x=x.slice(1);y=y.slice(1)}if(x.endsWith('»')&&y.endsWith('”')){x=x.slice(0,-1);y=y.slice(0,-1)}if(x!==a[i]&&x.length>3&&!ex.has(x)&&!cut.has(x)&&!ex2.has(x))ex2.set(x,y)}
+    // 8.15.3: un biglietto firmato («…» — M.) si mostra su due righe: la frase tra virgolette e la firma, ognuna con la sua traduzione
+    const q=k.match(/^(«.*»)\s+(—\s*[^«»]{1,30})$/),w=v.match(/^(“.*”)\s+(—\s*[^“”]{1,30})$/);if(q&&w){if(!ex.has(q[1]))ex2.set(q[1],w[1]);if(!ex.has(q[2])&&q[2]!==w[2])ex2.set(q[2],w[2])}}
+  for(const[k,v]of cut)ex2.set(k,v);
   for(const[k,v]of ex2)if(!ex.has(k))ex.set(k,v);
   Object.assign(I18,{ex,lead,trail,free});I18.cache.clear()}
 // traduce un testo già normalizzato; null se non c'è traduzione

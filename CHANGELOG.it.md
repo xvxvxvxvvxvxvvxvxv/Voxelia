@@ -5,6 +5,15 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.15.3 — Manutenzione: i biglietti e le iscrizioni in inglese (21 novembre 2026)
+
+- **Le porte dell'Occhio.** In inglese la porta di pietra sotto Aldoria Vecchia e la porta dell'Occhio nella cripta del castello restavano in italiano («Una lastra di pietra nera, liscia come vetro…», «Sotto, incise in lettere antiche:», «La verità sarà nei tuoi occhi, a tempo debito.»). Questi testi vanno a capo a metà, e le frasi inglesi che finiscono con ” non si dividevano come quelle italiane che finiscono con »: le righe non si trovavano. Ora le frasi si dividono anche dopo ”, e le righe che si fermano sui due punti hanno la loro traduzione.
+- **I biglietti firmati.** I biglietti segreti del castello firmati sotto il testo («…» — M., «— Il Ciambellano») mostravano l'ultima frase in italiano («…Evacuate the quarter, I beg you. Se non mi ascolterai, la spezzerò io stesso.”») e la firma del Ciambellano non tradotta. Ora battuta e firma si traducono riga per riga.
+- **I testi con una parte che cambia in fondo** (il settimo cuore della Corona, il finale della Corona Riunita) ora si dividono anch'essi frase per frase, e una frase tra «» si trova anche senza le virgolette: il verbale del Consiglio («Il Consiglio approva all'unanimità…») ora è tutto in inglese.
+- **La grammatica eldoriana e il muro della cella.** Le righe «turmsi» — il re, «lahig» — nasconde, «uoi» — ciò che sta sotto ora si leggono in inglese.
+- **Il mondo di esempio di Voxelia Studio.** Le ultime righe del cartello di Pratofiorito ora sono in inglese.
+- In italiano non cambia niente.
+
 ## 8.15.2 — Manutenzione: il ciclo dei dungeon, gli avvisi in inglese e il pannello sviluppatore (20 novembre 2026)
 
 - **«Ciclo NaN».** Il messaggio «Dungeon completato! Al prossimo ingresso si rigenererà, più forte (ciclo …)» compare circa tre secondi dopo la caduta del boss: se nel frattempo si era già in un'altra zona (dopo Malakar, o nell'Atto II, dove la storia porta al castello) diceva «ciclo NaN». Ora il numero si legge quando il boss cade.

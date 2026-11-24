@@ -6,6 +6,11 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.15.4 — Maintenance: the Voxeliaverse's creatures and chests (November 24, 2026)
+
+- **Creatures and chests out of reach in the realities.** In realities with canyons and spires, a creature or a chest sometimes appeared in a hollow closed off by rocks: the chest couldn't be opened and the creature couldn't be hit (out of 400 realities tried, 38 creatures and 10 chests). Now they appear only where you can walk to from the center of the island. The realities' shape, their names and saved realities don't change, and there are as many creatures as before.
+- **For developers.** "Test all zones" in the developer panel always reported Aldoria East's Fields (cows and sheep "not reachable"): the large pasture is closed on purpose. Now grazing animals don't count, as already in the check the game makes when it builds the zones.
+
 ## 8.15.3 — Maintenance: the notes and inscriptions in English (November 21, 2026)
 
 - **The Eye's doors.** In English, the stone door under Old Aldoria and the door of the Eye in the castle crypt stayed in Italian ("Una lastra di pietra nera, liscia come vetro…", "Sotto, incise in lettere antiche:", "«La verità sarà nei tuoi occhi, a tempo debito.»"). These texts go to a new line in the middle, and the English sentences ending with ” weren't split like the Italian ones ending with », so the lines couldn't be found. Now the sentences are split after ” too, and the lines that stop on a colon have their own translation.

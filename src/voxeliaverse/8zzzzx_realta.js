@@ -131,7 +131,10 @@ function vx2Gen({n}){const k=Zk,d=Z[k].vx2,R=vxRng((d.seed^0x51ed)>>>0),sd=d.see
   // lo stato di una realtà salvata
   if(st){VX2.lit=[0,1,2].map(i=>st.lit&&st.lit[i]?1:0);if(st.boss){VX2.woke=1;VX2.bossDead=1}if(st.heart)VX2.won=1}
   // le creature: le guardie dei segni e quelle che girano
-  const free=(x0,y0,r0,r1)=>{for(let t2=0;t2<40;t2++){const a=R()*6.283,r=r0+R()*(r1-r0),x=Math.round(x0+Math.cos(a)*r),y=Math.round(y0+Math.sin(a)*r);if(IN(x,y)&&M[y][x]===0&&!ents.some(e=>(e.px|0)===x&&(e.py|0)===y))return[x,y]}return null};
+  // 8.15.4: solo dove si arriva a piedi dal centro (prima, nei canyon e tra le guglie, qualche creatura o forziere
+  // finiva in una conca chiusa dalle rocce: un forziere che non si poteva aprire, una creatura che non si poteva colpire)
+  const RCH=bfs(C[0],C[1]+1);
+  const free=(x0,y0,r0,r1)=>{for(let t2=0;t2<40;t2++){const a=R()*6.283,r=r0+R()*(r1-r0),x=Math.round(x0+Math.cos(a)*r),y=Math.round(y0+Math.sin(a)*r);if(IN(x,y)&&M[y][x]===0&&RCH[y*n+x]>=0&&!ents.some(e=>(e.px|0)===x&&(e.py|0)===y))return[x,y]}return null};
   SG.forEach(([x,y],j)=>{if(VX2.lit[j])return;const g=2+(d.dan>3?1:0)+(d.dan>4?1:0);for(let i=0;i<g;i++){const q=free(x,y,1.5,3.5);if(!q)continue;const e=mk(k+':'+(i%d.sp.length),q[0],q[1]);e.vxg=j;ents.push(e)}});
   let w=st&&st.boss?Math.ceil((4+d.dan)/2):4+d.dan;for(let i=0;i<w*3&&w>0;i++){const q=free(c,c,6,RAD*.85);if(!q||Math.hypot(q[0]-SP[0],q[1]-SP[1])<8)continue;ents.push(mk(k+':'+(R()*d.sp.length|0),q[0],q[1]));w--}
   for(let i=0;i<2;i++){const q=free(c,c,6,RAD*.8);if(q&&Math.hypot(q[0]-SP[0],q[1]-SP[1])>8)ents.push({k:'ch',px:q[0]+.5,py:q[1]+.5})}

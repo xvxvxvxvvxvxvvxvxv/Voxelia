@@ -137,7 +137,8 @@ function dv3Check(){const r={z:Zk,n:(ZZ&&ZZ.n)||Zk,bad:[],err:[],ents:ents.lengt
     if(x<0||y<0||x>=N||y>=N){if(e.k==='en'||e.k==='npc'||e.k==='po')r.bad.push(e.k+' '+(e.n||e.t||'')+': fuori dalla mappa ('+x+','+y+')');continue}
     if(e.k==='en'&&(!isFinite(e.hp)||!isFinite(e.at)||!e.m))r.bad.push('nemico '+(e.n||e.t)+': vita, attacco o modello mancanti');
     // gli animali nei recinti e gli accampamenti stanno apposta dietro uno steccato: per personaggi e nemici bastano 3 caselle
-    if((e.k==='po'||e.k==='npc'||(e.k==='en'&&!e.boss))&&!near(x,y,e.k==='po'?1:3))r.bad.push((e.k==='po'?'passaggio':e.k==='npc'?'personaggio':'nemico')+' «'+(e.n||e.t||e.to||'')+'» non raggiungibile ('+x+','+y+')')}
+    // (8.15.4: gli animali al pascolo non contano, il pascolo grande dei Campi è chiuso apposta e finiva sempre nell'elenco)
+    if((e.k==='po'||(e.k==='npc'&&!e.wg)||(e.k==='en'&&!e.boss))&&!near(x,y,e.k==='po'?1:3))r.bad.push((e.k==='po'?'passaggio':e.k==='npc'?'personaggio':'nemico')+' «'+(e.n||e.t||e.to||'')+'» non raggiungibile ('+x+','+y+')')}
   return r}
 function dv3TestHere(){if(!started||!P)return;DV3.cap=[];const pz=DV3.pause;DV3.pause=0;let r;try{for(let i=0;i<15;i++)upd(1/30);draw();r=dv3Check()}catch(e){r={z:Zk,n:Zk,bad:['ERRORE: '+e.message],err:[]}}DV3.pause=pz;r.err=[...new Set(DV3.cap)];DV3.cap=null;DV3.test={n:1,i:1,done:1,res:[r],one:1,sec:0};devRender()}
 async function dv3TestAll(){if(!DEV.sess){msg('La prova di tutte le zone si fa in una partita di prova');return}const C=devZones(),L=[];for(const c in C)for(const[k,n]of C[c])if(k!=='mare'&&!k.startsWith('dim_')&&k!=='cuore80')L.push([k,n]);

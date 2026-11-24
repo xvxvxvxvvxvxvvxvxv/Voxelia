@@ -5,6 +5,11 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.15.4 — Manutenzione: le creature e i forzieri del Voxeliaverse (24 novembre 2026)
+
+- **Creature e forzieri irraggiungibili nelle realtà.** Nelle realtà con i canyon e con le guglie, a volte una creatura o un forziere compariva in una conca chiusa dalle rocce: il forziere non si poteva aprire e la creatura non si poteva colpire (su 400 realtà provate, 38 creature e 10 forzieri). Ora compaiono solo dove si arriva a piedi dal centro dell'isola. La forma delle realtà, i nomi e le realtà salvate non cambiano, e le creature sono tante quante prima.
+- **Per gli sviluppatori.** «Prova tutte le zone» del pannello sviluppatore segnalava ogni volta i Campi di Aldoria Est (mucche e pecore «non raggiungibili»): il pascolo grande è chiuso apposta. Ora gli animali al pascolo non contano, come già nel controllo che fa il gioco quando prepara le zone.
+
 ## 8.15.3 — Manutenzione: i biglietti e le iscrizioni in inglese (21 novembre 2026)
 
 - **Le porte dell'Occhio.** In inglese la porta di pietra sotto Aldoria Vecchia e la porta dell'Occhio nella cripta del castello restavano in italiano («Una lastra di pietra nera, liscia come vetro…», «Sotto, incise in lettere antiche:», «La verità sarà nei tuoi occhi, a tempo debito.»). Questi testi vanno a capo a metà, e le frasi inglesi che finiscono con ” non si dividevano come quelle italiane che finiscono con »: le righe non si trovavano. Ora le frasi si dividono anche dopo ”, e le righe che si fermano sui due punti hanno la loro traduzione.

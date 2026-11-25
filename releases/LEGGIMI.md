@@ -17,10 +17,11 @@ version, in [CHANGELOG.it.md](../CHANGELOG.it.md)).
 
 ## List
 
-137 versions, newest first.
+138 versions, newest first.
 
 | Version | Date | What's new | Size |
 |---|---|---|---|
+| [8.15.5](voxelia_v8.15.5.html) | November 25, 2026 | Maintenance: the world events in English (dragon, meteor and merchant in the quarters no longer half in Italian; "Fields and Trades" everywhere) | 4,117 KB |
 | [8.15.4](voxelia_v8.15.4.html) | November 24, 2026 | Maintenance: the Voxeliaverse's creatures and chests (no more creatures or chests in hollows out of reach; "Test all zones" no longer reports the pasture) | 4,115 KB |
 | [8.15.3](voxelia_v8.15.3.html) | November 21, 2026 | Maintenance: the notes and inscriptions in English (the doors of the Eye, the signed notes, the Council's minutes, the Eldorian grammar, the Flowermead sign) | 4,113 KB |
 | [8.15.2](voxelia_v8.15.2.html) | November 20, 2026 | Maintenance: the dungeon cycle, the notices in English and the developer panel ("cycle NaN", the notices with a symbol, Tomorrow's regions, the 3D view's buttons, the Tomorrow zones in a Story game) | 4,107 KB |

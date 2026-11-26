@@ -34,7 +34,9 @@ const _loadPost746e=loadPost;loadPost=function(k){_loadPost746e(k);try{evSpawn(e
 setInterval(()=>{try{if(!started||!P)return;const V=evNow();evHud(V);if(!V)return;if(EV46.ann!==V.s&&!evDone(V.s)){EV46.ann=V.s;const T=EV46.T[V.ty];
     banner(T.i+' '+T.n+' '+evZone(V.zk),'Per dodici minuti: '+(V.ty==='drago'?'abbattilo per un grande premio':V.ty==='meteora'?'nel cratere c\'è il forziere della stella':'ha tre oggetti rari da vendere'),'stella');clog('',T.i+' '+T.n+' '+evZone(V.zk)+'!',{sys:1})}
   evSpawn(V)}catch(e){}},2000);
-const evZone=k=>k==='town'?'Aldoria':typeof zname==='function'?(()=>{try{return zname(k)}catch(_){return k}})():k;
+// 8.15.5: in inglese il nome della zona si traduce da solo, prima di entrare nella frase: i nomi con «·» (Aldoria Est · Campi
+// e Mestieri, Aldoria Nord · Quartiere Nobile) venivano spezzati dal modello «… {1} · {2}» del cartello e restavano a metà in italiano
+const evZone=k=>{const n=k==='town'?'Aldoria':typeof zname==='function'?(()=>{try{return zname(k)}catch(_){return k}})():k;return SET.lang!=='it'&&typeof trText==='function'?trText(n):n};
 function evHud(V){let el=$('ev46');const on=V&&!evDone(V.s)&&started;if(!on){if(el)el.hidden=true;return}if(!el){el=document.createElement('div');el.id='ev46';document.body.appendChild(el)}el.hidden=false;
   const T=EV46.T[V.ty],s=Math.max(0,Math.round((V.end-Date.now())/1000));el.textContent=T.i+' '+T.n+' '+evZone(V.zk)+' · '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+(Zk===V.zk?' · sei qui!':'')}
 // i premi

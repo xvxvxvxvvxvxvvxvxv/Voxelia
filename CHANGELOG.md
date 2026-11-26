@@ -6,6 +6,12 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.15.5 — Maintenance: the world events in English (November 25, 2026)
+
+- **World events in the quarters.** In English, when a dragon, a meteor or a rare merchant came to East Aldoria or North Aldoria, the notice and the sign at the top of the screen stayed half in Italian ("☄ A meteor fell on Aldoria Est · Fields and Crafts · 11:01", "🐉 A dragon attacks Aldoria Nord · Quartiere Nobile · 11:01"): the quarter's name contains a "·" and was split in two. Now they read "☄ A meteor fell on East Aldoria · Fields and Trades · 11:01" and "North Aldoria · Noble Quarter".
+- **Fields and Trades.** A few messages (the server's, the admin panel's and a treasure hint) called the quarter "Fields and Crafts": now it's always "Fields and Trades", as on the map.
+- In Italian nothing changes.
+
 ## 8.15.4 — Maintenance: the Voxeliaverse's creatures and chests (November 24, 2026)
 
 - **Creatures and chests out of reach in the realities.** In realities with canyons and spires, a creature or a chest sometimes appeared in a hollow closed off by rocks: the chest couldn't be opened and the creature couldn't be hit (out of 400 realities tried, 38 creatures and 10 chests). Now they appear only where you can walk to from the center of the island. The realities' shape, their names and saved realities don't change, and there are as many creatures as before.

@@ -5,6 +5,12 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.15.5 — Manutenzione: gli eventi del mondo in inglese (25 novembre 2026)
+
+- **Gli eventi del mondo nei quartieri.** In inglese, quando un drago, una meteora o un mercante raro arrivavano ad Aldoria Est o ad Aldoria Nord, l'avviso e il cartello in alto restavano a metà in italiano («☄ A meteor fell on Aldoria Est · Fields and Crafts · 11:01», «🐉 A dragon attacks Aldoria Nord · Quartiere Nobile · 11:01»): il nome del quartiere contiene un «·» e veniva spezzato in due. Ora si legge «☄ A meteor fell on East Aldoria · Fields and Trades · 11:01» e «North Aldoria · Noble Quarter».
+- **Campi e Mestieri.** In inglese alcuni messaggi (del server, del pannello admin e un indizio del tesoro) chiamavano il quartiere «Fields and Crafts»: ora è sempre «Fields and Trades», come sulla mappa.
+- In italiano non cambia niente.
+
 ## 8.15.4 — Manutenzione: le creature e i forzieri del Voxeliaverse (24 novembre 2026)
 
 - **Creature e forzieri irraggiungibili nelle realtà.** Nelle realtà con i canyon e con le guglie, a volte una creatura o un forziere compariva in una conca chiusa dalle rocce: il forziere non si poteva aprire e la creatura non si poteva colpire (su 400 realtà provate, 38 creature e 10 forzieri). Ora compaiono solo dove si arriva a piedi dal centro dell'isola. La forma delle realtà, i nomi e le realtà salvate non cambiano, e le creature sono tante quante prima.

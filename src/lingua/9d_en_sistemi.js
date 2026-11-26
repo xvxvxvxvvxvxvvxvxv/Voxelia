@@ -1392,3 +1392,10 @@ Object.assign(ENX,{
 "La stalla è piena":"The stable is full",
 "Ti seguono dappertutto e ogni tanto scavano qualcosa per te.":"They follow you everywhere and now and then dig something up for you."
 });
+// 8.15.6: i nomi degli oggetti chimera («Pugnale-falce della Chimera», mxName in 8zzzzc_chimere.js) sono fatti di tre pezzi che
+// hanno già la traduzione (le due forme e il soprannome), ma insieme restavano in italiano: qui le voci intere.
+// Manca anche «dell'Innesto», uno degli otto soprannomi.
+ENX["dell'Innesto"]="of the Graft";
+{const T=s=>ENX[s]!=null&&ENX[s]!==''?ENX[s]:(EN[s]!=null?EN[s]:null);
+  for(const a in MX55N)for(const b in MX55N){const A=MX55N[a],B=MX55N[b].toLowerCase(),ea=T(A),eb=T(MX55N[b]);if(!ea||!eb)continue;
+    for(const e of MX55E){const ee=T(e),k=A+'-'+B+' '+e;if(ee&&ENX[k]==null)ENX[k]=ea+'-'+eb.toLowerCase()+' '+ee}}}

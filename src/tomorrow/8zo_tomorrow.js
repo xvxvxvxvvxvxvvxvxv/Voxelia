@@ -244,7 +244,7 @@ function twGenC(seed,plv,tier,hon,vk){const rn=sd(hs('twc|'+seed)),p2=a=>a[Math.
     ti='Difendi '+z.n;tx=`«Dalle terre ${twDir(nx-vx,ny-vy).replace(/^.*a /,'a ')} arrivano ${E[t].n}, a ondate. Difendi ${pl} finché non arriva il loro capo, ${H.nm}.»`;
     steps.push({k:'def',z:k,pl,w:3+(tgt>=8?1:0)+(hon?1:0),wv:0,nm:H.nm,tr:H.tr,t});trophy='Stendardo di '+H.nm}
   else if(ar==='comm'){const[x,y]=pick(0,3,(x,y)=>(TWRES[twBio(x,y)]||[]).length>0&&!twVil(x,y)),k=twK(x,y),z=twZ(k),rs=TWRES[z.bio],r=p2(rs),n=r2(3,5),H=hunt(k,p2(z.en),r2(1,2));zlv=z.lv;const pz=p2(OWTRO);
-    ti='Commissione: '+RESN[r]+' e '+pz.toLowerCase();tx=`«Mi servono ${n} ${RESN[r].toLowerCase()} da ${z.n} (${where(x,y)}) e ${pz==='Stendardo'?'lo stendardo':'il '+pz.toLowerCase()} di ${H.nm}, che si aggira là. Paga la carovana, e paga bene.»`;
+    ti='Commissione: '+RESN[r]+' e '+pz.toLowerCase();tx=`«Mi servono ${n} ${RESN[r].toLowerCase()} da ${z.n} (${where(x,y)}) e ${owArt(pz)} di ${H.nm}, che si aggira là. Paga la carovana, e paga bene.»`;
     steps.push({k:'gath',r,z:k,n,c:0},H);trophy=pz+' di '+H.nm}
   else if(ar==='messaggio'){const[ax,ay]=farVil(2,5),A=witness(ax,ay),[bx,by]=farVil(2,6),B=witness(bx,by);zlv=Math.max(twLv(ax,ay),twLv(bx,by));
     ti='Il messaggio per '+twZ(A.z).n;tx=`«Questa lettera deve arrivare a ${owNpcN(A.nid)}, a ${twZ(A.z).n} (${where(ax,ay)}). Non aprirla. La risposta, portala a ${owNpcN(B.nid)} di ${twZ(B.z).n}.»`;

@@ -1640,3 +1640,58 @@ Object.assign(ENX,{
 // 8zzzk_mestieri.js) è fatto di due pezzi che hanno già la traduzione, ma insieme restava in italiano: qui le voci intere
 // (sta qui, dopo 9d, perché i nomi di carbone, rame, pepite e gemme sono tradotti in questo file)
 {for(const id in MSTW){const w=MSTW[id],f=FISHT.find(q=>q.id===id),n=RESN[id]||(f&&f.n);if(!n||!w||ENX[n]==null||ENX[w]==null)continue;const k=n+': '+w;if(ENX[k]==null)ENX[k]=ENX[n]+': '+ENX[w]}}
+// 8.15.6: i nomi che Tomorrow compone da più pezzi restavano in italiano in inglese, anche se ogni pezzo ha la sua traduzione:
+// i paesani e i viandanti («Fabbro Bruno», «Viandante Delia», «Mercante ambulante Dino»), i bersagli dei contratti
+// («Tarn Passofelpato»), i mostri delle regioni («Bandito delle Rovine», «Goblin Arciere d'Ambra»), i loro capi
+// («Re dei Goblin Velaris») e i dungeon («Grotte di Aurolith»). Ora si leggono «Bruno the Smith», «Tarn Softstep»,
+// «Bandit of the Ruins», «Goblin King Velaris», «Caves of Aurolith». Mancavano anche due soprannomi dei mostri.
+Object.assign(ENX,{"d'Ambra":"of Amber","dell'Abisso":"of the Abyss",
+  "Grotte di {0}":"Caves of {0}","Cripta di {0}":"Crypt of {0}","Tomba di {0}":"Tomb of {0}","Caverne di {0}":"Caverns of {0}",
+  "Forgia di {0}":"Forge of {0}","Grotta sommersa di {0}":"Sunken Grotto of {0}","Abisso di {0}":"Abyss of {0}"});
+{const T=s=>ENX[s]!=null&&ENX[s]!==''?ENX[s]:(EN[s]!=null?EN[s]:null),cap=s=>s.replace(/(^|\s)(\p{Ll})/gu,(m,a,b)=>a+b.toUpperCase());
+  // paesani e viandanti: come nella Storia («Viandante Osvaldo» → «Osvaldo the Wanderer»)
+  const tt=new Set(['Viandante','Mercante ambulante']);for(const k in TWROLE)for(const t of TWROLE[k].slice(0,2))if(t)tt.add(t);
+  for(const t of tt){const e=T(t);if(!e)continue;for(const nm of TWNM){const k=t+' '+nm;if(ENX[k]==null)ENX[k]=nm+' the '+cap(e)}}
+  // i bersagli con nome dei contratti e delle battaglie
+  for(const a of OWB1)for(const b of OWB2){const e=T(b),k=a+' '+b;if(e&&ENX[k]==null)ENX[k]=a+' '+e}
+  // i mostri e i capi delle regioni nascono mentre si cammina (twType): la loro voce si aggiunge quando nascono
+  const t0=twType;twType=function(key){const o=t0(key);try{if(o&&o.tw&&o.n&&ENX[o.n]==null){const B=E[o.base];if(B){const p=B.boss?(TWBT2[o.base]||B.n.split(' ')[0]):B.n;
+    if(o.n.startsWith(p+' ')){const r=o.n.slice(p.length+1),a=T(p)||p,b=B.boss?r:(T(r)||r);if(a!==p||b!==r){const v=a+' '+b;ENX[o.n]=v;if(I18.ok){const k=i18Norm(o.n);I18.ex.set(k,v);I18.cache.clear()}}}}}}catch(e){}return o}}
+I18.ok=0;
+// 8.15.6: la bacheca dei contratti (Mondo aperto e Tomorrow) in inglese restava a metà: c'erano i pezzi («Taglia su», «una regione»,
+// «la Sorella», «Zanna»…) ma non i titoli, le tappe, le direzioni, le reliquie e i trofei che il gioco compone con quei pezzi
+// («Elimina Morva Sette Cicatrici · Prati di Erethas (…, Campione: evocatore) · 2 regioni a sud-est»). Qui le voci che mancavano.
+// Le tappe «Elimina …», «Recupera …», «Difendi …» e «Parla con …» hanno anche le forme con i pezzi separati da «·»: i nomi composti dentro
+// (la regione, il dungeon, il mostro) sono a loro volta modelli, e con un modello solo si andava oltre i tre livelli del traduttore.
+Object.assign(ENX,{"l'Astrolabio":"the Astrolabe","l'Archivista":"the Archivist","l'Anziano":"the Elder","l'Alchimista":"the Alchemist","l'Apprendista":"the Apprentice",
+  "est":"east","sud-est":"south-east","sud":"south","sud-ovest":"south-west","ovest":"west","nord-ovest":"north-west","nord":"north","nord-est":"north-east","qui":"here",
+  "a est":"to the east","a sud-est":"to the south-east","a sud":"to the south","a sud-ovest":"to the south-west","a ovest":"to the west","a nord-ovest":"to the north-west","a nord":"to the north","a nord-est":"to the north-east",
+  "una regione a {0}":"a region to the {0}","{0} regioni a {1}":"{0} regions to the {1}",
+  "Taglia su {0}":"Bounty on {0}","Vivo o morto: {0}":"Dead or alive: {0}","La caccia a {0}":"The hunt for {0}",
+  "Infestazione in {0}":"Infestation in {0}","La piaga di {0}":"The plague of {0}","Ripulire {0}":"Clear out {0}","Infestazione: {0}":"Infestation: {0}",
+  "Spedizione: {0}":"Expedition: {0}","Difendi {0}":"Defend {0}","La battaglia di {0}":"The battle of {0}","Commissione: {0} e {1}":"Commission: {0} and {1}",
+  "Il messaggio per {0}":"The message for {0}","Esplorazione: {0}":"Exploration: {0}","Calco":"Cast",
+  "Elimina {0}":"Eliminate {0}","Recupera {0}":"Recover {0}","Raggiungi {0}":"Reach {0}","Raccogli {0} ({1}): {2}/{3}":"Collect {0} ({1}): {2}/{3}",
+  "ondata {0}/{1}":"wave {0}/{1}","piano {0}":"floor {0}",
+  "Elimina {0} · {1}":"Eliminate {0} · {1}","Elimina {0} · {1} · {2}":"Eliminate {0} · {1} · {2}","Elimina {0} · {1} · {2} · {3}":"Eliminate {0} · {1} · {2} · {3}",
+  "Elimina {0} · {1}: {2}/{3}":"Eliminate {0} · {1}: {2}/{3}","Elimina {0} · {1}: {2}/{3} · {4}":"Eliminate {0} · {1}: {2}/{3} · {4}","Elimina {0} · {1} · {2}: {3}/{4}":"Eliminate {0} · {1} · {2}: {3}/{4}",
+  "Difendi {0} · {1}":"Defend {0} · {1}","Difendi {0} · {1} · {2}":"Defend {0} · {1} · {2}","Difendi {0} · {1} · {2} · {3}":"Defend {0} · {1} · {2} · {3}",
+  "Parla con {0} ({1}) · {2}":"Talk to {0} ({1}) · {2}",
+  "Recupera {0} · {1}":"Recover {0} · {1}","Recupera {0} · {1} · {2}":"Recover {0} · {1} · {2}","Recupera {0} · {1} · {2} · {3}":"Recover {0} · {1} · {2} · {3}",
+  "la zanna":"the fang","l'artiglio":"the claw","il teschio":"the skull","l'amuleto":"the amulet","il corno":"the horn","il collare":"the collar","il pugnale spezzato":"the broken dagger","{0} ({1}, Campione: {2})":"{0} ({1}, Champion: {2})",
+  "Stendardo strappato a {0}":"Banner torn from {0}","Sigillo di ceralacca di {0}":"Wax seal of {0}","Mappa di {0}":"Map of {0}","Prova del colpevole: {0}":"Proof of the culprit: {0}"});
+{const T=s=>ENX[s]!=null&&ENX[s]!==''?ENX[s]:(EN[s]!=null?EN[s]:null),up=s=>s&&s[0].toUpperCase()+s.slice(1),put=(k,v)=>{if(v&&ENX[k]==null)ENX[k]=v};
+  // i nomi delle zone della Storia fatti di due parti («Borgo delle Ceneri · periferia di Aldoria Vecchia»): nelle tappe si
+  // leggono anche a pezzi («La piaga di Borgo delle Ceneri»), e ogni pezzo prende la sua parte della traduzione
+  for(const k in Z){const n=Z[k]&&Z[k].n,e=n&&T(n);if(!e||!n.includes(' · '))continue;const a=n.split(' · '),b=e.split(' · ');if(a.length===b.length)a.forEach((x,i)=>{if(x!==b[i])put(x,b[i])})}
+  // i tratti dei Campioni, scritti in minuscolo nelle tappe («Campione: furioso, rigenerante»)
+  for(const k in OWTR){const n=OWTR[k].n,e=T(n);if(e)put(n.toLowerCase(),e.toLowerCase())}
+  // le materie prime, in minuscolo nel testo delle commissioni («Mi servono 3 pietra»)
+  for(const r in RESN){const n=RESN[r],e=T(n);if(e)put(n.toLowerCase(),e.toLowerCase())}
+  // i trofei («Zanna di …», e in minuscolo nel titolo delle commissioni)
+  for(const t of OWTRO){const e=T(t);if(!e)continue;put(t+' di {0}',e+' of {0}');put(t.toLowerCase(),e.toLowerCase())}
+  // le reliquie: «il Calice di Santa Ilda», e con la maiuscola nel titolo del contratto
+  for(const a of OWREL1)for(const b of OWREL2){const ea=T(a),eb=T(b);if(!ea||!eb)continue;put(a+' '+b,ea+' '+eb);put(up(a)+' '+b,up(ea)+' '+eb)}
+  // chi offre il contratto («la Sorella Ettore», «La Sorella Ettore» nell'elenco)
+  for(const f in OWF)for(const p of OWF[f].pat||[]){const e=T(p);if(!e)continue;put(p+' {0}',e+' {0}');put(up(p)+' {0}',up(e)+' {0}')}}
+I18.ok=0;

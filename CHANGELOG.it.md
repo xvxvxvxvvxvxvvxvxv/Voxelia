@@ -5,6 +5,15 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.15.6 — Manutenzione: i contratti e i nomi di Tomorrow in inglese (26 novembre 2026)
+
+- **La bacheca dei contratti in inglese.** Nel Mondo aperto e in Tomorrow titoli, tappe, direzioni, reliquie, trofei e committenti restavano a metà in italiano («Elimina Morva Sette Cicatrici · Meadows of Erethas (Goblin Arciere delle Ceneri, Campione: evocatore) · 2 regioni a sud-est»). Ora si legge «Eliminate Morva Seven Scars · Meadows of Erethas (Goblin Archer of Ashes, Champion: summoner) · 2 regions to the south-east», e così «Bounty on…», «Recover the Codex of the First King · Crypt of Veyogor · floor 2», «Banner of Kroll Brokenfang», «The Keeper Guido». Su 800 contratti di prova non resta niente in italiano.
+- **I nomi di Tomorrow in inglese.** I mostri delle regioni («Bandito delle Rovine» → «Bandit of the Ruins»), i loro capi («Re dei Goblin Itherax» → «Goblin King Itherax»), i dungeon («Grotte di Aurolith» → «Caves of Aurolith») e i paesani («Fabbro Bruno» → «Bruno the Smith», «Mercante ambulante Dino» → «Dino the Traveling Merchant») restavano in italiano, sopra la testa e nei testi.
+- **Gli oggetti chimera in inglese.** I nomi nati dalla fusione di Borin («Pugnale-falce della Chimera») ora si leggono «Dagger-scythe of the Chimera»; c'era anche un soprannome senza traduzione («dell'Innesto»).
+- **Le commissioni in italiano.** Il testo delle commissioni diceva «il artiglio», «il amuleto» e «il zanna»: ora «l'artiglio», «l'amuleto» e «la zanna». I contratti già presi restano come sono.
+- **Pannello admin.** In inglese l'ora del mondo si leggeva «Day 1, ore 08:10»: ora «Day 1, at 08:10».
+- In italiano, a parte le commissioni, non cambia niente.
+
 ## 8.15.5 — Manutenzione: gli eventi del mondo in inglese (25 novembre 2026)
 
 - **Gli eventi del mondo nei quartieri.** In inglese, quando un drago, una meteora o un mercante raro arrivavano ad Aldoria Est o ad Aldoria Nord, l'avviso e il cartello in alto restavano a metà in italiano («☄ A meteor fell on Aldoria Est · Fields and Crafts · 11:01», «🐉 A dragon attacks Aldoria Nord · Quartiere Nobile · 11:01»): il nome del quartiere contiene un «·» e veniva spezzato in due. Ora si legge «☄ A meteor fell on East Aldoria · Fields and Trades · 11:01» e «North Aldoria · Noble Quarter».

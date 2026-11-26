@@ -56,6 +56,8 @@ const OWPLACE={campi:['il mulino','i granai','la fattoria grande','la segheria']
 const OWCR=['ha assalito una carovana della Gilda','ha ferito tre guardie di ronda','ha reso la strada impraticabile','semina il panico tra chi passa','ha distrutto un accampamento di cacciatori','ha trascinato via un mulo carico di sale','ha messo in fuga una pattuglia intera','tiene in scacco i boscaioli da settimane'];
 const OWMY=['Chi ha svuotato la cassaforte della dogana','Chi ha avvelenato il pozzo del borgo','Chi ha rubato le campane del Tempio','Chi ha bruciato i registri della Gilda','Chi ha fatto sparire il cane del magistrato','Chi ha aperto le gabbie del serraglio','Chi ha mandato le lettere senza firma','Chi ha spostato i cippi di confine'];
 const OWTRO=['Zanna','Artiglio','Teschio','Stendardo','Amuleto','Corno','Collare','Pugnale spezzato'];
+// 8.15.6: il trofeo con l'articolo giusto nel testo delle commissioni (prima «il artiglio», «il amuleto», «il zanna»)
+const owArt=pz=>({Zanna:'la zanna',Artiglio:'l\'artiglio',Amuleto:'l\'amuleto',Stendardo:'lo stendardo'})[pz]||'il '+pz.toLowerCase();
 // i patti
 const OWMOD={dl:{n:'Tempo limitato',d:'da finire entro un giorno di gioco',k:.25},np:{n:'Niente pozioni',d:'nella zona del contratto le pozioni non si usano',k:.3},el:{n:'Scorta di Campioni',d:'chi accompagna il bersaglio è un Campione',k:.25},hd:{n:'Orda',d:'il doppio dei nemici',k:.2}};
 const OWRT=[[0,'Sconosciuto'],[60,'Conosciuto'],[180,'Stimato'],[400,'Onorato'],[800,'Leggendario']];
@@ -105,7 +107,7 @@ function owGen(seed,plv,tier,hon){const rn=sd(hs('owc|'+seed)),r2=(a,b)=>a+Math.
     ti='Difendi '+pl;tx=`«Stanotte, forse domani: verranno a prendersi ${pl}, in ${owZn(z)}. Sono tanti, arrivano a ondate, e alla fine arriverà anche chi li guida, ${H.nm}. Resta lì finché non è finita.»`;
     steps.push({k:'def',z,pl,w,wv:0,nm:H.nm,tr:H.tr,t:H.t});trophy='Stendardo di '+H.nm}
   else if(ar==='comm'){const rk=Object.keys(OWRES);const[rz]=pick(rk.map(k=>[k,OWRES[k][1]]));const R=OWRES[rz],n=R[0]==='campi'||R[0]==='nord'?r2(5,8):r2(3,5);const[z,lv]=pick(OWOUT);zlv=Math.max(lv,R[1]);const H=hunt(z,{es:r2(1,2)});const pz=p2(OWTRO);
-    ti='Commissione: '+RESN[rz]+' e '+pz.toLowerCase();tx=`«Mi servono ${n} ${RESN[rz].toLowerCase()} da ${owZn(R[0]).split(' · ')[0]} e ${pz==='Stendardo'?'lo stendardo':'il '+pz.toLowerCase()} di ${H.nm}, che si aggira in ${owZn(z)}. Non chiedere a cosa servono: paga la Gilda, e paga bene.»`;
+    ti='Commissione: '+RESN[rz]+' e '+pz.toLowerCase();tx=`«Mi servono ${n} ${RESN[rz].toLowerCase()} da ${owZn(R[0]).split(' · ')[0]} e ${owArt(pz)} di ${H.nm}, che si aggira in ${owZn(z)}. Non chiedere a cosa servono: paga la Gilda, e paga bene.»`;
     steps.push({k:'gath',r:rz,z:R[0],n,c:0},H);trophy=pz+' di '+H.nm}
   else{const id=p2(OWDG.filter(d=>DG[d].lv<=tgt+3).concat(['tana'])),L=DG[id].fls,z1=id+'@1',zl=id+'@'+L;zlv=DG[id].lv+L-1;const rel=p2(OWREL1)+' '+p2(OWREL2);
     const H=hunt(z1,{es:2});const G=hunt(zl,{es:r2(2,3)});

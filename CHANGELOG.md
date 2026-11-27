@@ -6,6 +6,13 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.15.7 — A new icon: the hero with the sword raised (November 27, 2026)
+
+- **The game has a new icon.** The yellow and green cube in the browser tab is gone: in its place there's the hero with the default look (brown hair, blue tunic) raising the starting sword to the sky, with a burst of light at the tip, on a night-blue background with a gold frame. It's drawn with the game's own hero model, the same one you see when you play.
+- **Everywhere.** The browser tab, the icon you get when you add the game to your phone's home screen, and the admin panel's tab. The full-size picture is in `docs/icona.png`.
+
+---
+
 ## 8.15.6 — Maintenance: Tomorrow's contracts and names in English (November 26, 2026)
 
 - **The contract board in English.** In the Open World and in Tomorrow, titles, steps, directions, relics, trophies and patrons stayed half in Italian ("Elimina Morva Sette Cicatrici · Meadows of Erethas (Goblin Arciere delle Ceneri, Campione: evocatore) · 2 regioni a sud-est"). Now it reads "Eliminate Morva Seven Scars · Meadows of Erethas (Goblin Archer of Ashes, Champion: summoner) · 2 regions to the south-east", and likewise "Bounty on…", "Recover the Codex of the First King · Crypt of Veyogor · floor 2", "Banner of Kroll Brokenfang", "The Keeper Guido". Out of 800 test contracts, nothing is left in Italian.

@@ -5,6 +5,13 @@ I numeri delle versioni precedenti alla 4.0 sono stati assegnati a posteriori, s
 
 ---
 
+## 8.15.7 — Una nuova icona: l'eroe con la spada alzata (27 novembre 2026)
+
+- **Il gioco ha un'icona nuova.** Al posto del cubo giallo e verde nella scheda del browser c'è l'eroe con l'aspetto predefinito (capelli castani, tunica blu) che alza al cielo la spada di partenza, con un bagliore di luce sulla punta, su uno sfondo blu notte con la cornice d'oro. È disegnata con il modello dell'eroe del gioco, lo stesso che vedi quando giochi.
+- **Dappertutto.** La scheda del browser, l'icona che compare quando aggiungi il gioco alla schermata del telefono e la scheda del pannello admin. L'immagine grande è in `docs/icona.png`.
+
+---
+
 ## 8.15.6 — Manutenzione: i contratti e i nomi di Tomorrow in inglese (26 novembre 2026)
 
 - **La bacheca dei contratti in inglese.** Nel Mondo aperto e in Tomorrow titoli, tappe, direzioni, reliquie, trofei e committenti restavano a metà in italiano («Elimina Morva Sette Cicatrici · Meadows of Erethas (Goblin Arciere delle Ceneri, Campione: evocatore) · 2 regioni a sud-est»). Ora si legge «Eliminate Morva Seven Scars · Meadows of Erethas (Goblin Archer of Ashes, Champion: summoner) · 2 regions to the south-east», e così «Bounty on…», «Recover the Codex of the First King · Crypt of Veyogor · floor 2», «Banner of Kroll Brokenfang», «The Keeper Guido». Su 800 contratti di prova non resta niente in italiano.

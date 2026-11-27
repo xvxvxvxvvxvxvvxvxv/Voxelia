@@ -108,6 +108,12 @@ together; with the field empty you play alone.
 To play with friends on different networks use a tunnel (for example `cloudflared tunnel --url http://localhost:3000`)
 or put the server online: see [Putting the server online](#putting-the-server-online).
 
+### The desktop client (Windows and Linux)
+Don't want to set anything up? Download the client from the project's releases: **`Voxelia.exe`** for Windows or
+**`Voxelia-linux-x64.tar.gz`** for Linux. It opens the game on the online server, so multiplayer works straight away:
+type the same room code as your friends. It uses the dedicated graphics card when the PC has one. The sources and the
+build script are in [`client/`](client/README.md).
+
 ---
 
 ## Controls

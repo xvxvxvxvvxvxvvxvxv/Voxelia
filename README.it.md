@@ -106,6 +106,12 @@ con il campo vuoto si gioca da soli.
 Per giocare con amici su reti diverse si usa un tunnel (per esempio `cloudflared tunnel --url http://localhost:3000`)
 oppure si pubblica il server: vedi [Pubblicare il server online](#pubblicare-il-server-online).
 
+### Il client desktop (Windows e Linux)
+Non vuoi configurare niente? Scarica il client dalle release del progetto: **`Voxelia.exe`** per Windows o
+**`Voxelia-linux-x64.tar.gz`** per Linux. Apre il gioco sul server online, quindi il multigiocatore funziona subito:
+basta scrivere lo stesso codice stanza degli amici. Usa la scheda video dedicata quando il PC ne ha una. I sorgenti e
+lo script di build sono in [`client/`](client/README.it.md).
+
 ---
 
 ## Comandi

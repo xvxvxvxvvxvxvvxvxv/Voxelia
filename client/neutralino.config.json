@@ -1,0 +1,50 @@
+{
+  "applicationId": "it.voxelia.client",
+  "applicationName": "Voxelia",
+  "author": "Voxelia",
+  "description": "Voxelia – The Lost Kingdom",
+  "version": "1.2.0",
+  "defaultMode": "window",
+  "port": 0,
+  "documentRoot": "/resources/",
+  "url": "/",
+  "enableServer": true,
+  "enableNativeAPI": true,
+  "tokenSecurity": "one-time",
+  "dataLocation": "system",
+  "logging": {
+    "enabled": false,
+    "writeToLogFile": false
+  },
+  "nativeAllowList": [
+    "window.setFullScreen",
+    "window.exitFullScreen",
+    "window.isFullScreen",
+    "window.maximize",
+    "window.isMaximized"
+  ],
+  "modes": {
+    "window": {
+      "title": "Voxelia – The Lost Kingdom",
+      "width": 1366,
+      "height": 820,
+      "minWidth": 800,
+      "minHeight": 500,
+      "center": true,
+      "icon": "/resources/icon.png",
+      "enableInspector": false,
+      "exitProcessOnClose": true,
+      "injectScript": "/resources/cover.js",
+      "injectGlobals": true,
+      "webviewArgs": "--force_high_performance_gpu"
+    }
+  },
+  "cli": {
+    "binaryName": "voxelia",
+    "resourcesPath": "/resources/",
+    "extensionsPath": "/extensions/",
+    "clientLibrary": "/resources/js/nlclient.js",
+    "binaryVersion": "6.5.0",
+    "clientVersion": "6.5.0"
+  }
+}

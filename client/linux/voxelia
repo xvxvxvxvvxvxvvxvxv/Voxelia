@@ -1,0 +1,42 @@
+#!/bin/sh
+# Voxelia launcher for Linux.
+# Prefers the dedicated (discrete) GPU on laptops/PCs with two GPUs and falls back
+# to the integrated one when there is no dedicated GPU.
+#   VOXELIA_GPU=integrated ./voxelia   -> never switch GPU
+#   VOXELIA_GPU=dedicated  ./voxelia   -> force the switch even if detection fails
+HERE=$(dirname "$(readlink -f "$0")")
+BIN="$HERE/voxelia-bin"
+
+gpu_count() {
+  n=0
+  for v in /sys/class/drm/card[0-9]*/device/vendor; do
+    [ -e "$v" ] || continue
+    case "$(basename "$(dirname "$(dirname "$v")")")" in *-*) continue ;; esac
+    n=$((n + 1))
+  done
+  echo "$n"
+}
+
+has_nvidia_driver() {
+  [ -e /proc/driver/nvidia/version ] && return 0
+  command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi -L >/dev/null 2>&1
+}
+
+mode=${VOXELIA_GPU:-auto}
+if [ "$mode" != "integrated" ] && { [ "$mode" = "dedicated" ] || [ "$(gpu_count)" -ge 2 ]; }; then
+  if has_nvidia_driver; then
+    # NVIDIA proprietary driver: PRIME render offload
+    export __NV_PRIME_RENDER_OFFLOAD=1
+    export __GLX_VENDOR_LIBRARY_NAME=nvidia
+    export __VK_LAYER_NV_optimus=NVIDIA_only
+    [ -f /usr/share/glvnd/egl_vendor.d/10_nvidia.json ] && \
+      export __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/10_nvidia.json
+    # WebKitGTK's DMA-BUF renderer shows a blank window on many NVIDIA setups
+    export WEBKIT_DISABLE_DMABUF_RENDERER=${WEBKIT_DISABLE_DMABUF_RENDERER:-1}
+  else
+    # Mesa (AMD / Intel / nouveau): use the non-default GPU
+    export DRI_PRIME=${DRI_PRIME:-1}
+  fi
+fi
+
+exec "$BIN" "$@"

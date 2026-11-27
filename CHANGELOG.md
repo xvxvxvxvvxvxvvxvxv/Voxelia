@@ -6,6 +6,15 @@ in Italian in [CHANGELOG.it.md](CHANGELOG.it.md) (in the game: switch the langua
 
 ---
 
+## 8.15.6 — Maintenance: Tomorrow's contracts and names in English (November 26, 2026)
+
+- **The contract board in English.** In the Open World and in Tomorrow, titles, steps, directions, relics, trophies and patrons stayed half in Italian ("Elimina Morva Sette Cicatrici · Meadows of Erethas (Goblin Arciere delle Ceneri, Campione: evocatore) · 2 regioni a sud-est"). Now it reads "Eliminate Morva Seven Scars · Meadows of Erethas (Goblin Archer of Ashes, Champion: summoner) · 2 regions to the south-east", and likewise "Bounty on…", "Recover the Codex of the First King · Crypt of Veyogor · floor 2", "Banner of Kroll Brokenfang", "The Keeper Guido". Out of 800 test contracts, nothing is left in Italian.
+- **Tomorrow's names in English.** The regions' monsters ("Bandito delle Rovine" → "Bandit of the Ruins"), their leaders ("Re dei Goblin Itherax" → "Goblin King Itherax"), the dungeons ("Grotte di Aurolith" → "Caves of Aurolith") and the villagers ("Fabbro Bruno" → "Bruno the Smith", "Mercante ambulante Dino" → "Dino the Traveling Merchant") stayed in Italian, above their heads and in the texts.
+- **Chimera items in English.** The names born from Borin's fusion ("Pugnale-falce della Chimera") now read "Dagger-scythe of the Chimera"; one epithet ("dell'Innesto") had no translation either.
+- **Commissions in Italian.** The commission text said "il artiglio", "il amuleto" and "il zanna": now "l'artiglio", "l'amuleto" and "la zanna". Contracts already taken stay as they are.
+- **Admin panel.** In English the world time read "Day 1, ore 08:10": now "Day 1, at 08:10".
+- In Italian nothing else changes.
+
 ## 8.15.5 — Maintenance: the world events in English (November 25, 2026)
 
 - **World events in the quarters.** In English, when a dragon, a meteor or a rare merchant came to East Aldoria or North Aldoria, the notice and the sign at the top of the screen stayed half in Italian ("☄ A meteor fell on Aldoria Est · Fields and Crafts · 11:01", "🐉 A dragon attacks Aldoria Nord · Quartiere Nobile · 11:01"): the quarter's name contains a "·" and was split in two. Now they read "☄ A meteor fell on East Aldoria · Fields and Trades · 11:01" and "North Aldoria · Noble Quarter".
